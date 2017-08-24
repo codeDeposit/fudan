@@ -1,0 +1,196 @@
+package com.jy.entity.oa.task;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public class WorkPlan {
+
+	private Long planId;
+	private String planName;
+	private String planContent;
+	private Date startTime;
+	private Date endTime;
+	private String issueScope;
+	private String participants;
+	private String principal;
+	private String note;
+	private Short status;
+	private Short isPersonal;
+	private String icon;
+	private Long typeId;
+	private String userId;
+	private Long[] fileId;
+	private List<FileAttach> fileAttachs;
+	private String orgNames;
+	private String participantNames;
+
+	public String getParticipantNames() {
+		return participantNames;
+	}
+
+	public void setParticipantNames(String participantNames) {
+		this.participantNames = participantNames;
+	}
+
+	public String getOrgNames() {
+		return orgNames;
+	}
+
+	public void setOrgNames(String orgNames) {
+		this.orgNames = orgNames;
+	}
+
+	private String startTime1;
+	private String endTime1;
+
+	public String getStartTime1() {
+		return startTime1;
+	}
+
+	public void setStartTime1(String startTime1) {
+		this.startTime1 = startTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
+	}
+
+	public Long getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+
+	public String getPlanName() {
+		return planName;
+	}
+
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
+
+	public String getPlanContent() {
+		return planContent;
+	}
+
+	public void setPlanContent(String planContent) {
+		this.planContent = planContent;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getIssueScope() {
+		return issueScope;
+	}
+
+	public void setIssueScope(String issueScope) {
+		this.issueScope = issueScope;
+	}
+
+	public String getParticipants() {
+		return participants;
+	}
+
+	public void setParticipants(String participants) {
+		this.participants = participants;
+	}
+
+	public String getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public Short getIsPersonal() {
+		return isPersonal;
+	}
+
+	public void setIsPersonal(Short isPersonal) {
+		this.isPersonal = isPersonal;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Long getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Long typeId) {
+		this.typeId = typeId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Long[] getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long[] fileId) {
+		this.fileId = fileId;
+	}
+
+	public List<FileAttach> getFileAttachs() {
+		return fileAttachs;
+	}
+
+	public void setFileAttachs(List<FileAttach> fileAttachs) {
+		this.fileAttachs = fileAttachs;
+	}
+
+}

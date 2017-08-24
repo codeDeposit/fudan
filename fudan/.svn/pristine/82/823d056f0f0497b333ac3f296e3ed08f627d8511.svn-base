@@ -1,0 +1,359 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+		<style>
+			.SearchForm .forinBlo{display: inline-block;width: 66.66%;}
+			.labelPad{padding-top: 7px;}
+		    
+		    .havHead{background: #efefef;}
+	    	.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			
+			a{text-decoration: none;}
+		    a:hover{text-decoration: none;}
+		    a:focus{text-decoration: none;}
+		    li{list-style: none;}
+		    ul{padding:0;margin:0;}
+		    .leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+		    .firstLevel li{cursor: pointer;}
+		    .secondLevel{display: none;}
+		    .thirdLevel{display: none;}
+		    .fIndent{padding-left: 8px;}
+		    .sIndent{padding-left: 24px;}
+		    .tIndent{padding-left: 40px;}
+		    .rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+		
+		    .rightContent .table{margin-bottom: 5px;height: 234px;}
+		    .tBody{display: block;height:196px;overflow: auto;}
+		    .rightContent thead tr{display: block;}
+		    .wiD{width: 36px;}
+		    .seQuence{width: 45px;}
+		    .wiDl{width: 280px;}
+		
+		    .close{margin:5px;}
+		    .aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+		    .aHover:hover{background-color: #ccc;}
+		    .aHover.active{background-color:#999;color: #fff;}
+		    .pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+		    #pageNum{width: 335px;margin:0 auto;}
+		    .modal-content{border-radius: 6px;overflow: hidden;}
+		    .pagination{margin:5px 0;}
+		    .headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+	        <!-- 模拟态窗口 start-->
+	        <div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	                        <h4 class="modal-title text-center" id="addModalLabel">假期设置详细信息</h4>
+	                    </div>
+	                    <div class="modal-body">
+	                    	<form class="form-horizontal" role="form" id="editform">
+	                    	<input type="hidden" name="recordId" value="${holidayRecord.recordId }">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">开始日期</label>
+					            <div class="input-group date form_date col-sm-9" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+					                <input class="form-control" size="16" type="text" value='${holidayRecord.startTime1 }' readonly required aria-required="true" name="startTime">
+					                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					            </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">结束日期</label>
+					            <div class="input-group date form_date col-sm-9" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+					                <input class="form-control" size="16" type="text" value='${holidayRecord.endTime1 }' readonly required aria-required="true" name="endTime">
+					                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					            </div>
+                            </div>
+                            <div class="form-group" id="ssyhedit">
+					  			 <label class="col-sm-2 control-label">所属用户</label>
+						    	 <div class="col-sm-6">
+					                <input id="empNamesedit" name="fullname" value="${holidayRecord.fullname }" type="text" class="form-control" aria-required="true">
+					                <input id="userIdsedit" name="userId" value="${holidayRecord.userId }" type="hidden">
+					             </div>
+						    	 <div class="col-sm-4">
+						    	 	<div class="btn-group">
+						                <button type="button" class="btn btn-info btn-sm" onclick="show();">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择  
+						                </button>
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData('empNamesedit','userIdsedit');">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除 
+						                </button>
+					                </div>
+					             </div>
+					  		</div>
+                            <div class="form-group">
+                            	<label class="col-sm-2 control-label">全公司假</label>
+                            	<div class="col-sm-9 checkbox">
+	                            		&nbsp;&nbsp;&nbsp;&nbsp;<input id="addisalledit" type="checkbox">
+	                            		<input id="isalladdedit" name="isAll" type="hidden" value="${holidayRecord.isAll}">
+                            	</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">描述</label>
+                                <div class="col-sm-9">
+                                    <textarea rows="3" name="descp" class="form-control">${holidayRecord.descp}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button id="submitbtnedit" type="button" class="btn btn-success">保存</button>
+                            </div>
+                            </form>
+	                    </div>
+	                </div>
+	            </div>
+	            </div>
+	        <!-- 模拟态窗口 end -->
+	        
+	        <!-- 所属用户选择弹窗 start -->
+		    <div class="modal fade" id="selectEmpedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		        <div class="modal-dialog">
+		            <div class="modal-content">
+		                <div class="modal-header headBg">
+		                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+		                        &times;
+		                    </button>
+		                    <h4 class="modal-title">
+		                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+		                        &nbsp;选择用户
+		                    </h4>
+		                </div>
+		                <div class="modal-body" style="height:300px;">
+		                    <div class="leftList pull-left">
+		                        <ul class="firstLevel">
+		                            <li>
+		                                <span class="secondT aHover fIndent">
+		                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按部门分类
+		                                </span>
+		                                <ul id="depfledit" class="secondLevel">
+		                                	<!-- 部门分类 -->
+		                                	<!-- 
+			                                    <li>
+			                                        <a href="javascript:;" class="aHover sIndent">
+			                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+			                                        </a>
+			                                    </li>
+		                                     -->
+		                                </ul>
+		                            </li>
+		                            <li>
+		                                <span class="secondT aHover fIndent">
+		                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按角色分类
+		                                </span>
+		                                <ul id="rolefledit" class="secondLevel">
+		                                	<!-- 角色分类 -->
+		                                	<!-- 
+		                                    <li>
+		                                        <a href="javascript:;" class="aHover sIndent">
+		                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+		                                        </a>
+		                                    </li>
+		                                    <li><a href='getEmp(1)' class='aHover sIndent'><i class='glyphicon glyphicon-file'></i>&nbsp;人事经理</a></li> 
+		                                    -->
+		                                </ul>
+		                            </li>
+		                        </ul>
+		                    </div>
+		                    <div id="employeetableedit" class="rightContent pull-right">
+		                        
+		                    </div>
+		                </div>
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-default" onclick="hide();">关闭</button>
+		                    <button type="button" class="btn btn-success bbYes" id="bgrsurebtnedit">确定</button>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		    <!-- 所属用户选择弹窗 end -->
+		    
+	</body>
+	
+	<script type="text/javascript">
+		
+		$(function() {
+			//加载数据...
+			getAllDep();
+			getAllEmp();
+	    	getAllRole();
+	    	setIA();
+			
+		    $('.form_date').datetimepicker({
+		        language: 'zh-CN',
+		        weekStart: 1,
+		        todayBtn: 1,
+		        autoclose: 1,
+		        todayHighlight: 1,
+		        startView: 2,
+		        minView: 2,
+		        forceParse: 0,
+		    });
+		    
+		    $('.secondT').on('click', function(event) {
+	            var theLev=$(this).parent().find('.secondLevel');
+	            if(theLev.css('display')=='block'){
+	                theLev.slideUp('fast');
+	                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+	            }else{
+	                $('.secondLevel').slideUp('fast');
+	                theLev.slideToggle('fast');
+	                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+	                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+	            }
+	        });
+	        $('.thirdT').on('click', function(event) {
+	            var theLev=$(this).parent().find('.thirdLevel');
+	            if(theLev.css('display')=='block'){
+	                theLev.slideUp('fast');
+	                
+	                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+	            }else{
+	                $('.thirdLevel').slideUp('fast');
+	                theLev.slideToggle('fast');
+	                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+	                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+	            }
+	        });
+	        $('.aHover').on('click',function(event) {
+	            event.preventDefault();
+	            $('.aHover').removeClass('active');
+	            $(this).addClass('active');
+	        });
+	        $("#infoorupdate").modal("show");
+		});
+		//设置isall的值
+		function setIA() {
+			var isall = '${holidayRecord.isAll}';
+			if(isall == 1) {
+				$("#ssyhedit").css("display", "none");
+				$("#addisalledit").attr("checked", "checked");
+			}
+		}
+		// 获取所有员工
+	    function getAllEmp() {
+	    	var url = "/oa/listEm";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		success: function(data) {
+	    			$("#employeetableedit").html(data);
+	    		}
+	    	});
+	    }
+		// 获取所有部门
+	    function getAllDep() {
+	    	var url = "/oa/org/listorg";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		success: function(data) {
+	    			var obj = eval("("+data+")");
+	    			$("#depfledit").html(obj);
+	    		}
+	    	});
+	    }
+	 	// 获取某一个部门下的员工
+	    function getEmpByOrg(id) {
+	    	var url = "/oa/listEm";
+	    	id= id+"";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		data: "orgId="+id,
+	    		success: function(data) {
+	    			$("#employeetableedit").html(data);
+	    		}
+	    	});
+	    }
+	  	//获取所有角色
+	    function getAllRole() {
+	    	var url = "/oa/role/listhtml";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		success: function(data) {
+	    			var obj = eval("("+data+")");
+	    			$("#rolefledit").html(obj);
+	    		}
+	    	});
+	    }
+	 	// 获取某一个角色下的员工
+	    function getEmpByRole(id) {
+	    	var url = "/oa/listEm";
+	    	id += "";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		data: "roleId="+id,
+	    		success: function(data) {
+	    			$("#employeetableedit").html(data);
+	    		}
+	    	});
+	    }
+   	//判断是否选中
+    $('.bbYes').on('click',function(){
+    	var earrayName = [];
+    	var iarrayid = [];
+	    $('#employeetableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId = obj.attr("id");
+	        	earrayName.push(objName);
+	        	iarrayid.push(objId);
+	        	$("#empNamesedit").val(earrayName);
+	        	$("#userIdsedit").val(iarrayid);
+	        	$("#selectEmpedit").modal("hide");
+	        }
+	    });
+    });
+	//删除id为id的元素的内容
+    function removeData(id, id1) {
+    	$("#"+id).val("");
+    	$("#"+id1).val("");
+    }
+	$("#addisalledit").on("change", setIsAll);
+	//设置值
+	function setIsAll() {
+		var isall = 0;
+		var flag = $("#addisalledit").prop("checked");
+		if(flag) {
+			isall = 1;
+			$("#ssyhedit").css("display", "none");
+			removeData("empNamesedit","userIdsedit");
+		}else {
+			removeData("empNamesedit","userIdsedit");
+			$("#ssyhedit").css("display", "block");
+		}
+		$("#isalladdedit").val(isall);
+	}
+	function hide() {
+		$("#selectEmpedit").modal("hide");
+	}
+	function show() {
+		$("#selectEmpedit").modal("show");
+	}
+	$("#submitbtnedit").click(function() {
+		var url = jypath + "/oa/holidayrecord/edit";
+		var type = "post";
+		var data = $("#editform").serialize();
+		$.ajax({
+			type: type,
+			url : url,
+			data: data,
+			success: function(data) {
+				fuShowSuccess();
+				$("#submitbtnedit").attr("data-dismiss", "modal");
+				refresh();
+			}
+		});
+	});
+</script>
+</html>

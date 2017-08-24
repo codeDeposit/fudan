@@ -1,0 +1,49 @@
+package com.jy.service.oa.impl.workflow;
+
+import java.util.List;
+
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.service.oa.workflow.OAProcessService;
+
+@Service("oaProcessService")
+public class OAProcessServiceImpl implements OAProcessService{
+
+	private RepositoryService repositoryService;
+
+	public RepositoryService getRepositoryService() {
+		return repositoryService;
+	}
+
+	@Autowired
+	public void setRepositoryService(RepositoryService repositoryService) {
+		this.repositoryService = repositoryService;
+	}
+
+	/**
+	 * 流程定义列表，获取最新版本的列表
+	 * 
+	 * @param processName
+	 * @param page
+	 * @return
+	 */
+	public List<ProcessDefinition> getProDefs(String processName, int page) {
+		int maxResults = 15;
+		int firstResult = page * maxResults - maxResults;
+		ProcessDefinitionQuery query = repositoryService
+				.createProcessDefinitionQuery();
+		query.latestVersion();
+		if(processName != null)
+			query.processDefinitionNameLike(processName);
+		query.orderByDeploymentId();
+		query.desc();
+		List<ProcessDefinition> prodefs = query.listPage(firstResult,
+				maxResults);
+		return prodefs;
+	}
+
+}

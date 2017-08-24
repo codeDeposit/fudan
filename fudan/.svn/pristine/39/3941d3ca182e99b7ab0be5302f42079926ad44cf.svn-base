@@ -1,0 +1,98 @@
+package com.jy.entity.wzcg;
+
+public class WzcgCgjh {
+	
+	private String cgjhId;
+	private String state;
+	private String name;
+	private String creator;
+	private String zxjg;
+	private String buyway;
+	private String remark;
+	private String endDate;
+	private String createdate;
+	
+	//另加
+	private String bm;
+
+	public String getCgjhId() {
+		return cgjhId;
+	}
+
+	public void setCgjhId(String cgjhId) {
+		this.cgjhId = cgjhId;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public String getZxjg() {
+		return zxjg;
+	}
+
+	public void setZxjg(String zxjg) {
+		this.zxjg = zxjg;
+	}
+
+	public String getBuyway() {
+		return buyway;
+	}
+
+	public void setBuyway(String buyway) {
+		this.buyway = buyway;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(String createdate) {
+		this.createdate = createdate;
+	}
+
+	public String getBm() {
+		return bm;
+	}
+
+	public void setBm(String bm) {
+		this.bm = bm;
+	}
+
+}

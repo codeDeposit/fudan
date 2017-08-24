@@ -1,0 +1,31 @@
+package com.jy.repository.oa.archive;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.archive.ArchivesType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ArchivesTypeMapper {
+
+	// 删除分类
+	int delete(long typeId);
+
+	// 修改分类信息
+	int update(ArchivesType archivesType);
+
+	// 添加分类
+	int insert(ArchivesType archivesType);
+
+	// 根据Id号获取分类详细信息
+	ArchivesType selectInfo(long typeId);
+
+	// 获取所有公文类别
+	List<ArchivesType> selectAll();
+
+	// 分页显示列表
+	List<ArchivesType> selectPageDate(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex);
+
+}

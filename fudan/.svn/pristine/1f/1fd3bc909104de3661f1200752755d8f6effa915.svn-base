@@ -1,0 +1,788 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+		<style>
+		    .havHead{background: #efefef;}
+	    	.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			
+			a{text-decoration: none;}
+		    a:hover{text-decoration: none;}
+		    a:focus{text-decoration: none;}
+		    li{list-style: none;}
+		    ul{padding:0;margin:0;}
+		    .leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+		    .firstLevel li{cursor: pointer;}
+		    .secondLevel{display: none;}
+		    .thirdLevel{display: none;}
+		    .fIndent{padding-left: 8px;}
+		    .sIndent{padding-left: 24px;}
+		    .tIndent{padding-left: 40px;}
+		    .rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+		
+		    .rightContent .table{margin-bottom: 5px;height: 234px;}
+		    .tBody{display: block;height:196px;overflow: auto;}
+		    .rightContent thead tr{display: block;}
+		    .wiD{width: 36px;}
+		    .seQuence{width: 45px;}
+		    .wiDl{width: 280px;}
+		
+		    .close{margin:5px;}
+		    .aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+		    .aHover:hover{background-color: #ccc;}
+		    .aHover.active{background-color:#999;color: #fff;}
+		    .pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+		    #pageNum{width: 335px;margin:0 auto;}
+		    .modal-content{border-radius: 6px;overflow: hidden;}
+		    .pagination{margin:5px 0;}
+		    .headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+		<!-- padding盒子 start-->
+    	<div>
+    	
+        <!-- 模拟态窗口 start-->
+        <div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="newsAddModalLabel">车辆申请单详细信息</h4>
+                </div>
+                    <div class="modal-body" >
+                        <form id="booktypeeditform" class="form-horizontal aForm" role="form" >
+                        	<input type="hidden" value="${carApply.applyId }" name="applyId">
+                        	<div class="form-group">
+					  			<label class="col-md-2 col-sm-2">车牌号码</label>
+						    	<div class="col-md-8 col-sm-8">
+					                <input id="goodsnamesedit" value="${carApply.car.carNo }" type="text" class="form-control" readonly aria-required="true">
+					                <input id="goodsIdsedit" name="carId" type="hidden" value="${carApply.car.carId }"/>
+					             </div>
+						    	 <div class="col-md-2 col-sm-2">
+						    	 	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-info btn-sm" onclick="$('#selectgoodsedit').modal('show');">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						             </div>
+					             	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-default btn-sm" id="goodsbtnedit">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+					                </div>
+					            </div>
+				  			</div>
+				  			<div class="form-group">
+					  			<label class="col-md-2 col-sm-2">用车部门</label>
+						    	<div class="col-md-8 col-sm-8">
+					                <input id="orgNamesedit" name="department" value="${carApply.department }" type="text" readonly class="form-control">
+					             </div>
+						    	 <div class="col-md-2 col-sm-2">
+						    	 	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-info btn-sm" onclick="$('#selectOrgedit').modal('show');">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						             </div>
+					             	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData('orgNamesedit')">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+					                </div>
+					            </div>
+				  			</div>
+				  			<div class="form-group">
+					  			<label class="col-md-2 col-sm-2">用车人</label>
+						    	<div class="col-md-8 col-sm-8">
+					                <input id="userCarPersonedit" name="userFullname" value="${carApply.userFullname }" type="text" readonly class="form-control" aria-required="true">
+					            </div>
+						    	<div class="col-md-2 col-sm-2">
+						    	 	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-info btn-sm" onclick="$('#selectUseCarPersonedit').modal('show');">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						            </div>
+					             	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData('userCarPersonedit')">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+					                </div>
+					            </div>
+				  			</div>
+				  			<div class="form-group">
+					  			<label class="col-md-2 col-sm-2">申请人</label>
+						    	<div class="col-md-8 col-sm-8">
+					                <input id="applyPersonNamesedit" value="${carApply.proposer }" name="proposer" type="text" readonly class="form-control" aria-required="true">
+					                <input id="applyPersonIdsedit" value="${carApply.userId }" name="userId" type="hidden">
+					            </div>
+						    	<div class="col-md-2 col-sm-2">
+						    	 	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-info btn-sm" onclick="$('#selectApplieredit').modal('show');">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						            </div>
+					            	<div class="col-md-6 col-sm-6">
+						                <button type="button" class="btn btn-default btn-sm" id="applyPersonbtnedit">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+					                </div>
+					            </div>
+				  			</div>
+				  			<div class="form-group">
+					  			<div class="col-md-6">
+					                <label class="col-md-4 col-sm-4">申请日期</label>
+					                <div class="col-md-8 col-sm-8">
+						                <div class="input-group col-md-12">
+						                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+						                        <input class="form-control" size="16" name="applyDate" type="text" value="${carApply.applyDate1 }" readonly required aria-required="true">
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						                    </div>
+						                </div>
+						            </div>
+					            </div>
+					            <div class="col-md-6">
+							    	 <label class="col-md-4 col-sm-4">审批状态</label>
+							    	 <div class="col-md-8 col-sm-8">
+								    	 <select class="form-control" name="approvalStatus" datatype="select" errormsg="请选择！">
+								    	 	<c:if test="${carApply.approvalStatus == 0 }">
+									    	 	<option value="">--请选择--</option>
+							                    <option value="0" selected="selected">未审批</option>
+							                    <option value="1">已审批</option>
+						                    </c:if>
+						                    <c:if test="${carApply.approvalStatus == 1 }">
+									    	 	<option value="">--请选择--</option>
+							                    <option value="0">未审批</option>
+							                    <option value="1" selected="selected">已审批</option>
+						                    </c:if>
+									     </select>
+								     </div>
+						  		</div>
+					  		</div>
+				  			<div class="form-group">
+						  		<div class="col-md-6">
+					                <label class="col-md-4 col-sm-4">开始时间</label>
+					                <div class="col-md-8 col-sm-8">
+						                <div class="input-group pull-left col-md-12">
+						                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+						                        <input class="form-control" size="16" name="startTime" type="text" value="${carApply.startTime1 }" readonly required aria-required="true">
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						                    </div>
+						                </div>
+					                </div>
+					            </div>
+					            <div class="col-md-6">
+					                <label class="col-md-4 col-sm-4">结束时间</label>
+					                <div class="col-md-8 col-sm-8">
+						                <div class="input-group pull-left col-md-12">
+						                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+						                        <input class="form-control" size="16" name="endTime" type="text" value="${carApply.endTime1 }" readonly required aria-required="true">
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						                    </div>
+						                </div>
+					                </div>
+					            </div>
+				            </div>
+				            <div class="form-group">
+					  			<div class="col-md-6">
+						  			<label class="col-md-4 col-sm-4">里程</label>
+						  			<div class="col-md-8 col-sm-8">
+						            	<input name="mileage" type="text" class="form-control" value="${carApply.mileage }" aria-required="true">
+						            </div>
+						        </div>
+						        <div class="col-md-6">
+						  			<label class="col-md-4 col-sm-4">油耗</label>
+						  			<div class="col-md-8 col-sm-8">
+						            	<input name="oilUse" type="text" class="form-control" value="${carApply.oilUse }" aria-required="true">
+						            </div>
+						        </div>
+					        </div>
+					        <div class="form-group">
+				                <label class="col-md-2 col-sm-2">申请原因</label>
+				                <div class="col-md-10 col-sm-10">
+				                    <textarea rows="3" name="reason" class="form-control">${carApply.reason}</textarea>
+				                </div>
+				            </div>
+				  			<div class="form-group">
+				                <label class="col-md-2 col-sm-2">备注</label>
+				                <div class="col-md-10 col-sm-10">
+				                    <textarea rows="3" name="notes" class="form-control">${carApply.notes}</textarea>
+				                </div>
+				            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <c:if test="${operation == 'update' }">
+                        	<button id="booktypeaddbtn" type="button" class="btn btn-success">保存</button>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+            </div>
+        <!-- 模拟态窗口 end -->
+
+        <!-- 选择车辆弹窗 start -->
+        <div class="modal fade" id="selectgoodsedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;车辆选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="upside">
+	                    	<form id="carsearchform" role="form" class="SearchForm">
+	                    		<div class="form-group col-md-12 col-sm-12">
+	                    		<label class="control-label col-sm-3 labelPad">查询：车牌号码</label>
+	                        	<input type="text" id="carNoSearchedit" class="form-control col-sm-8 forinBlo" name="carNo">
+	                        	<button id="tccarsearchbtnedit" class="btn btn-success btn-sm" type="button"><i class="glyphicon glyphicon-search"></i></button>
+	                        	</div>
+	                        </form>
+	                    </div>
+	                    <div class="middleside">
+	                    	<table class="table table-striped table-hover">
+								<thead style="display:block;width:520px;">
+									<tr>
+									<th style="width:50px;" >
+										<input type="checkbox" class="checkAll" onclick="chooseAll()">
+									</th>
+									<th style="width:120px;" >序号</th>
+									<th style="width:350px;">车牌号码</th>
+									</tr>
+								</thead>
+								<tbody id="goodstableedit" class="tBody" style="display:block;width:520px;height:178px;overflow:auto;">
+									<!-- 车辆列表打印到此处 -->
+									<!-- <tr>
+										<td class="text-center wiD"><input type="checkbox"></td>
+										<td class="text-center seQuence">${index.count}</td>
+										<td id="${org.id}" class="wiDl">${org.name}</td>
+									</tr> -->
+								</tbody>
+							</table>
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" onclick="$('#selectgoodsedit').modal('hide');">关闭</button>
+	                    <button type="button" class="btn btn-success aaYes">确定</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 选择车辆弹窗 end -->
+        
+        <!-- 选择部门弹窗 start -->
+	    <div class="modal fade" id="selectOrgedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;部门选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent" id="allOrg" onclick=""><!-- addBook('allOrg') -->
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="orgkindedit" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="orgtableedit" class="rightContent pull-right">
+	                        <!-- 部门列表打印在此处 -->
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" onclick="$('#selectOrgedit').modal('hide');">关闭</button>
+	                    <button type="button" class="btn btn-success bbYes">确定</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 选择部门弹窗 end -->
+
+        <!-- 用车人选择弹窗 start -->
+	    <div class="modal fade" id="selectUseCarPersonedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;选择申请人
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按部门分类
+	                                </span>
+	                                <ul id="orgsedit" class="secondLevel">
+	                                	<!-- 部门分类 -->
+	                                	<!-- 
+		                                    <li>
+		                                        <a href="javascript:;" class="aHover sIndent">
+		                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+		                                        </a>
+		                                    </li>
+	                                     -->
+	                                </ul>
+	                            </li>
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按角色分类
+	                                </span>
+	                                <ul id="rolesedit" class="secondLevel">
+	                                	<!-- 角色分类 -->
+	                                	<!-- 
+	                                    <li>
+	                                        <a href="javascript:;" class="aHover sIndent">
+	                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+	                                        </a>
+	                                    </li>
+	                                    <li><a href='getEmp(1)' class='aHover sIndent'><i class='glyphicon glyphicon-file'></i>&nbsp;人事经理</a></li> 
+	                                    -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="employeetableedit" class="rightContent pull-right"></div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" onclick="$('#selectUseCarPersonedit').modal('hide');">关闭</button>
+	                    <button type="button" class="btn btn-success ccYes">确定</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <!-- 用车人选择弹窗 end -->
+	    
+	    <!-- 申请人选择弹窗 start -->
+	    <div class="modal fade" id="selectApplieredit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;选择申请人
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按部门分类
+	                                </span>
+	                                <ul id="applyorgsedit" class="secondLevel">
+	                                	<!-- 部门分类 -->
+	                                	<!-- 
+		                                    <li>
+		                                        <a href="javascript:;" class="aHover sIndent">
+		                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+		                                        </a>
+		                                    </li>
+	                                     -->
+	                                </ul>
+	                            </li>
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;按角色分类
+	                                </span>
+	                                <ul id="applyrolesedit" class="secondLevel">
+	                                	<!-- 角色分类 -->
+	                                	<!-- 
+	                                    <li>
+	                                        <a href="javascript:;" class="aHover sIndent">
+	                                            <i class="glyphicon glyphicon-file"></i>&nbsp;xxx
+	                                        </a>
+	                                    </li>
+	                                    <li><a href='getEmp(1)' class='aHover sIndent'><i class='glyphicon glyphicon-file'></i>&nbsp;人事经理</a></li> 
+	                                    -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="appliertableedit" class="rightContent pull-right"></div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" onclick="$('#selectApplieredit').modal('hide');">关闭</button>
+	                    <button type="button" class="btn btn-success ddYes">确定</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <!-- 申请人弹窗 end -->
+    </div>
+    <!-- padding盒子 end -->
+<script type="text/javascript">
+   	//加载数据..
+   	$(document).ready(function() {
+   		//初始化数据...部门
+   		getAllOrg();
+		getOrgDetails();
+   		//初始化数据...车牌号，这个是填充到选择车牌号码的弹窗下方表格栏
+   		getCarNoToMiddle();
+   		//初始化数据..加载所有部门
+		getAllDep();
+		//初始化数据..加载所有角色
+		getAllRole();
+		// 初始化日期组件
+	    $('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+		//初始化菜单
+	    $('.secondT').on('click', function(event) {
+            var theLev=$(this).parent().find('.secondLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.secondLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.thirdT').on('click', function(event) {
+            var theLev=$(this).parent().find('.thirdLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.thirdLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.aHover').on('click',function(event) {
+            event.preventDefault();
+            $('.aHover').removeClass('active');
+            $(this).addClass('active');
+        });
+        $("#infoorupdate").modal("show");
+   	});
+   	
+   	function chooseAll(){
+        if($('.checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+           $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+   	
+   	//加载数据...部门
+    function getAllOrg() {
+    	var url = "/oa/org/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgkindedit").html(obj);
+    		}
+    	});
+    }
+   	
+ 	// 获取部门信息
+    function getOrgDetails() {
+    	var url = "/oa/org/getdetails";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId=1",
+    		success: function(data) {
+    			$("#orgtableedit").html(data);
+    		}
+    	});
+    }
+   	
+   	//加载数据...车牌号
+   	function getCarNoToMiddle() {
+   		var url = "/oa/car/listall";
+   		$.ajax({
+   			type: "get",
+   			url : jypath + url,
+   			success: function(data) {
+   				var objs = eval("("+data+")");
+   				var html = "";
+   				var count = 1;
+   				for(var index in objs) {
+   					var obj = objs[index];
+   					html += "<tr>";
+   					html += "<td style='width:50px;' class='center wiD'><input type='checkbox'></td>";
+   					html += "<td style='width:120px;' class='center seQuence'>"+count+"</td>";
+   					html += "<td style='width:350px;' id="+obj.carId+" class='wiDl'>"+obj.carNo+"</td>";
+   					html += "</tr>";
+   					count ++;
+   				}
+   				$("#goodstableedit").html(html);
+   			}
+   		});
+   	}
+   	
+   	//加载数据...搜索车牌号
+   	$("#tccarsearchbtnedit").click(function() {
+   		var url = "/oa/car/listall";
+   		var data = "carNo="+$("#carNoSearchedit").val();
+   		$.ajax({
+   			type: "get",
+   			url : jypath + url,
+   			data: data,
+   			success: function(data) {
+   				var objs = eval("("+data+")");
+   				var html = "";
+   				var count = 1;
+   				for(var index in objs) {
+   					var obj = objs[index];
+   					html += "<tr>";
+   					html += "<td style='width:50px;' class='center wiD'><input type='checkbox'></td>";
+   					html += "<td style='width:120px;' class='center seQuence'>"+count+"</td>";
+   					html += "<td style='width:350px;' id="+obj.carId+" class='wiDl'>"+obj.carNo+"</td>";
+   					html += "</tr>";
+   					count ++;
+   				}
+   				$("#goodstableedit").html(html);
+   			}
+   		});
+   	});
+
+   	//加载所有部门
+  	function getAllDep() {
+    	var url = "/oa/org/listorg";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgsedit").html(obj);
+    			$("#applyorgsedit").html(obj);
+    		}
+    	});
+    }
+
+    //加载所有角色
+  	function getAllRole() {
+    	var url = "/oa/role/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#rolesedit").html(obj);
+    			$("#applyrolesedit").html(obj);
+    		}
+    	});
+    }
+
+  	//判断是否选中
+    $('.aaYes').on('click',function(){
+    	var oarrayName = [];
+    	var iarrayId = [];
+	    $('#goodstableedit').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	iGoodsId = obj.attr("id");
+	        	var objName=obj.html();
+	        	oarrayName.push(objName);
+	        	iarrayId.push(iGoodsId);
+	        	$("#goodsnamesedit").val(oarrayName);
+	        	$("#goodsIdsedit").val(iarrayId);
+	        	$("#selectgoodsedit").modal("hide");
+	        }
+	    });
+    });
+
+    //判断是否选中
+    $('.bbYes').on('click',function(){
+    	var oarrayName = [];
+	    $('#orgtableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	oarrayName.push(objName);
+	        	$("#orgNamesedit").val(oarrayName);
+	        	$("#selectOrgedit").modal("hide");
+	        }
+	    });
+    });
+    
+  	//判断是否选中
+    $('.ccYes').on('click',function(){
+    	var oarrayName = [];
+	    $('#employeetableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	oarrayName.push(objName);
+	        	$("#userCarPersonedit").val(oarrayName);
+	        	$("#selectUseCarPersonedit").modal("hide");
+	        }
+	    });
+    });
+  	
+  	//判断是否选中
+    $('.ddYes').on('click',function(){
+    	var oarrayName = [];
+    	var iarrayId = [];
+	    $('#appliertableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId = obj.attr("id");
+	        	oarrayName.push(objName);
+	        	iarrayId.push(objId);
+	        	$("#applyPersonNamesedit").val(oarrayName);
+	        	$("#applyPersonIdsedit").val(iarrayId);
+	        	$("#selectApplieredit").modal("hide");
+	        }
+	    });
+    });
+
+    //获取某个部门下的所有员工
+  	function getEmpByOrg(id) {
+    	var url = "/oa/listEm";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#employeetableedit").html(data);
+    			$("#appliertableedit").html(data);
+    		}
+    	});
+    }
+  	
+  	//获取某角色下的所有员工
+  	function getEmpByRole(id) {
+    	var url = "/oa/listEm";
+    	id += "";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "roleId="+id,
+    		success: function(data) {
+    			$("#employeetableedit").html(data);
+    			$("#appliertableedit").html(data);
+    		}
+    	});
+    }
+   	
+   	// 添加类别
+   	$("#booktypeeditbtn").click(function() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/carapply/edit",
+   			data: $("#booktypeeditform").serialize(),
+   			success : function(html) {
+   				var info = eval("("+html+")");
+   				if(info.success) {
+   					$("#booktypeeditbtn").attr("data-dismiss", "modal");
+   				}else {
+   					alert(info.message);
+   				}
+   				// 刷新页面
+   				refresh();
+   			}
+   		});
+   	});
+   	
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+		var url = "/oa/carrepair/getdetails";
+		$.ajax({
+			type: "get",
+   			url : jypath+url,
+   			data: "repairId="+id+"&operation="+operation,
+   			success: function(data){
+		    	$("#officegoodstypeInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+
+	// 加载删除模态框
+	function toast(typeId) {
+		var url = "/oa/officegoodstype/datatoast";
+		alert(typeId);
+		$.ajax({
+			type: "get",
+			url: jypath+ url+ "?param="+ typeId,
+			success : function(data) {
+				$("#toast").html(data);
+   			}
+		});
+	}
+	
+	// 查询
+	$("#officegoodstypesearchbtn").click(function() {
+		var id = "officegoodstypetable";
+		var url = jypath + "/oa/carapply/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "officegoodstypetable";
+		var url= jypath+"/oa/carapply/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	
+	//清除内容
+	function removeData(id) {
+    	$("#"+id).val("");
+    }
+
+    $("#goodsbtnedit").on("click", function() {
+    	removeData("goodsnamesedit");
+    	removeData("goodsIdsedit");
+    });
+
+    $("#applyPersonbtnedit").on("click", function() {
+    	removeData("applyPersonNamesedit");
+    	removeData("applyPersonIdsedit");
+    });
+</script>

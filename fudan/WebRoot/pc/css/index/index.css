@@ -1,0 +1,16 @@
+@charset "UTF-8";
+#line{width:90%;height:1px;background-color:#d0d0d0;margin:0 auto;margin-top:13em;}
+#indexBox{width:90%;height:auto;margin:0 auto;overflow: hidden;margin-bottom:100px;margin-top:30px;}
+#indexBox #menuBox{width:23%;margin:10px;text-align:center;height:20%;border-radius:13px;border:1px solid #1AB394;float:left;line-height:100px;}
+#indexBox #menuBox img{width:40px;margin-top: 15px;}
+#indexBox #menuBox #menuName{height:45px;line-height: 45px;font-size:20px;color:#373c44;}
+#indexBox #menuBox .menuIcon{margin-top:20px;}
+#indexBox #menuBox .menuIcon i{font-size:50px;}
+@media screen and (min-width:1367px){
+	#line{width:1366px;height:1px;background-color:#d0d0d0;margin:0 auto;margin-top:13em;}
+    #indexBox{width:1366px;height:auto;margin:0 auto;overflow: hidden;margin-bottom:260px;margin-top:30px;}
+}
+@media screen and (max-width:1024px){
+	#line{width:1366px;height:1px;background-color:#d0d0d0;margin:0 auto;margin-top:13em;}
+    #indexBox{width:1366px;height:auto;margin:0 auto;overflow: hidden;}
+}

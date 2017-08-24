@@ -1,0 +1,19 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+import com.jy.entity.wzcg.WzcgKind;
+
+@JYBatis
+public interface WzcgKindDao extends BaseDao<WzcgKind> {
+	
+	List<WzcgKind> find(WzcgKind wzcgKind);
+	
+	List<WzcgKind> search(WzcgKind wzcgKind);
+	
+	void delete(WzcgKind wzcgKind);
+	
+	void insert(WzcgKind wzcgKind);
+	
+}

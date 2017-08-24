@@ -1,0 +1,704 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+    <!-- 大模态 -->
+    	<div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="newsAddModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title text-center" id="newsAddModalLabel">计划信息</h4>
+                </div>
+                <div class="modal-body">
+        			<form id="newsaddformedit" class="form-horizontal" role="form">
+        				<input type="hidden" name="planId" value="${workPlan.planId}">
+        				<div class="form-group">
+			                <label class="control-label col-md-1">名称</label>
+			                <div class="col-md-11">
+			                <input type="text" class="form-control" name="planName" value="${workPlan.planName }" />
+			                </div>
+			            </div>
+        				<div class="form-group">
+			                <label class="control-label col-md-1">所属者</label>
+			                <c:if test="${workPlan.isPersonal == 1 }">
+				                <div class="col-md-5">
+				                	<input type="radio" id="radio3" class="radio-inline col-md-3" name="isPersonal" value="1" checked="checked" />个人
+				                </div>
+				                <div class="col-md-5">
+				                	<input type="radio" id="radio4" class="radio-inline col-md-3" name="isPersonal" value="0"/>部门
+				                </div>
+			                </c:if>
+			                <c:if test="${workPlan.isPersonal == 0 }">
+				                <div class="col-md-5">
+				                	<input type="radio" id="radio3" class="radio-inline col-md-3" name="isPersonal" value="1"/>个人
+				                </div>
+				                <div class="col-md-5">
+				                	<input type="radio" id="radio4" class="radio-inline col-md-3" name="isPersonal" value="0" checked="checked" />部门
+				                </div>
+			                </c:if>
+			            </div>
+			            <div class="form-group">
+			                <label class="control-label col-md-1">时间范围</label>
+			                <div class="col-md-5">
+                          		<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+			                        <input class="form-control" size="16" name="startTime" type="text" value='${workPlan.startTime1}' placeholder="开始时间" readonly required aria-required="true">
+			                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+			                    </div>
+                          	</div>
+                          	<div class="col-md-5">
+                          		<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+			                        <input class="form-control" size="16" name="endTime" type="text" value='${workPlan.endTime1}' placeholder="结束时间" readonly required aria-required="true">
+			                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+			                    </div>
+                          	</div>
+			            </div>
+				  		<div class="form-group" >
+					    	 <label class="control-label col-md-1">类型</label>
+					    	 <div class="col-md-11">
+						    	 <select id="newstypeAddSelectedit" class="form-control" name="typeId"  datatype="select" errormsg="请选择！">
+							     </select>
+						     </div>
+				  		</div>
+				  		<div class="form-group">
+				  			<label class="control-label col-md-1">附件</label>
+					    	<div class="col-md-8" id="fileattachedit">
+					    		<c:choose>
+									<c:when test="${workPlan.fileAttachs != null and fn:length(workPlan.fileAttachs) != 0}">
+						       		<c:forEach var="fileAttach" items="${workPlan.fileAttachs}" varStatus="index">
+						       			<span>${fileAttach.fileName}${fileAttach.ext}|<i class='glyphicon glyphicon-trash' onclick='remove2();'></i></span><input name='fileId' value='${fileAttach.fileId }' type='hidden'>&nbsp;&nbsp;
+						       		</c:forEach>
+						       		</c:when>
+						       	</c:choose>
+				                <!-- 已经上传的文件 -->
+				             </div>
+					    	 <div class="col-md-1">
+				                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addfileattach1edit">
+				                    <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+				                </button>
+				             </div>
+				             <div class="col-md-1">
+				                <button type="button" class="btn btn-default btn-sm" onclick="removeData('fileattachedit')">
+				                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+				                </button>
+				            </div>
+			  			</div>
+			  			<div id="bumenedit" style="display:none">
+						  		<div class="form-group">
+						  			<label class="control-label col-md-1">部门范围</label>
+							    	<div class="col-md-8">
+						                <input id="orgNamesedit" name="orgNames" value="${workPlan.orgNames}" type="text" class="form-control" aria-required="true">
+						                <input id="orgIdsedit" name="issueScope" value="${workPlan.issueScope}" type="hidden">
+						             </div>
+							    	 <div class="col-md-1">
+						                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#selectorgsedit">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						             </div>
+						             <div class="col-md-1">
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData2('orgNamesedit','orgIdsedit')">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+						            </div>
+					  			</div>
+						  		<div class="form-group">
+						  			<label class="control-label col-md-1">参与人</label>
+							    	<div class="col-md-8">
+						                <input id="empNamesedit" name="participantNames" value="${workPlan.participantNames}" type="text" class="form-control" aria-required="true">
+						                <input id="empIdsedit" name="participants" value="${workPlan.participants}" type="hidden">
+						             </div>
+							    	 <div class="col-md-1">
+						                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#selectEmpedit">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						             </div>
+						             <div class="col-md-1">
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData2('empNamesedit','empIdsedit')">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+						            </div>
+					  			</div>
+					  			<div class="form-group">
+						  			<label class="control-label col-md-1">负责人</label>
+							    	<div class="col-md-8">
+						                <input id="principalNamesedit" name="principal" value="${workPlan.principal}" type="text" class="form-control" aria-required="true">
+						             </div>
+							    	 <div class="col-md-1">
+						                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#selectprincipaledit">
+						                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+						                </button>
+						             </div>
+						             <div class="col-md-1">
+						                <button type="button" class="btn btn-default btn-sm" onclick="removeData2('principalNamesedit')">
+						                    <i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+						                </button>
+						            </div>
+					  			</div>
+						  		</div>
+				  			<div class="form-group">
+					    	 <label class="control-label col-md-1">标识</label>
+					    	 <div class="col-md-11">
+					    	 <select class="form-control" name="icon">
+					    	 <c:if test="${workPlan.icon == '日常计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" selected>日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划">紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '重要计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划">日常计划</option>
+							    <option value="重要计划" selected>重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划">紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '特殊计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" >日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划" selected>特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划">紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '个人计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" >日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划" selected>个人计划</option>
+							    <option value="紧急计划">紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '紧急计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" >日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划" selected>紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '待定计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" >日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划" >紧急计划</option>
+							    <option value="部门计划">部门计划</option>
+							    <option value="待定计划" selected>待定计划</option>
+						    </c:if>
+						    <c:if test="${workPlan.icon == '部门计划' }">
+						    	<option value="" >--请选择--</option>
+							    <option value="日常计划" >日常计划</option>
+							    <option value="重要计划">重要计划</option>
+							    <option value="特殊计划">特殊计划</option>
+							    <option value="个人计划">个人计划</option>
+							    <option value="紧急计划" >紧急计划</option>
+							    <option value="部门计划" selected>部门计划</option>
+							    <option value="待定计划">待定计划</option>
+						    </c:if>
+						    </select>
+						    </div>
+				  		</div>
+				  		<div class="form-group">
+					    	 <label class="control-label col-md-1">备注</label>
+					    	 <div class="col-md-11">
+					    	 	<textarea rows="3" name="note" class="form-control">${workPlan.note }</textarea>
+					    	 </div>
+				  		</div>
+				  		<div class="form-group">
+					    	 <label class="control-label col-md-1">内容</label>
+					    	 <div class="col-md-11"><%@ include file="../common/editor2.jsp" %></div>
+				  		</div>
+		                <div class="modal-footer">
+                            <button id="closebtn" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <c:if test="${operation == 'update' }">
+                            	<button id="newsaddbtnedit" type="button" class="btn btn-success">保存</button>
+                            </c:if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        	</div>
+        	</div>
+    <!-- 大模态 -->
+    
+    <!-- 添加附件模态库 start -->
+	    <div class="modal fade" id="addfileattach1edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	      <div class="modal-dialog modal-lg">
+	        <div class="modal-content" style="margin-top:200px;">
+	          <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	            <h4 class="modal-title" id="myModalLabel">添加附件</h4>
+	          </div>
+	        <div class="modal-body">
+	          <table id="inputfiletableedit" class="table table-striped active">
+	            <!-- 列表形式存放选择的附件名称(动态添加) -->
+	            <!-- <td>1</td>
+	            <td>文件名</td> -->
+	            <thead>
+	              <th>序号</th>
+	              <th>文件名</th>
+	              <th>操作</th>
+	            </thead>
+	          </table>
+	          <div style="display: none">
+	            <form id="fileformedit" enctype ="multipart/form-data">
+	            	<input name="fileAttachType" value="plan" type="hidden">
+	            	<!-- 所有inputFile标签都放在这里 -->
+	            	<!-- <input id="file1..file2..filen" type="file" name="files" /> -->
+	            	<!-- 每点击一次添加按钮，动态在此生	成一个<input type="file" name="files" />标签,关联这个标签的点击事件 -->
+	            </form>
+	          </div>
+	        </div>
+	        <span id="tip">
+			  <!-- 提示 -->  	
+	        </span>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	          <!-- 隐藏input #file -->
+	          <!-- <input type="file" onchange="getFilePath(this.files)" id="files" style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;" ></button> -->
+	          <button type="button" class="btn btn-primary" id="addedit">添加</button>
+	          <button type="button" class="btn btn-primary" id="upload" onclick="upload()">上传</button>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	  <!-- 添加附件模态库 end -->
+	  
+	  <!-- 发布范围弹窗 start -->
+        <div class="modal fade" id="selectorgsedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;部门选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="orgedit" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="orgtableedit" class="rightContent pull-right">
+	                        
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-success aaYes" id="empsurebtn">确定</button>
+	                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 发布范围弹窗 end -->
+	  <!-- 参与人弹窗 start -->
+        <div class="modal fade" id="selectEmpedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;参与人选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="depedit" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色
+	                                </span>
+	                                <ul id="rolesedit" class="secondLevel">
+	                                	<!-- 所有角色打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="employeetableedit" class="rightContent pull-right">
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-success bbYes" id="empsurebtn">确定</button>
+	                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 参与人弹窗 end -->
+        
+        <!-- 负责人弹窗 start -->
+        <div class="modal fade" id="selectprincipaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;参与人选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="depprin" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色
+	                                </span>
+	                                <ul id="rolesprin" class="secondLevel">
+	                                	<!-- 所有角色打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="employeetableprinedit" class="rightContent pull-right">
+	                        
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+                    	<button type="button" class="btn btn-success ccYes" id="empsurebtn">确定</button>
+	                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 负责人弹窗 end -->
+        
+<script type="text/javascript">
+	$("#newsaddbtnedit").click(function() {
+   		var content = getContent();
+		var url = "/oa/workplan/edit";
+		$.ajax({
+			type: "post",
+			url: jypath + url,
+			data: $("#newsaddformedit").serialize()+"&planContent="+content,
+			success: function(data) {
+				fuShowSuccess();
+				$("#newsaddbtnedit").attr("data-dismiss","modal");
+				refresh();
+			}
+		});
+	});
+	function getContent() {
+	    var content = UM.getEditor("containerform2").getContent();
+	    return content;
+	}
+	$(document).ready(function() {
+		editGetNewsType();
+		getAllOrg();
+		getOrgDetails();
+		getAllDep();
+		getAllRole();
+		var result = $("#radio4").attr("checked");
+		if(result) {
+			show("bumenedit");
+		}
+		$('.secondT').on('click', function(event) {
+            var theLev=$(this).parent().find('.secondLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.secondLevel').slideUp('fast');
+                theLev.slideDown('fast');
+                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.thirdT').on('click', function(event) {
+            var theLev=$(this).parent().find('.thirdLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.thirdLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.aHover').on('click',function(event) {
+            event.preventDefault();
+            $('.aHover').removeClass('active');
+            $(this).addClass('active');
+        });
+     	// 初始化日期组件
+	    $('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+	    setEditorContent();
+	    $("#infoorupdate").modal("show");
+	});
+	// 获取所有部门
+    function getAllOrg() {
+    	var url = "/oa/org/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgedit").html(obj);
+    		}
+    	});
+    }
+    // 获取部门信息
+    function getOrgDetails() {
+    	var url = "/oa/org/getdetails";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId=1",
+    		success: function(data) {
+    			$("#orgtableedit").html(data);
+    		}
+    	});
+    }
+ 	// 获取某部门详细信息
+    function getOrgByOrg(id) {
+    	var url = "/oa/org/getdetails";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#orgtableedit").html(data);
+    		}
+    	});
+    }
+  //加载所有部门
+  	function getAllDep() {
+    	var url = "/oa/org/listorg";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#depedit").html(obj);
+    			$("#depprin").html(obj);
+    		}
+    	});
+    }
+ 	// 获取某一个部门下的员工
+    function getEmpByOrg(id) {
+    	var url = "/oa/listEm";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#employeetableedit").html(data);
+    			$("#employeetableprinedit").html(data);
+    		}
+    	});
+    }
+  	//加载所有角色
+  	function getAllRole() {
+    	var url = "/oa/role/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#rolesedit").html(obj);
+    			$("#rolesprin").html(obj);
+    		}
+    	});
+    }
+  	//获取某角色下的所有员工
+  	function getEmpByRole(id) {
+    	var url = "/oa/listEm";
+    	id += "";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "roleId="+id,
+    		success: function(data) {
+    			$("#employeetableedit").html(data);
+    			$("#employeetableprinedit").html(data);
+    		}
+    	});
+    }
+  //判断是否选中
+    $('.aaYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#orgtableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#orgNamesedit").val(arrayName);
+	        	$("#orgIdsedit").val(arrayId);
+	        	$(".aaYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+  	//判断是否选中
+    $('.bbYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#employeetableedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#empNamesedit").val(arrayName);
+	        	$("#empIdsedit").val(arrayId);
+	        	$(".bbYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+  	//判断是否选中
+    $('.ccYes').on('click',function(){
+    	var arrayName = [];
+	    $('#employeetableprinedit .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	arrayName.push(objName);
+	        	$("#principalNamesedit").val(arrayName);
+	        	$(".ccYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+	function editGetNewsType() {
+		var url = "/oa/plantype/listall";
+		// 获取要查看的新闻类型
+		var newsTypeId = ${workPlan.typeId};
+		$.ajax({
+			type: "get",
+			url: jypath + url,
+			success: function(data) {
+				// 将json字符串解析为json对象数组
+				var newsTypes = $.parseJSON(data);
+				for(var newsType in newsTypes) {
+					// 获取json对象数组的每个对象
+					var newsTypeObj = newsTypes[newsType];
+					if(newsTypeId == newsTypeObj.typeId) {
+						// 设置新闻类型
+						$("#newstypeAddSelectedit").append("<option selected value='"+ newsTypeObj.typeId +"'>"+ newsTypeObj.typeName +"</option>");
+					}else {
+						$("#newstypeAddSelectedit").append("<option value='"+ newsTypeObj.typeId +"'>"+ newsTypeObj.typeName +"</option>");
+					}
+				}
+			}
+		});
+	}
+	function hide(id) {
+    	$("#"+id).css("display","none");
+    }
+	function show(id) {
+		$("#"+id).css("display","block");
+    }
+	$("#radio3").click(function() {
+		hide("bumenedit");
+	});
+	$("#radio4").click(function() {
+		show("bumenedit");
+	});
+	
+	//上传文件总数
+    var totalcount = 0;
+    $("#addedit").click(function() {
+      //动态添加input file
+      var inputFileId = addInputTypeFile("fileformedit");
+      $("#"+inputFileId).trigger("click");
+      $("#"+inputFileId).change(function() {
+        //文件名动态添加到table中
+        addTableData(inputFileId,"inputfiletableedit");
+      });
+    });
+    //上传附件
+    function upload() {
+      	var formObj = document.getElementById("fileformedit");
+      	var formData = new FormData(formObj);
+      	$.ajax({
+      		type: "post",
+      		url : jypath+"/oa/fileattach/addfileattach",
+      		data: formData,
+      		processData: false,
+    		contentType: false,
+      		success: function(data) {
+      			var objs = eval("("+data+")");
+      			var html = "";
+      			for(var index in objs) {
+      				var obj = objs[index];
+      				html += "<span>"+obj.fileName+obj.ext+"|<i class='glyphicon glyphicon-trash' onclick='remove2();'></i></span><input name='fileId' value='"+obj.fileId+"' type='hidden'>\t";
+      			}
+      			$("#fileattachedit").html(html);
+      		}
+      	});
+      }
+    //设置编辑器内容
+	function setEditorContent() {
+		var content = '${workPlan.planContent}';
+		//实例化编辑器
+		var umform = UM.getEditor("containerform2");
+		//编辑器加载完成后，设置内容
+		umform.ready(function() {
+			umform.setContent(content);
+		});
+	}
+</script>

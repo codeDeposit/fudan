@@ -1,0 +1,34 @@
+package com.jy.service.oa.hrm;
+
+import java.util.List;
+
+import com.jy.entity.oa.hrm.StandSalary;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface StandSalaryService {
+
+	// 添加薪酬标准
+	JsonInfo save(StandSalary standSalary);
+
+	// 查看薪酬标准详细信息
+	StandSalary getInfoBy(Long standardId);
+
+	// 修改薪酬标准信息
+	JsonInfo update(StandSalary standSalary);
+
+	// 获取薪酬标准列表
+	List<StandSalary> get(String standardNo, String standardName, Short status);
+
+	// 批量删除薪酬标准
+	JsonInfo delete(Long[] standardId);
+
+	// 审核薪酬标准
+	JsonInfo review(StandSalary standSalary);
+
+	// 薪酬标准分页列表
+	List<StandSalary> getPageList(PageBean pb, String standardNo,
+			String standardName, Short status);
+
+}

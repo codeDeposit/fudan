@@ -1,0 +1,48 @@
+package com.jy.entity.oa.info;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class NewsCommentUtil {
+
+	private String subject;
+	private String fullName;
+	private Date startTime;
+	private Date endTime;
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+}

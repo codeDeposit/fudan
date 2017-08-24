@@ -1,0 +1,48 @@
+	$(function() {
+		fuLoading();
+	    $('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+	    fuCloseLayer();
+	});
+   	// 查看详细信息
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/phonebook/getdetails";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?phoneId="+id+"&operation="+operation,
+   			success: function(data){
+   				fuCloseLayer();
+		    	$("#getInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+ 	// 查询
+	$("#phonebooksharesearchbtn").click(function() {
+		fuLoading();
+		var id = "sharetable";
+		var url = jypath + "/oa/phonebook/sharelist";
+		var type = "post";
+		var data = $("#sharesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		fuLoading();
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "sharetable";
+		var url= jypath+"/oa/phonebook/sharelist";
+		var type = "get";
+		var data = $("#sharesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}

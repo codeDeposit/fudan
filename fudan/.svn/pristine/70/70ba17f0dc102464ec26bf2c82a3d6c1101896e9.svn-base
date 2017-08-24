@@ -1,0 +1,36 @@
+package com.jy.service.oa.communicate;
+
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.task.utils.JsonInfo;
+
+public interface MailService {
+
+	/**
+	 * 创建的新邮件保存为：草稿 或 直接发送
+	 * @param mail
+	 * @return
+	 */
+	JsonInfo save(Mail mail);
+	
+	/**
+	 * 修改邮件信息
+	 * @param mail
+	 * @return
+	 */
+	JsonInfo update(Mail mail);
+
+	/**
+	 * 获取邮件详细信息
+	 * @param mailId
+	 * @return
+	 */
+	Mail getInfoBy(Long mailId);
+
+	/**
+	 * 批量删除邮件
+	 * @param boxId
+	 * @return
+	 */
+	JsonInfo delete(Long[] boxId);
+
+}

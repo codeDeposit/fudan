@@ -1,0 +1,103 @@
+package com.jy.controller.system.login;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.IPUtil;
+import com.jy.common.utils.base.Const;
+import com.jy.common.utils.base.MD5;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.log.LoginLog;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.log.LoginLogService;
+
+@Controller
+@RequestMapping("mobile/")
+public class MobileLoginController extends BaseController<Object>{
+	
+	@Autowired
+	private AccountService accountService;
+	@Autowired
+	private LoginLogService loginLogService;
+	
+	 /*
+     * mobile登陆页
+     */
+    @RequestMapping("pLogin")
+    public String mobile_login(HttpServletRequest request,HttpSession session) {
+    	return "mobile/login/mobile_login";
+    }
+    
+    /*
+     * mobile登录
+     */
+    @RequestMapping(value="/login",method = RequestMethod.POST)
+	@ResponseBody
+    public AjaxRes login(HttpServletRequest request) {
+    	AjaxRes ar = getAjaxRes();
+		Map<String, Object> map = new HashMap<String, Object>();
+		PageData pd = this.getPageData();
+		String errInfo = "";
+		int result;
+		Subject currentUser = SecurityUtils.getSubject();//shiro管理的session
+		Session session = currentUser.getSession();
+		String username = pd.getString("username");
+		String password = pd.getString("password");	
+		Account account = new Account();
+		account.setLoginName(username);
+		int res = accountService.checkName(account);
+		if(res == 0){
+			errInfo = "用户名错误";// 用户名或密码有误
+			result = 1;
+		}else{
+			account = accountService.find(account).get(0);
+			if(!(MD5.md5(password)).equals(account.getPassword())){
+				errInfo = "密码错误"; // 密码错误
+				result = 2;
+			}else{
+				session.setAttribute(Const.SESSION_USER, account);
+				errInfo = "mobile_index"; //登陆成功
+				result = 0;
+				//记录登录日志
+				String accountId = AccountShiroUtil.getCurrentUser().getAccountId();
+				String loginIP = IPUtil.getIpAddr(getRequest());//获取用户登录IP
+				LoginLog loginLog = new LoginLog(accountId,loginIP);
+				loginLogService.saveLoginLog(loginLog);
+			}
+		}
+		map.put("res", result);
+		map.put("resMsg", errInfo);
+		ar.setObj(map);
+		return ar;
+	}
+    
+    /*
+     * 帐号注销
+     */
+    @RequestMapping("logout")
+    public String logout(HttpServletRequest request,HttpSession session,Model model) {
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.logout();
+        session = request.getSession(true);
+        session.removeAttribute(Const.SESSION_USER);
+        return "mobile/login/mobile_login";
+    }
+    
+}

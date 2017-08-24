@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.wzcg.WzcgSupplierDao">
+	<resultMap type="com.jy.entity.wzcg.WzcgSupplier" id="ResultMap">
+		<result column="userId" property="userId"/>
+		<result column="state" property="state"/>
+		<result column="company" property="company"/>
+		<result column="represent" property="represent"/>
+		<result column="company_address" property="company_address"/>
+		<result column="zip_code" property="zip_code"/>
+		<result column="ID_card" property="ID_card"/>
+		<result column="bankroll" property="bankroll"/>
+		<result column="company_register_number" property="company_register_number"/>
+		<result column="license" property="license"/>
+		<result column="national_tax" property="national_tax"/>
+		<result column="land_tax" property="land_tax"/>
+		<result column="organization" property="organization"/>
+		<result column="company_type" property="company_type"/>
+		<result column="profession_class" property="profession_class"/>
+		<result column="charge" property="charge"/>
+		<result column="admin_number" property="admin_number"/>
+		<result column="office1" property="office1"/>
+		<result column="produce_card" property="produce_card"/>
+		<result column="office2" property="office2"/>
+		<result column="found_time" property="found_time"/>
+		<result column="apply_time" property="apply_time"/>
+		<result column="business_scope" property="business_scope"/>
+		<result column="bank" property="bank"/>
+		<result column="part_time_product" property="part_time_product"/>
+		<result column="experience" property="experience"/>
+		<result column="brief_introduction" property="brief_introduction"/>
+		<result column="account" property="account"/>
+		<result column="contacts" property="contacts"/>
+		<result column="contacts_phone" property="contacts_phone"/>
+		<result column="fax_phone" property="fax_phone"/>
+		<result column="mobile_number" property="mobile_number"/>
+		<result column="email" property="email"/>
+		<result column="website" property="website"/>
+		<result column="main_product" property="main_product"/>
+		<result column="promise" property="promise"/>
+		<result column="cgzx_suggest" property="cgzx_suggest"/>
+		<result column="cgb_suggest" property="cgb_suggest"/>
+		<result column="createdate" property="createdate"/>
+	</resultMap>
+	<!-- 新增供应商 -->
+	<insert id="insert">
+		insert into wzcg_supplier 
+		(userId,state,company,represent,company_address,zip_code,
+		ID_card,bankroll,company_register_number,license,national_tax,land_tax,organization,
+		company_type,profession_class,charge,admin_number,office1,produce_card,office2,found_time,
+		apply_time,business_scope,bank,part_time_product,experience,brief_introduction,account,contacts,contacts_phone,fax_phone,mobile_number,email,
+		website,main_product,promise,cgzx_suggest,cgb_suggest,createdate) 
+		values 
+		(#{userId},#{state},#{company},#{represent},#{company_address},#{zip_code},
+		#{ID_card},#{bankroll},#{company_register_number},#{license},#{national_tax},#{land_tax},#{organization},
+		#{company_type},#{profession_class},#{charge},#{admin_number},#{office1},#{produce_card},#{office2},#{found_time},
+		#{apply_time},#{business_scope},#{bank},#{part_time_product},#{experience},#{brief_introduction},#{account},#{contacts},#{contacts_phone},#{fax_phone},
+		#{mobile_number},#{email},#{website},#{main_product},#{promise},#{cgzx_suggest},#{cgb_suggest},#{createdate})
+	</insert>
+	<!-- 供应商列表 -->
+	<select id="find" parameterType="String" resultMap="ResultMap" >
+		select * from wzcg_supplier where 1 = 1 <include refid="search"></include>
+	</select>
+	<!-- 查询专家 -->
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_supplier where 1 = 1 <include refid="searchList"></include>
+	</select>
+	<!-- 抽取查询 -->
+	<select id="extractSearch" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_supplier where 1 = 1 <include refid="extractSearchList"></include>
+	</select>
+	<!-- 删除供应商信息 -->
+	<delete id="delete">
+		delete from wzcg_supplier where userId = #{userId}
+	</delete>
+	<!-- 修改专家信息 start -->
+	<update id="update">
+		update wzcg_supplier <include refid="updateSQL"></include > where userId = #{userId};
+	</update>
+	<sql id="search">
+		<if test="userId != null and userId != ''">
+			AND userId = #{userId}
+		</if>
+	</sql>
+	<sql id="searchList">
+		<if test="userId != null and userId != '' ">
+			AND userId like concat('%', #{userId}, '%') 
+		</if>
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if> 
+		<if test="business_scope != null and business_scope != ''">  
+			AND business_scope like concat('%', #{business_scope}, '%')
+		</if> 	
+		<if test="company_address != null and company_address != ''">  
+			AND company_address like concat('%', #{company_address}, '%') 
+		</if> 
+		<if test="found_time_min != null and found_time_min != ''">  
+			AND found_time >= #{found_time_min}
+		</if> 
+		<if test="found_time_max != null and found_time_max != ''">  
+			AND found_time &lt;= #{found_time_max}
+		</if>
+		<if test="bankrollMin != 0">  
+			AND bankroll >= #{bankrollMin}
+		</if> 
+		<if test="bankrollMax != 0">  
+			AND bankroll &lt;= #{bankrollMax}
+		</if>
+	</sql>
+	<sql id="extractSearchList">
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if> 
+		<if test="business_scope != null and business_scope != ''">  
+			AND business_scope like concat('%', #{business_scope}, '%')
+		</if> 	
+		<if test="company_address != null and company_address != ''">  
+			AND company_address like concat('%', #{company_address}, '%') 
+		</if> 
+		<if test="found_time_min != null and found_time_min != ''">  
+			AND found_time >= #{found_time_min}
+		</if> 
+		<if test="found_time_max != null and found_time_max != ''">  
+			AND found_time &lt;= #{found_time_max}
+		</if>
+		<if test="bankrollMin != 0">  
+			AND bankroll >= #{bankrollMin}
+		</if> 
+		<if test="bankrollMax != 0">  
+			AND bankroll &lt;= #{bankrollMax}
+		</if>
+			limit #{count}
+	</sql>
+	<sql id="updateSQL">
+		<set>
+			<if test="company != null and company != '' ">
+				company=#{company},
+			</if>
+			<if test="represent != null and represent != '' ">
+				represent=#{represent},
+			</if>
+			<if test="company_address != null and company_address != '' ">
+				company_address=#{company_address},
+			</if>
+			<if test="zip_code != null and zip_code != '' ">
+				zip_code=#{zip_code},
+			</if>
+			<if test="ID_card != null and ID_card != '' ">
+				ID_card=#{ID_card},
+			</if>
+			<if test="bankroll != null and bankroll != '' ">
+				bankroll=#{bankroll},
+			</if>
+			<if test="company_register_number != null and company_register_number != '' ">
+				company_register_number=#{company_register_number},
+			</if>
+			<if test="license != null and license != '' ">
+				license=#{license},
+			</if>
+			<if test="national_tax != null and national_tax != '' ">
+				national_tax=#{national_tax},
+			</if>
+			<if test="land_tax != null and land_tax != '' ">
+				land_tax=#{land_tax},
+			</if>
+			<if test="organization != null and organization != '' ">
+				organization=#{organization},
+			</if>
+			<if test="company_type != null and company_type != '' ">
+				company_type=#{company_type},
+			</if>
+			<if test="profession_class != null and profession_class != '' ">
+				profession_class=#{profession_class},
+			</if>
+			<if test="charge != null and charge != '' ">
+				charge=#{charge},
+			</if>
+			<if test="admin_number != null and admin_number != '' ">
+				admin_number=#{admin_number},
+			</if>
+			<if test="office1 != null and office1 != '' ">
+				office1=#{office1},
+			</if>
+			<if test="produce_card != null and produce_card != '' ">
+				produce_card=#{produce_card},
+			</if>
+			<if test="office2 != null and office2 != '' ">
+				office2=#{office2},
+			</if>
+			<if test="found_time != null and found_time != '' ">
+				found_time=#{found_time},
+			</if>
+			<if test="apply_time != null and apply_time != '' ">
+				apply_time=#{apply_time},
+			</if>
+			<if test="business_scope != null and business_scope != '' ">
+				business_scope=#{business_scope},
+			</if>
+			<if test="bank != null and bank != '' ">
+				bank=#{bank},
+			</if>
+			<if test="part_time_product != null and part_time_product != '' ">
+				part_time_product=#{part_time_product},
+			</if>
+			<if test="experience != null and experience != '' ">
+				experience=#{experience},
+			</if>
+			<if test="brief_introduction != null and brief_introduction != '' ">
+				brief_introduction=#{brief_introduction},
+			</if>
+			<if test="account != null and account != '' ">
+				account=#{account},
+			</if>
+			<if test="contacts != null and contacts != '' ">
+				contacts=#{contacts},
+			</if>
+			<if test="contacts_phone != null and contacts_phone != '' ">
+				contacts_phone=#{contacts_phone},
+			</if>
+			<if test="fax_phone != null and fax_phone != '' ">
+				fax_phone=#{fax_phone},
+			</if>
+			<if test="mobile_number != null and mobile_number != '' ">
+				mobile_number=#{mobile_number},	
+			</if>
+			<if test="email != null and email != '' ">
+				email=#{email},
+			</if>
+			<if test="website != null and website != '' ">
+				website=#{website},	
+			</if>
+			<if test="main_product != null and main_product != '' ">
+				main_product=#{main_product},	
+			</if>
+			<if test="promise != null and promise != '' ">
+				promise=#{promise},
+			</if>
+			<if test="cgzx_suggest != null and cgzx_suggest != '' ">
+				cgzx_suggest=#{cgzx_suggest},
+			</if>
+			<if test="cgb_suggest != null and cgb_suggest != '' ">
+				cgb_suggest=#{cgb_suggest},
+			</if>
+			<if test="state != null and state != '' ">
+				state=#{state},
+			</if>
+		</set>
+	</sql>
+</mapper>

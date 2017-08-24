@@ -1,0 +1,44 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<%@ include file="../../common/styleUrl.jsp" %>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+	<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+	<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+	<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+	<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+    <title>toast</title>
+</head>
+
+<body>
+	<input id="param" type="hidden" value="${parm}" />
+    <!-- 模态框（Modal）start -->
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="border-radius:11px;overflow:hidden;">
+            <div class="modal-header" style="background:#D9534F;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:-8px;">&times;</button>
+            </div>
+            <div class="modal-body text-center" style="font-size:20px;">
+            <i class="glyphicon glyphicon-exclamation-sign text-danger"></i>&nbsp;确定删除？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="confirmbtn" type="button" class="btn btn-danger">确定</button>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框（Modal）end -->
+    
+	<script type="text/javascript">		
+		$("#confirmbtn").click(function() {
+			var param = $("#param").val();
+			toastDelete(param);
+			$(this).attr("data-dismiss","modal");
+		});
+	</script>
+</body>
+</html>
+

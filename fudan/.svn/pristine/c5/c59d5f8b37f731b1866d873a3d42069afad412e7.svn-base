@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.BookSnMapper">
+
+	<!-- 保存每本书对应的sn号和借阅状态 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.BookType">
+		insert fudan_oa_book_sn <include refid="insertSql"></include>
+	</insert>
+	
+	<sql id="insertSql">
+		<set>
+			<if test="bookId != null">
+				bookId = #{bookId},
+			</if>
+			<if test="bookSN != null and bookSN != ''">
+				bookSN = #{bookSN},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+		</set>
+	</sql>
+	<!-- 保存每本书对应的sn号和借阅状态 end -->
+	
+	
+	<!-- 更新图书对应的booksn号 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.BookType">
+		update fudan_oa_book_sn <include refid="updateSQL"></include>
+		where bookId = #{bookId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="bookSN != null and bookSN != '' ">
+				bookSN = #{bookSN},
+			</if>
+		</set>
+	</sql>
+	<!-- 更新图书对应的booksn号 end -->
+	
+	
+	<!-- 获取booksn信息 start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.admin.BookSn">
+		select * from fudan_oa_book_sn where bookId = #{bookId}
+	</select>
+	<!-- 获取booksn信息 end -->
+	
+	
+	<!-- 删除booksn号 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_book_sn where bookId = #{bookId}
+	</delete>
+	<!-- 删除booksn号 end -->
+	
+	
+	<!-- 改变书的状态 start -->
+	<update id="updateStatus">
+		update fudan_oa_book_sn set status = #{status} where bookSN = #{borrowIsbn}
+	</update>
+	<!-- 改变书的状态 end -->
+	
+	
+	<!-- 获取bookId start -->
+	<select id="selectBookId" parameterType="Long" resultType="Long">
+		select bookId from fudan_oa_book_sn where bookSnId = #{bookSnId}
+	</select>
+	<!-- 获取bookId end -->
+	
+	
+	<!-- 获取图书对应没外接的booksn start -->
+	<select id="selectListBy" parameterType="Long" resultType="com.jy.entity.oa.admin.BookSn">
+		select * from fudan_oa_book_sn where bookId = #{bookId} and status = 0
+	</select>
+	<!-- 获取图书对应没外接的booksn end -->
+	
+	
+	<!-- 获取已借阅booksn列表 start -->
+	<select id="selectBorsnBy" parameterType="Long" resultType="com.jy.entity.oa.admin.BookSn">
+		select * from fudan_oa_book_sn where bookId = #{bookId} and status = 1
+	</select>
+	<!-- 获取已借阅booksn列表 end -->
+	
+</mapper>

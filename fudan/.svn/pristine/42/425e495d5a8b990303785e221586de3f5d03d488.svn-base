@@ -1,0 +1,22 @@
+package com.jy.repository.oa.publics;
+
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface FileAttachMapper {
+
+	FileAttach select(String filePath);
+
+	int insert(FileAttach fileAttach);
+
+	//获取详细信息
+	FileAttach selectBy(Long fileId);
+	
+	// 获取文件名
+	String selectFileNameBy(Long fileId);
+
+	// 获取最新上传的附件ID
+	Long selectMax();
+
+}

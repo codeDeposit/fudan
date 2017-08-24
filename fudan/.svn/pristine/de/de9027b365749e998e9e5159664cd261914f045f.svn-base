@@ -1,0 +1,45 @@
+package com.jy.service.wzcg;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.wzcg.WzcgKind;
+import com.jy.repository.wzcg.WzcgKindDao;
+import com.jy.service.base.BaseServiceImp;
+
+@Service(value = "wzcgKindService")
+public class WzcgKindService extends BaseServiceImp<WzcgKind> {
+	
+	@Resource
+	private WzcgKindDao wzcgKindDao;
+	
+	public List<WzcgKind> find(WzcgKind wzcgKind){
+		return wzcgKindDao.find(wzcgKind);
+	}
+	
+	public List<WzcgKind> search(WzcgKind wzcgKind){
+		return wzcgKindDao.search(wzcgKind);
+	}
+	
+	public void delete(WzcgKind wzcgKind){
+		wzcgKindDao.delete(wzcgKind);
+	}
+	
+	public void insert(WzcgKind wzcgKind){
+		wzcgKindDao.insert(wzcgKind);
+	}
+	
+	/**
+	 * 产品获取
+	 */
+	public WzcgKind getKind(int id){	
+		WzcgKind wzcgKind = new WzcgKind();
+		wzcgKind.setId(id);
+		wzcgKind = wzcgKindDao.find(wzcgKind).get(0);
+		return wzcgKind;
+	}
+	
+}

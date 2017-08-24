@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.info.NewsMapper">
+
+	<!-- 查询所有列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.info.News">
+		select * from fudan_oa_news_type
+	</select>
+	<!-- 查询所有列表 end -->
+	
+	<!-- baseMap start -->
+	<resultMap type="com.jy.entity.oa.info.News" id="baseMap">
+		<id property="newsId" column="newsId"/>
+		<result property="subjectIcon" column="subjectIcon"/>
+		<result property="subject" column="subject"/>
+		<result property="author" column="author"/>
+		<result property="createtime" column="createtime"/>
+		<result property="replyCounts" column="replyCounts"/>
+		<result property="viewCounts" column="viewCounts"/>
+		<result property="content" column="content"/>
+		<result property="updateTime" column="updateTime"/>
+		<result property="status" column="status"/>
+		<result property="issuer" column="issuer"/>
+		<association property="newsType" column="typeId" select="selectNewsType"></association>
+	</resultMap>
+	
+	<select id="selectNewsType" parameterType="Integer" resultType="com.jy.entity.oa.info.NewsType">
+		select * from fudan_oa_news_type where typeId = #{typeId}
+	</select>
+	<!-- baseMap end -->
+	
+	<!-- 根据 typeId、subject、author 模糊查询  start-->
+	<select id="selectBy" resultType="com.jy.entity.oa.info.News">
+		select newsId,subjectIcon,subject,author,createtime,replyCounts,viewCounts,status from fudan_oa_news where 1 = 1
+		<if test="typeId > 0">
+			and typeId = #{typeId}
+		</if>
+		<if test="subject != null and subject != '' ">
+			and subject like concat(concat('%',#{subject}),'%')
+		</if>
+		<if test="author != null and author != '' ">
+			and author like concat(concat('%',#{author}),'%')
+		</if>
+	</select>
+	<!-- 根据 typeId、subject、author 模糊查询  end-->
+	
+	
+	<!-- 添加新闻 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.info.News">
+		insert fudan_oa_news <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="subjectIcon != null and subjectIcon != '' ">
+				subjectIcon = #{subjectIcon},
+			</if>
+			<if test="subject != null and subject != '' ">
+				subject = #{subject},
+			</if>
+			<if test="author != null and author != '' ">
+				author = #{author},
+			</if>
+			<if test="createtime != null">
+				createtime = #{createtime},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="newsType.typeId >0 ">
+				typeId = #{newsType.typeId},
+			</if>
+			<if test="issuer != null and issuer != '' ">
+				issuer = #{issuer},
+			</if>
+			<if test="replyCounts != null ">
+				replyCounts = #{replyCounts},
+			</if>
+			<if test="viewCounts != null ">
+				viewCounts = #{viewCounts},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加新闻 end -->
+	
+	
+	<!-- 根据newsId获取详细信息  start-->
+	<select id="selectDetailsBy" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_news where newsId = #{newsId}
+	</select>
+	<!-- 根据newsId获取详细信息  start-->
+	
+	
+	<!-- 根据newsId 修改信息 start -->
+	<update id="updateBy" parameterType="com.jy.entity.oa.info.News">
+		update fudan_oa_news <include refid="insertSQL"></include>
+		where newsId = #{newsId}
+	</update>
+	<!-- 根据newsId 修改信息 end -->
+	
+	
+	<!-- 根据newsId 批量删除 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_news where newsId = #{newsId}
+	</delete>
+	<!-- 根据newsId 批量删除 end -->
+	
+	<!-- 分页模糊查询 start -->
+	<select id="selectPageDate" resultMap="baseMap">
+		select * from fudan_oa_news where 1=1
+		<if test="typeId > 0">
+			and typeId = #{typeId}
+		</if>
+		<if test="subject != null and subject != '' ">
+			and subject like concat(concat('%',#{subject}),'%')
+		</if>
+		<if test="author != null and author != '' ">
+			and author like concat(concat('%',#{author}),'%')
+		</if>
+		order by newsId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页模糊查询 end -->
+	
+	
+	<!-- 发布新闻  start -->
+	<update id="release">
+		update fudan_oa_news set status=#{status} where newsId=#{newsId}
+	</update>
+	<!-- 发布新闻  end -->
+
+</mapper>

@@ -1,0 +1,35 @@
+package com.jy.repository.oa.hrm;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.hrm.SalaryPayoff;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface SalaryPayoffMapper {
+
+	// 添加发放登记
+	int insert(SalaryPayoff salaryPayoff);
+
+	// 修改发放登记信息
+	int update(SalaryPayoff salaryPayoff);
+
+	// 获取发放登记详细信息
+	SalaryPayoff selectInfoBy(Long recordId);
+
+	// 审核发放登记信息
+	int updateReview(SalaryPayoff salaryPayoff);
+
+	// 删除发放登记信息
+	int delete(Long recordId);
+
+	// 获取发放登记列表
+	List<SalaryPayoff> select(@Param("fullname") String fullName, @Param("checkStatus") Short checkStatus);
+
+	//发放登记分页列表
+	List<SalaryPayoff> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("fullname") String fullname, @Param("checkStatus") Short checkStatus);
+
+}

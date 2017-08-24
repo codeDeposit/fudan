@@ -1,0 +1,126 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.CarRepair;
+import com.jy.entity.oa.admin.CarRepairVO;
+import com.jy.service.oa.admin.CarRepairService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/carrepair")
+public class CarRepairController {
+
+	private CarRepairService carRepairService;
+
+	public CarRepairService getCarRepairService() {
+		return carRepairService;
+	}
+
+	@Autowired
+	public void setCartRepairService(CarRepairService cartRepairService) {
+		this.carRepairService = cartRepairService;
+	}
+	
+	/**
+	 * 添加车辆维修单
+	 * @param carRepair
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(CarRepair carRepair) {
+		JsonInfo info = carRepairService.save(carRepair);
+		return info;
+	}
+	
+	/**
+	 * 获取维修单详细信息
+	 * @param repairId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long repairId, String operation) {
+		CarRepairVO carRepair = carRepairService.getInfoBy(repairId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("carRepair", carRepair);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/admin/carrepair_form");
+		return mv;
+	}
+	
+	/**
+	 * 修改维修单信息
+	 * @param carRepair
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(CarRepair carRepair) {
+		JsonInfo info = carRepairService.update(carRepair);
+		return info;
+	}
+	
+	/**
+	 * 批量删除维修单
+	 * @param repairId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] repairId) {
+		JsonInfo info = carRepairService.del(repairId);
+		return info;
+	}
+	
+	/**
+	 * 获取维修单列表
+	 * @param carNo
+	 * @param repairType
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String carNo, @RequestParam(required=false) String repairType) {
+		
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<CarRepair> carRepairs = carRepairService.get(carNo, repairType);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(carRepairs.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<CarRepairVO> pageCarRepairs = carRepairService.getPageList(pb, carNo, repairType);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/carrepair_table");
+		}else {
+			mv.setViewName("system/oa/admin/carrepair_list");
+		}
+		
+		mv.addObject("carRepairs", pageCarRepairs);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+}

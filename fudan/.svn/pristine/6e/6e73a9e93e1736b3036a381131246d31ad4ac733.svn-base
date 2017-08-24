@@ -1,0 +1,29 @@
+package com.jy.controller.oa.publics;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/oa/common")
+public class ToastController {
+	
+	// 删除模态框
+	@RequestMapping("/toast")
+	public ModelAndView toast(Long param) {
+		
+		ModelAndView mv = new ModelAndView();
+		
+		mv.addObject("parm", param);
+		mv.setViewName("system/oa/common/toast");
+		
+		return mv;
+	}
+	
+	// 固定的时间下拉菜单
+	@RequestMapping("/select")
+	public String select() {
+		return "system/oa/common/time_select";
+	}
+
+}

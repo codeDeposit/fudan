@@ -1,0 +1,111 @@
+package com.jy.service.app;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import com.jy.entity.app.AppCart;
+import com.jy.entity.app.AppOrder;
+import com.jy.entity.app.AppOrders;
+import com.jy.entity.app.admin.Goods;
+import com.jy.repository.app.AppCartDao;
+import com.jy.repository.app.AppOrderDao;
+import com.jy.repository.app.AppOrdersDao;
+import com.jy.repository.app.admin.GoodsDao;
+
+@Service(value = "appOrderService")
+public class AppOrderService{
+	
+	@Resource
+	private AppOrderDao appOrderDao;
+	@Resource
+	private AppOrdersDao appOrdersDao;
+	@Resource
+	private GoodsDao goodsDao;
+	@Resource
+	private AppCartDao cartDao;
+	
+	public List<AppOrder> find(AppOrder appOrder) {
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();	
+		String imgUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/image/goods/";
+		//订单查找
+		AppOrders appOrders = new AppOrders();
+		appOrders.setBuyer_id(appOrder.getBuyer_id());
+		List<AppOrders> list = appOrdersDao.find(appOrders);
+		//订单商品列表
+		for(int i=0;i<list.size();i++){
+			appOrder.setOrder_id(list.get(i).getOrder_id());
+			List<AppOrder> list2 = appOrderDao.find(appOrder);
+			for(int j=0;j<list2.size();j++){
+				//商品图片
+				list2.get(j).setGoods_image(imgUrl + list2.get(j).getGoods_image());
+			}
+			list.get(i).setAppOrderList(appOrderDao.find(appOrder));
+		}
+		return this.appOrderDao.find(appOrder);
+	}
+
+	public List<AppOrder> search(AppOrder appOrder) {
+		return this.appOrderDao.search(appOrder);
+	}
+	
+	public int add(AppOrder appOrder) {
+		/**
+		 * 订单生成
+		 */
+		AppOrders appOrders = new AppOrders(); 
+		appOrders.setBuyer_id(appOrder.getBuyer_id());
+		appOrders.setBuyer_name(appOrder.getBuyer_name());
+		appOrders.setBuyer_email(appOrder.getBuyer_email());
+		appOrders.setGoods_amount(appOrder.getGoods_amount());
+		appOrders.setOrder_amount(appOrder.getGoods_amount());
+		//订单状态
+		appOrders.setOrder_state(10);
+		appOrdersDao.insert(appOrders);
+		/**
+		 * 商品订单插入
+		 */
+		String strs[] = appOrder.getGoodsList().split(",");
+		for(int i=0;i<strs.length;i++){
+			//插入订单id
+			appOrder.setOrder_id(appOrders.getOrder_id());
+			//根据商品id得到商品信息
+			Goods goods = new Goods();
+			int goods_id = Integer.parseInt(strs[i]);
+			goods.setGoods_id(goods_id);
+			goods = goodsDao.find(goods).get(0);
+			appOrder.setGoods_id(goods_id);
+			appOrder.setGoods_name(goods.getGoods_name());
+			appOrder.setGoods_price(goods.getGoods_price());
+			//根据goods_id,buyer_id得到商品数量
+			AppCart appCart = new AppCart();
+			appCart.setGoods_id(goods_id);
+			appCart.setBuyer_id(appOrder.getBuyer_id());
+			List<AppCart> list = cartDao.find(appCart);
+			if(list.size() == 0){
+				appOrder.setGoods_num(1);
+			}else{
+				appOrder.setGoods_num(cartDao.find(appCart).get(0).getGoods_num());
+			}
+			appOrder.setGoods_image(goods.getGoods_image());
+			appOrder.setGoods_pay_price(goods.getGoods_price());
+			appOrder.setGoods_type(goods.getGoods_promotion());
+			appOrder.setGoods_fenxiao_price(goods.getGoods_promotion_price());
+			appOrderDao.insert(appOrder);
+		}
+		return 1;
+	}
+	
+	public int update(AppOrder appOrder) {
+		return this.appOrderDao.update(appOrder);
+	}
+	
+	public int delete(AppOrder appOrder) {
+		return this.appOrderDao.delete(appOrder);
+	}
+	
+}

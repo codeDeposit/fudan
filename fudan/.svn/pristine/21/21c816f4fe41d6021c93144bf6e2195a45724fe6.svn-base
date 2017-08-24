@@ -1,0 +1,38 @@
+package com.jy.service.customer;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.customer.Contacts;
+import com.jy.repository.customer.ContactsDao;
+
+@Service("contactsService")
+public class ContactsService {
+	
+	@Resource
+	private ContactsDao contactsDao;
+
+	public List<Contacts> find(Contacts contacts) {
+		return this.contactsDao.find(contacts);
+	}
+
+	public List<Contacts> search(Contacts contacts) {
+		return this.contactsDao.search(contacts);
+	}
+
+	public int insert(Contacts contacts) {
+		return this.contactsDao.insert(contacts);
+	}
+
+	public int update(Contacts contacts) {
+		return this.contactsDao.update(contacts);
+	}
+
+	public int delete(Contacts contacts) {
+		return this.contactsDao.delete(contacts);
+	}
+	
+}

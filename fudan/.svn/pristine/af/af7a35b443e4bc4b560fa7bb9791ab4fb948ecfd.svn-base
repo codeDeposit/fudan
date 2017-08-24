@@ -1,0 +1,130 @@
+var _lat;
+var _lng;
+var _address;
+$(document).ready(function() {
+	fuLoading();
+	setTimeout("fList()",200);
+	$('.form_date').datetimepicker({/*时间初始化*/
+		language: 'zh-CN',
+        format: 'hh:ii',
+        startView:1,
+        autoclose: true,
+	});
+});
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/list",
+		success : function(data) {
+			 $('#dutySection_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fAdd() {
+	fuLoading();
+	setTimeout("fAdd2()",200);
+	return false;
+}
+function fAdd2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/add",
+		data : $("#Form_workNumber_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_workNumber_add").reset();
+				$('#Modal_workNumber_add').modal('hide');
+			  	fList();
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/delete",
+		data:{sectionId:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList(); 
+			}
+		}
+	});
+}
+function fuSure(param1,param2){
+	if(param2 == 'workNumber'){
+		fDelete2(param1);
+	}
+}
+function fDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/detail",
+		data:{sectionId:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#dutySection_detail').html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/update2",
+		data : $("#Form_workNumber_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_workNumber_detail').modal('hide');
+				fList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysection/search",
+		data : $("#Modal_workNumber_search").serialize(),
+		success : function(data) {
+			$('#dutySection_list').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}

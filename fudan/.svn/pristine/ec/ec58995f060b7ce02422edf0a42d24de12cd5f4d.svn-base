@@ -1,0 +1,26 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../../common/styleUrl.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="${jypath}/static/plugins/layer/2.1/layer.js"></script>
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增语言-->
+		<script src="${jypath}/pc/js/wzcg/supplierExtract.js"></script>
+	</head>
+	<body>
+		<%@ include file="../../../common/toast.jsp"%>
+		<%@ include file="extract_search.jsp" %><!-- 数据搜索 -->
+		<%@ include file="extract_add.jsp" %><!-- 数据搜索 -->
+		<div id="supplierDetail"><!-- 数据详情--></div>	
+		<div id="extractList"><!-- 数据列表 --></div>		
+	</body>
+</html>

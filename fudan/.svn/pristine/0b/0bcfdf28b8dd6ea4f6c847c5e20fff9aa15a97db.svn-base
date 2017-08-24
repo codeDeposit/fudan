@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.InStockMapper">
+
+	<!-- baseMap start -->
+	<resultMap id="baseMap" type="com.jy.entity.oa.admin.InStock">
+		<id column="buyId" property="buyId"></id>
+		<result column="providerName" property="providerName"></result>
+		<result column="stockNo" property="stockNo"></result>
+		<result column="price" property="price"></result>
+		<result column="inCounts" property="inCounts"></result>
+		<result column="amount" property="amount"></result>
+		<result column="inDate" property="inDate"></result>
+		<result column="buyer" property="buyer"></result>
+		<association property="officeGoods" column="goodsId" select="selectGoods"></association>
+	</resultMap>
+	
+	<select id="selectGoods" parameterType="Long" resultType="com.jy.entity.oa.admin.OfficeGoods">
+		select * from fudan_oa_office_goods where goodsId = #{goodsId}
+	</select>
+	<!-- baseMap end -->
+
+	<!-- 添加入库单 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.InStock">
+		insert fudan_oa_in_stock <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="providerName != null and providerName != '' ">
+				providerName = #{providerName},
+			</if>
+			<if test="stockNo != null and stockNo != '' ">
+				stockNo = #{stockNo},
+			</if>
+			<if test="price != null ">
+				price = #{price},
+			</if>
+			<if test="inCounts != null ">
+				inCounts = #{inCounts},
+			</if>
+			<if test="amount != null ">
+				amount = #{amount},
+			</if>
+			<if test="inDate != null ">
+				inDate = #{inDate},
+			</if>
+			<if test="buyer != null and buyer != '' ">
+				buyer = #{buyer},
+			</if>
+			<if test="goodsId != null ">
+				goodsId = #{goodsId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加入库单 end -->
+	
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_in_stock where buyId = #{buyId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 查询入库数量 start -->
+	<select id="selectInCountBy" parameterType="Long" resultType="Integer">
+		select inCounts from fudan_oa_in_stock where buyId = #{buyId}
+	</select>
+	<!-- 查询入库数量 end -->
+	
+	
+	<!-- 修改信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.InStock">
+		update fudan_oa_in_stock <include refid="insertSQL"></include>
+		where buyId = #{buyId}
+	</update>
+	<!-- 修改信息 end -->
+	
+	
+	<!-- 批量删除 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_in_stock where buyId = #{buyId}
+	</delete>
+	<!-- 批量删除 end -->
+	
+	
+	<!-- 获取列表 start -->
+	<select id="select" parameterType="com.jy.entity.oa.admin.InStock" resultType="com.jy.entity.oa.admin.InStock">
+		SELECT ist.* FROM fudan_oa_in_stock ist, fudan_oa_office_goods og WHERE ist.goodsId = og.goodsId
+		<if test="goodsName != null and goodsName != '' ">
+			and og.goodsName like concat("%", #{goodsName},"%")
+		</if>
+		<if test="providerName != null and providerName != '' ">
+			and ist.providerName like concat("%", #{providerName},"%")
+		</if>
+		<if test="buyer != null and buyer != '' ">
+			and ist.buyer like concat("%", #{buyer},"%")
+		</if>
+	</select>
+	<!-- 获取列表 end -->
+	
+	
+	<!-- 入库单分页列表 start -->
+	<select id="selectPageData" resultMap="baseMap">
+		SELECT ist.* FROM fudan_oa_in_stock ist, fudan_oa_office_goods og WHERE ist.goodsId = og.goodsId
+		<if test="inStock.goodsName != null and inStock.goodsName != '' ">
+			and og.goodsName like concat("%", #{inStock.goodsName},"%")
+		</if>
+		<if test="inStock.providerName != null and inStock.providerName != '' ">
+			and ist.providerName like concat("%", #{inStock.providerName},"%")
+		</if>
+		<if test="inStock.buyer != null and inStock.buyer != '' ">
+			and ist.buyer like concat("%", #{inStock.buyer},"%")
+		</if>
+		order by ist.buyId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 入库单分页列表 end -->
+	
+</mapper>

@@ -1,0 +1,35 @@
+package com.jy.repository.oa.hrm;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.hrm.Resume;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ResumeMapper {
+
+	// 添加简历
+	int insert(Resume resume);
+
+	// 获取刚插入的简历ID号
+	Long selectMaxId();
+
+	// 修改简历信息
+	int update(Resume resume);
+
+	// 获取简历详细信息
+	Resume selectInfoBy(Long resumeId);
+
+	// 删除简历
+	int delete(Long resumeId);
+
+	// 获取简历列表
+	List<Resume> select(@Param("fullName") String fullName, @Param("jobName") String jobName, @Param("status") String status);
+
+	// 简历分页列表
+	List<Resume> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("fullName") String fullName,
+			@Param("jobName") String jobName, @Param("status") String status);
+
+}

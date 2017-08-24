@@ -1,0 +1,49 @@
+package com.jy.controller.workflow.listener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.jy.entity.oa.workflow.Apply;
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.service.oa.workflow.ApplyService;
+import com.jy.service.oa.workflow.ApproveService;
+
+public class EndEventListener implements ExecutionListener{
+
+	private static final long serialVersionUID = 319013568894863736L;
+	
+	/**
+	 * 当流程结束时，改变申请的状态---通过，亦或是不通过
+	 */
+	@Override
+	public void notify(DelegateExecution execution) throws Exception {
+		
+		final short UN_PASS = (short)2;
+		
+		WebApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+		ApplyService applyService = (ApplyService) ctx.getBean("applyService");
+		ApproveService approveService = (ApproveService) ctx.getBean("approveService");
+		
+		String processInstanceId = execution.getProcessInstanceId();
+		Apply apply = applyService.getBy(processInstanceId);
+		List<Approve> approves = approveService.getBy(apply.getId());
+		List<Short> status = new ArrayList<Short>();
+		for(Approve approve: approves) {
+			status.add(approve.getApproveStatus());
+		}
+		final short APPLY_UN_PASS = (short)3;
+		final short APPLY_PASS = (short)2;
+		if(status.contains(UN_PASS)) {
+			applyService.update(apply.getId(), APPLY_UN_PASS);
+		}else {
+			applyService.update(apply.getId(), APPLY_PASS);
+		}
+		
+	}
+
+}

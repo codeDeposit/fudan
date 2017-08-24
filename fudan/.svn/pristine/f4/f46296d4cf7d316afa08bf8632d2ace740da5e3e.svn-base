@@ -1,0 +1,179 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="pc/css/oa/modal.css">
+</head>
+<body>
+	<div class="modal fade" id="addMod" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- <div class="modal-header"> -->
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title headBg">
+					<i class="glyphicon glyphicon-user"
+						style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i> &nbsp;部门/人员
+				</h4>
+				<!-- </div> -->
+				<div class="modal-body" style="height:300px;">
+					<div class="leftList pull-left">
+						<ul class="firstLevel">
+							<li><span class="secondT aHover fIndent"> <i
+									class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门 </span>
+								<ul id="orgs" class="secondLevel">
+									<!-- 所有部门打印在此处 -->
+								</ul></li>
+							<li><span class="secondT aHover fIndent"> <i
+									class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色 </span>
+								<ul id="roles" class="secondLevel">
+									<!-- 所有角色打印在此处 -->
+								</ul></li>
+						</ul>
+					</div>
+					<div id="employeetable" class="rightContent pull-right"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-success aYes" id="empsurebtn">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		$('.secondT').on('click', function(event) {
+            var theLev=$(this).parent().find('.secondLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.secondLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.thirdT').on('click', function(event) {
+            var theLev=$(this).parent().find('.thirdLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.thirdLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.aHover').on('click',function(event) {
+            event.preventDefault();
+            $('.aHover').removeClass('active');
+            $(this).addClass('active');
+        });
+        getAllOrg();
+        getAllEmp();
+    	getAllRole();
+    });
+    //判断是否选中
+    $('.aYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#employeetable .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#name").val(arrayName);
+	        	$("#orgId").val(arrayId);
+	        	$("#accountId").val(arrayId);
+	        	$(".aYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+	//全选
+    function chooseAll(){
+        if($('#checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+            $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+    function getAllOrg() {
+    	var url = "/backstage/org/role/listallorg2";
+    	$.ajax({
+    		type: "get",
+    		url : jypath+url,
+    		success: function(data) {
+    			/* var obj = eval('('+data+')'); */
+    			$("#orgs").html(data);
+    		}
+    	});
+    }
+    function getOrgDetails(orgId) {
+    	var url = "/backstage/org/role/orgdetail";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+orgId,
+    		success: function(data) {
+    			$("#employeetable").html(data);
+    		}
+    	});
+    }
+    // 获取所有员工
+	    function getAllEmp() {
+	    	var url = "/oa/listEm";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		success: function(data) {
+	    			$("#employeetable").html(data);
+	    		}
+	    	});
+	    }
+	 	// 获取某一个部门下的员工
+	    function getEmpByOrg(id) {
+	    	var url = "/oa/listEm";
+	    	id= id+"";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		data: "orgId="+id,
+	    		success: function(data) {
+	    			$("#employeetable").html(data);
+	    		}
+	    	});
+	    }
+	  	//获取所有角色
+	    function getAllRole() {
+	    	var url = "/oa/role/listhtml";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		success: function(data) {
+	    			var obj = eval("("+data+")");
+	    			$("#roles").html(obj);
+	    			fuCloseLayer();
+	    		}
+	    	});
+	    }
+	 	// 获取某一个角色下的员工
+	    function getEmpByRole(id) {
+	    	var url = "/oa/listEm";
+	    	id += "";
+	    	$.ajax({
+	    		type: "get",
+	    		url : jypath + url,
+	    		data: "roleId="+id,
+	    		success: function(data) {
+	    			$("#employeetable").html(data);
+	    		}
+	    	});
+	    }
+</script>
+</html>

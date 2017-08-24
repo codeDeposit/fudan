@@ -1,0 +1,159 @@
+package com.jy.service.oa.impl.admin;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.InStock;
+import com.jy.entity.oa.admin.OfficeGoods;
+import com.jy.repository.oa.admin.InStockMapper;
+import com.jy.repository.oa.admin.OfficeGoodsMapper;
+import com.jy.service.oa.admin.InStockService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("inStockService")
+public class InStockServiceImpl implements InStockService {
+
+	private InStockMapper inStockMapper;
+	private OfficeGoodsMapper officeGoodsMapper;
+
+	public OfficeGoodsMapper getOfficeGoodsMapper() {
+		return officeGoodsMapper;
+	}
+
+	@Autowired
+	public void setOfficeGoodsMapper(OfficeGoodsMapper officeGoodsMapper) {
+		this.officeGoodsMapper = officeGoodsMapper;
+	}
+
+	public InStockMapper getInStockMapper() {
+		return inStockMapper;
+	}
+
+	@Autowired
+	public void setInStockMapper(InStockMapper inStockMapper) {
+		this.inStockMapper = inStockMapper;
+	}
+
+	// 添加入库单
+	@Override
+	public JsonInfo save(InStock inStock) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss-SSS"); //自动生成入库单号
+		inStock.setStockNo(sdf.format(new Date()));
+		Integer inCount= inStock.getInCounts();
+		BigDecimal price=inStock.getPrice();
+		BigDecimal amount=null;
+		if(inCount != null && price != null){
+			amount=price.multiply(BigDecimal.valueOf(inCount));//总额的计算
+		}
+		inStock.setAmount(amount);
+		Long goodsId=inStock.getGoodsId();
+		OfficeGoods goods=officeGoodsMapper.selectBy(goodsId);
+		goods.setStockCounts(goods.getStockCounts()+inStock.getInCounts());
+		//办公用品入库
+		int result = inStockMapper.insert(inStock);
+		//更新办公用品的库存
+		result = officeGoodsMapper.update(goods);
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public InStock getInfoBy(Long buyId) {
+		InStock inStock = inStockMapper.selectInfoBy(buyId);
+		inStock.setInDate1(DateStringUtil.dateToString3(inStock.getInDate()));
+		return inStock;
+	}
+
+	// 修改信息
+	@Override
+	public JsonInfo update(InStock inStock) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss-SSS"); //自动生成入库单号
+		inStock.setStockNo(sdf.format(new Date()));
+		Integer inCount= inStock.getInCounts();
+		BigDecimal price=inStock.getPrice();
+		BigDecimal amount=null;
+		if(inCount!=null&&price!=null){
+			amount=price.multiply(BigDecimal.valueOf(inCount));//总额的计算
+		}
+		inStock.setAmount(amount);
+		Long goodsId=inStock.getGoodsId();
+		OfficeGoods goods=officeGoodsMapper.selectBy(goodsId);
+		Integer newInCount=inStock.getInCounts(); //修改之后的入库数量
+		Integer oldInCount=inStockMapper.selectInCountBy(inStock.getBuyId());//修改前的入库数量
+		if(!oldInCount.equals(newInCount)){
+			goods.setStockCounts(goods.getStockCounts()-oldInCount+newInCount);
+		}
+		
+		int result = inStockMapper.update(inStock);
+		result = officeGoodsMapper.update(goods);
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo del(Long[] buyId) {
+		int result = 0;
+		for(Long bId : buyId) {
+			result = inStockMapper.delete(bId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取列表
+	@Override
+	public List<InStock> get(InStock inStock) {
+		List<InStock> inStocks = inStockMapper.select(inStock);
+		return inStocks;
+	}
+
+	// 入库单分页列表
+	@Override
+	public List<InStock> getPageList(PageBean pb, InStock inStock) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<InStock> inStocks = inStockMapper.selectPageData(firstIndex, toIndex, inStock);
+		
+		for(InStock is: inStocks) {
+			is.setInDate1(DateStringUtil.dateToString3(is.getInDate()));
+		}
+		
+		return inStocks;
+	}
+
+}

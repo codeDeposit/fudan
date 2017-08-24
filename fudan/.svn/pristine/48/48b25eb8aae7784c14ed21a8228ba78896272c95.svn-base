@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.StandSalaryMapper">
+
+	<!-- 添加薪酬标准 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.StandSalary">
+		insert fudan_oa_stand_salary <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="standardNo !=null and standardNo !='' ">
+				standardNo = #{standardNo},
+			</if>
+			<if test="standardName !=null and standardName !='' ">
+				standardName = #{standardName},
+			</if>
+			<if test="totalMoney !=null ">
+				totalMoney = #{totalMoney},
+			</if>
+			<if test="framer !=null and framer !='' ">
+				framer = #{framer},
+			</if>
+			<if test="setdownTime !=null ">
+				setdownTime = #{setdownTime},
+			</if>
+			<if test="checkName !=null and checkName !='' ">
+				checkName = #{checkName},
+			</if>
+			<if test="checkTime !=null ">
+				checkTime = #{checkTime},
+			</if>
+			<if test="modifyName !=null and modifyName !='' ">
+				modifyName = #{modifyName},
+			</if>
+			<if test="modifyTime !=null ">
+				modifyTime = #{modifyTime},
+			</if>
+			<if test="checkOpinion !=null and checkOpinion !='' ">
+				checkOpinion = #{checkOpinion},
+			</if>
+			<if test="status !=null ">
+				status = #{status},
+			</if>
+			<if test="memo !=null and memo !='' ">
+				memo = #{memo},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加薪酬标准 end -->
+	
+	
+	<!-- 获取最大的ID号 start -->
+	<select id="selectMaxId" resultType="Long">
+		select max(standardId) from fudan_oa_stand_salary
+	</select>
+	<!-- 获取最大的ID号 end -->
+	
+	
+	<!-- 获取薪酬标准详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.StandSalary">
+		select * from fudan_oa_stand_salary where standardId = #{standardId}
+	</select>
+	<!-- 获取薪酬标准详细信息 end -->
+	
+	
+	<!-- 修改薪酬标准信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.StandSalary">
+		update fudan_oa_stand_salary <include refid="insertSQL"></include>
+		where standardId = #{standardId}
+	</update>
+	<!-- 修改薪酬标准信息 end -->
+	
+	
+	<!-- 获取薪酬标准列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.StandSalary">
+		select * from fudan_oa_stand_salary where 1=1
+		<if test="standardNo != null and standardNo !='' ">
+			and standardNo like concat("%", #{standardNo} ,"%")
+		</if>
+		<if test="standardName != null and standardName !='' ">
+			and standardName like concat("%", #{standardName} ,"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+	</select>
+	<!-- 获取薪酬标准列表 end -->
+	
+	
+	<!-- 删除薪酬标注 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_stand_salary where standardId = #{standardId}
+	</delete>
+	<!-- 删除薪酬标注 end -->
+	
+	<!-- 审核薪酬标准 start -->
+	<update id="updateReview" parameterType="com.jy.entity.oa.hrm.StandSalary">
+		update fudan_oa_stand_salary <include refid="updateReviewSQL"></include>
+		where standardId = #{standardId}
+	</update>
+	
+	<sql id="updateReviewSQL">
+		<set>
+			<if test="checkName !=null and checkName !='' ">
+				checkName = #{checkName},
+			</if>
+			<if test="checkTime !=null ">
+				checkTime = #{checkTime},
+			</if>
+			<if test="checkOpinion !=null and checkOpinion !='' ">
+				checkOpinion = #{checkOpinion},
+			</if>
+			<if test="status !=null ">
+				status = #{status},
+			</if>
+		</set>
+	</sql>
+	<!-- 审核薪酬标准 end -->
+	
+	<!-- 薪酬标准分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.StandSalary">
+		select * from fudan_oa_stand_salary where 1=1
+		<if test="standardNo != null and standardNo !='' ">
+			and standardNo like concat("%", #{standardNo} ,"%")
+		</if>
+		<if test="standardName != null and standardName !='' ">
+			and standardName like concat("%", #{standardName} ,"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+		order by standardId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 薪酬标准分页列表 end -->
+	
+</mapper>

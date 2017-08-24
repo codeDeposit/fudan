@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.PhoneBookMapper">
+
+	<!-- 获取个人通讯簿列表 start -->
+	<select id="selectBy" resultType="com.jy.entity.oa.communicate.PhoneBook">
+		select * from fudan_oa_phone_book where 1 = 1
+		<if test="fullname != null and fullname != '' ">
+			and fullname like concat("%", #{fullname} ,"%")
+		</if>
+		<if test="title != null and title != '' ">
+			and title = #{title}
+		</if>
+		<if test="groupId != null ">
+			and groupId = #{groupId}
+		</if>
+		<if test="userId != null ">
+			and userId = #{userId}
+		</if>
+	</select>
+	<!-- 获取个人通讯簿列表 end -->
+	
+	
+	<!-- 添加联系人到通讯录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.PhoneBook">
+		insert fudan_oa_phone_book <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="fullname != null and fullname != '' ">
+				fullname = #{fullname},
+			</if>
+			<if test="title != null and title != '' ">
+				title = #{title},
+			</if>
+			<if test="birthday != null ">
+				birthday = #{birthday},
+			</if>
+			<if test="nickName != null and nickName != '' ">
+				nickName = #{nickName},
+			</if>
+			<if test="duty != null and duty != '' ">
+				duty = #{duty},
+			</if>
+			<if test="spouse != null and spouse != '' ">
+				spouse = #{spouse},
+			</if>
+			<if test="childs != null and childs != '' ">
+				childs = #{childs},
+			</if>
+			<if test="companyName != null and companyName != '' ">
+				companyName = #{companyName},
+			</if>
+			<if test="companyAddress != null and companyAddress != '' ">
+				companyAddress = #{companyAddress},
+			</if>
+			<if test="companyPhone != null and companyPhone != '' ">
+				companyPhone = #{companyPhone},
+			</if>
+			<if test="companyFax != null and companyFax != '' ">
+				companyFax = #{companyFax},
+			</if>
+			<if test="homeAddress != null and homeAddress != '' ">
+				homeAddress = #{homeAddress},
+			</if>
+			<if test="homeZip != null and homeZip != '' ">
+				homeZip = #{homeZip},
+			</if>
+			<if test="mobile != null and mobile != '' ">
+				mobile = #{mobile},
+			</if>
+			<if test="phone != null and phone != '' ">
+				phone = #{phone},
+			</if>
+			<if test="email != null and email != '' ">
+				email = #{email},
+			</if>
+			<if test="qqNumber != null and qqNumber != '' ">
+				qqNumber = #{qqNumber},
+			</if>
+			<if test="msn != null and msn != '' ">
+				msn = #{msn},
+			</if>
+			<if test="note != null and note != '' ">
+				note = #{note},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+			<if test="groupId != null ">
+				groupId = #{groupId},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加联系人到通讯录 end -->
+	
+	
+	<!-- 获取联系人详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.PhoneBook">
+		select * from fudan_oa_phone_book where phoneId = #{phoneId}
+	</select>
+	<!-- 获取联系人详细信息 end -->
+	
+	
+	<!-- 修改联系人信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.communicate.PhoneBook">
+		update fudan_oa_phone_book <include refid="updateSQL"></include>
+		where phoneId = #{phoneId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="fullname != null and fullname != '' ">
+				fullname = #{fullname},
+			</if>
+			<if test="title != null and title != '' ">
+				title = #{title},
+			</if>
+			<if test="birthday != null ">
+				birthday = #{birthday},
+			</if>
+			<if test="nickName != null and nickName != '' ">
+				nickName = #{nickName},
+			</if>
+			<if test="duty != null and duty != '' ">
+				duty = #{duty},
+			</if>
+			<if test="spouse != null and spouse != '' ">
+				spouse = #{spouse},
+			</if>
+			<if test="childs != null and childs != '' ">
+				childs = #{childs},
+			</if>
+			<if test="companyName != null and companyName != '' ">
+				companyName = #{companyName},
+			</if>
+			<if test="companyAddress != null and companyAddress != '' ">
+				companyAddress = #{companyAddress},
+			</if>
+			<if test="companyPhone != null and companyPhone != '' ">
+				companyPhone = #{companyPhone},
+			</if>
+			<if test="companyFax != null and companyFax != '' ">
+				companyFax = #{companyFax},
+			</if>
+			<if test="homeAddress != null and homeAddress != '' ">
+				homeAddress = #{homeAddress},
+			</if>
+			<if test="homeZip != null and homeZip != '' ">
+				homeZip = #{homeZip},
+			</if>
+			<if test="mobile != null and mobile != '' ">
+				mobile = #{mobile},
+			</if>
+			<if test="phone != null and phone != '' ">
+				phone = #{phone},
+			</if>
+			<if test="email != null and email != '' ">
+				email = #{email},
+			</if>
+			<if test="qqNumber != null and qqNumber != '' ">
+				qqNumber = #{qqNumber},
+			</if>
+			<if test="msn != null and msn != '' ">
+				msn = #{msn},
+			</if>
+			<if test="note != null and note != '' ">
+				note = #{note},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+			<if test="groupId != null ">
+				groupId = #{groupId},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改联系人信息 end -->
+
+	
+	<!-- 删除联系人 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_phone_book where phoneId = #{phoneId}
+	</delete>
+	<!-- 删除联系人 end -->
+	
+	
+	<!-- 获取共享的联系人列表 start -->
+	<select id="selectShare" resultType="com.jy.entity.oa.communicate.PhoneBook">
+		select pb.phoneId, pb.fullname, pb.duty, pb.mobile, pb.userId from fudan_oa_phone_book pb, oa_base_employee employee where pb.userId = employee.userId and pb.isShared = 1
+		<if test="fullname != null and fullname != '' ">
+			and pb.fullname like concat("%", #{fullname} ,"%")
+		</if>
+		<if test="shareName != null and shareName != '' ">
+			and employee.fullname like concat("%", #{shareName} ,"%")
+		</if>
+		order by pb.phoneId desc
+	</select>
+	<!-- 获取共享的联系人列表 end -->
+	
+	<select id="selectEmpInfoBy" parameterType="String" resultType="com.jy.entity.oa.Employee">
+		select * from oa_base_employee where userId = #{userId}
+	</select>
+	
+	<!-- 分页模糊查询 start -->
+	<select id="selectPageDate" resultType="com.jy.entity.oa.communicate.PhoneBook">
+		select * from fudan_oa_phone_book where 1=1
+		<if test="fullname != null and fullname != '' ">
+			and fullname like concat("%", #{fullname} ,"%")
+		</if>
+		<if test="title != null and title != '' ">
+			and title = #{title}
+		</if>
+		<if test="groupId != null ">
+			and groupId = #{groupId}
+		</if>
+		<if test="userId != null ">
+			and userId = #{userId}
+		</if>
+		order by phoneId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页模糊查询 end -->
+	
+	<!-- 分页模糊查询 -->
+	<select id="selectSharePageDate" resultType="com.jy.entity.oa.communicate.PhoneBook">
+		select pb.phoneId, pb.fullname, pb.duty, pb.mobile, pb.userId from fudan_oa_phone_book pb, oa_base_employee employee where pb.userId = employee.userId and pb.isShared = 1
+		<if test="fullname != null and fullname != '' ">
+			and pb.fullname like concat("%", #{fullname} ,"%")
+		</if>
+		<if test="shareName != null and shareName != '' ">
+			and employee.fullname like concat("%", #{shareName} ,"%")
+		</if>
+		order by pb.phoneId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页模糊查询 -->
+	
+</mapper>

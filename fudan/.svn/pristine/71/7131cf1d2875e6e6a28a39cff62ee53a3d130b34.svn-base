@@ -1,0 +1,667 @@
+package com.jy.controller.wzcg;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.FileUpload;
+import com.jy.common.utils.ObjectExcelView;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.setting.WebSite;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgExpert;
+import com.jy.entity.wzcg.WzcgSupplier;
+import com.jy.entity.wzcg.WzcgExtract;
+import com.jy.service.area.AreaService;
+import com.jy.service.setting.WebSiteService;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.wzcg.WzcgExpertService;
+import com.jy.service.wzcg.WzcgExtractService;
+import com.jy.service.wzcg.WzcgKindService;
+
+@Controller("wzcgEexpertController")
+@RequestMapping(value = "/backstage/wzcg/expert")
+public class WzcgExpertController extends BaseController<WzcgExpert> {
+
+	@Resource(name = "wzcgExpertService")
+	private WzcgExpertService wzcgExpertService;
+	@Resource(name = "areaService")
+	private AreaService areaService;
+	@Resource(name = "wzcgKindService")
+	private WzcgKindService kindService;
+	@Resource(name = "wzcgExtractService")
+	private WzcgExtractService wzcgExtractService;
+	@Autowired
+	private WebSiteService webSiteService;
+	@Autowired
+	private AccountService service;
+	@Autowired
+	public RoleService roleService;
+	
+	/*
+	 * 注册协议
+	 */
+	@RequestMapping("/expert_notice")
+	public String expertNotice(Model model) {
+		WebSite webSite = webSiteService.find().get(0);
+		model.addAttribute("webSite",webSite);
+		return "system/wzcg/expert/expert_notice";
+	}
+
+	/*
+	 * 注册页面
+	 */
+	@RequestMapping("/expert_reg")
+	public String expertReg() {
+		return "system/wzcg/expert/expert_reg";
+	}
+	
+	/**
+	 * 添加
+	 */
+	@RequestMapping("/add")  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,Model model,WzcgExpert expert,
+		@RequestParam(value = "filePicture", required = false) MultipartFile filePicture,
+		@RequestParam(value = "files", required = false) MultipartFile[] files) throws Exception {
+		String picture = "";
+		String fileName = "";
+		AjaxRes ar = getAjaxRes();
+		Account account = new Account();
+		String uuid = get32UUID();
+		account.setAccountId(uuid);	
+		account.setRoleId("5a320489e3c2447eb454290bb9fd50f6");
+		account.setIsValid(1);
+		account.setCreateTime(new Timestamp(System.currentTimeMillis()));
+		account.setLoginName(request.getParameter("loginName"));
+		account.setPassword(request.getParameter("password"));
+		account.setEmail(expert.getEmail());
+		account.setName(expert.getName());
+		try{
+			service.insertAccount(account);
+		}catch (Exception e) {
+			logger.error(e.toString(),e);
+		}
+		String filePath = "c:\\fudanImage\\" + expert.getName();
+		//单张照片上传
+		if(filePicture != null && !filePicture.isEmpty()){
+			FileUpload.fileUp(filePicture, filePath, filePicture.getOriginalFilename().substring(0, filePicture.getOriginalFilename().lastIndexOf(".")));
+			picture = filePicture.getOriginalFilename();
+		}
+		for(int i=0;i<files.length;i++){
+			if (files[i] != null && !files[i].isEmpty()){
+				FileUpload.fileUp(files[i], filePath, files[i].getOriginalFilename().substring(0, files[i].getOriginalFilename().lastIndexOf(".")));
+				fileName += files[i].getOriginalFilename() + ",";
+			}
+		}
+		expert.setPicture(picture);
+		expert.setID_image(fileName);//身份证
+		expert.setWork_address(request.getParameter("work_address1") + "," + request.getParameter("work_address2"));
+		expert.setAddress(request.getParameter("address1") + "," + request.getParameter("address2"));
+		expert.setProfession(request.getParameter("profession1") + "," + request.getParameter("profession2") + "," + request.getParameter("profession3"));
+		expert.setUserId(uuid);
+		expert.setState("1");
+		expert.setCreatedate(new Timestamp(System.currentTimeMillis()));
+		wzcgExpertService.insert(expert);
+		ar.setSucceedMsg("注册成功！");
+		return ar;
+	}
+	
+	/*
+	 * 首页
+	 */
+	@RequestMapping("/index")
+	public String index(HttpServletRequest request, Model model) throws Exception {
+		boolean mark = false;//按钮显示判断
+		Account account = AccountShiroUtil.getCurrentUser();
+		//判断用户是否为管理员组织
+		if(roleService.getOrg(account.getRoleId()).getId().equals("9")){//管理员登录
+			mark = true;
+		}
+		model.addAttribute("mark",mark);
+		return "system/wzcg/expert/expert_index";
+	}
+	
+	/*
+	 * 列表	
+	 */
+	@RequestMapping("/list")
+	public String list(HttpServletRequest request, Model model,WzcgExpert expert) throws Exception {
+		boolean mark = false;
+		Map<Boolean,List<WzcgExpert>> map = this.wzcgExpertService.list();
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		for (Map.Entry<Boolean,List<WzcgExpert>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			expertList = entry.getValue();
+		}  
+		expertList = this.wzcgExpertService.listFull(expertList);
+		model.addAttribute("mark",mark);
+		model.addAttribute("expertList",expertList);
+		model.addAttribute("count",expertList.size());
+		return "system/wzcg/expert/expert_list";
+	}
+	
+	/*
+	 * 详情
+     */
+	@RequestMapping("/detail")
+	public String detail(HttpServletRequest request, Model model,WzcgExpert expert)throws Exception {
+		String mark = request.getParameter("mark");
+		expert = this.wzcgExpertService.find(expert).get(0);
+		model.addAttribute("expert",expert);
+		model.addAttribute("pd",mark);
+		return "system/wzcg/expert/expert_detail";
+	}
+	
+	/*
+	 * 删除
+	 */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,WzcgExpert expert) throws Exception {
+		AjaxRes ar = getAjaxRes();
+		wzcgExpertService.delete(expert.getUserId());
+		Account account = new Account();
+		account.setAccountId(expert.getUserId());
+		service.deleteAccount(account);
+		ar.setSucceedMsg("删除成功！");
+		return ar;
+	}
+	
+	/**
+	 * 更新
+	 */
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request, Model model,@ModelAttribute WzcgExpert expert){
+		AjaxRes ar = getAjaxRes();
+		this.wzcgExpertService.update(expert);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 状态修改 
+	 */
+	@RequestMapping("/updateStatus")
+	@ResponseBody
+	public AjaxRes updateStatus(HttpServletRequest request,WzcgExpert expert) throws Exception {
+		String mark = request.getParameter("mark");
+		AjaxRes ar = getAjaxRes();
+		if(expert.getState().equals("1") || expert.getState().equals("4")){//提交
+			expert.setState("2");
+		}else if(expert.getState().equals("2")){
+			if(mark.equals("yes")){//通过
+				expert.setState("3");
+			}else{//拒绝
+				expert.setState("4");
+			}
+		}else if(expert.getState().equals("3")){//入库
+			expert.setState("6");
+		}else if(expert.getState().equals("5")){//解冻
+			expert.setState("6");
+		}else if(expert.getState().equals("6")){//冻结
+			expert.setState("5");
+		}
+		wzcgExpertService.update(expert);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 搜索
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgExpert expert)throws Exception{		
+		boolean mark = false;
+		String timeMinStr = request.getParameter("work_time_min");
+		String timeMaxStr = request.getParameter("work_time_max");
+		int timeMin = 0;
+		int timeMax = 0;
+		if(timeMinStr != null && !timeMinStr.equals("")){
+			timeMin = Integer.parseInt(timeMinStr);
+		}
+		if(timeMaxStr != null && !timeMaxStr.equals("")){
+			timeMax = Integer.parseInt(timeMaxStr);
+		}
+		expert.setTimeMin(timeMin);
+		expert.setTimeMax(timeMax);
+		Map<Boolean,List<WzcgExpert>> map = wzcgExpertService.searchList(expert);
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		for(Map.Entry<Boolean,List<WzcgExpert>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			expertList = entry.getValue();
+		}  
+		expertList = this.wzcgExpertService.listFull(expertList);
+		model.addAttribute("mark",mark);
+		model.addAttribute("expertList",expertList);
+		return "system/wzcg/expert/expert_list";
+	}
+	
+	/**
+	 * Excel导出
+	 */
+	@RequestMapping(value="/excel")
+	public ModelAndView Excel(HttpServletRequest request,Model model,@ModelAttribute WzcgExpert expert){
+		String timeMinStr = request.getParameter("work_time_min");
+		String timeMaxStr = request.getParameter("work_time_max");
+		int timeMin = 0;
+		int timeMax = 0;
+		if(timeMinStr != null && !timeMinStr.equals("")){
+			timeMin = Integer.parseInt(timeMinStr);
+		}
+		if(timeMaxStr != null && !timeMaxStr.equals("")){
+			timeMax = Integer.parseInt(timeMaxStr);
+		}
+		expert.setTimeMin(timeMin);
+		expert.setTimeMax(timeMax);
+		ModelAndView mv = null;
+		try{
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();//表格标题
+			titles.add("姓名");  		
+			titles.add("性别");			
+			titles.add("出生年月");	
+			titles.add("学历");
+			titles.add("身份证号码");			
+			titles.add("毕业院校");			
+			titles.add("所学专业");
+			titles.add("参加工作时间");	
+			titles.add("从事本专业年限");
+			titles.add("工作单位");	
+			titles.add("负责人");	
+			titles.add("现任职务");	
+			titles.add("技术职称");	
+			titles.add("单位地址");	
+			titles.add("单位编码");
+			titles.add("家庭住址");
+			titles.add("家庭编码");
+			titles.add("办公电话");
+			titles.add("住宅电话");
+			titles.add("手机");
+			titles.add("email");
+			titles.add("申请评审专业类别");
+			titles.add("个人简历");
+			titles.add("参加咨询评审情况");
+			titles.add("何时取得部门何种技术职称");
+			titles.add("状态");
+			dataMap.put("titles", titles);
+			List<PageData> varList = new ArrayList<PageData>();
+			Map<Boolean,List<WzcgExpert>> map = wzcgExpertService.searchList(expert);
+			List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+			for (Map.Entry<Boolean,List<WzcgExpert>> entry : map.entrySet()) { 
+				expertList = entry.getValue();
+			}  
+			expertList = this.wzcgExpertService.listFull(expertList);
+			for(int i=0;i<expertList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", expertList.get(i).getName());		
+				vpd.put("var2", expertList.get(i).getSex());		
+				vpd.put("var3", expertList.get(i).getBirthday());			
+				vpd.put("var4", expertList.get(i).getKnowledge());	
+				vpd.put("var5", expertList.get(i).getID_card());		
+				vpd.put("var6", expertList.get(i).getSchool());
+				vpd.put("var7", expertList.get(i).getSpecialty());
+				vpd.put("var8", expertList.get(i).getBegin_work_time());
+				vpd.put("var9", expertList.get(i).getWork_time());
+				vpd.put("var10", expertList.get(i).getWork_unit());
+				vpd.put("var11", expertList.get(i).getResponsible_person());
+				vpd.put("var12", expertList.get(i).getJob_function());
+				vpd.put("var13", expertList.get(i).getJob_name());
+				vpd.put("var14", expertList.get(i).getWork_address());
+				vpd.put("var15", expertList.get(i).getWork_zip_code());
+				vpd.put("var16", expertList.get(i).getAddress());
+				vpd.put("var17", expertList.get(i).getZip_code()); 
+				vpd.put("var18", expertList.get(i).getWork_phone());
+				vpd.put("var19", expertList.get(i).getPhone());
+				vpd.put("var20", expertList.get(i).getMobile_phone());
+				vpd.put("var21", expertList.get(i).getEmail());
+				vpd.put("var22", expertList.get(i).getProfession()); 
+				vpd.put("var23", expertList.get(i).getResume());
+				vpd.put("var24", expertList.get(i).getExperience_a());
+				vpd.put("var25", expertList.get(i).getExperience_b());
+				if(expertList.get(i).getState().equals("1")){
+					vpd.put("var26","已注册");
+				}else if(expertList.get(i).getState().equals("2")){
+					vpd.put("var26","初审中");	
+				}else if(expertList.get(i).getState().equals("3")){
+					vpd.put("var26","初审通过");	
+				}else if(expertList.get(i).getState().equals("4")){
+					vpd.put("var26","初审未通过");	
+				}else if(expertList.get(i).getState().equals("5")){
+					vpd.put("var26","已冻结");	
+				}else{
+					vpd.put("var26","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			dataMap.put("varList",varList);
+			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+			mv = new ModelAndView(erv,dataMap);
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	/**
+	 * 抽取方法
+	 */
+	
+	/*
+	 * 抽取首页
+	 */
+	@RequestMapping("/extractIndex")
+	public String extractIndex(HttpServletRequest request, Model model) throws Exception {
+		return "system/wzcg/expert/extract/extract_index";
+	}
+	
+	/*
+	 * 抽取结果首页
+	 */
+	@RequestMapping("/extractResult")
+	public String extractResult(HttpServletRequest request, Model model,WzcgExtract extract) throws Exception {
+		List<WzcgExtract> extractList = new ArrayList<WzcgExtract>();
+		extract.setMark("expert");
+		extractList = wzcgExtractService.find(extract);
+		model.addAttribute("extractList",extractList);
+		model.addAttribute("count",extractList.size());
+		return "system/wzcg/expert/extract/extract_result";
+	}
+	
+	/*
+	 * 抽取列表	
+	 */
+	@RequestMapping("/extractList")
+	public String extractList(HttpServletRequest request, Model model,WzcgSupplier supplier) throws Exception {
+		model.addAttribute("count1",0);
+		model.addAttribute("count2",0);
+		return "system/wzcg/expert/extract/extract_list";
+	}
+
+	/*
+	 * 抽取删除
+	 */
+	@RequestMapping("/extractDelete")
+	@ResponseBody
+	public AjaxRes extractDelete(HttpServletRequest request,WzcgExtract extract) throws Exception {
+		AjaxRes ar = getAjaxRes();
+		wzcgExtractService.delete(extract.getId());
+		ar.setSucceedMsg("删除成功！");
+		return ar;
+	}
+	
+	/*
+	 * 抽取保存	
+	 */
+	@RequestMapping("/extractAdd")
+	public String extractAdd(HttpServletRequest request, Model model,WzcgExtract extract) throws Exception {
+		extract.setMark("expert");
+		wzcgExtractService.insert(extract);
+		return "system/wzcg/expert/extract/extract_index";
+	}
+	
+	/**
+	 * 抽取详细信息 
+	 */
+	@RequestMapping("/extractDetail")
+	public String extractDetail(HttpServletRequest request, Model model,WzcgExtract extract)throws Exception {
+		List<WzcgExpert> expert1List = new ArrayList<WzcgExpert>();
+		List<WzcgExpert> expert2List = new ArrayList<WzcgExpert>();
+		Map<List<WzcgExpert>,List<WzcgExpert>> map = this.wzcgExpertService.extractDetail(extract);
+		for (Map.Entry<List<WzcgExpert>,List<WzcgExpert>> entry : map.entrySet()) { 
+			expert1List = entry.getKey();
+			expert2List = entry.getValue();
+		}   
+		model.addAttribute("expert1List",expert1List);
+		model.addAttribute("expert2List",expert2List);
+		return "system/wzcg/expert/extract/extract_detail";
+	}
+	
+	/**
+	 * 抽取数据列表搜索
+	 */
+	@RequestMapping("/extractSearchList")  
+	@ResponseBody
+	public AjaxRes extractSearchList(HttpServletRequest request,Model model,@ModelAttribute WzcgExtract extract)throws Exception{		
+		List<WzcgExtract> extractList = new ArrayList<WzcgExtract>();
+		AjaxRes ar = getAjaxRes();
+		extract.setMark("expert");
+		extractList = wzcgExtractService.search(extract);
+		ar.setSucceed(extractList);
+		return ar;
+	}
+	
+	/**
+	 * 抽取搜索
+	 */
+	@RequestMapping("/extractSearch")  
+	public String extractSearch(HttpServletRequest request,Model model,@ModelAttribute WzcgExpert expert)throws Exception{		
+		String extractCount1 = request.getParameter("extractCount1");
+		String extractCount2 = request.getParameter("extractCount2");
+		int count = 0;
+		int count1 = 0;
+		int count2 = 0;
+		String timeMinStr = request.getParameter("work_time_min");
+		String timeMaxStr = request.getParameter("work_time_max");
+		int timeMin = 0;
+		int timeMax = 0;
+		if(timeMinStr != null && !timeMinStr.equals("")){
+			timeMin = Integer.parseInt(timeMinStr);
+		}
+		if(timeMaxStr != null &&  !timeMaxStr.equals("")){
+			timeMax = Integer.parseInt(timeMaxStr);
+		}
+		expert.setTimeMin(timeMin);
+		expert.setTimeMax(timeMax);  
+		if(extractCount1 != null && !extractCount1.equals("")){
+			count1 = Integer.parseInt(extractCount1);
+		}
+		if(extractCount2 != null && !extractCount2.equals("")){
+			count2 = Integer.parseInt(extractCount2);
+		}
+		if(count1 !=0 || count2 != 0){
+			count = count1 + count2;
+			expert.setCount(count);
+		}
+		boolean mark = false;
+		Map<Boolean,List<WzcgExpert>> map = this.wzcgExpertService.extractSearchList(expert);
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		for (Map.Entry<Boolean,List<WzcgExpert>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			expertList = entry.getValue();
+		}  
+		expertList = this.wzcgExpertService.listFull(expertList);
+		List<WzcgExpert> expertList1 = new ArrayList<WzcgExpert>();
+		List<WzcgExpert> expertList2 = new ArrayList<WzcgExpert>();
+		if(count1 >= expertList.size()){
+			expertList1.addAll(expertList);
+		}else{
+			for(int i=0;i<expertList.size();i++){
+				if((count1-1)>=i){
+					expertList1.add(expertList.get(i));
+				}else{
+					expertList2.add(expertList.get(i));
+				}
+			}
+		}
+		model.addAttribute("mark",mark);
+		model.addAttribute("expertList1",expertList1);
+		model.addAttribute("count1",expertList1.size());
+		model.addAttribute("expertList2",expertList2);
+		model.addAttribute("count2",expertList2.size());
+		return "system/wzcg/expert/extract/extract_list";
+	}
+	
+	/**
+	 * 抽取Excel导出
+	 */
+	@RequestMapping(value="/extractExcel")
+	public ModelAndView extractExcel(HttpServletRequest request,Model model,@ModelAttribute WzcgExtract extract){
+		ModelAndView mv = null;
+		try{
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();//表格标题
+			titles.add("");  
+			titles.add("姓名");  		
+			titles.add("性别");			
+			titles.add("出生年月");	
+			titles.add("学历");
+			titles.add("身份证号码");			
+			titles.add("毕业院校");			
+			titles.add("所学专业");
+			titles.add("参加工作时间");	
+			titles.add("从事本专业年限");
+			titles.add("工作单位");	
+			titles.add("负责人");	
+			titles.add("现任职务");	
+			titles.add("技术职称");	
+			titles.add("单位地址");	
+			titles.add("单位编码");
+			titles.add("家庭住址");
+			titles.add("家庭编码");
+			titles.add("办公电话");
+			titles.add("住宅电话");
+			titles.add("手机");
+			titles.add("email");
+			titles.add("申请评审专业类别");
+			titles.add("个人简历");
+			titles.add("参加咨询评审情况");
+			titles.add("何时取得部门何种技术职称");
+			titles.add("状态");
+			dataMap.put("titles", titles);
+			List<PageData> varList = new ArrayList<PageData>();
+			List<WzcgExpert> expert1List = new ArrayList<WzcgExpert>();
+			List<WzcgExpert> expert2List = new ArrayList<WzcgExpert>();
+			Map<List<WzcgExpert>,List<WzcgExpert>> map = this.wzcgExpertService.extractDetail(extract);
+			for(Map.Entry<List<WzcgExpert>,List<WzcgExpert>> entry : map.entrySet()) { 
+				expert1List = entry.getKey();
+				expert2List = entry.getValue();
+			}   
+			expert1List = wzcgExpertService.listFull(expert1List);
+			for(int i=0;i<expert1List.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", "抽取名单");		
+				vpd.put("var2", expert1List.get(i).getName());		
+				vpd.put("var3", expert1List.get(i).getSex());		
+				vpd.put("var4", expert1List.get(i).getBirthday());			
+				vpd.put("var5", expert1List.get(i).getKnowledge());	
+				vpd.put("var6", expert1List.get(i).getID_card());		
+				vpd.put("var7", expert1List.get(i).getSchool());
+				vpd.put("var8", expert1List.get(i).getSpecialty());
+				vpd.put("var9", expert1List.get(i).getBegin_work_time());
+				vpd.put("var10",expert1List.get(i).getWork_time());
+				vpd.put("var11",expert1List.get(i).getWork_unit());
+				vpd.put("var12",expert1List.get(i).getResponsible_person());
+				vpd.put("var13",expert1List.get(i).getJob_function());
+				vpd.put("var14",expert1List.get(i).getJob_name());
+				vpd.put("var15",expert1List.get(i).getWork_address());
+				vpd.put("var16",expert1List.get(i).getWork_zip_code());
+				vpd.put("var17",expert1List.get(i).getAddress());
+				vpd.put("var18",expert1List.get(i).getZip_code()); 
+				vpd.put("var19",expert1List.get(i).getWork_phone());
+				vpd.put("var20",expert1List.get(i).getPhone());
+				vpd.put("var21",expert1List.get(i).getMobile_phone());
+				vpd.put("var22",expert1List.get(i).getEmail());
+				vpd.put("var23",expert1List.get(i).getProfession()); 
+				vpd.put("var24",expert1List.get(i).getResume());
+				vpd.put("var25",expert1List.get(i).getExperience_a());
+				vpd.put("var26",expert1List.get(i).getExperience_b());
+				if(expert1List.get(i).getState().equals("1")){
+					vpd.put("var27","已注册");
+				}else if(expert1List.get(i).getState().equals("2")){
+					vpd.put("var27","初审中");	
+				}else if(expert1List.get(i).getState().equals("3")){
+					vpd.put("var27","初审通过");	
+				}else if(expert1List.get(i).getState().equals("4")){
+					vpd.put("var27","初审未通过");	
+				}else if(expert1List.get(i).getState().equals("5")){
+					vpd.put("var27","已冻结");	
+				}else{
+					vpd.put("var27","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			expert2List = wzcgExpertService.listFull(expert2List);
+			for(int i=0;i<expert2List.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", "备选名单");	
+				vpd.put("var2", expert2List.get(i).getName());		
+				vpd.put("var3", expert2List.get(i).getSex());		
+				vpd.put("var4", expert2List.get(i).getBirthday());			
+				vpd.put("var5", expert2List.get(i).getKnowledge());	
+				vpd.put("var6", expert2List.get(i).getID_card());		
+				vpd.put("var7", expert2List.get(i).getSchool());
+				vpd.put("var8", expert2List.get(i).getSpecialty());
+				vpd.put("var9", expert2List.get(i).getBegin_work_time());
+				vpd.put("var10",expert2List.get(i).getWork_time());
+				vpd.put("var11",expert2List.get(i).getWork_unit());
+				vpd.put("var12",expert2List.get(i).getResponsible_person());
+				vpd.put("var13",expert2List.get(i).getJob_function());
+				vpd.put("var14",expert2List.get(i).getJob_name());
+				vpd.put("var15",expert2List.get(i).getWork_address());
+				vpd.put("var16",expert2List.get(i).getWork_zip_code());
+				vpd.put("var17",expert2List.get(i).getAddress());
+				vpd.put("var18",expert2List.get(i).getZip_code()); 
+				vpd.put("var19",expert2List.get(i).getWork_phone());
+				vpd.put("var20",expert2List.get(i).getPhone());
+				vpd.put("var21",expert2List.get(i).getMobile_phone());
+				vpd.put("var22",expert2List.get(i).getEmail());
+				vpd.put("var23",expert2List.get(i).getProfession()); 
+				vpd.put("var24",expert2List.get(i).getResume());
+				vpd.put("var25",expert2List.get(i).getExperience_a());
+				vpd.put("var26",expert2List.get(i).getExperience_b());
+				if(expert2List.get(i).getState().equals("1")){
+					vpd.put("var27","已注册");
+				}else if(expert2List.get(i).getState().equals("2")){
+					vpd.put("var27","初审中");	
+				}else if(expert2List.get(i).getState().equals("3")){
+					vpd.put("var27","初审通过");	
+				}else if(expert2List.get(i).getState().equals("4")){
+					vpd.put("var27","初审未通过");	
+				}else if(expert2List.get(i).getState().equals("5")){
+					vpd.put("var27","已冻结");	
+				}else{
+					vpd.put("var27","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			dataMap.put("varList",varList);
+			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+			mv = new ModelAndView(erv,dataMap);
+		}catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	/**
+	 * 打印
+	 */
+	@RequestMapping("/dataPrint")
+	public String toPrint(HttpServletRequest request, Model model) throws Exception {
+		WzcgSupplier supplier = new WzcgSupplier();
+		model.addAttribute("supplier", supplier);
+		return "system/wzcg/supplier/supplier_print";
+	}
+	
+}

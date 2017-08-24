@@ -1,0 +1,8 @@
+package com.jy.service.oa.archive;
+
+
+public interface ArchRecTypeService {
+	
+}
+
+

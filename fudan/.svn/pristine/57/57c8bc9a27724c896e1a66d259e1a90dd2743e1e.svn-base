@@ -1,0 +1,12 @@
+package com.jy.service.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.OAResource;
+
+public interface OAResourceService {
+
+	// 根据用户角色，获取对应的菜单栏
+	List<OAResource> selectSelfResource();
+
+}

@@ -1,0 +1,266 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE HTML>
+<html>
+<head>
+	<%@ include file="../../common/styleUrl.jsp" %>
+	<%@ include file="../../common/toast.jsp" %>
+	<base href="<%=basePath%>">
+ 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  	<link rel="stylesheet" href="pc/css/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="pc/css/font/font-awesome.css">
+	<link rel="stylesheet" href="pc/css/common/style.min.css">
+	<link rel="stylesheet" href="pc/css/date/bootstrap-datetimepicker.min.css" >
+	<script src="pc/js/jquery/jquery-2.1.1.min.js"></script>
+	<script src="pc/js/bootstrap/bootstrap.min.js"></script>
+	<!-- 附件上传 -->
+	<script src="pc/js/file/fileattachupload.js"></script>
+</head>
+<body>
+	<div class="havHead">
+		<button type="button" class="btn btn-success btn-sm" onclick="save(1)"><i class="glyphicon glyphicon-envelope"></i>&nbsp;立即发送</button>
+		<button type="button" class="btn btn-info btn-sm" onclick="save(0)"><i class="glyphicon glyphicon-floppy-disk"></i>&nbsp;存草稿</button>
+		<button type="reset" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-refresh"></i>&nbsp;重置</button>
+	</div>
+	<div class="navBox">
+		<form id="addform">
+		<table>
+			<tbody>
+				<tr>
+					<td class="text-right col-first">收件人:</td>
+					<td class="text-lfet">
+						<input type="text" class="td-put" placeholder="请选择收件人" readonly="readonly" name="recipientNames" id="recipientName">
+						<input type="hidden" class="td-put" name="recipientIDs" id="recipientID">
+					</td>
+					<td class="text-left col-aft">
+						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addMod">
+							<i class="glyphicon glyphicon-user"></i>&nbsp;选择收件人
+						</button>
+					</td>
+					<td class="text-left col-aft">
+						<button class="btn btn-info btn-sm" type="button" onclick="show()">
+							<i class="glyphicon glyphicon-copy"></i>&nbsp;我要抄送
+						</button>
+					</td>
+				</tr>
+				<tr id="chaosongren" hidden="true">
+					<td class="text-right col-first">抄送人:</td>
+					<td class="text-lfet">
+						<input type="text" class="td-put" placeholder="请选择抄送人" name="copyToNames" id="copyToName">
+						<input type="hidden" class="td-put" name="copyToIDs" id="copyToID">
+					</td>
+					<td class="text-left col-aft">
+						<button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#chaosongMod">
+							<i class="glyphicon glyphicon-user"></i>&nbsp;选择抄送人
+						</button>
+					</td>
+					<td class="text-left col-aft">
+						<button class="btn btn-info btn-sm" type="button" onclick="hide()">
+							<i class="glyphicon glyphicon-copy"></i>&nbsp;取消抄送
+						</button>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="text-right td col-first">主题:</td>
+					<td class="text-left"><input type="text" class="td-put" name="subject"></td>
+				</tr>
+				<tr>
+					<td class="text-right td col-first">优先级:</td>
+					<td class=""><select name="importantFlag" class="text-right td-put">
+						<option value=""></option>
+						<option value="1">一般</option>
+						<option value="2">重要</option>
+						<option value="3">非常重要</option>
+					</select></td>
+					<td class="text-left td col-aft">
+						<input type="checkbox">&nbsp;告诉他有信
+					</td>
+				</tr>
+				<tr>
+					<td class="text-right col-first">附件:</td>
+					<td class="">
+						<div type="text" id="fileattach" class="td-put"></div>
+						<input type="hidden" class="td-put" id="fileIds" name="fileIds">
+						<input type="hidden" class="td-put" id="fileNames" name="filenames">
+					</td>
+					<td class="text-left td col-aft">
+					    	 <div class="col-md-2">
+				                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addfileattach1">
+				                    <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+				                </button>
+				             </div>
+			  			</div>
+					</td>
+					
+				</tr>
+				<tr>
+					<td rowspan="" class="text-right col-first" style="vertical-align:top;">内容:</td>
+					<td rowspan="5" colspan="3">
+						<div id="emailcontent" class="td-content" style="height:150px;">
+							<%@ include file="../common/editor.jsp" %>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</form>
+	</div>
+	<!-- 收信人选择弹窗 -->
+    <%@ include file="../common/employee_modal.jsp" %>
+    <!-- 附件上传弹框 -->
+    <%@ include file="../common/fileattach_modal.jsp" %>
+    <!-- 抄送人选择弹窗 start -->
+    <div class="modal fade" id="chaosongMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;借阅人选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="orgscs" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色
+	                                </span>
+	                                <ul id="rolescs" class="secondLevel">
+	                                	<!-- 所有角色打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="employeetablecs" class="rightContent pull-right">
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	                    <button type="button" class="btn btn-success bYes">确定</button>
+	                </div>
+	            </div>
+	        </div>
+    </div>
+    <!-- 抄送人选择弹窗 end -->
+</body>
+<script type="text/javascript">
+    $(function(){
+    	var jsp = jypath+"system/oa/communicate/email.jsp";
+		$('.havHead').on('click', '.btn-warning', function(event) {
+			$('.navBox input').val('');
+			$('.navBox select').val('');
+		});
+		$('.havHead').on('click', '.btn-danger', function() {
+			$('a[data-id="'+jsp+'"]', window.parent.document).children('.fa-times-circle').click();
+		});//qwer为当前页面的url：xxxx.html
+	})
+	//判断是否选中
+    $('.bYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#employeetablecs .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#copyToName").val(arrayName);
+	        	$("#copyToID").val(arrayId);
+	        	$(".bYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+    function save(status) {
+    	var content = getContent();
+    	var url = jypath+"/oa/mail/add";
+    	var data = $("#addform").serialize()+"&content="+content+"&mailStatus="+status;
+    	$.ajax({
+    		type: "post",
+    		url : url,
+    		data: data,
+    		success:function(data) {
+    			window.location.href= jypath+"/oa/mail/list";
+    		}
+    	});
+    }
+ 	// 获取富文本编辑器的内容
+	function getContent() {
+	    var content = UM.getEditor("containerform").getContent();
+	    return content;
+	}
+	//加载所有部门
+  	function getAllDep() {
+    	var url = "/oa/org/listorg";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgs").html(obj);
+    			$("#orgscs").html(obj);
+    		}
+    	});
+    }
+  	//获取某个部门下的所有员工
+  	function getEmpByOrg(id) {
+    	var url = "/oa/listEm";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#employeetable").html(data);
+    			$("#employeetablecs").html(data);
+    		}
+    	});
+    }
+  	//加载所有角色
+  	function getAllRole() {
+    	var url = "/oa/role/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#roles").html(obj);
+    			$("#rolescs").html(obj);
+    		}
+    	});
+    }
+  	//获取某角色下的所有员工
+  	function getEmpByRole(id) {
+    	var url = "/oa/listEm";
+    	id += "";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "roleId="+id,
+    		success: function(data) {
+    			$("#employeetable").html(data);
+    			$("#employeetablecs").html(data);
+    		}
+    	});
+    }
+    function show() {
+		$("#chaosongren").removeAttr("hidden");
+	}
+	function hide() {
+		$("#chaosongren").attr("hidden","true");
+	}
+</script>
+
+</html>

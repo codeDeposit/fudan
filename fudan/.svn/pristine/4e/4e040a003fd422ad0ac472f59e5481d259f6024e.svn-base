@@ -1,0 +1,110 @@
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	$('#createdate').val(fuDate());
+	$('.form_date').datetimepicker({/*时间初始化*/
+	    language: 'zh-CN',
+	    weekStart: 1,
+	    todayBtn: 1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 2,
+	    forceParse: 0,
+	}); 
+	$.ajax({//类别调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/kind/list",
+		success:function(data){
+			$('#category1').html(data);
+		}
+	}); 
+	$.ajax({//采购方式调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/type/list",
+		success:function(data){
+			$('#types').html(data);
+		}
+	});
+	/**
+	 * 搜索页面方法调用
+	 */
+	$.ajax({//需求部门调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/org/role/getBm",
+		success:function(data){
+			var obj = eval('('+ data +')');
+			var lData = obj.obj;
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+			} else {
+				document.getElementById('bm').innerHTML = "<option value=''>--请选择--</option>";
+				for(var i=0;i<lData.length;i++){
+					document.getElementById('bm').innerHTML += "<option value="+ lData[i]['id'] +">"+ lData[i]['name'] +"</option>";
+				}
+			}
+		}
+	});
+});
+function fGetProduct(){//产品调取
+	var lId = $('#category1').val();
+	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/kind/list2",
+		data:{
+			id:lId
+		},
+		success:function(data){
+			
+			$('#category2').html(data);
+		}
+	}); 
+}	
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/item/itemList",
+		data:{mark:'xqtb'},
+		success : function(data) {
+			$('#xqtbItemList').html(data);
+			fuCloseLayer();
+		}
+	});
+}
+function fDetail(param){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/updateView?mark=1&xqtbId="+param,
+		success : function(data) {
+			$('#xqtbDetail').html(data);
+			fuCloseLayer();
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/item/search?mark=xqtb",
+		data : $("#xqtbItemSearchForm").serialize(),
+		success : function(data) {
+			$('#xqtbItemList').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}
+function fExcel(param){
+	if(param == 1){//搜索
+		window.location.href= basePath+'backstage/wzcg/item/excel?' + $("#xqtbItemSearchForm").serialize()+"&mark=xqtb";
+	}else{//单条数据导出
+		window.location.href= basePath+'backstage/wzcg/item/excel?xqtbId='+param
+	}
+}

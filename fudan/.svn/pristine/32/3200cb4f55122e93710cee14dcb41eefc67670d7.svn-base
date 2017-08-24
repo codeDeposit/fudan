@@ -1,0 +1,26 @@
+package com.jy.service.workflow.online.apply;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+
+public interface ApproverSettingService {
+
+	/**
+	 * 设置审核人职务
+	 * @param approverSetting
+	 * @return
+	 */
+	AjaxRes save(ApproverSetting approverSetting);
+	
+	/**
+	 * 查询已设置的职务
+	 */
+	ApproverSetting get();
+	
+	/**
+	 * 判断登录用户是否是审核人
+	 * @return
+	 */
+	boolean isApprover();
+
+}

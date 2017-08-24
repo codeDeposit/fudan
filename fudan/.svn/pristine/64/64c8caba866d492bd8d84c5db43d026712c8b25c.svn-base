@@ -1,0 +1,29 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.OfficeGoodsType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface OfficeGoodsTypeService {
+
+	// 添加办公品类型
+	JsonInfo save(OfficeGoodsType officeGoodsType);
+
+	// 获取办公品类型详细信息
+	OfficeGoodsType getInfoBy(Long typeId);
+
+	// 修改办公品类型信息
+	JsonInfo update(OfficeGoodsType officeGoodsType);
+
+	// 删除办公品类型
+	JsonInfo delete(Long[] typeId);
+
+	// 获取类型列表
+	List<OfficeGoodsType> getAll(String typeName);
+
+	// 分页显示列表
+	List<OfficeGoodsType> getPageList(PageBean pb, String typeName);
+
+}

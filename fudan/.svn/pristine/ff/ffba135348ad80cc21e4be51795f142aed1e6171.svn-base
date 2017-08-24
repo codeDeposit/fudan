@@ -1,0 +1,189 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<script type="text/javascript" src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/customer/customer.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/file/ajaxfileupload.js"></script>
+		<script type="text/javascript" src="https://apis.map.qq.com/tools/geolocation/min?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp"></script>
+		<title>销售行动添加</title>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-btn aui-pull-left" tapmode href="../customer/pBasic"><span class="aui-iconfont aui-icon-left">返回</span> </a>
+			<div class="aui-title" >
+				销售行动添加
+			</div>
+		</header>
+		<form id="Form_saleActivity_add" enctype="multipart/form-data" onsubmit="return fSaleActivityAdd()" >
+			<input type="hidden" name="customerId" value="${saleActivity.customerId }">
+			<div class="aui-content aui-margin-b-15">
+			    <ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	行动方式
+			                </div>
+			                 <div class="aui-list-item-input">
+			                    <select name="byway" id="byway" required>
+		                    	 	<option value="">请选择</option>
+			                        <option value="1">电话拜访</option>
+			                        <option value="2">现场拜访</option>
+			                        <option value="3">QQ和微信拜访</option>
+			                    </select>
+			                </div>
+			            </div>
+			        </li> 
+			         <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	重要程度
+			                </div>
+			                 <div class="aui-list-item-input">
+			                   	<label><input class="aui-radio" type="radio" name="level" value="1" checked>一般</label>
+                   		 		<label><input class="aui-radio" type="radio" name="level" value="2"> 重要</label>
+                   		 		<label><input class="aui-radio" type="radio" name="level" value="3"> 紧急</label>
+			                </div>
+			            </div>
+			        </li> 
+			       
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	行动时间
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" name="beginDate" id="beginDate" maxlength="255" placeholder="行动时间" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	行动地点
+			                </div>
+			                <div class="aui-list-item-input">
+			                   <!--  <input type="text" name="location" id="location" maxlength="255" placeholder="行动地点" required> -->
+			                   <input type="text" name="location" id="address" value="" readonly="readonly">
+			                    <div class="aui-btn aui-btn-info" id="showMap" class="endBtn">地图</div>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="">
+                                    <div id="mapitem"></div>
+                                </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	主&nbsp;&nbsp;办&nbsp;&nbsp;人
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="sponsor" id="sponsor" maxlength="255" placeholder="主办人" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="file" name="attachments" id="attachments" maxlength="255" placeholder="附件" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容
+			                </div>
+			                <div class="aui-list-item-input">
+			                	<input name="content" id="content" maxlength="255" placeholder="内容" required>
+			                </div>
+			            </div>
+			        </li>
+			   	</ul>
+		    </div>
+		   	<div class="aui-content-padded">
+	        	<p><button class="aui-btn aui-btn-success aui-btn-block aui-btn-sm">保	存</button></p>
+		   	</div>
+		</form>
+	</body>
+	<script>
+		function getLocation() {
+     addfir();
+     //判断是否支持 获取本地位置
+     if (navigator.geolocation) {
+         navigator.geolocation.getCurrentPosition(showPosition, showError, {
+             enableHighAcuracy: true,
+             //timeout: 5000,
+             //maximumAge: 10000
+         });
+     } else {
+         console.log("浏览器不支持定位");
+     };
+ }
+
+ function showError(error) {
+     switch (error.code) {
+         case error.PERMISSION_DENIED:
+             alert('你已拒绝地理定位 ！', '#e51c23');
+             break;
+         case error.POSITION_UNAVAILABLE:
+             alert('定位信息不可用 ！', '#e51c23');
+             break;
+         case error.TIMEOUT:
+             alert('定位超时 ！', '#e51c23');
+             break;
+         case error.UNKNOWN_ERROR:
+             alert('定位系统失效 ！');
+             break;
+     }
+ }
+
+ function showPosition(position) {
+     var arr = [position.coords.longitude, position.coords.latitude];
+     AMap.convertFrom(arr, 'gps',
+         function(status, result) {
+             if (status == 'complete') {
+                 var lng = result.locations[0].lng;
+                 var lat = result.locations[0].lat;
+                 document.getElementById('lat').value = lat;
+                 document.getElementById('lng').value = lng;
+                 lnglatXY = [lng, lat]; //已知点坐标
+                 var geocoder = new AMap.Geocoder({
+                     radius: 1000,
+                     extensions: "all"
+                 });
+                 geocoder.getAddress(lnglatXY, function(status, result) {
+                     if (status === 'complete' && result.info === 'OK') {
+                         document.getElementById('address').value = result.regeocode.formattedAddress;
+                     }
+                 });
+                 document.getElementById('showMap').addEventListener('click', function() {
+                     $('#mapitem').height($('#mapitem') == 0 ? 6 + 'rem' : 0);
+                     var map = new AMap.Map("mapitem", {
+                         resizeEnable: true,
+                         zoom: 18
+                     });
+                     var marker = new AMap.Marker({ //加点
+                         map: map,
+                         position: lnglatXY
+                     });
+                     map.setFitView();
+                 });
+             }
+         })
+ }
+		
+	</script>
+</html>

@@ -1,0 +1,191 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta name="renderer" content="webkit">
+	    <title>掌上医苑后台管理</title>
+	    <%@ include file="../common/css.jsp" %>
+	    <%@ include file="../common/js.jsp" %>
+	    <style>
+			html,body{
+				font-family:Arial,'微软雅黑','黑体',sans-serif !important;
+				min-height:500px !important;
+			}
+		</style>
+	</head>
+	<body>
+	    <div class="wrapper wrapper-content">
+             <div class="row">
+             	<c:if test="${mark == '73e9c883b7d844b08ba56a080a571aa4'}">
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="../appMember/listPage">
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-user"></i>&nbsp;用户</h2>
+		                        </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">99</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>总用户</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="javascript:void(0)">
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-user-md"></i>&nbsp;医生</h2>
+								</a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">0</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>医生人数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="javascript:void(0)">
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-sitemap"></i>&nbsp;设备</h2>
+		                        </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">99</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>商品数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+                 </c:if>
+                 <c:if test="${mark == '73e9c883b7d844b08ba56a080a571aa4' || mark == '61b30e4f86c4463b9c4359f599e90d4a'}">
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                             <a href="../appAdminGoods/list"> 
+	                             	<span class="label label-danger pull-right">0</span>
+	                             	<h2><i class="fa fa-gift"></i>&nbsp;商品</h2>
+                             	</a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">99</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>商品数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="../appAdminOrder/listPage?order_state=0"> 
+	                             	<span class="label label-danger pull-right">0</span>
+	                             	<h2><i class="fa fa-shopping-cart"></i>&nbsp;订单</h2>
+	                             </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">0</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>订单数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="javascript:void(0)"> 
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-file-text"></i>&nbsp;文章</h2>
+	                            </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">99</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>文章数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="../appAdminAdv/index"> 
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-tachometer"></i>&nbsp;广告</h2>
+								</a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">0</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>商品数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+                 </c:if>
+                 <c:if test="${mark == '73e9c883b7d844b08ba56a080a571aa4'}">
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="../appAdminSetting/pushIndex"> 
+		                             <span class="label label-danger pull-right">0</span>
+		                             <h2><i class="fa fa-mobile"></i>&nbsp;App</h2>
+		                        </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">0</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>文章数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	                 <div class="col-lg-4 col-xs-4">
+	                     <div class="ibox float-e-margins">
+	                         <div class="ibox-title">
+	                         	<a href="javascript:void(0)"> 
+	                             	<span class="label label-danger pull-right">0</span>
+	                             	<h2><i class="fa fa-gear"></i>&nbsp;系统</h2>
+	                             </a>
+	                         </div>
+	                         <div class="ibox-content">
+	                             <h1 class="no-margins">0</h1>
+	                             <div class="stat-percent font-bold text-info">
+	                             	本周新增 <i class="fa fa-arrow-up"></i>&nbsp;0
+	                             </div>
+	                             <small>文章数</small>
+	                         </div>
+	                     </div>
+	                 </div>
+	             </c:if>
+             </div>
+       	 </div>
+	</body>
+	<script>
+		$(document).ready(function(){
+			parent.scrollTo(0,0);
+		})
+	</script>
+</html>

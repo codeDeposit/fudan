@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.DutySystemDao">
+	
+	<resultMap type="com.jy.entity.oa.personal.DutySystem" id="ResultMap">
+		<id column="systemId" property="systemId"/>
+		<result column="systemName" property="systemName"/>
+		<result column="systemSetting" property="systemSetting"/>
+		<result column="systemDesc" property="systemDesc"/>
+		<result column="isDefault" property="isDefault"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from fudan_oa_duty_system where 1 = 1 <include refid="findSql"></include>
+	</select>
+	
+	<insert id="insert" parameterType="String">
+		insert fudan_oa_duty_system <include refid="insertSQL"></include>
+	</insert>
+	
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_duty_system where systemId = #{systemId}
+	</delete>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from fudan_oa_duty_system where 1 = 1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="systemName !=null and systemName !='' ">
+			and systemName like concat("%", #{systemName},"%")
+		</if>
+		<if test="systemSetting !=null and systemSetting !='' ">
+			and systemSetting like concat("%", #{systemSetting},"%")
+		</if>
+		<if test="systemDesc !=null and systemDesc !='' ">
+			and systemDesc like concat("%", #{systemDesc},"%")
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="systemName !=null and systemName !='' ">
+			and systemName like concat("%", #{systemName},"%")
+		</if>
+		<if test="systemSetting !=null and systemSetting !='' ">
+			and systemSetting like concat("%", #{systemSetting},"%")
+		</if>
+		<if test="systemDesc !=null and systemDesc !='' ">
+			and systemDesc like concat("%", #{systemDesc},"%")
+		</if>
+		<if test="isDefault != 0">
+			and isDefault = #{isDefault}
+		</if>
+	</sql>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="systemName !=null and systemName !='' ">
+				systemName = #{systemName},
+			</if>
+			<if test="systemSetting !=null and systemSetting !='' ">
+				systemSetting = #{systemSetting},
+			</if>
+			<if test="systemDesc !=null and systemDesc !='' ">
+				systemDesc = #{systemDesc},
+			</if>
+			<if test="isDefault !=null ">
+				isDefault = #{isDefault},
+			</if>
+		</set>
+	</sql>
+
+	<!-- 修改班制定义 start -->
+	<update id="update" parameterType="String">
+		update fudan_oa_duty_system <include refid="insertSQL"></include> where systemId = #{systemId} 
+	</update>
+	<!-- 修改班制定义 end -->
+	
+	<!-- 缺省班制定义信息 start -->
+	<select id="selectDefault" resultType="String">
+		select * from fudan_oa_duty_system where isDefault = 1
+	</select>
+	<!-- 缺省班制定义信息 end -->
+
+</mapper>

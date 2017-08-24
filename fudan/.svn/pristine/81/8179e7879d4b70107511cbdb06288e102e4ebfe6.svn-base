@@ -1,0 +1,108 @@
+var accountPd;
+$(document).ready(function(){
+	$('.form_date').datetimepicker({
+	    language: 'zh-CN',
+	    weekStart: 1,
+	    todayBtn: 1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 2,
+	    forceParse: 0,
+	});  
+	/**
+	 * 文件上传样式配置初始化
+	**/
+	fileSetting('/jpg|jpg|JPG|jpeg|JPEG|png|PNG|ico|ICO|ico/i',4);//类型,大小;input的id为filePicture,name为filePicture
+	fileAreaSetting(4,'/jpg|jpg|JPG|jpeg|JPEG|png|PNG|ico|ICO|ico/i',4);//数量,类型,大小;input的id为file加数量i,name为files
+	/*end*/
+	$.ajax({//地区省份加载
+		type: "POST",
+		async: false,
+		url: jypath+'/backstage/area/province',
+		data: {pId:0}, 
+		success: function(data){
+			$("#province1").html(data);
+			$("#province2").html(data);
+		}
+	});
+	$.ajax({//评审专业类别加载
+		type: "POST",
+		async: false,
+		url: jypath+'/backstage/wzcg/kind/list',
+		success: function(data){
+			$("#profession1").html(data);
+			$("#profession2").html(data);
+			$("#profession3").html(data);
+		}
+	});
+});
+function getCity(param){//地区城市加载
+	if(param == 1){
+		var pId = $('#province1').val(); 
+	}else{
+		var pId = $('#province2').val();  
+	}
+	$.ajax({
+		type: "POST",
+		async: false,
+		url: jypath+'/backstage/area/city',
+    	data: {pId: pId},
+		success: function(data){
+			if(param == 1){
+				$("#city1").html(data);
+			}else{
+				$("#city2").html(data);
+			}
+		}
+	});
+}
+function checkName(){//用户名重复检测
+	var account = $("#account").val();
+	$.ajax({
+		type:"post",
+		async:false,
+		url:jypath+"/backstage/account/checkName",
+		data:{
+			loginName:account
+		},
+		success:function(data){
+			var obj = eval('('+ data +')');
+			accountPd = obj.res;
+			$("#accountHint").html(obj.resMsg);
+		}
+	}); 
+}
+function fSubmit(){//表单提交
+	fuLoading();
+	var lPicture = $('#filePicture').val();//图片检测
+	var lImages = document.getElementsByName("files");
+	if(lPicture == "" || lPicture == undefined){
+		fuError("请上传你的个人图片");
+		fuCloseLayer();
+	}else if(lImages.length == 0 || lImages == undefined || lImages[0].value == ''){
+		fuError("请上传身份证图片");
+		fuCloseLayer();
+	}else{
+		var ids = ['filePicture','file1','file2','file3','file4'];
+		$.ajaxFileUpload({
+			type:"post",
+			async:false,
+			url:jypath+"/backstage/wzcg/expert/add?"+$("#form1").serialize(),
+			ecureuri:false,
+	    	fileElementId:ids,
+			dataType:"JSON",
+			success:function(data){
+				var obj = eval('('+ data +')');
+				if(obj.res == 0){
+					fuError(obj.resMsg);
+				}else{
+					fuShowSuccess("上传成功");
+					fuCloseLayer();
+					setTimeout("window.location.href =jypath+'/loginIndex';",1000);
+				}
+			}
+		});
+	}
+	return false;
+}

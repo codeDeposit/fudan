@@ -1,0 +1,373 @@
+package com.jy.service.oa.impl.document;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.document.DocFolder;
+import com.jy.entity.oa.document.Document;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.document.DocFolderMapper;
+import com.jy.repository.oa.document.DocumentMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.document.DocumentService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("documentService")
+public class DocumentServiceImpl implements DocumentService {
+
+	private DocumentMapper documentMapper;
+
+	private FileAttachMapper fileAttachMapper;
+	
+	private DocFolderMapper docFolderMapper;
+	
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	public DocumentMapper getDocumentMapper() {
+		return documentMapper;
+	}
+
+	@Autowired
+	public void setDocumentMapper(DocumentMapper documentMapper) {
+		this.documentMapper = documentMapper;
+	}
+
+	public DocFolderMapper getDocFolderMapper() {
+		return docFolderMapper;
+	}
+
+	@Autowired
+	public void setDocFolderMapper(DocFolderMapper docFolderMapper) {
+		this.docFolderMapper = docFolderMapper;
+	}
+
+	// 添加文档
+	@Override
+	public JsonInfo save(Document document) {
+		document.setUserId(AccountShiroUtil.getCurrentUser().getAccountId());
+		document.setCreatetime(new Date());
+		document.setUpdatetime(document.getCreatetime());
+		document.setFullname(AccountShiroUtil.getCurrentUser().getName());
+		document.setIsShared((short) 0);
+		if (document.getFileId().length > 0) {
+			document.setHaveAttach((short) 1);
+		} else {
+			document.setHaveAttach((short) 0);
+		}
+		// 插入文档
+		int result = documentMapper.insert(document);
+		// 获取刚插入文档的ID号
+		Long documentId = documentMapper.selectMaxDocumentId();
+		// 获取附件Id
+		Long[] fileId = document.getFileId();
+		// 插入文档与附件的关联
+		for (Long fId : fileId) {
+			result = documentMapper.insertFileId(fId, documentId);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取文档详细信息
+	@Override
+	public Document getInfo(Long docId) {
+		//获取文档详细信息
+		Document doc = documentMapper.selectInfo(docId);
+		if(doc.getHaveAttach() == 1) {
+			//获取附件信息
+			List<FileAttach> fas = new ArrayList<FileAttach>();
+			List<Long> fileIds = documentMapper.selectFileId(docId);
+			for(Long fileId : fileIds) {
+				FileAttach fa = fileAttachMapper.selectBy(fileId);
+				fas.add(fa);
+			}
+			doc.setFileAttachs(fas);
+		}
+		Long folderId = doc.getFolderId();
+		DocFolder docFolder = docFolderMapper.selecInfoBy(folderId);
+		doc.setFolderName(docFolder.getFolderName());
+		return doc;
+	}
+
+	// 修改文档信息
+	@Override
+	public JsonInfo update(Document document) {
+		int result = documentMapper.update(document);
+		// 获取文档的ID号
+		Long documentId = document.getDocId();
+		// 获取附件Id
+		Long[] fileId = document.getFileId();
+		//删除所有的附件关联
+		documentMapper.deleteFileId(documentId);
+		
+		if(fileId.length > 0) {
+			// 插入文档与附件的关联
+			for (Long fId : fileId) {
+				result = documentMapper.insertFileId(fId, documentId);
+			}
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 文档共享
+	@Override
+	public JsonInfo share(Document document) {
+		document.setIsShared((short)1);
+		int result = documentMapper.update(document);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除文档
+	@Override
+	public JsonInfo del(Long[] docId) {
+		int result = 0;
+		for(Long dId : docId) {
+			//删除文档对应的附件信息
+			result = documentMapper.deleteFileId(dId);
+			//删除文档
+			result = documentMapper.delete(dId);
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取可以看到的文档列表：自己创建的文档，共享的文档，公共文档
+	@Override
+	public Set<Document> getInfo(String docName, Date startDate, Date endDate) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		
+		Set<Document> docs = new HashSet<Document>();
+		//获取自己创建的文档
+		List<Document> docs1 = documentMapper.selectSelfDoc(userId, docName, null, startDate, endDate);
+		//获取共享的文档
+		List<Document> docs2 = documentMapper.selectSharedDoc(docName, startDate, endDate);
+		//分离被共享给自己的文档
+		List<Document> docs3 = new ArrayList<Document>();
+		for(Document doc : docs2) {
+			//获取被共享到员工的Id
+			String shareEId = doc.getSharedUserIds();
+			if(shareEId.contains(userId)) {
+				docs3.add(doc);
+			}
+			//获取被共享到的角色Id
+			String shareRId = doc.getSharedRoleIds();
+			String rId = account.getRoleId();
+			if(shareRId.contains(rId)) {
+				docs3.add(doc);
+			}
+			//获取被共享到的部门Id
+			String shareOId = doc.getSharedDepIds();
+			Employee employee = employeeMapper.selectItSelf(userId);
+			String oId = employee.getOrgId();
+			if(shareOId.contains(oId)) {
+				docs3.add(doc);
+			}
+		}
+		
+		// 获取公共文件夹的ID
+		List<Long> folderIds = docFolderMapper.selectPublicFolder();
+		for(Long folderId : folderIds) {
+			// 获取公共的文档
+			List<Document> doc4 = documentMapper.selectPublicDoc(folderId, docName, startDate, endDate);
+			// 添加公共文档
+			add(docs, doc4);
+		}
+		
+		add(docs, docs1);
+		add(docs, docs3);
+		
+		//循环Set中的元素，为文档设置附件信息
+		for(Document doc : docs) {
+			List<FileAttach> fas = new ArrayList<FileAttach>();
+			List<Long> fileIds = documentMapper.selectFileId(doc.getDocId());
+			for(Long fileId : fileIds) {
+				FileAttach fa = fileAttachMapper.selectBy(fileId);
+				fas.add(fa);
+			}
+			doc.setFileAttachs(fas);
+		}
+		
+		return docs;
+	}
+	
+	// 将List中的元素，添加到set中，如果set中有，则不添加
+	public void add(Set<Document> docsSet, List<Document> docsList) {
+		for(Document document : docsList) {
+			if(!(docsSet.contains(document))) {
+				docsSet.add(document);
+			}
+		}
+	}
+	
+	// 将List中的元素，添加到set中，如果set中有，则不添加
+	public void add(List<Document> docsSet, List<Document> docsList) {
+		for(Document document : docsList) {
+			if(!(docsSet.contains(document))) {
+				docsSet.add(document);
+			}
+		}
+	}
+
+	// 获取共享文档列表
+	@Override
+	public List<Document> getShare(String docName, String sharedUserNames, Date startDate, Date endDate) {
+		List<Document> docs = documentMapper.selectShare(docName, sharedUserNames, startDate, endDate);
+		//循环Set中的元素，为文档设置附件信息
+		for(Document doc : docs) {
+			List<FileAttach> fas = new ArrayList<FileAttach>();
+			List<Long> fileIds = documentMapper.selectFileId(doc.getDocId());
+			for(Long fileId : fileIds) {
+				FileAttach fa = fileAttachMapper.selectBy(fileId);
+				fas.add(fa);
+			}
+			doc.setFileAttachs(fas);
+		}
+		return docs;
+	}
+
+	// 获取公共文档列表
+	@Override
+	public List<Document> getPublic(String docName, Date startDate, Date endDate) {
+		List<Document> documents = new ArrayList<Document>();
+		// 获取公共文件夹的ID
+		List<Long> folderIds = docFolderMapper.selectPublicFolder();
+		for(Long folderId : folderIds) {
+			// 获取公共的文档
+			List<Document> doc4 = documentMapper.selectPublicDoc(folderId, docName, startDate, endDate);
+			// 添加公共文档
+			add(documents, doc4);
+		}
+		return documents;
+	}
+
+	@Override
+	public Set<Document> getPageList(PageBean pb, String docName,
+			Date startDate, Date endDate) {
+		return null;
+	}
+
+	// 获取个人文档（自己创建的文档）
+	@Override
+	public List<Document> getSelf(String docName, Long folderId, Date startDate, Date endDate) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		List<Document> documents = documentMapper.selectSelfDoc(userId, docName, folderId, startDate, endDate);
+		return documents;
+	}
+
+	@Override
+	public List<Document> getSelfPageList(PageBean pb, String docName, Long folderId,
+			Date startDate, Date endDate) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Document> documents = documentMapper.selectSelfPageData(firstIndex, toIndex, userId, docName, folderId, startDate, endDate);
+		for(Document document: documents) {
+			document.setCreatetime1(DateStringUtil.dateToString4(document.getCreatetime()));
+		}
+		documents = addFileAttach(documents);
+		return documents;
+	}
+	
+	/**
+	 * 为每个文档添加附件，如果有附件的话
+	 * @param documents
+	 * @return
+	 */
+	private List<Document> addFileAttach(List<Document> documents) {
+		for (Document document : documents) {
+			if(document.getHaveAttach() == 0) continue;
+			Long docId = document.getDocId();
+			List<Long> fileIds = documentMapper.selectFileId(docId);
+			List<FileAttach> fileAttachs = new ArrayList<FileAttach>();
+			for (Long fileId : fileIds) {
+				FileAttach fileAttach = fileAttachMapper.selectBy(fileId);
+				fileAttachs.add(fileAttach);
+			}
+			document.setFileAttachs(fileAttachs);
+		}
+		return documents;
+	}
+
+	/**
+	 * 共享文档分页
+	 */
+	@Override
+	public List<Document> getSharePageList(PageBean pb, String docName,
+			String sharedUserNames, Date startDate, Date endDate) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Document> documents = documentMapper.selectSharePageData(firstIndex, toIndex, docName, sharedUserNames, startDate, endDate);
+		for(Document document: documents) {
+			document.setCreatetime1(DateStringUtil.dateToString4(document.getCreatetime()));
+		}
+		documents = addFileAttach(documents);
+		return documents;
+	}
+
+}

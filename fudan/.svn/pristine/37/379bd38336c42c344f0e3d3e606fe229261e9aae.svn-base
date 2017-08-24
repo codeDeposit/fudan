@@ -1,0 +1,225 @@
+package com.jy.controller.oa.task;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.task.CalendarPlan;
+import com.jy.entity.oa.task.CalendarPlanVO;
+import com.jy.service.oa.task.CalendarPlanService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/calendarplan")
+public class CalendarPlanController {
+
+	private CalendarPlanService calendarPlanService;
+
+	public CalendarPlanService getCalendarPlanService() {
+		return calendarPlanService;
+	}
+
+	@Autowired
+	public void setCalendarPlanService(CalendarPlanService calendarPlanService) {
+		this.calendarPlanService = calendarPlanService;
+	}
+	
+	/**
+	 * 添加日程
+	 * @param calendarPlan
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(CalendarPlan calendarPlan) {
+		JsonInfo info = calendarPlanService.save(calendarPlan);
+		return info;
+	}
+	
+	/**
+	 * 获取日程详细信息
+	 * @param planId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long planId, String operation) {
+		CalendarPlan calendarPlan = calendarPlanService.getInfoBy(planId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("calendarPlan", calendarPlan);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/task/calendarplan_form");
+		if("complete".equalsIgnoreCase(operation)) {
+			mv.setViewName("system/oa/task/calendarplan_complete");
+		}
+		return mv;
+	}
+	
+	/**
+	 * 修改日程信息
+	 * @param calendarPlan
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(CalendarPlan calendarPlan) {
+		JsonInfo info = calendarPlanService.update(calendarPlan);
+		return info;
+	}
+	
+	/**
+	 * 批量删除日程
+	 * @param planId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multidel(Long[] planId) {
+		JsonInfo info = calendarPlanService.del(planId);
+		return info;
+	}
+	
+	/**
+	 * 完成任务
+	 * @param planId
+	 * @return
+	 */
+	@RequestMapping("/complete")
+	@ResponseBody
+	public JsonInfo complete(Long planId, String feedback) {
+		JsonInfo info = calendarPlanService.complete(planId, feedback);
+		return info;
+	}
+	
+	/**
+	 * 获取要执行的任务列表(默认列出：要执行的任务)
+	 * @param calendarPlan
+	 * @return
+	 */
+	@RequestMapping("/listzx")
+	public ModelAndView list(HttpServletRequest request, CalendarPlan calendarPlan) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<CalendarPlan> calendarPlans = calendarPlanService.get(calendarPlan);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(calendarPlans.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<CalendarPlan> pageCalendarPlans = calendarPlanService.getZXPageList(pb, calendarPlan);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/calendarplan_table");
+		}else {
+			mv.setViewName("system/oa/task/calendarplan_list");
+		}
+		mv.addObject("calendarPlans", pageCalendarPlans);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 获取我分配的任务列表
+	 * @param calendarPlan
+	 * @return
+	 */
+	@RequestMapping("/listfp")
+	public ModelAndView listFP(HttpServletRequest request, CalendarPlan calendarPlan) {
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<CalendarPlan> calendarPlans = calendarPlanService.getFP(calendarPlan);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(calendarPlans.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页列表
+		List<CalendarPlan> pageCalendarPlans = calendarPlanService.getFPPageList(pb, calendarPlan);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/task/calendarplanFP_table");
+		mv.addObject("calendarPlans", pageCalendarPlans);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 返回页面
+	 * @return
+	 */
+	@RequestMapping("/listxq")
+	public ModelAndView listXQ() {
+		List<CalendarPlan> calendarPlans = calendarPlanService.getAllXQ();
+		List<CalendarPlanVO> cpolist = transfer(calendarPlans);
+		JSONArray jsonArray = JSONArray.fromObject(cpolist);
+		String json = jsonArray.toString();
+		json = json.replaceAll("=\"", "='");
+		json = json.replaceAll(";\"", ";'");
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("calendarPlans", json);
+		mv.setViewName("system/oa/task/calendarplanXQ_list");
+		return mv;
+	}
+	
+	private List<CalendarPlanVO> transfer(List<CalendarPlan> calendarPlans) {
+		List<CalendarPlanVO> cpolist = new ArrayList<CalendarPlanVO>();
+		for(CalendarPlan cp: calendarPlans) {
+			CalendarPlanVO cpo = new CalendarPlanVO();
+			cpo.setPlanId(cp.getPlanId());
+			cpo.setTitle(cp.getContent());
+			Short status = cp.getStatus(); 
+			if(status == 0) {
+				cpo.settState("未完成");
+			}else if(status == 1) {
+				cpo.settState("完成");				//设置绿色
+				cpo.setBackgroundColor("GREEN");
+			}
+			Short urgent =  cp.getUrgent();
+			if(urgent == 0) {
+				cpo.setJinji("一般");
+			}else if(urgent == 1) {
+				cpo.setJinji("重要");
+				if(status == 0) {
+					cpo.setBackgroundColor("ORANGE");	//橘黄色
+				}
+			}else if(urgent == 2) {
+				cpo.setJinji("紧急");
+				if(status == 0) {
+					cpo.setBackgroundColor("RED");	//红色
+				}
+			}
+			cpo.setDoman(cp.getFullname());
+			cpo.setDistrim(cp.getAssignerName());
+			cpo.setBeback(cp.getFeedback());
+			Short tasktype = cp.getTaskType();
+			if(tasktype == 1) {
+				cpo.setTasktype("限期任务");
+			}else if(tasktype == 2) {
+				cpo.setTasktype("非限期任务");
+			}
+			cpo.setStart(cp.getStartTime1());
+			cpo.setEnd(cp.getEndTime1());
+			cpolist.add(cpo);
+		}
+		return cpolist;
+	}
+	
+}

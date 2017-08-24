@@ -1,0 +1,223 @@
+@CHARSET "UTF-8";
+
+ul {
+	padding: 0;
+	margin: 0;
+}
+
+li {
+	list-style: none;
+}
+
+a {
+	color: #000;
+}
+
+a:focus {
+	text-decoration: none;
+}
+/* 左侧 */
+.left-side-menu {
+	width: 180px;
+	height: 100%;
+}
+
+.right-menu-head {
+	background: #58bc91;
+	border-radius: 4px;
+}
+
+.close-menu {
+	top: 6px;
+	cursor: pointer;
+	right: 8px;
+}
+
+.left-side-menu a:hover {
+	text-decoration: none;
+}
+
+.myEmailList {
+	padding: 0;
+	margin-top: 24px;
+	background: #58bc91;
+	border-radius: 4px;
+}
+
+.myEmailList li {
+	width: 180px;
+	line-height: 28px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.myEmailList .list-head {
+	padding-left: 5px;
+}
+
+.myEmailList a {
+	line-height: 38px;
+	border-radius: 4px;
+}
+
+.myEmailList a:hover {
+	background: #7EB895;
+}
+
+.list-c:hover {
+	background: #7EB895;
+}
+
+.list-c {
+	display: block;
+	width: 180px;
+	height: 38px;
+	padding-left: 40px;
+}
+
+.second-level-list a {
+	padding-left: 60px;
+}
+
+.Recept,.Send {
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	height: 40px;
+	line-height: 40px;
+	padding-left: 40px;
+	width: 100%;
+	border-radius: 4px;
+}
+
+.list-c.active {
+	background-color: #79BD7D !important;
+}
+
+.close-box {
+	display: block;
+	height: 30px;
+	cursor: default;
+}
+
+.list-fresh {
+	cursor: pointer;
+	right: 8px;
+	top: 8px;
+}
+
+.second-level {
+	display: none;
+}
+/* 右侧 */
+.email-content-box {
+	border-left: 5px solid #fff;
+}
+
+.content-box-head {
+	background: #58bc91;
+	height: 28px;
+	line-height: 28px;
+	border-radius: 2px;
+	padding-left: 10px;
+} /* 头部 */
+.exist-search {
+	height: 36px;
+	line-height: 30px;
+	padding: 5px 0;
+} /* 查询 */
+.exist-search input {
+	height: 28px;
+	width: 100px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}
+
+.exist-search span {
+	padding-right: 8px;
+}
+
+.exist-form {
+	margin-bottom: 0;
+}
+
+.Operate {
+	height: 40px;
+	padding: 8px 0;
+} /* 操作 */
+.headBg {
+	background-color: #58bc91;
+}
+
+.theContent {
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.exist-form input {
+	padding-left: 10px;
+}
+/* 右键弹出框 */
+.poPerver {
+	position: absolute;
+	background: #f1f1f1;
+	padding: 10px 0;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	display: none;
+}
+
+.poPerver li {
+	height: 26px;
+	width: 100%;
+	padding: 0 10px;
+	line-height: 26px;
+}
+
+.poPerver li:hover {
+	cursor: pointer;
+	background-color: #DADADA;
+}
+
+.poPerver::before {
+	content: '';
+	display: inline-block;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid #ccc;
+	position: absolute;
+	top: -7px;
+	left: 9px;
+}
+
+.poPerver::after {
+	content: '';
+	display: inline-block;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid #efefef;
+	position: absolute;
+	top: -6px;
+	left: 9px;
+}
+/* 收缩条 */
+.left-side-bar {
+	width: 20px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: -20px;
+	background-color: #B4D7BF;
+	border-radius: 3px;
+	padding: 3px;
+}
+
+.left-side-bar:hover {
+	cursor: pointer;
+}
+
+.left-side-bar span {
+	position: absolute;
+	top: 50%;
+	margin-top: -100px;
+}

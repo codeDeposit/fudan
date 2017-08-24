@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.PillDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Pill" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_pill where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_pill where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="name != '' and name != null">  
+		    AND name = #{name}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="name != '' and name != null">  
+		    AND name = #{name}
+		</if>
+	</sql>
+	
+	<insert id="insert">
+		insert into app_pill (id,name) 
+			values 
+		(#{id},#{name})
+	</insert>
+	
+	<update id="update">
+		update app_pill <include refid="updateSql"></include> where id = #{id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != '' and name != null">  
+		    	name = #{name},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_pill where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+	</delete>
+</mapper>

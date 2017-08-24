@@ -1,0 +1,182 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<!-- 模拟态窗口 start-->
+	<div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h4 class="modal-title" id="addModalLabel">班次定义添加</h4>
+                  </div>
+                  <div class="modal-body">
+                  	<form id="dutysectioneditform" class="form-horizontal" role="form">
+                  		<input type="hidden" value="${dutySection.sectionId}" name="sectionId">
+	                    	<div class="form-group">
+                                <label class="col-sm-2 col-md-2 control-label">班次名称</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <input id="tempName" type="text" class="form-control" name="sectionName" value="${dutySection.sectionName}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-md-2 control-label">上班时间</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+						                <input class="form-control" size="16" type="text" value='${dutySection.dutyStartTime1}' readonly required aria-required="true" name="dutyStartTime">
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						            </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-md-2 control-label">下班时间</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+						                <input class="form-control" size="16" type="text" value='${dutySection.dutyEndTime1}' readonly required aria-required="true" name="dutyEndTime">
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						            </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-md-2 control-label">是否午休</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="col-md-4">
+                                		<c:if test="${dutySection.isNoontimeRest == 1}">
+									    	<input type="radio" id="restyes" name="isNoontimeRest" value="1" checked>是
+									    </c:if>
+									    <c:if test="${dutySection.isNoontimeRest == 0}">
+									    	<input type="radio" id="restyes" name="isNoontimeRest" value="1">是
+									    </c:if>
+									</div>
+									<div class="col-md-4">
+										<c:if test="${dutySection.isNoontimeRest == 1}">
+											<input type="radio" id="restno" name="isNoontimeRest" value="0">否
+										</c:if>
+										<c:if test="${dutySection.isNoontimeRest == 0}">
+											<input type="radio" id="restno" name="isNoontimeRest" value="0" checked>否
+										</c:if>
+									</div>
+                                </div>
+                            </div>
+                            <!-- 休息为是，才显示 -->
+                            <div class="form-group noontimerest">
+                                <label class="col-sm-2 col-md-2 control-label">开始时间</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+						                <input class="form-control" size="16" type="text" value='${dutySection.restStartTime1}' readonly required aria-required="true" name="restStartTime">
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						            </div>
+                                </div>
+                            </div>
+                            <div class="form-group noontimerest">
+                                <label class="col-sm-2 col-md-2 control-label">结束时间</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+						                <input class="form-control" size="16" type="text" value='${dutySection.restEndTime1}' readonly required aria-required="true" name="restEndTime">
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						            </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <label class="col-sm-2 col-md-2 control-label">合计时长</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<input id="totaltime" name="totalTime" class="form-control" type="text" readonly="readonly" value="${dutySection.totalTime}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 col-md-2 control-label">下班是否打卡</label>
+                                <div class="col-sm-10 col-md-10">
+                                	<div class="col-md-4">
+                                		<c:if test="${dutySection.isSign == 1}">
+									    	<input type="radio" name="isSign" value="1" checked>是
+									    </c:if>
+									    <c:if test="${dutySection.isSign == 0}">
+									    	<input type="radio" name="isSign" value="1">是
+									    </c:if>
+									</div>
+									<div class="col-md-4">
+										<c:if test="${dutySection.isSign == 1}">
+											<input type="radio" name="isSign" value="0">否
+										</c:if>
+										<c:if test="${dutySection.isSign == 0}">
+											<input type="radio" name="isSign" value="0" checked>否
+										</c:if>
+									</div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <label class="col-sm-12 col-md-12 pull-left">人性化班次</label>
+                            <div class="form-group">
+                                <div class="checkbox col-md-12 center-block">
+								  <label class="control-label col-md-3">
+								  	<c:if test="${dutySection.isLate == 1}">
+								    	<input type="checkbox" name="isLate" value="1" checked>允许迟到分钟数
+								    </c:if>
+								    <c:if test="${dutySection.isLate == 0}">
+								    	<input type="checkbox" name="isLate" value="1">允许迟到分钟数
+								    </c:if>
+								  </label>
+								  <div class="col-md-4">
+							  		<input type="text" class="form-control" name="lateMinute" value="${dutySection.lateMinute }">
+								  </div>
+								</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox col-md-12">
+								  <label class="control-label col-md-3 text-center">
+								  	<c:if test="${dutySection.isSeriousLate == 1}">
+								    	<input type="checkbox" name="isSeriousLate" value="1" checked>严重迟到分钟数
+								    </c:if>
+								    <c:if test="${dutySection.isSeriousLate == 0}">
+								    	<input type="checkbox" name="isSeriousLate" value="1">严重迟到分钟数
+								    </c:if>
+								  </label>
+								  <div class="col-md-4">
+								  	<input type="text" class="form-control" name="seriousLateMinute" value="${dutySection.seriousLateMinute }">
+								  </div>
+								</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox col-md-12">
+								  <label class="control-label col-md-3">
+								  	<c:if test="${dutySection.isSeriousLate == 1}">
+								    	<input type="checkbox" name="isAbsenteeism" value="1" checked>旷工迟到分钟数
+								    </c:if>
+								    <c:if test="${dutySection.isSeriousLate == 0}">
+								    	<input type="checkbox" name="isAbsenteeism" value="1">旷工迟到分钟数
+								    </c:if>
+								  </label>
+								  <div class="col-md-4">
+								  	<input type="text" class="form-control" name="absenteeismMinute" value="${dutySection.absenteeismMinute }">
+								  </div>
+								</div>
+                            </div>
+                            </form>
+                  </div>
+                  <div class="modal-footer">
+                       <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                       <button id="dutysectioneditbtn" type="button" class="btn btn-success">保存</button>
+                   </div>
+              </div>
+          </div>
+    <!-- 模拟态窗口 end -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#infoorupdate").modal("show");
+	});
+	$("#dutysectioneditbtn").click(function() {
+		var data = $("#dutysectioneditform").serialize();		
+		var url = "/oa/dutysection/edit";
+		$.ajax({
+			type: "post",
+			url : jypath + url,
+			data: data,
+			success: function(data) {
+				fuShowSuccess();
+				refresh();
+			}
+		});
+	});
+</script>

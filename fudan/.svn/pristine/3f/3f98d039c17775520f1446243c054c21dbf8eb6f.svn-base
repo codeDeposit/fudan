@@ -1,0 +1,110 @@
+package com.jy.controller.oa.workflow;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.repository.ProcessDefinition;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.entity.workflow.process.ProcessDefinitionVo;
+import com.jy.service.oa.publics.FileUploadService;
+import com.jy.service.oa.workflow.OAProcessService;
+import com.jy.service.oa.workflow.ProcessTemplateService;
+import com.jy.service.system.org.RoleService;
+
+@Controller
+@RequestMapping("/oa/workflow")
+public class OAProcessController extends BaseController<Object>{
+
+	private OAProcessService oaProcessService;
+	private RoleService roleService;
+	private ProcessTemplateService processTemplateService;
+	private FileUploadService fileUploadService;
+
+	public FileUploadService getFileUploadService() {
+		return fileUploadService;
+	}
+
+	@Resource(name="fileUploadService")
+	public void setFileUploadService(FileUploadService fileUploadService) {
+		this.fileUploadService = fileUploadService;
+	}
+
+	public ProcessTemplateService getProcessTemplateService() {
+		return processTemplateService;
+	}
+
+	@Resource(name="processTemplateService")
+	public void setProcessTemplateService(
+			ProcessTemplateService processTemplateService) {
+		this.processTemplateService = processTemplateService;
+	}
+
+	public RoleService getRoleService() {
+		return roleService;
+	}
+
+	@Resource(name="RoleService")
+	public void setRoleService(RoleService roleService) {
+		this.roleService = roleService;
+	}
+
+	public OAProcessService getOaProcessService() {
+		return oaProcessService;
+	}
+
+	@Resource(name="oaProcessService")
+	public void setOaProcessService(OAProcessService oaProcessService) {
+		this.oaProcessService = oaProcessService;
+	}
+
+	/**
+	 * 分页查询已部署的流程，且只列出最新版本的流程
+	 * @param request
+	 * @param processName
+	 * @return
+	 */
+	@RequestMapping("/processdeflist")
+	public ModelAndView list(HttpServletRequest request,
+			@RequestParam(required = false) String processName) {
+		String pageNo = request.getParameter("pageNo");
+		int page = 1;
+		if (pageNo != null && !pageNo.equals(""))
+			page = Integer.valueOf(pageNo);
+		List<ProcessDefinition> prodefs = oaProcessService.getProDefs(
+				processName, page);
+		List<ProcessDefinitionVo> pdvos = new ArrayList<ProcessDefinitionVo>();
+		//申请模板
+		for(ProcessDefinition pd: prodefs) {
+			ProcessTemplate pt = processTemplateService.getBy(pd.getKey());
+			ProcessDefinitionVo pdvo=new ProcessDefinitionVo();
+			pdvo.setId(pd.getId());
+			pdvo.setKey(pd.getKey());
+			pdvo.setName(pd.getName());
+			pdvo.setVersion(pd.getVersion());
+			pdvo.setProcessTemplate(pt);
+			pdvos.add(pdvo);
+		}
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/workflow/processdef_list");
+		mv.addObject("prodefs", pdvos);
+		Account account = AccountShiroUtil.getCurrentUser();
+		Org org = roleService.getOrgBy(account.getRoleId());
+		mv.addObject("account", account);
+		mv.addObject("org", org);
+		return mv;
+	}
+	
+}

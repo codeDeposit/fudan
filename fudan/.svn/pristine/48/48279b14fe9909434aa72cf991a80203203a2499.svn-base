@@ -1,0 +1,24 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgSupplier;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WzcgSupplierDao extends BaseDao<WzcgSupplier> {
+	
+	List<WzcgSupplier> find(WzcgSupplier supplier);
+	
+	List<WzcgSupplier> search(WzcgSupplier supplier);
+	
+	void insert(WzcgSupplier supplier);
+	
+	void update(WzcgSupplier supplier);
+	
+	void delete(String id);
+	
+	List<WzcgSupplier> extractSearch(WzcgSupplier supplier);
+	
+}

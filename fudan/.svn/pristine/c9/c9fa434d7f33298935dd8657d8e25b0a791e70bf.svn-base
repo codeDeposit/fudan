@@ -1,0 +1,38 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.PhoneGroup;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface PhoneGroupMapper {
+
+	// 添加联系人分组
+	int insert(PhoneGroup phoneGroup);
+
+	// 修改联系人分组信息
+	int update(PhoneGroup phoneGroup);
+
+	// 获取联系人分组信息
+	PhoneGroup selectBy(Long groupId);
+
+	// 删除联系人分组
+	int delete(Long groupId);
+
+	// 获取最大的sn值
+	Integer getTop();
+
+	// 模糊查询获取联系人分组列表
+	List<PhoneGroup> selectByALL(@Param("groupName") String groupName, @Param("isShared") Short isShared, @Param("userId") String userId);
+
+	// 分页获取联系人分组列表
+	List<PhoneGroup> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("groupName") String groupName, @Param("isShared") Short isShared, @Param("userId") String userId);
+
+	// 获取所有分类
+	List<PhoneGroup> selectAll();
+
+}

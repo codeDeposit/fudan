@@ -1,0 +1,118 @@
+//加载数据..
+$(document).ready(function() {
+	fuLoading();
+	// 初始化日期组件
+	$('.form_date').datetimepicker({
+		language : 'zh-CN',
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+	});
+});
+// 加载所有部门
+function getAllDep() {
+	var url = "/oa/org/listorg";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			var obj = eval("(" + data + ")");
+			$("#orgs").html(obj);
+		}
+	});
+}
+// 加载所有角色
+function getAllRole() {
+	var url = "/oa/role/listhtml";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			var obj = eval("(" + data + ")");
+			fuCloseLayer();
+			$("#roles").html(obj);
+		}
+	});
+}
+// 获取某个部门下的所有员工
+function getEmpByOrg(id) {
+	var url = "/oa/listEm";
+	id = id + "";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "orgId=" + id,
+		success : function(data) {
+			$("#employeetable").html(data);
+		}
+	});
+}
+// 获取某角色下的所有员工
+function getEmpByRole(id) {
+	var url = "/oa/listEm";
+	id += "";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "roleId=" + id,
+		success : function(data) {
+			$("#employeetable").html(data);
+		}
+	});
+}
+// 移除联系人
+function removeData(id, id1) {
+	$("#" + id).val("");
+	$("#" + id1).val("");
+}
+// 发送消息
+$("#submitbtn").click(function() {
+	$.ajax({
+		type : "post",
+		url : jypath + "/oa/inmessage/add",
+		data : $("#addform").serialize(),
+		success : function(html) {
+			fuShowSuccess();
+			$("#submitbtn").attr("data-dismiss", "modal");
+			// 刷新页面
+			refresh();
+		}
+	});
+});
+// 重发消息
+function openForm(id) {
+	var url = "/oa/inmessage/resend";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?messageId=" + id,
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+// 查询
+$("#noticesearchbtn").click(function() {
+	fuLoading();
+	var id = "inmessagetable";
+	var url = jypath + "/oa/inmessage/listsend";
+	var type = "post";
+	var data = $("#noticesearchform").serialize();
+	partRefresh(id, url, type, data);
+});
+// pageNos: 第几页
+function pageturn(pageNos) {
+	fuLoading();
+	if (pageNos == 0) {
+		pageNos = $("#zhuandao").val();
+	}
+	var id = "inmessagetable";
+	var url = jypath + "/oa/inmessage/listsend";
+	var type = "get";
+	var data = $("#noticesearchform").serialize() + "&pageNos=" + pageNos;
+	pageturning(id, url, type, data);
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.setting.WebSiteDao">
+	
+	<resultMap type="com.jy.entity.setting.WebSite" id="ResultMap">
+		<result column="webTitleMark" property="webTitleMark"/>
+		<result column="webTitleWord" property="webTitleWord"/>
+		<result column="webTitleImg" property="webTitleImg"/>
+		<result column="logo" property="logo"/>
+		<result column="loginBg" property="loginBg"/>
+		<result column="copyright" property="copyright"/>
+		<result column="wzcgLogin" property="wzcgLogin"/>
+		<result column="expertNotice" property="expertNotice"/>
+		<result column="supplierNotice" property="supplierNotice"/>
+	</resultMap>
+	
+	<select id="find" parameterType="WebSite" resultMap="ResultMap" >
+		select * from fd_website_seting
+	</select>
+	
+	<update id="update" parameterType="WebSite">
+		update fd_website_seting <include refid="updateSQL"></include> 
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="webTitleMark != null and webTitleMark != '' ">
+				webTitleMark=#{webTitleMark},
+			</if>
+			<if test="webTitleWord != null and webTitleWord != '' ">
+				webTitleWord=#{webTitleWord},
+			</if>
+			<if test="webTitleImg != null and webTitleImg != '' ">
+				webTitleImg=#{webTitleImg},
+			</if>
+			<if test="logo != null and logo != '' ">
+				logo=#{logo},
+			</if>
+			<if test="loginBg != null and loginBg != '' ">
+				loginBg=#{loginBg},
+			</if>
+			<if test="copyright != null and copyright != '' ">
+				copyright=#{copyright},
+			</if>
+			<if test="wzcgLogin != null and wzcgLogin != '' ">
+				wzcgLogin=#{wzcgLogin},
+			</if>
+			<if test="expertNotice != null and expertNotice != '' ">
+				expertNotice=#{expertNotice},
+			</if>
+			<if test="supplierNotice != null and supplierNotice != '' ">
+				supplierNotice=#{supplierNotice},
+			</if>
+		</set>
+	</sql>
+	
+</mapper>

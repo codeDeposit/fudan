@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.customer.SaleActivityDao">
+	
+	<resultMap type="com.jy.entity.customer.SaleActivity" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="byway" property="byway"/>
+		<result column="beginDate" property="beginDate"/>
+		<result column="level" property="level"/>
+		<result column="sponsor" property="sponsor"/>
+		<result column="attachment" property="attachment"/>
+		<result column="content" property="content"/>
+		<result column="location" property="location"/>
+		<result column="lat" property="lat"/>
+		<result column="lng" property="lng"/>
+		<result column="customerId" property="customerId"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from cus_sale_activity where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from cus_sale_activity where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="byway != null and byway != ''">  
+		    AND byway = #{byway}
+		</if>  
+		<if test="beginDate != null and beginDate != ''">  
+		    AND beginDate = #{beginDate}
+		</if> 
+		<if test="level != null and level != ''">  
+		    AND level = #{level}
+		</if> 
+		<if test="sponsor != null and sponsor != ''">  
+		    AND sponsor = #{sponsor}
+		</if> 
+		<if test="attachment != null and attachment != ''">  
+		    AND attachment = #{attachment}
+		</if>  
+		<if test="content != null and content != ''">  
+		    AND content = #{content}
+		</if>    
+		<if test="location != null and location != ''">  
+		    AND location = #{location}
+		</if>  
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>        
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="byway != null and byway != ''">  
+		    AND byway = #{byway}
+		</if>  
+		<if test="beginDate != null and beginDate != ''">  
+		    AND beginDate = #{beginDate}
+		</if> 
+		<if test="level != null and level != ''">  
+		    AND level = #{level}
+		</if> 
+		<if test="sponsor != null and sponsor != ''">  
+		    AND sponsor = #{sponsor}
+		</if> 
+		<if test="attachment != null and attachment != ''">  
+		    AND attachment = #{attachment}
+		</if>  
+		<if test="content != null and content != ''">  
+		    AND content = #{content}
+		</if>    
+		<if test="location != null and location != ''">  
+		    AND location = #{location}
+		</if>
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>           
+	</sql>
+	
+	<insert id="insert">
+		insert into cus_sale_activity (byway,beginDate,level,sponsor,attachment,content,location,lat,lng,customerId) 
+			values 
+		(#{byway},#{beginDate},#{level},#{sponsor},#{attachment},#{content},#{location},#{lat},#{lng},#{customerId})
+	</insert>
+	
+	<update id="update">
+		update cus_sale_activity <include refid="updateSql"></include> where id = #{id} 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="byway != null and byway != ''">  
+				byway = #{byway},
+			</if>
+			<if test="beginDate != null and beginDate != ''">  
+				beginDate = #{beginDate},
+			</if>
+			<if test="level != null and level != ''">  
+				level = #{level},
+			</if>
+			<if test="sponsor != null and sponsor != ''">  
+				sponsor = #{sponsor},
+			</if>
+			<if test="attachment != null and attachment != ''">  
+				attachment = #{attachment},
+			</if>
+			<if test="content != null and content != ''">  
+				content = #{content},
+			</if>
+			<if test="location != null and location != ''">  
+				location = #{location},
+			</if>
+			<if test="customerId != 0">  
+				customerId = #{customerId},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from cus_sale_activity where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+		<if test="customerId != 0">
+			customerId = #{customerId}
+		</if>
+	</delete>
+	
+</mapper>

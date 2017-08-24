@@ -1,0 +1,383 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<%@ include file="../../common/toast.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<link href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增 日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增  语言-->
+		<!-- 局部刷新 js -->
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<script src="${jypath}/pc/js/oa/partrefresh.js"></script>
+		<script src="${jypath}/pc/js/oa/pageturning.js"></script>
+		<style>
+			.SearchForm .forinBlo{display: inline-block;width: 66.66%;}
+			.labelPad{padding-top: 7px;}
+
+		    .havHead{background: #efefef;}
+	    	.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			
+			a{text-decoration: none;}
+		    a:hover{text-decoration: none;}
+		    a:focus{text-decoration: none;}
+		    li{list-style: none;}
+		    ul{padding:0;margin:0;}
+		    .leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+		    .firstLevel li{cursor: pointer;}
+		    .secondLevel{display: none;}
+		    .thirdLevel{display: none;}
+		    .fIndent{padding-left: 8px;}
+		    .sIndent{padding-left: 24px;}
+		    .tIndent{padding-left: 40px;}
+		    .rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+		
+		    .rightContent .table{margin-bottom: 5px;height: 234px;}
+		    .tBody{display: block;height:196px;overflow: auto;}
+		    .rightContent thead tr{display: block;}
+		    .wiD{width: 36px;}
+		    .seQuence{width: 45px;}
+		    .wiDl{width: 280px;}
+		
+		    .close{margin:5px;}
+		    .aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+		    .aHover:hover{background-color: #ccc;}
+		    .aHover.active{background-color:#999;color: #fff;}
+		    .pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+		    #pageNum{width: 335px;margin:0 auto;}
+		    .modal-content{border-radius: 6px;overflow: hidden;}
+		    .pagination{margin:5px 0;}
+		    .headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+	</head>
+	<body>
+		<!-- padding盒子 start-->
+    	<div>
+    	<%@ include file="carrepair_search.jsp" %>
+    	<%@ include file="carrepair_add.jsp" %>
+        <%@ include file="../common/employee_modal.jsp" %>
+        
+		<div id="officegoodstypetable">
+		<table class="table table-striped table-bordered table-hover dataTables-example">
+	        <thead>
+	           <tr>
+	               <th>序号</th>
+	               <th>车牌号码</th>
+	               <th>维护日期</th>
+	               <th>维护原因</th>
+	               <th>经办人</th>
+	               <th>维修类型</th>
+	               <th>费用</th>
+	               <th>备注</th>
+	               <th>操作</th>
+	           </tr>
+	       </thead>
+	       <tbody>
+	       		<c:choose>
+				<c:when test="${carRepairs != null and fn:length(carRepairs) != 0}">
+	       		<c:forEach var="carRepair" items="${carRepairs}" varStatus="index">
+	           	<tr class="gradX">
+	              	<td>${index.count}</td>
+	              	<td><a href="#home" onclick="openForm('${carRepair.repairId}', 'info')" data-toggle="modal" data-target="#officegoodstypeInfoOrUpdate">${carRepair.car.carNo}</a></td>
+	              	<td>${carRepair.repairDate1 }</td>
+	              	<td>${carRepair.reason}</td>
+	              	<td>${carRepair.executant}</td>
+	              	<td>${carRepair.repairType}</td>
+	              	<td>${carRepair.fee}</td>
+	              	<td>${carRepair.notes}</td>
+					<td class="center">
+						<button type="button" class="btn btn-warning btn-xs" onclick="openForm('${carRepair.repairId}', 'update')" data-toggle="modal" data-target="#officegoodstypeInfoOrUpdate">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;修改
+						</button>
+						<button class="btn btn-danger btn-xs" onclick="fuConfirm('${carRepair.repairId}')"><i class="glyphicon glyphicon-trash"></i> 删除</button>
+					</td>
+	           	</tr>
+	           	</c:forEach>
+	           	</c:when>
+	           	<c:otherwise>
+					<tr class="gradX"><td colspan="9">没有数据</td></tr>
+				</c:otherwise>
+	           	</c:choose>
+	       </tbody>
+       	   <tfoot></tfoot>
+		</table>
+        <!-- table end -->
+        
+        <!-- 分页 start -->
+		<div align="right">
+			<a href="#" onclick="pageturn(1)">首页</a>
+			<c:if test="${pageNos > 1}">
+				<a href="#" onclick="pageturn(${pageNos - 1})">上一页</a>
+			</c:if>
+			<c:if test="${pageNos < pageCount}">
+				<a href="#" onclick="pageturn(${pageNos + 1})">下一页</a>
+			</c:if>
+			<a href="#" onclick="pageturn(${pageCount})">末页</a>
+		</div>
+		<div align="right">
+			<form>
+				<h4>
+					<span> 共${pageCount}页 <input id="zhuandao" type="text" value="${pageNos}" name="pageNos" size="1">页 <input onclick="pageturn(0)" type="button" value="转到">
+					</span>
+				</h4>
+			</form>
+		</div>
+		<!-- 分页 end -->
+		</div>
+    </div>
+    <!-- padding盒子 end -->
+    
+    <!-- 修改、查看详细信息模态框 -->
+    <div id="officegoodstypeInfoOrUpdate"></div>
+</body>
+<script type="text/javascript">
+   	//加载数据..
+   	$(document).ready(function() {
+   		fuLoading();
+   		//加载数据...车牌号，这个是填充到选择车牌号码的弹窗下方表格栏
+   		getCarNoToMiddle();
+   		//初始化数据..加载所有部门
+		getAllDep();
+		// 初始化日期组件
+	    $('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+        //初始化数据..加载所有角色
+		getAllRole();
+   	});
+   	function chooseAll(){
+        if($('.checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+           $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+   	//加载数据...车牌号
+   	function getCarNoToMiddle() {
+   		var url = "/oa/car/listall";
+   		$.ajax({
+   			type: "get",
+   			url : jypath + url,
+   			success: function(data) {
+   				var objs = eval("("+data+")");
+   				var html = "";
+   				var count = 1;
+   				for(var index in objs) {
+   					var obj = objs[index];
+   					html += "<tr>";
+   					html += "<td style='width:50px;' class='center wiD'><input type='checkbox'></td>";
+   					html += "<td style='width:120px;' class='center seQuence'>"+count+"</td>";
+   					html += "<td style='width:350px;' id="+obj.carId+" class='wiDl'>"+obj.carNo+"</td>";
+   					html += "</tr>";
+   					count ++;
+   				}
+   				$("#goodstable").html(html);
+   			}
+   		});
+   	}
+   	//加载数据...搜索车牌号
+   	$("#tccarsearchbtn").click(function() {
+   		var url = "/oa/car/listall";
+   		var data = "carNo="+$("#carNoSearch").val();
+   		$.ajax({
+   			type: "get",
+   			url : jypath + url,
+   			data: data,
+   			success: function(data) {
+   				var objs = eval("("+data+")");
+   				var html = "";
+   				var count = 1;
+   				for(var index in objs) {
+   					var obj = objs[index];
+   					html += "<tr>";
+   					html += "<td style='width:50px;' class='center wiD'><input type='checkbox'></td>";
+   					html += "<td style='width:120px;' class='center seQuence'>"+count+"</td>";
+   					html += "<td style='width:350px;' id="+obj.carId+" class='wiDl'>"+obj.carNo+"</td>";
+   					html += "</tr>";
+   					count ++;
+   				}
+   				$("#goodstable").html(html);
+   			}
+   		});
+   	});
+   	//加载所有部门
+  	function getAllDep() {
+    	var url = "/oa/org/listorg";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgs").html(obj);
+    		}
+    	});
+    }
+    //加载所有角色
+  	function getAllRole() {
+    	var url = "/oa/role/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#roles").html(obj);
+    			fuCloseLayer();
+    		}
+    	});
+    }
+  	//判断是否选中
+    $('.aYes').on('click',function(){
+    	var oarrayName = [];
+    	var iarrayId = [];
+	    $('#goodstable').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	iGoodsId = obj.attr("id");
+	        	var objName=obj.html();
+	        	oarrayName.push(objName);
+	        	iarrayId.push(iGoodsId);
+	        	$("#goodsnames").val(oarrayName);
+	        	$("#goodsIds").val(iarrayId);
+	        	$("#surebtn").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+    //判断是否选中
+    $('.bYes').on('click',function(){
+    	var oarrayName = [];
+	    $('#employeetable .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	oarrayName.push(objName);
+	        	$("#empNames").val(oarrayName);
+	        	$("#bgrsurebtn").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+    //获取某个部门下的所有员工
+  	function getEmpByOrg(id) {
+    	var url = "/oa/listEm";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#employeetable").html(data);
+    		}
+    	});
+    }
+  	//获取某角色下的所有员工
+  	function getEmpByRole(id) {
+    	var url = "/oa/listEm";
+    	id += "";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "roleId="+id,
+    		success: function(data) {
+    			$("#employeetable").html(data);
+    		}
+    	});
+    }
+   	// 添加
+   	$("#booktypeaddbtn").click(function() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/carrepair/add",
+   			data: $("#booktypeaddform").serialize(),
+   			success : function(html) {
+ 				$("#booktypeaddbtn").attr("data-dismiss", "modal");
+ 				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   	});
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/carrepair/getdetails";
+		$.ajax({
+			type: "get",
+   			url : jypath+url,
+   			data: "repairId="+id+"&operation="+operation,
+   			success: function(data){
+   				fuCloseLayer();
+		    	$("#officegoodstypeInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+	// 查询
+	$("#officegoodstypesearchbtn").click(function() {
+		fuLoading();
+		var id = "officegoodstypetable";
+		var url = jypath + "/oa/carrepair/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		fuLoading();
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "officegoodstypetable";
+		var url= jypath+"/oa/carrepair/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	//清除内容
+	function removeData(id) {
+    	$("#"+id).val("");
+    }
+    $("#goodsbtn").on("click", function() {
+    	removeData("goodsnames");
+    	removeData("goodsIds");
+    });
+    $("#empbtn").on("click", function() {
+    	removeData("recipientName");
+    	removeData("empIds");
+    });
+    function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}
+	// 删除
+	function fDelete(typeId) {
+		var url = "/oa/carrepair/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?repairId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+</script>
+</html>

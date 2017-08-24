@@ -1,0 +1,151 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="Modal_saleActivity_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">新增销售行动</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" enctype="multipart/form-data" role="form" id="Form_saleActivity_add" onsubmit="return fSaleActivityAdd()">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">所属客户</label>
+						<input type="hidden" id="saleActivity_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="saleActivity_company" name="company" maxlength="255" placeholder="所属客户" readonly required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">行动方式</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="byway" name="byway"  required>
+								<option value="">--请选择--</option>
+								<option value="1">电话拜访</option>
+								<option value="2">现场拜访</option>
+								<option value="2">QQ和微信拜访</option>
+							</select>
+						</div>
+					</div> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label">重要程度</label>
+						<div class="col-sm-10">
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level1" value="1" required> 一般
+							</label>
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level2" value="2" required> 重要
+							</label>
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level3" value="3" required> 紧急
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">行动时间</label>
+						<div class="col-sm-10">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="beginDate" name="beginDate" type="text" placeholder="执行截止日期"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">行动地点</label>
+						<div class="col-sm-10 ">
+			            	<input type="text" class="form-control" id="location" name="location" maxlength="255" placeholder="点击位置获取进行定位" readonly required>
+			            	<input type="hidden" id="lat" name="lat">
+			            	<input type="hidden" id="lng" name="lng">
+				       	</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12 text-right">
+							<button type="button" class="btn btn-primary" id="addressPositionxs">位置获取</button>
+							<button type="button" class="btn btn-info" id="mapPositionxxs">地图查看</button>
+							<button type="button" class="btn btn-danger" id="mapPositionxxs2" style="display:none">地图关闭</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12" id="containerx">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">主&nbsp;&nbsp;办&nbsp;&nbsp;人</label>
+						<div class="col-sm-10">
+				            <input type="text" class="form-control" id="sponsor" name="sponsor" maxlength="255" placeholder="主办人"  required>
+				       </div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</label>
+						<div class="col-sm-10">
+				            <input type="file" class="form-control" id="attachments" name="attachments" maxlength="255" placeholder="附件">
+				       </div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容</label>
+						<div class="col-sm-10">
+				            <textarea class="form-control" id="content" name="content" maxlength="1000" placeholder="内容"  required></textarea>
+				       </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<button type="submit" class="btn btn-success">
+							保存
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function onLocateSuccess(result) {
+	    var latlng = {
+	         lng: result.position.lng,	//经度
+             lat: result.position.lat	//纬度
+	    } /*坐标*/
+	     _address = result.formattedAddress;
+	    document.getElementById("addressPositionxs").addEventListener('click', function() {
+            document.getElementById('location').value = _address;
+            document.getElementById('lat').value = result.position.lat;
+            document.getElementById('lng').value = result.position.lng;
+        })
+	    document.getElementById("mapPositionxxs").addEventListener('click', function() {//地图查看
+            aMapInit(latlng);
+        }) 
+        document.getElementById("mapPositionxxs2").addEventListener('click', function() {//地图查看
+            document.getElementById('mapPositionxxs').style.display = "inline-block";
+            document.getElementById('mapPositionxxs2').style.display = "none";
+            document.getElementById('containerx').style.display = "none";
+        }) 
+	};
+	function aMapInit(latlng) {
+		document.getElementById('containerx').style.display = "block";
+		document.getElementById('mapPositionxxs2').style.display = "inline-block";
+		document.getElementById('mapPositionxxs').style.display = "none";
+	    if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+	        document.getElementById('containerx').style.height = document.documentElement.clientHeight - 220 + "px";
+	    };
+	    var map = new AMap.Map('containerx', {
+	        resizeEnable: true,
+	        center: [latlng.lng, latlng.lat],
+	        zoom: 18
+	    });
+	    map.plugin(["AMap.ToolBar"], function() {
+	        map.addControl(new AMap.ToolBar());
+	    });
+	    var marker = new AMap.Marker({
+	        map: map,
+	        position:[latlng.lng, latlng.lat],
+	        offset: new AMap.Pixel(0, 0), //偏移位置
+	        draggable: false, //是否可拖动
+	        content: '<div><img src="${jypath}/pc/image/location/mark.png"> </div>'
+	    });
+	}
+</script>

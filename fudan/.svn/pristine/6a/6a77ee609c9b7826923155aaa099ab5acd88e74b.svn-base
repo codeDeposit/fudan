@@ -1,0 +1,238 @@
+package com.jy.controller.oa.info;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.info.News;
+import com.jy.entity.oa.info.NewsType;
+import com.jy.service.oa.info.NewsService;
+import com.jy.service.oa.info.NewsTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/newstype")
+public class NewsTypeController {
+
+	private NewsTypeService newsTypeService;
+	private NewsService newsService;
+	
+	public NewsService getNewsService() {
+		return newsService;
+	}
+
+	@Resource(name = "newsService")
+	public void setNewsService(NewsService newsService) {
+		this.newsService = newsService;
+	}
+
+	public NewsTypeService getNewsTypeService() {
+		return newsTypeService;
+	}
+
+	@Resource(name = "newsTypeService")
+	public void setNewsTypeService(NewsTypeService newsTypeService) {
+		this.newsTypeService = newsTypeService;
+	}
+
+	/**
+	 * 获取 newstype 列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String typeName,
+			@RequestParam(required = false) Short sn) {
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		// 获取公文类别总数
+		List<NewsType> newsTypes = newsTypeService.getAll();
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(newsTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<NewsType> pageNewsTypes = newsTypeService.getPageList(pb);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/info/newstype_list");
+		mv.addObject("newsTypes", pageNewsTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 添加新闻类型
+	 * 
+	 * @param newsType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(NewsType newsType) {
+		JsonInfo info = newsTypeService.save(newsType);
+		return info;
+	}
+
+	/**
+	 * 修改新闻类型信息
+	 * 
+	 * @param newsType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(NewsType newsType) {
+		JsonInfo info = newsTypeService.update(newsType);
+		return info;
+	}
+	
+	/**
+	 * 获取新闻类型详细信息
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long typeId, String operation) {
+		NewsType newsType = newsTypeService.getDetailsBy(typeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("newsType", newsType);
+		mv.setViewName("system/oa/info/newstype_form");
+		mv.addObject("operation", operation);
+		
+		return mv;
+	}
+	
+	/**
+	 * 批量删除
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] typeId) {
+		JsonInfo info = newsTypeService.del(typeId);
+		return info;
+	}
+	
+	
+	/**
+	 * 上移、下移、置顶、置尾
+	 * @param opt
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/sort")
+	@ResponseBody
+	public JsonInfo sort(Integer opt, Long typeId) {
+		JsonInfo info = new JsonInfo();
+		NewsType origial = newsTypeService.getDetailsBy(typeId);
+		Short top = newsTypeService.getTop();
+		Short sn = origial.getSn();
+		NewsType change = new NewsType();
+		String typeName = "";
+		if(opt==1){//置顶
+			if(sn!=1){
+				for(int i=0;i<sn-1;i++){
+					change = newsTypeService.get(typeName,(short)(sn-i-1)).get(0);
+					change.setSn((short)(sn-i));
+					newsTypeService.update(change);
+				}
+				origial.setSn((short)1);
+				newsTypeService.update(origial);
+				info.setSuccess(true);
+			}else {
+				info.setSuccess(false);
+			}
+		}
+		if(opt==2){//上移
+			if(sn!=1){
+				change = newsTypeService.get(typeName, (short)(sn-1)).get(0);
+				change.setSn(sn);
+				newsTypeService.update(change);
+				origial.setSn((short)(sn-1));
+				newsTypeService.update(origial);
+				info.setSuccess(true);
+			}else {
+				info.setSuccess(false);
+			}
+		}
+		if(opt==3){//下移
+			if(sn<top){
+				change = newsTypeService.get(typeName, (short)(sn+1)).get(0);
+				change.setSn(sn);
+				newsTypeService.update(change);
+				origial.setSn((short)(sn+1));
+				newsTypeService.update(origial);
+				info.setSuccess(true);
+			}else {
+				info.setSuccess(false);
+			}
+		}
+		if(opt==4){//置末
+			if(sn<top){
+				for(int i=0;i<top-sn;i++){
+					change = newsTypeService.get(typeName, (short)(sn+i+1)).get(0);
+					change.setSn((short)(sn+i));
+					newsTypeService.update(change);
+				}
+				origial.setSn(top);
+				newsTypeService.update(origial);
+				info.setSuccess(true);
+			}else {
+				info.setSuccess(false);
+			}
+		}
+		return info;
+	}
+	
+	// 获取所有分类
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<NewsType> listAll() {
+		List<NewsType> newsTypes = newsTypeService.getAll();
+		return newsTypes;
+	}
+	
+	/**
+	 * 查找新闻类别下的新闻
+	 * @return
+	 */
+	@RequestMapping("/getnews")
+	public ModelAndView getNews(Long[] typeId, @RequestParam(required=false) String subject, @RequestParam(required=false) String author) {
+		List<News> news = newsTypeService.getNews(typeId, subject, author);
+		ModelAndView mv = new ModelAndView();
+		if(null != news && !(news.isEmpty())) {
+			mv.addObject("allnews", news);
+			mv.addObject("count", news.size());
+		}else {
+			mv.addObject("count", 0);
+		}
+		mv.addObject("parm", Arrays.toString(typeId));
+		mv.setViewName("system/oa/common/data_toast");
+		
+		return mv;
+	}
+
+}

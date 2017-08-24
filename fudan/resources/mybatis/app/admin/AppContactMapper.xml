@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.ContactDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Contact" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_contact where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_contact where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+	</sql>
+	
+	<insert id="insert">
+		insert into app_contact (id,msg,msg_state,phone,phone_state,email,email_state,weixin,weixin_state,urls,urls_state,company,company_state,state) 
+			values 
+		(#{id},#{msg},#{msg_state},#{phone},#{phone_state},#{email},#{email_state},#{weixin},#{weixin_state},#{urls},#{urls_state},#{company},#{company_state},#{state})
+	</insert>
+	
+	<update id="update">
+		update app_contact <include refid="updateSql"></include> where id = #{id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="msg != null and msg != '' ">  
+		    	msg = #{msg},
+			</if>
+			<if test="msg_state != 0 ">  
+		    	msg_state = #{msg_state},
+			</if> 
+			<if test="phone != null and phone != '' ">  
+		    	phone = #{phone},
+			</if> 
+			<if test="phone_state != 0 ">  
+		    	phone_state = #{phone_state},
+			</if> 
+			<if test="email != '' and email != null ">  
+		    	email = #{email},
+			</if>
+			<if test="email_state != 0 ">  
+		    	email_state = #{email_state},
+			</if> 
+			<if test="weixin != '' and weixin != null ">  
+		    	weixin = #{weixin},
+			</if> 
+			<if test="weixin_state != 0 ">  
+		    	weixin_state = #{weixin_state},
+			</if> 
+			<if test="urls != '' and urls != null ">  
+		    	urls = #{urls},
+			</if> 
+			<if test="urls_state != 0 ">  
+		    	urls_state = #{urls_state},
+			</if>
+			<if test="company != '' and company != null ">  
+		    	company = #{company},
+			</if> 
+			<if test="company_state != 0 ">  
+		    	company_state = #{company_state},
+			</if> 
+			<if test="state != 0 ">  
+		    	state = #{state},
+			</if> 
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_contact where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+	</delete>
+</mapper>

@@ -1,0 +1,21 @@
+package com.jy.service.workflow.online.apply;
+
+import java.util.Map;
+
+public interface ProcessApplyService {
+	
+	/**
+	 * 提交申请
+	 * 
+	 * @param processDefinitionKey
+	 *            流程定义key值
+	 * @param positionId
+	 *            职务id
+	 * @param xqytId
+	 *            需求预填id
+	 * @return
+	 */
+	Map<String, String> apply(String processDefinitionKey, String positionId,
+			String xqytId, String biaozhi);
+
+}

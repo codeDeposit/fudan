@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.AssetsTypeMapper">
+
+	<!-- 添加资产类型 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.AssetsType">
+		insert into fudan_oa_assets_type(typeName) values(#{typeName})
+	</insert>
+	<!-- 添加资产类型 end -->
+	
+	
+	<!-- 修改资产类型 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.AssetsType">
+		update fudan_oa_assets_type set typeName=#{typeName} where assetsTypeId=#{assetsTypeId}
+	</update>
+	<!-- 修改资产类型 end -->
+	
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.admin.AssetsType">
+		select * from fudan_oa_assets_type where assetsTypeId=#{assetsTypeId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 获取列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.admin.AssetsType">
+		select * from fudan_oa_assets_type where 1=1
+		<if test="typeName != null and typeName != '' ">
+			and typeName like concat("%", #{typeName},"%")
+		</if>
+	</select>
+	<!-- 获取列表  end -->
+	
+	
+	<!-- 删除资产类型 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_assets_type where assetsTypeId = #{assetsTypeId}
+	</delete>
+	<!-- 删除资产类型 end -->
+	
+	
+	<!-- 分页获取资产类型列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.admin.AssetsType">
+		select * from fudan_oa_assets_type where 1=1
+		<if test="typeName != null and typeName != '' ">
+			and typeName like concat("%", #{typeName},"%")
+		</if>
+		order by assetsTypeId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取资产类型列表 end -->
+	
+	<!-- 获取资产类型 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.admin.AssetsType">
+		select * from fudan_oa_assets_type
+	</select>
+	<!-- 获取资产类型 end -->
+	
+</mapper>

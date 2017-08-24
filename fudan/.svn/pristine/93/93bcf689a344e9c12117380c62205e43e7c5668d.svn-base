@@ -1,0 +1,45 @@
+package com.jy.controller.workflow.online.apply;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+import com.jy.service.workflow.online.apply.ApproverSettingService;
+
+/**
+ * 设置任务的审核职务
+ * @author admin
+ *
+ */
+@Controller
+@RequestMapping("/workflow/approversetting")
+public class ApproverSettingController {
+	
+	private ApproverSettingService approverSettingService;
+
+	public ApproverSettingService getApproverSettingService() {
+		return approverSettingService;
+	}
+
+	@Resource(name="approverSettingService")
+	public void setApproverSettingService(
+			ApproverSettingService approverSettingService) {
+		this.approverSettingService = approverSettingService;
+	}
+	
+	/**
+	 * 设置审核人的职务
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public AjaxRes add(ApproverSetting approverSetting) {
+		AjaxRes info = approverSettingService.save(approverSetting);
+		return info;
+	}
+	
+}

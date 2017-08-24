@@ -1,0 +1,6 @@
+function fuLoading(){
+	document.body.innerHTML += '<div class="loading" id="loading"><div class="word"><div class="span"><div class="typing_loader"></div></div><span style="margin-left:70px;">正在加载中......</span></div></div>';
+}
+function fuLoadingClose(){
+	document.getElementById('loading').style.display = "none";
+}

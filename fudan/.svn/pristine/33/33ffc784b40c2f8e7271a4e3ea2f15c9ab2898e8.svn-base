@@ -1,0 +1,207 @@
+package com.jy.service.oa.impl.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.personal.SignIn;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.repository.oa.personal.SignInMapper;
+import com.jy.service.oa.personal.SignInService;
+import com.jy.service.system.org.OrgService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("signInService")
+public class SignInServiceImpl implements SignInService{
+	
+	@Autowired
+	private SignInMapper signInMapper;
+	@Autowired
+	private OrgService orgService;
+
+	/**
+	 * 定位签到
+	 */
+	@Override
+	public JsonInfo signInLocation(SignIn signIn) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		signIn.setAccountId(account.getAccountId());
+		signIn.setFullname(account.getName());
+		signIn.setType(2);
+		signIn.setTime(new Date());
+		int result = signInMapper.insert(signIn);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+	/**
+	 * 上下班签到
+	 */
+	public JsonInfo signIn(SignIn signIn) {
+		int result = signInMapper.insert(signIn);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/**
+	 * 获取今天的签到次数
+	 */
+	@Override
+	public int getCountToday(String accountId, Date date) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		int count = signInMapper.select(account.getAccountId(), new Date());
+		return count;
+	}
+
+	@Override
+	public List<SignIn> get(Date date) {
+		List<SignIn> signIns = signInMapper.selectBy(date);
+		return signIns;
+	}
+
+	@Override
+	public List<SignIn> getPageList(PageBean pb, Date date) {
+		int pageSize = pb.getPageSize();
+		int currentPage = pb.getCurrentPage();
+		int firstIndex = (currentPage-1) * pageSize;
+		int toIndex = currentPage * pageSize;
+		List<SignIn> signIns = signInMapper.selectPageDate(firstIndex, toIndex, date);
+		for (SignIn signIn : signIns) {
+			signIn.setTime1(DateStringUtil.dateToString3(signIn.getTime()));
+		}
+		return signIns;
+	}
+
+	//今天上班是否打卡
+	@Override
+	public boolean getIsSignToday(String id, Date date) {
+		SignIn signInToday = signInMapper.selectSignInToday(id,date);
+		if(signInToday != null) return true;
+		return false;
+	}
+	//今天下班是否打卡
+	@Override
+	public boolean getIsSignOutToday(String id, Date date) {
+		SignIn signOutToday = signInMapper.selectSignOutToday(id,date);
+		if(signOutToday != null) return true;
+		return false;
+	}
+
+	//每日统计，默认获取今天的打卡记录
+	@Override
+	public List<SignIn> getDailySign(Date startDate, Date endDate,
+			String accountId, String orgId) {
+		List<SignIn> signs = signInMapper.selectDailySign(startDate,endDate,accountId,orgId);
+		for (SignIn signIn : signs) {
+			String orgId2 = orgService.findBy(signIn.getAccountId());
+			List<Org> orgs = orgService.getBy(orgId2);
+			String orgName = "";
+			for (Org org : orgs) {
+				if(org.getId().equals(orgId2)) {
+					orgName = org.getName();
+					break;
+				}
+			 }
+			signIn.setOrgName(orgName);
+		}
+		return signs;
+	}
+
+	@Override
+	public List<SignIn> getDailySignPageList(PageBean pb, Date startDate,
+			Date endDate, String accountId, String orgId) {
+		int pageSize = pb.getPageSize();
+		int currentPage = pb.getCurrentPage();
+		int firstIndex = (currentPage-1) * pageSize;
+		int toIndex = currentPage * pageSize;
+		List<SignIn> signs = signInMapper.selectDailySignPageList(firstIndex,toIndex,startDate,endDate,accountId,orgId);
+		for (SignIn signIn : signs) {
+			String orgId2 = orgService.findBy(signIn.getAccountId());
+			List<Org> orgs = orgService.getBy(orgId2);
+			String orgName = "";
+			for (Org org : orgs) {
+				if(org.getId().equals(orgId2)) {
+					orgName = org.getName();
+					break;
+				}
+			 }
+			signIn.setOrgName(orgName);
+		}
+		return signs;
+	}
+
+	//账号的上班打卡记录
+	@Override
+	public SignIn getSignInRecord(String id, Date date) {
+		SignIn signIn = signInMapper.selectTodaySignIn(id,date);
+		return signIn;
+	}
+
+	//签退打卡
+	@Override
+	public JsonInfo update(SignIn signIn) {
+		int result = signInMapper.update(signIn);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 查询账号的打卡记录,时间降序排序
+	@Override
+	public List<SignIn> getSelfSign(String accountId) {
+		List<SignIn> signs = signInMapper.selectSelfSign(accountId);
+		return signs;
+	}
+	// 查询账号的打卡记录,时间降序排序,分页
+	@Override
+	public List<SignIn> getPageSelfSign(PageBean pb, String accountId) {
+		int pageSize = pb.getPageSize();
+		int currentPage = pb.getCurrentPage();
+		int firstIndex = (currentPage-1) * pageSize;
+		int toIndex = currentPage * pageSize;
+		List<SignIn> signIns = signInMapper.selectPageSelfSign(firstIndex, toIndex, accountId);
+		return signIns;
+	}
+	// 查询账号的定位签到,时间降序排序
+	@Override
+	public List<SignIn> getSelfSignLocation(String accountId) {
+		List<SignIn> signs = signInMapper.selectSelfSignLocation(accountId);
+		return signs;
+	}
+
+	@Override
+	public List<SignIn> getPageSelfSignLocation(PageBean pb, String accountId) {
+		int pageSize = pb.getPageSize();
+		int currentPage = pb.getCurrentPage();
+		int firstIndex = (currentPage-1) * pageSize;
+		int toIndex = currentPage * pageSize;
+		List<SignIn> signIns = signInMapper.selectPageSelfSignLocation(firstIndex, toIndex, accountId);
+		return signIns;
+	}
+	
+	public List<SignIn> search(SignIn signIn){
+		List<SignIn> signInList = signInMapper.search(signIn);
+		return signInList;
+	}
+	
+}

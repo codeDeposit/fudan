@@ -1,0 +1,247 @@
+//判断是否选中
+$('.aYes').on('click', function() {
+	var arrayName = [];
+	var arrayId = [];
+	$('.tBody').find('input[type="checkbox"]').each(function(index, el) {
+		if ($(this).is(':checked')) {
+			// var abc=$(this).parent().parent().children('td').eq(2).html();
+			var obj = $(this).parent().parent().children('td').eq(2);
+			var objName = obj.html();
+			var objId = obj.attr("id");
+			arrayName.push(objName);
+			arrayId.push(objId);
+			$("#fullname").val(arrayName);
+			$("#userId").val(arrayId);
+			$("#surebtn").attr("data-dismiss", "modal");
+		}
+	});
+});
+// 全选
+function chooseAll() {
+	if ($('#checkAll').is(":checked")) {
+		$('.tBody').find('input[type="checkbox"]').prop('checked', true);
+	} else {
+		$('.tBody').find('input[type="checkbox"]').prop('checked', false);
+	}
+}
+$(function() {
+	fuLoading();
+	$('.secondT').on(
+			'click',
+			function(event) {
+				var theLev = $(this).parent().find('.secondLevel');
+				if (theLev.css('display') == 'block') {
+					theLev.slideUp('fast');
+					$(this).find('.glyphicon').removeClass('glyphicon-minus')
+							.addClass('glyphicon-plus');
+				} else {
+					$('.secondLevel').slideUp('fast');
+					theLev.slideToggle('fast');
+					$('.ftof').removeClass('glyphicon-minus').addClass(
+							'glyphicon-plus');
+					$(this).find('.glyphicon').removeClass('glyphicon-plus')
+							.addClass('glyphicon-minus');
+				}
+			});
+	$('.thirdT').on(
+			'click',
+			function(event) {
+				var theLev = $(this).parent().find('.thirdLevel');
+				if (theLev.css('display') == 'block') {
+					theLev.slideUp('fast');
+					$(this).find('.glyphicon').removeClass('glyphicon-minus')
+							.addClass('glyphicon-plus');
+				} else {
+					$('.thirdLevel').slideUp('fast');
+					theLev.slideToggle('fast');
+					$('.tof').removeClass('glyphicon-minus').addClass(
+							'glyphicon-plus');
+					$(this).find('.glyphicon').removeClass('glyphicon-plus')
+							.addClass('glyphicon-minus');
+				}
+			});
+	$('.aHover').on('click', function(event) {
+		event.preventDefault();
+		$('.aHover').removeClass('active');
+		$(this).addClass('active');
+	});
+	chooseTime('tRequir');
+	getAllEmp();
+	getAllRole();
+	getAllDep();
+});
+// 获取所有员工
+function getAllEmp() {
+	var url = "/oa/listEm";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			$("#employeetable").html(data);
+			$("#employeechaosongtable").html(data);
+		}
+	});
+}
+// 获取所有角色
+function getAllRole() {
+	var url = "/oa/role/listhtml";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			var obj = eval("(" + data + ")");
+			$("#rolefl").html(obj);
+			$("#roleflchaosong").html(obj);
+		}
+	});
+}
+// 获取所有部门
+function getAllDep() {
+	var url = "/oa/org/listhtml";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			var obj = eval("(" + data + ")");
+			fuCloseLayer();
+			$("#depfl").html(obj);
+			$("#depflchaosong").html(obj);
+		}
+	});
+}
+// 获取某一个角色下的员工
+function getEmpByRole(id) {
+	var url = "/oa/listEm";
+	id += "";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "roleId=" + id,
+		success : function(data) {
+			$("#employeetable").html(data);
+			$("#employeechaosongtable").html(data);
+		}
+	});
+}
+// 获取某一个角色下的员工
+function getEmpByOrg(id) {
+	var url = "/oa/listEm";
+	id = id + "";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "orgId=" + id,
+		success : function(data) {
+			$("#employeetable").html(data);
+			$("#employeechaosongtable").html(data);
+		}
+	});
+}
+// 添加日程
+$("#calendarplansaddbtn").click(function() {
+	var content = getContent();
+	$.ajax({
+		type : "post",
+		url : jypath + "/oa/calendarplan/add",
+		data : $("#calendarplanaddform").serialize() + "&content=" + content,
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+});
+// 查看详细信息或修改
+function openForm(id, operation) {
+	var url = "/oa/calendarplan/getdetails";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?planId=" + id + "&operation=" + operation,
+		success : function(data) {
+			$("#newsInfoOrUpdate").html(data);
+		}
+	});
+}
+// 删除
+function fDelete(typeId) {
+	var url = "/oa/calendarplan/multidel";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?planId=" + typeId,
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+// 获取富文本编辑器的内容
+function getContent() {
+	var content = UM.getEditor("containerform").getContent();
+	return content;
+}
+// 查询
+$("#newssearchbtn").click(function() {
+	var id = "calendarplantable";
+	var url = jypath + "/oa/calendarplan/listzx";
+	var type = "post";
+	var data = $("#newssearchform").serialize();
+	partRefresh(id, url, type, data);
+});
+// pageNos: 第几页
+function pageturn(pageNos) {
+	if (pageNos == 0) {
+		pageNos = $("#zhuandao").val();
+	}
+	var id = "calendarplantable";
+	var url = jypath + "/oa/calendarplan/listzx";
+	var type = "post";
+	var data = $("#newssearchform").serialize() + "&pageNos=" + pageNos;
+	pageturning(id, url, type, data);
+}
+// 完成任务
+function taskcompelete(id) {
+	var url = "/oa/calendarplan/complete";
+
+}
+// 获取我分配的任务
+function getMineFP() {
+	var url = "/oa/calendarplan/listfp";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			$("#calendarplantable").html(data);
+		}
+	});
+}
+// 获取我执行的任务
+function getMineZX() {
+	var url = "/oa/calendarplan/listzx";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "operation=partrefresh",
+		success : function(data) {
+			$("#calendarplantable").html(data);
+		}
+	});
+}
+function chooseTime(tid) {
+	$('.' + tid).datetimepicker({
+		step : 1,
+		lang : 'ch',
+		format : 'Y-m-d H:i',
+	});
+}
+function show(id, id1) {
+	$("#" + id).show();
+	$("#" + id1).show();
+}
+function hide(id, id1) {
+	$("#" + id).hide();
+	$("#" + id1).hide();
+}
+function fuSure(param) {
+	fuLoading();
+	fuClose();
+	setTimeout('fDelete(\'' + param + '\')', 200);
+}

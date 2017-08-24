@@ -1,0 +1,114 @@
+package com.jy.entity.oa.task;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Appointment {
+
+	private Long appointId;
+	private String subject;
+	private Date startTime;
+	private Date endTime;
+	private String content;
+	private String notes;
+	private String location;
+	private String inviteEmails;
+	private String userId;
+	
+	//用于在页面中显示
+	private String startTime1;
+	private String endTime1;
+	
+
+	public String getStartTime1() {
+		return startTime1;
+	}
+
+	public void setStartTime1(String startTime1) {
+		this.startTime1 = startTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
+	}
+
+	public Long getAppointId() {
+		return appointId;
+	}
+
+	public void setAppointId(Long appointId) {
+		this.appointId = appointId;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getInviteEmails() {
+		return inviteEmails;
+	}
+
+	public void setInviteEmails(String inviteEmails) {
+		this.inviteEmails = inviteEmails;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+}

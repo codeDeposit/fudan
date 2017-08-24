@@ -1,0 +1,22 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgExtract;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WzcgExtractDao extends BaseDao<WzcgExtract> {
+	
+	List<WzcgExtract> find(WzcgExtract extract);
+	
+	List<WzcgExtract> search(WzcgExtract extract);
+	
+	void insert(WzcgExtract extract);
+	
+	void update(WzcgExtract extract);
+	
+	void delete(int id);
+
+}

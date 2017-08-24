@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.DepreRecordMapper">
+	
+	<select id="select" resultType="com.jy.entity.oa.admin.DepreRecord">
+		select fa.assetsName,dr.* FROM fudan_oa_depre_record dr, fudan_oa_fixed_assets fa where dr.assetsId = fa.assetsId
+		<if test="startDate != null ">
+			and dr.calTime &gt;= #{startDate}
+		</if>
+		<if test="endDate != null ">
+			and dr.calTime &lt;= #{endDate}
+		</if>
+		<if test="fixedAssetName != null and fixedAssetName != '' ">
+			and fa.fixedAssetName = concat("%",#{fixedAssetName},"%")
+		</if>
+	</select>
+	
+	<select id="selectMaxDate" parameterType="Long" resultType="Date">
+		SELECT MAX(calTime) FROM fudan_oa_depre_record WHERE assetsId = #{assetsId}
+	</select>
+	
+	
+	<!-- 添加折旧记录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.DepreRecord">
+		insert fudan_oa_depre_record <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="assetsId != null ">
+				assetsId = #{assetsId},
+			</if>
+			<if test="workCapacity != null ">
+				workCapacity = #{workCapacity},
+			</if>
+			<if test="depreAmount != null ">
+				depreAmount = #{depreAmount},
+			</if>
+			<if test="workGrossUnit != null and workGrossUnit != '' ">
+				workGrossUnit = #{workGrossUnit},
+			</if>
+			<if test="calTime != null ">
+				calTime = #{calTime},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加折旧记录 end -->
+	
+	<select id="selectPageData" resultType="com.jy.entity.oa.admin.DepreRecord">
+		select fa.assetsName,dr.* FROM fudan_oa_depre_record dr, fudan_oa_fixed_assets fa where dr.assetsId = fa.assetsId
+		<if test="startDate != null ">
+			and dr.calTime &gt;= #{startDate}
+		</if>
+		<if test="endDate != null ">
+			and dr.calTime &lt;= #{endDate}
+		</if>
+		<if test="fixedAssetName != null and fixedAssetName != '' ">
+			and fa.fixedAssetName = concat("%",#{fixedAssetName},"%")
+		</if>
+		order by dr.recordId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+</mapper>

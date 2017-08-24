@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.PhoneGroupMapper">
+
+	<!-- 获取联系人分组列表 start -->
+	<select id="selectByALL" resultType="com.jy.entity.oa.communicate.PhoneGroup">
+		select * from fudan_oa_phone_group where 1=1
+		<if test="groupName != null and groupName != '' ">
+			and groupName like concat("%", #{groupName} ,"%")
+		</if>
+		<if test="isShared != null ">
+			and isShared = #{isShared}
+		</if>
+		<if test="userId != null ">
+			and userId = #{userId}
+		</if>
+	</select>
+	<!-- 获取联系人分组列表 end -->
+	
+
+	<!-- 添加联系人分组 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.PhoneGroup">
+		insert fudan_oa_phone_group <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="groupName != null and groupName != '' ">
+				groupName = #{groupName},
+			</if>
+			<if test="isShared != null">
+				isShared = #{isShared},
+			</if>
+			<if test="SN != null">
+				SN = #{SN},
+			</if>
+			<if test="userId != null">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加联系人分组 end -->
+	
+	
+	<!-- 修改联系人分组信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.communicate.PhoneGroup">
+		update fudan_oa_phone_group <include refid="updateSQL"></include>
+		where groupId = #{groupId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="groupName != null and groupName != '' ">
+				groupName = #{groupName},
+			</if>
+			<if test="isShared != null">
+				isShared = #{isShared},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改联系人分组信息 end -->
+	
+	
+	<!-- 获取联系人分组信息 start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.PhoneGroup">
+		select groupId,groupName,isShared from fudan_oa_phone_group where groupId = #{groupId}
+	</select>
+	<!-- 获取联系人分组信息 end -->
+	
+	
+	<!-- 删除联系人分组 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_phone_group where groupId = #{groupId}
+	</delete>
+	<!-- 删除联系人分组 end -->
+	
+	
+	<!-- 获取最大的sn值 start -->
+	<select id="getTop" resultType="Integer">
+		select max(SN) from fudan_oa_phone_group
+	</select>
+	<!-- 获取最大的sn值 end -->
+	
+	<!-- 分页模糊查询 start -->
+	<select id="selectPageDate" resultType="com.jy.entity.oa.communicate.PhoneGroup">
+		select * from fudan_oa_phone_group where 1=1
+		<if test="groupName != null and groupName != '' ">
+			and groupName like concat("%", #{groupName} ,"%")
+		</if>
+		<if test="isShared != null ">
+			and isShared = #{isShared}
+		</if>
+		<if test="userId != null ">
+			and userId = #{userId}
+		</if>
+		order by groupId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页模糊查询 end -->
+	
+	<!-- 获取所有分组 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.communicate.PhoneGroup">
+		select * from fudan_oa_phone_group order by groupId desc
+	</select>
+	<!-- 获取所有分组 end -->
+	
+</mapper>

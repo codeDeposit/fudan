@@ -1,0 +1,23 @@
+package com.jy.service.oa.impl.archive;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.repository.oa.archive.DocHistoryMapper;
+import com.jy.service.oa.archive.DocHistoryService;
+
+
+@Service("docHistoryService")
+public class DocHistoryServiceImpl implements DocHistoryService {
+
+	private DocHistoryMapper docHistoryMapper;
+
+	public DocHistoryMapper getDocHistoryMapper() {
+		return docHistoryMapper;
+	}
+	
+//	@Autowired
+	public void setDocHistoryMapper(DocHistoryMapper docHistoryMapper) {
+		this.docHistoryMapper = docHistoryMapper;
+	}
+
+}

@@ -1,0 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link href="${jypath}/app/css/bootstrap.min.css?v=3.4.0" rel="stylesheet">
+<link href="${jypath}/app/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+<link href="${jypath}/app/font-awesome/css/font-awesome.css?v=4.3.0" rel="stylesheet">
+<link href="${jypath}/app/css/plugins/morris/morris-0.4.3.min.css" rel="stylesheet">
+<link href="${jypath}/app/css/animate.css" rel="stylesheet">
+<link href="${jypath}/app/css/style.css?v=2.2.0" rel="stylesheet">
+<link href="${jypath}/app/js/plugins/gritter/jquery.gritter.css" rel="stylesheet">

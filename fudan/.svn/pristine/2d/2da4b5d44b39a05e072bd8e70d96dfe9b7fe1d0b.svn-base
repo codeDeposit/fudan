@@ -1,0 +1,165 @@
+package com.jy.entity.oa;
+
+import java.util.Date;
+
+/**
+ * 员工简单信息辅助类
+ * 
+ */
+public class EmployeeInfoVo {
+
+	private String id; // accountId
+	private Integer userId; // employeeId
+	private String orgId; // 部门Id
+	private String positionId; // 职位ID
+	private String telphone; // 员工手机号
+	private String fax; // 传真
+	private String address; // 地址
+	private String zip; // 邮编
+	private String photo; // 照片链接
+	private Date accessionTime; // 入职时间
+	private short status; // 在职状态
+	private String education; // 学历
+	private String fullname; // 全名
+	private short delFlag; // 删除状态
+	private String pname; // 职位名称
+	private String oname; // 部门名称
+	private String email;
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+
+	public String getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(String positionId) {
+		this.positionId = positionId;
+	}
+
+	public String getTelphone() {
+		return telphone;
+	}
+
+	public void setTelphone(String telphone) {
+		this.telphone = telphone;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public Date getAccessionTime() {
+		return accessionTime;
+	}
+
+	public void setAccessionTime(Date accessionTime) {
+		this.accessionTime = accessionTime;
+	}
+
+	public short getStatus() {
+		return status;
+	}
+
+	public void setStatus(short status) {
+		this.status = status;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public short getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(short delFlag) {
+		this.delFlag = delFlag;
+	}
+
+	public String getPname() {
+		return pname;
+	}
+
+	public void setPname(String pname) {
+		this.pname = pname;
+	}
+
+	public String getOname() {
+		return oname;
+	}
+
+	public void setOname(String oname) {
+		this.oname = oname;
+	}
+
+}

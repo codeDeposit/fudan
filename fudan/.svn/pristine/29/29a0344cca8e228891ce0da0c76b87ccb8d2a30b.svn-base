@@ -1,0 +1,53 @@
+package com.jy.service.oa.impl.publics;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.publics.FileAttachService;
+import com.jy.task.utils.JsonInfo;
+
+
+@Service("fileAttachService")
+public class FileAttachServiceImpl implements FileAttachService {
+
+	private FileAttachMapper fileAttachMapper;
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	// 添加附件记录
+	@Override
+	public JsonInfo save(FileAttach fileAttach) {
+		JsonInfo info = new JsonInfo();
+		int result = fileAttachMapper.insert(fileAttach);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取附件信息
+	@Override
+	public FileAttach getBy(String filePath) {
+		FileAttach fileAttach = fileAttachMapper.select(filePath);
+		return fileAttach;
+	}
+
+	// 获取最新插入的附件ID
+	@Override
+	public Long getMax() {
+		Long fileId = fileAttachMapper.selectMax();
+		return fileId;
+	}
+
+}

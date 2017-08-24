@@ -1,0 +1,14 @@
+//分页js函数
+// id:要局部刷新的dom id号， url:请求url地址，type:请求方式（get、post），data:请求数据, 数据中包含operation标识符：是否是局部刷新：operation=partrefresh
+function pageturning(id,url, type, data) {
+	$.ajax({
+		type: type,
+		url: url,
+		data: data,
+		success: function(backdata) {
+			//backdata统一返回页面: XXX_table.jsp
+			$("#"+id).html(backdata);
+			fuCloseLayer();
+		}
+	});
+}

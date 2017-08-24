@@ -1,0 +1,165 @@
+package com.jy.entity.oa.personal;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class DutyRegister {
+
+	// 签到标识
+	private final Short SIGN_IN = 1;
+	// 签退标识
+	private final Short SIGN_OFF = 2;
+
+	/*
+	 * 1=正常登记（上班，下班） 2＝迟到 3=早退 4＝休息 5＝旷工 6=放假
+	 */
+	// 正常上下班
+	private final Short REG_FLAG_NORMAL = 1;
+	// 迟到
+	private final Short REG_FLAG_LATE = 2;
+	// 早退
+	private final Short REG_FLAG_EARLY_OFF = 3;
+	// 休息
+	private final Short REG_FLAG_RELAX = 4;
+	// 旷工
+	private final Short REG_FLAG_TRUANCY = 5;
+	// 放假
+	private final Short REG_FLAG_HOLIDAY = 6;
+
+	private Long registerId;
+	private Date registerDate;
+	private Short regFlag;
+	private Integer regMins;
+	private String reason;
+	private Integer dayOfWeek;
+	private Short inOffFlag;
+	private String fullname;
+	private String userId;
+	private Long sectionId;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Long getSectionId() {
+		return sectionId;
+	}
+
+	public void setSectionId(Long sectionId) {
+		this.sectionId = sectionId;
+	}
+
+	//用来显示
+	private String registerDate1;
+
+	public String getRegisterDate1() {
+		return registerDate1;
+	}
+
+	public void setRegisterDate1(String registerDate1) {
+		this.registerDate1 = registerDate1;
+	}
+
+	public Long getRegisterId() {
+		return registerId;
+	}
+
+	public void setRegisterId(Long registerId) {
+		this.registerId = registerId;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	public Short getRegFlag() {
+		return regFlag;
+	}
+
+	public void setRegFlag(Short regFlag) {
+		this.regFlag = regFlag;
+	}
+
+	public Integer getRegMins() {
+		return regMins;
+	}
+
+	public void setRegMins(Integer regMins) {
+		this.regMins = regMins;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public Integer getDayOfWeek() {
+		return dayOfWeek;
+	}
+
+	public void setDayOfWeek(Integer dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+	}
+
+	public Short getInOffFlag() {
+		return inOffFlag;
+	}
+
+	public void setInOffFlag(Short inOffFlag) {
+		this.inOffFlag = inOffFlag;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public Short getSIGN_IN() {
+		return SIGN_IN;
+	}
+
+	public Short getSIGN_OFF() {
+		return SIGN_OFF;
+	}
+
+	public Short getREG_FLAG_NORMAL() {
+		return REG_FLAG_NORMAL;
+	}
+
+	public Short getREG_FLAG_LATE() {
+		return REG_FLAG_LATE;
+	}
+
+	public Short getREG_FLAG_EARLY_OFF() {
+		return REG_FLAG_EARLY_OFF;
+	}
+
+	public Short getREG_FLAG_RELAX() {
+		return REG_FLAG_RELAX;
+	}
+
+	public Short getREG_FLAG_TRUANCY() {
+		return REG_FLAG_TRUANCY;
+	}
+
+	public Short getREG_FLAG_HOLIDAY() {
+		return REG_FLAG_HOLIDAY;
+	}
+
+}

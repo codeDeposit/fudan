@@ -1,0 +1,24 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgXqtb;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WzcgXqtbDao extends BaseDao<WzcgXqtb> {
+	
+	List<WzcgXqtb> find(WzcgXqtb wzcgXqtb);
+	
+	List<WzcgXqtb> search(WzcgXqtb wzcgXqtb);
+	
+	int count(WzcgXqtb wzcgXqtb);
+	
+	void insert(WzcgXqtb wzcgXqtb);
+	
+	void delete(WzcgXqtb wzcgXqtb);
+	
+	void update(WzcgXqtb wzcgXqtb);
+
+}

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.JobMapper">
+
+	<!-- baseMap start -->
+	<resultMap id="baseMap" type="com.jy.entity.oa.hrm.JobVO">
+		<id column="jobId" property="jobId"></id>
+		<result column="jobName" property="jobName" />
+		<result column="delFlag" property="delFlag" />
+		<result column="memo" property="memo" />
+		<association  column="orgId" property="org" select="selectorg"></association>
+	</resultMap>
+	
+	<select id="selectorg" resultType="com.jy.entity.oa.OAOrg">
+		select * from jy_base_org where id = #{id}
+	</select>
+	<!-- baseMap end -->
+	
+
+	<!-- 添加职位 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.Job">
+		insert fudan_oa_job <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="jobName != null and jobName !='' ">
+				jobName = #{jobName},
+			</if>
+			<if test="orgId != null and orgId !='' ">
+				orgId = #{orgId},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="delFlag != null ">
+				delFlag = #{delFlag},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加职位 end -->
+	
+	
+	<!-- 获取职位详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.Job">
+		select * from fudan_oa_job where jobId = #{jobId}
+	</select>
+	<!-- 获取职位详细信息 end -->
+	
+	
+	<!-- 编辑职位信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.Job">
+		update fudan_oa_job <include refid="insertSQL"></include>
+		where jobId = #{jobId}
+	</update>
+	<!-- 编辑职位信息 end -->
+	
+	
+	<!-- 删除职位信息 start -->
+	<update id="delete" parameterType="Long">
+		update fudan_oa_job set delFlag = 1 where jobId = #{jobId}
+	</update>
+	<!-- 删除职位信息 end -->
+	
+	
+	<!-- 获取职位信息列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.Job">
+		select job.* from fudan_oa_job job, jy_base_org org where job.orgId = org.id and job.delFlag = 0
+		<if test="jobName != null and jobName !='' ">
+			and job.jobName like concat("%",#{jobName},"%")
+		</if>
+		<if test="orgName != null and orgName !='' ">
+			and org.name like concat("%",#{orgName},"%")
+		</if>
+		<if test="memo != null and memo !='' ">
+			and job.memo like concat("%",#{memo},"%")
+		</if>
+	</select>
+	<!-- 获取职位信息列表 end -->
+	
+	
+	<!-- 获取已删除职位信息列表 start -->
+	<select id="selectDel" resultMap="baseMap">
+		select job.* from fudan_oa_job job, jy_base_org org where job.orgId = org.id and job.delFlag = 1
+		<if test="jobName != null and jobName !='' ">
+			and job.jobName like concat("%",#{jobName},"%")
+		</if>
+		<if test="orgName != null and orgName !='' ">
+			and org.name like concat("%",#{orgName},"%")
+		</if>
+		<if test="memo != null and memo !='' ">
+			and job.memo like concat("%",#{memo},"%")
+		</if>
+	</select>
+	<!-- 获取已删除职位信息列表 end -->
+	
+	
+	<!-- 恢复职位 start -->
+	<update id="updateFlag" parameterType="Long">
+		update fudan_oa_job set delFlag = 0 where jobId = #{jobId}
+	</update>
+	<!-- 恢复职位 end -->
+	
+	
+	<!-- 职位分页列表 start -->
+	<select id="selectPageData" resultMap="baseMap">
+		select job.* from fudan_oa_job job, jy_base_org org where job.orgId = org.id and job.delFlag = 0
+		<if test="jobName != null and jobName !='' ">
+			and job.jobName like concat("%",#{jobName},"%")
+		</if>
+		<if test="orgName != null and orgName !='' ">
+			and org.name like concat("%",#{orgName},"%")
+		</if>
+		<if test="memo != null and memo !='' ">
+			and job.memo like concat("%",#{memo},"%")
+		</if>
+		order by jobId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 职位分页列表 end -->
+	
+	
+	<!-- 根据部门id获取job列表 start -->
+	<select id="selectByOrg" resultType="com.jy.entity.oa.hrm.Job">
+		select * from fudan_oa_job where orgId in (select id from jy_base_org where id = #{orgId} or pid = #{orgId}) order by jobId desc
+	</select>
+	<!-- 根据部门id获取job列表 end -->
+	
+</mapper>

@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=WebRoot/index.jsp,WebRoot/act-process-editor/editor-app/libs/json3_3.2.6,WebRoot/static/plugins/ueditor/jsp/controller.jsp,WebRoot/404.jsp,WebRoot/app/js/toast,resources/mybatis,resources/spring/spring-application.xml,WebRoot/act-process-editor/editor-app/libs/es5-shim-15.3.4.5,resources/spring,WebRoot/pc,WebRoot/WEB-INF,WebRoot/500.jsp
+validator.Unchecked=

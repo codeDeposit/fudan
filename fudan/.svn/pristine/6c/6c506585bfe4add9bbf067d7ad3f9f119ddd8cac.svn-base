@@ -1,0 +1,24 @@
+package com.jy.service.oa.workflow;
+
+import java.util.List;
+
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.task.utils.JsonInfo;
+
+public interface ApproveService {
+
+	/**
+	 * 添加审核记录
+	 * @param approve
+	 * @return
+	 */
+	JsonInfo save(Approve approve);
+
+	/**
+	 * 根据applyId获取所有审核信息
+	 * @param applyId
+	 * @return
+	 */
+	List<Approve> getBy(String applyId);
+
+}

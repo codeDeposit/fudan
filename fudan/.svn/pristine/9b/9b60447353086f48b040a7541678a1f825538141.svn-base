@@ -1,0 +1,155 @@
+package com.jy.controller.oa.workflow;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.workflow.Apply;
+import com.jy.service.oa.workflow.ApplyService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/workflow/apply")
+public class OAApplyController extends BaseController<Object>{
+	
+	private ApplyService applyService;
+	private RepositoryService repositoryService;
+	private RuntimeService runtimeService;
+	private TaskService taskService;
+	
+	public TaskService getTaskService() {
+		return taskService;
+	}
+
+	@Autowired
+	public void setTaskService(TaskService taskService) {
+		this.taskService = taskService;
+	}
+
+	public RuntimeService getRuntimeService() {
+		return runtimeService;
+	}
+
+	@Autowired
+	public void setRuntimeService(RuntimeService runtimeService) {
+		this.runtimeService = runtimeService;
+	}
+
+	public RepositoryService getRepositoryService() {
+		return repositoryService;
+	}
+
+	@Autowired
+	public void setRepositoryService(RepositoryService repositoryService) {
+		this.repositoryService = repositoryService;
+	}
+
+	public ApplyService getApplyService() {
+		return applyService;
+	}
+
+	@Resource(name="applyService")
+	public void setApplyService(ApplyService applyService) {
+		this.applyService = applyService;
+	}
+
+	/**
+	 * 起草流程申请
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo addApplication(Apply apply, String approver) {
+		//流程启动
+		ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(apply.getpId()).singleResult();
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("approver", apply.getApplierId());
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(definition.getKey(), variables);
+		//并办理第一个任务
+		variables.clear();
+		variables.put("approver", approver);
+		TaskQuery query = taskService.createTaskQuery();
+		query.taskAssignee(apply.getApplierId());
+		query.processInstanceId(processInstance.getId());
+		Task task = query.singleResult();
+		taskService.complete(task.getId(), variables);
+		
+		apply.setId(get32UUID());
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(apply.getpId()).singleResult();
+		apply.setApplyTime(new Date());
+		apply.setTitle(processDefinition.getName()+"_"+apply.getApplier()+"_"+DateStringUtil.dateToString3(apply.getApplyTime()));
+		apply.setStatus((short)1);
+		apply.setpId(processInstance.getId());
+		
+		JsonInfo info = applyService.save(apply);
+		return info;
+	}
+	
+	/**
+	 * 我的申请列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView applySelf(HttpServletRequest request, String processName, Short status) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<Apply> applies = applyService.get(processName, status);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(applies.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<Apply> pageApplies = applyService.getPageList(pb, processName, status);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/workflow/apply_table");
+		}else {
+			mv.setViewName("system/oa/workflow/apply_list");
+		}
+		//获取当前节点
+		for(Apply apply: pageApplies) {
+			String processInstanceId = apply.getpId();
+			TaskQuery query = taskService.createTaskQuery();
+			Task task = query.processInstanceId(processInstanceId).singleResult();
+			String processDefinitionId = task.getProcessDefinitionId();
+			apply.setProcessDefinitionId(processDefinitionId);
+			apply.setTaskName(task.getName());
+		}
+		
+		mv.addObject("applies", pageApplies);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+}

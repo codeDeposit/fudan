@@ -1,0 +1,196 @@
+package com.jy.controller.oa.task;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.task.WorkPlan;
+import com.jy.entity.oa.task.WorkPlanVO;
+import com.jy.service.oa.task.WorkPlanService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/workplan")
+public class WorkPlanController {
+
+	private WorkPlanService workPlanService;
+
+	public WorkPlanService getWorkPlanService() {
+		return workPlanService;
+	}
+
+	@Resource(name="workPlanService")
+	public void setWorkPlanService(WorkPlanService workPlanService) {
+		this.workPlanService = workPlanService;
+	}
+	
+	/**
+	 * 添加工作计划
+	 * @param workPlan
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(WorkPlan workPlan) {
+		JsonInfo info = workPlanService.save(workPlan);
+		return info;
+	}
+	/**
+	 * 获取工作计划详细信息
+	 * @param planId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long planId, String operation) {
+		WorkPlan workPlan = workPlanService.getInfoBy(planId);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/task/workplan_form");
+		mv.addObject("workPlan", workPlan);
+		mv.addObject("operation", operation);
+		return mv;
+	}
+	
+	/**
+	 * 修改工作计划信息
+	 * @param workPlan
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(WorkPlan workPlan) {
+		JsonInfo info = workPlanService.update(workPlan);
+		return info;
+	}
+	
+	/**
+	 * 批量删除工作计划
+	 * @param planId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] planId) {
+		JsonInfo info = workPlanService.del(planId);
+		return info;
+	}
+	
+	/**
+	 * 工作计划列表
+	 * @param planName
+	 * @param isPersonal
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String planName,
+			@RequestParam(required = false) Short isPersonal) {
+		String operation = request.getParameter("operation");
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<WorkPlan> workPlans = workPlanService.get(planName, isPersonal);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(workPlans.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<WorkPlanVO> pageWorkPlans = workPlanService.getPageList(pb, planName, isPersonal);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/workplan_table");
+		}else {
+			mv.setViewName("system/oa/task/workplan_list");
+		}
+		mv.addObject("workPlans", pageWorkPlans);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 我的计划列表
+	 * @param planName
+	 * @param isPersonal
+	 * @return
+	 */
+	@RequestMapping("/listmy")
+	public ModelAndView listMy(HttpServletRequest request, @RequestParam(required = false) String planName,
+			@RequestParam(required = false) Long typeId) {
+		String operation = request.getParameter("operation");
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<WorkPlan> workPlans = workPlanService.getMy(planName, typeId);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(workPlans.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<WorkPlanVO> pageWorkPlans = workPlanService.getMyPageList(pb, planName, typeId);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/myworkplan_table");
+		}else {
+			mv.setViewName("system/oa/task/myworkplan_list");
+		}
+		mv.addObject("myworkPlans", pageWorkPlans);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 部门计划列表
+	 * @param planName
+	 * @param typeId
+	 * @param principal
+	 * @return
+	 */
+	@RequestMapping("/listorg")
+	public ModelAndView listOrg(HttpServletRequest request, @RequestParam(required = false) String planName,
+			@RequestParam(required = false) Long typeId, @RequestParam(required = false) String principal) {
+		String operation = request.getParameter("operation");
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<WorkPlan> workPlans = workPlanService.getOrg(planName, typeId, principal);
+		PageBean pb = new PageBean(workPlans.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<WorkPlanVO> pageWorkPlans = workPlanService.getOrgPageList(pb, planName, typeId, principal);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/orgworkplan_table");
+		}else {
+			mv.setViewName("system/oa/task/orgworkplan_list");
+		}
+		mv.addObject("myworkPlans", pageWorkPlans);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 激活或禁用
+	 * @return
+	 */
+	@RequestMapping("/updates")
+	@ResponseBody
+	public JsonInfo setStatus(Long planId, Short status) {
+		JsonInfo info = workPlanService.updates(planId, status);
+		return info;
+	}
+
+}

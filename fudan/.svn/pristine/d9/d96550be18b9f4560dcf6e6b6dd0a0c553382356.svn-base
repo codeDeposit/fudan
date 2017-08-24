@@ -1,0 +1,25 @@
+package com.jy.controller.oa.publics;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+/**
+ * 获取页面的在线编辑器
+ * @author admin
+ *
+ */
+@Controller
+@RequestMapping("/oa/editor")
+public class EditorController {
+	
+	@RequestMapping("/get")
+	public ModelAndView getEditor(@RequestParam(value="content", required=false) String content) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/common/editor");
+		mv.addObject("ctent", content);
+		return mv;
+	}
+	
+}

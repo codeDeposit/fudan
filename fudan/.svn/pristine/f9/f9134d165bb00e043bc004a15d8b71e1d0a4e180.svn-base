@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.workflow.ApproveMapper">
+
+	<!-- 添加审核记录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.workflow.Approve">
+		insert fudan_workflow_approve <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="id != null and id != '' ">
+				id = #{id},
+			</if>
+			<if test="approver != null and approver != '' ">
+				approver = #{approver},
+			</if>
+			<if test="approveOption != null and approveOption != '' ">
+				approveOption = #{approveOption},
+			</if>
+			<if test="approveStatus != null ">
+				approveStatus = #{approveStatus},
+			</if>
+			<if test="applyId != null ">
+				applyId = #{applyId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加审核记录 end -->
+	
+	
+	<!-- 根据applyId获取审核信息 start -->
+	<select id="selectBy" resultType="com.jy.entity.oa.workflow.Approve">
+		select * from fudan_workflow_approve where applyId = #{applyId}
+	</select>
+	<!-- 根据applyId获取审核信息 end -->
+	
+</mapper>

@@ -1,0 +1,132 @@
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	$.ajax({//评审专业类别加载
+		type: "POST",
+		async: false,
+		url: jypath+'/backstage/wzcg/kind/list',
+		success: function(data){
+			$("#profession").html(data);
+		}
+	});
+});
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/list",
+		success : function(data) {
+			 $('#expertList').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fDetail(param,param2){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/detail",
+		data : {
+			userId:param,
+			mark:param2
+		},
+		success : function(data) {
+			fuCloseLayer();			
+			$("#expertDetail").html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/update",
+		data : $("#form1").serialize(),
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+				fuCloseLayer();		
+			}else{
+				fuShowSuccess();
+				fuCloseLayer();		
+				$('#mExpertDetail').modal('hide');
+				fList();
+			}		
+		}
+	});
+	return false;
+}
+function fuSure(param){
+	fuLoading();
+	setTimeout('fDelete2(\''+param+'\')',200);
+}
+function fDelete(param){
+	fuConfirm(param);
+}
+function fDelete2(param){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/delete",
+		data : {
+			userId: param
+		},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+				fuClose();
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList();
+			}
+		}
+	});
+}
+function fUpdateStatus(param1,param2,param3){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/updateStatus",
+		data :{userId:param1,state:param2,mark:param3},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			}else{
+				fuCloseLayer();
+				fList();
+			}		
+		}
+	});
+}
+function fSearch(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/search",
+		data :$("#expertSearchForm").serialize(),
+		success : function(data) {
+			$('#expertList').html(data);
+			fuCloseLayer();	
+		}
+	});
+	return false;
+}
+function fExcel(param1,param2){
+	fuLoading();
+	if(param1 == 1){
+		window.location.href = jypath+"/backstage/wzcg/expert/excel?"+$("#expertSearchForm").serialize();
+	}else{
+		window.location.href = jypath+"/backstage/wzcg/expert/excel?userId="+param2;
+	}
+	fuCloseLayer();
+}

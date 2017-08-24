@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.DepreTypeMapper">
+
+	<!-- 添加折旧类型 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.DepreType">
+		insert fudan_oa_depre_type <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="typeName !=null and typeName != '' ">
+				typeName = #{typeName},
+			</if>
+			<if test="deprePeriod !=null ">
+				deprePeriod = #{deprePeriod},
+			</if>
+			<if test="typeDesc !=null and typeDesc != '' ">
+				typeDesc = #{typeDesc},
+			</if>
+			<if test="calMethod !=null ">
+				calMethod = #{calMethod},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加折旧类型 end -->
+	
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.admin.DepreType">
+		select * from fudan_oa_depre_type where depreTypeId = #{depreTypeId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 修改折旧类型信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.DepreType">
+		update fudan_oa_depre_type <include refid="insertSQL"></include>
+		where depreTypeId = #{depreTypeId}
+	</update>
+	<!-- 修改折旧类型信息 end -->
+	
+	
+	<!-- 删除折旧类型信息 start -->
+	<delete id="delete" parameterType="com.jy.entity.oa.admin.DepreType">
+		delete from fudan_oa_depre_type where depreTypeId = #{depreTypeId}
+	</delete>
+	<!-- 删除折旧类型信息 end -->
+	
+	
+	<!-- 获取折旧类型列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.admin.DepreType">
+		select * from fudan_oa_depre_type where 1=1
+		<if test="typeName !=null and typeName != '' ">
+			and typeName like concat("%",#{typeName},"%")
+		</if>
+		<if test="calMethod !=null ">
+			and calMethod = #{calMethod}
+		</if>
+	</select>
+	<!-- 获取折旧类型列表 end -->
+	
+	
+	<!-- 分页折旧类型列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.admin.DepreType">
+		select * from fudan_oa_depre_type where 1=1
+		<if test="typeName !=null and typeName != '' ">
+			and typeName like concat("%",#{typeName},"%")
+		</if>
+		<if test="calMethod !=null ">
+			and calMethod = #{calMethod}
+		</if>
+		order by depreTypeId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页折旧类型列表 end -->
+	
+	
+	<!-- 获取所有折旧类别 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.admin.DepreType">
+		select * from fudan_oa_depre_type
+	</select>
+	<!-- 获取所有折旧类别 end -->
+	
+</mapper>

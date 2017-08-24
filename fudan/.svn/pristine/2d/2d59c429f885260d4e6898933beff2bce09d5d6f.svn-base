@@ -1,0 +1,111 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.DepreType;
+import com.jy.repository.oa.admin.DepreTypeMapper;
+import com.jy.service.oa.admin.DepreTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("depreTypeService")
+public class DepreTypeServiceImpl implements DepreTypeService {
+
+	private DepreTypeMapper depreTypeMapper;
+
+	public DepreTypeMapper getDepreTypeMapper() {
+		return depreTypeMapper;
+	}
+
+	@Autowired
+	public void setDepreTypeMapper(DepreTypeMapper depreTypeMapper) {
+		this.depreTypeMapper = depreTypeMapper;
+	}
+
+	// 添加折旧类型
+	@Override
+	public JsonInfo save(DepreType depreType) {
+		int result = depreTypeMapper.insert(depreType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public DepreType getInfoBy(Long depreTypeId) {
+		DepreType depreType = depreTypeMapper.selectInfoBy(depreTypeId);
+		return depreType;
+	}
+
+	// 修改折旧类型信息
+	@Override
+	public JsonInfo update(DepreType depreType) {
+		int result = depreTypeMapper.update(depreType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo del(Long[] depreTypeId) {
+		int result = 0;
+		for(Long dId: depreTypeId) {
+			result = depreTypeMapper.delete(dId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取折旧类型列表
+	@Override
+	public List<DepreType> get(String typeName, Short calMethod) {
+		List<DepreType> depreTypes = depreTypeMapper.select(typeName, calMethod);
+		return depreTypes;
+	}
+
+	// 分页折旧类型列表
+	@Override
+	public List<DepreType> getPageList(PageBean pb, String typeName,
+			Short calMethod) {
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<DepreType> depreTypes = depreTypeMapper.selectPageData(firstIndex, toIndex, typeName, calMethod);
+		
+		return depreTypes;
+	}
+
+	// 获取所有折旧类别列表
+	@Override
+	public List<DepreType> getAll() {
+		List<DepreType> depreTypes = depreTypeMapper.selectAll();
+		return depreTypes;
+	}
+
+}

@@ -1,0 +1,205 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
+<html lang="zn">
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+	</head>
+	<style>
+		.head {
+			margin: 30px 0 30px;
+		}
+		.box {
+			width: 70%;
+			background-color: #efefef;
+			border-radius: 10px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+		.regBox {
+			width: 60%;
+			margin: 30px auto 0;
+			padding: 20px;
+		}
+		.lXian {
+			width: 80%;
+			margin: 30px auto 30px;
+			height: 1px;
+			background-color: #dadada;
+		}
+		.foote {
+			margin-top: 50px;
+		}
+		.copyright {
+			font-size: 12px;
+			color: #999;
+			font-family: "\5FAE\8F6F\96C5\9ED1", "微软雅黑", "Microsoft YaHei", Helvetica, Tahoma, sans-serif;
+		}
+		.perogress {
+			width: 70%;
+			margin: 0 auto 70px;
+		}
+		.prog {
+			position: relative;
+			width: 100%;
+			height: 10px;
+			background-color: #ccc;
+			border-radius: 5px;
+		}
+		.prog.active, .cricle.active {
+			background-color: #1AB394;
+			color: #fff;
+		}
+		.cricle {
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			border-radius: 10px;
+			background-color: #ccc;
+			top: -5px;
+			left: 50%;
+			margin-left: -10px;
+		}
+		.pText {
+			margin: 5px;
+		}
+		.titool {
+			padding: 6px 0 6px 24px;
+			color: red;
+			display: none;
+		}
+		.oSuccess {
+			color: green;
+			font-size: 24px;
+			text-align: center;
+		}
+		.iconOk {
+			width: 100px;
+			height: 100px;
+			margin: 0 auto;
+			border-radius: 50px;
+			background-color: #fff;
+		}
+		.iconOk span {
+			font-size: 56px;
+			margin: 20px 0 0 20px;
+			color: green;
+		}
+	</style>
+	<body>
+		<h3 class="text-center head">复单信息协同办公系统密码修改</h3>
+		<div class="lXian"></div>
+		<div class="perogress">
+			<div class="col-sm-4 text-center">
+				<div class="prog active">
+					<div class="cricle active">
+						1
+					</div>
+				</div>
+				<p class="pText">
+					输入用户邮箱
+				</p>
+			</div>
+			<div class="col-sm-4 text-center">
+				<div class="prog active">
+					<div class="cricle active">
+						2
+					</div>
+				</div>
+				<p class="pText">
+					重置密码
+				</p>
+			</div>
+			<div class="col-sm-4 text-center">
+				<div class="prog">
+					<div class="cricle">
+						3
+					</div>
+				</div>
+				<p class="pText">
+					设置成功
+				</p>
+			</div>
+		</div>
+		<div class="box">
+			<div class="regBox">
+				<form class="form-horizontal" role="form" id="form1" onsubmit="return fSubmit()">
+					<input type="hidden" name="accountId" value="${account.id }" >
+					<input type="hidden" name="loginName" value="${account.loginName }" >
+					<input type="hidden" name="roleId" value="${account.roleId }" >
+					<input type="hidden" name="isValid" value="${account.isValid }" >
+					<div class="form-group">
+						<label class="col-sm-3 control-label">密码</label>
+						<div class="col-sm-6">
+							<input type="password" class="form-control passw1" id="password1" name="password" minlength="6" maxlength="30" placeholder="请输入密码" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">确认密码</label>
+						<div class="col-sm-6">
+							<input type="password" class="form-control passw2" id="password2" placeholder="请输入密码" minlength="6" maxlength="30" required>
+						</div>
+						<span class="col-sm-3 titool">密码不一致 !</span>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-6">
+							<button type="submit" class="btn btn-primary pull-right">
+								确 认
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="text-center foote">
+			<div class="copyright">
+				Copyright © 复单信息科技有限公司 2016 - 2017
+			</div>
+		</div>
+		<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="fasle">
+			<div class="modal-dialog">
+				<div class="modal-content" style="margin-top:188px;">
+					<div class="modal-body">
+						<div class="iconOk">
+							<span class="glyphicon glyphicon-ok"></span>
+						</div>
+						<p class="oSuccess">
+							修改成功！
+						</p>
+						<a href="${jypath}/loginIndex" type="button" class="btn btn-success col-sm-offset-10 bLog">返回登陆</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script>
+			function fSubmit(){
+				var val = $('.passw1').val();
+				if ($('.passw2').val() != val) {
+					$('.titool').css('display', 'block');
+				} else {
+					$('.titool').css('display', 'none');
+					$.ajax({
+						type:"post",
+						async:false,
+						url:"${jypath}/backstage/account/resertPwd",
+						data:$("#form1").serialize(),
+						success:function(data){
+							var obj = eval('('+ data +')');
+							if(obj.res == 0){
+								alert(obj.resMsg);
+							}else{
+								$('.prog').addClass('active');
+								$('.cricle').addClass('active');
+								$('#successModal').modal('show');
+							}
+						}
+					}); 
+				}
+				return false;
+			}
+		</script>
+	</body>
+</html>

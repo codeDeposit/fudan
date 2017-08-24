@@ -1,0 +1,358 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<html>
+<head>
+	<%@include file="../common/includeBaseSet.jsp"%>
+	<title>物资采购评审专家资格申请表</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="${jypath}/mobile/css/wzcg/fileinput.min.css" rel="stylesheet" type="text/css" />
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${jypath}/mobile/js/wzcg/fileinput.min.js"></script>
+	<script type="text/javascript" src="${jypath}/mobile/js/wzcg/zh.js"></script>
+	<style type="text/css">
+		i{font-style: normal;text-align: center;}
+		body{padding: 5%;}
+		.xinghao{color:red;}
+		#hint{font-size:12px;color:#2ecc71;padding:0px 4px;}
+	</style>
+</head>
+   <body>
+       <h2 style="text-align:center;color:#F86B4F">第二军医大学</h2>
+       <h4 style="text-align:center;color:#3498db;font-weight:bold;">物资采购评审专家资格申请表</h4>
+       <p style="text-align:center; font-size:12px;color:#8f8f94">(带
+       	<i style="font-size:14px;vertical-align:middle;" class="xinghao"> * </i>号的为必填项目)
+       </p>
+       <form enctype="multipart/form-data" action="#" method="get" class="login-form" >
+           <div class="form-group ">
+               <label for="name"><i class="xinghao"> * </i>登陆账号</label>
+               <input type="text" class="form-control" name="username"  placeholder="登陆账号" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>登陆密码</label>
+               <input type="password" class="form-control" name="password" placeholder="登陆密码"  required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>姓名</label>
+               <input type="text" class="form-control" name="xm" placeholder="姓名" required>
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>性别</label>
+               <select class="form-control col-sm-3" name="xb" name=""  required>
+                 <option value="0">男</option>
+                 <option value="1">女</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao" > * </i>出生年月</label>
+               <input type="date" name="csny" class="form-control" required>
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>身份</label>
+               <select class="form-control col-sm-3" name="sf"  required>
+                 <option value="">--请选择--</option>
+                 <option value="1">军人</option>
+                 <option value="2">非军人</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>身份证号码</label>
+               <input type="number" class="form-control" name="sfzh" placeholder="身份证号码" pattern="[0-9]{18,20}" required >
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>学历</label>
+               <select class="form-control col-sm-3" name="xl"  required>
+                 <option value="">--请选择--</option>
+                 <option value="0">本科</option>
+                 <option value="1">硕士</option>
+                 <option value="2">博士</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>毕业院校</label>
+               <input type="text" class="form-control" name="byxy" placeholder="毕业院校" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>所学专业</label>
+               <input type="text" class="form-control" name="sxzy" placeholder="所学专业" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>参加工作时间</label>
+               <input type="date" name="cjgzsj" class="form-control" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>从事本专业年限</label>
+               <div style="height:34px;">
+                   <input type="number" class="form-control" name="csbzysj" placeholder="从事本专业年限" style="width:80%;display:inline-block;" required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+                   <p style="display:inline-block;text-align:center;width:18%;height:34px;background:#eee;border:1px solid #ccc;padding:0;margin:0;line-height:32px;border-radius:4px;">年</p>
+               </div>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>工作单位</label>
+               <input type="text" class="form-control" name="gzdw" placeholder="工作单位" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>负责人</label>
+               <input type="text" class="form-control" name="fzr" placeholder="负责人" required>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>现任职务</label>
+               <input type="text" class="form-control" name="xrzw" placeholder="现任职务" required>
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>技术职称</label>
+               <select class="form-control col-sm-3" name="jszc" datatype="select" errormsg="请选择您的职称！" required>
+                 <option value="">--请选择--</option>
+                 <option value="0">中级</option>
+                 <option value="1">副高级</option>
+                 <option value="2">高级</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>单位地址</label>
+               <select class="form-control col-sm-3" style="width:48%;display:inline-block;" id="unitArea" onchange="area(1);" name="dwdz" required>
+                 <option value="">--选择省--</option>
+               </select>
+               <select class="form-control col-sm-3" style="width:48%; display:inline-block;" id="unitCity" name="dwdz"  required>
+                 <option value="">--选择市--</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>邮政编码</label>
+               <input type="text" class="form-control" name="dwyb" placeholder="邮政编码"      required required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+           </div>
+           <div class="form-group">
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>家庭住址</label>
+               <select class="form-control col-sm-3" style="width:49%;display:inline-block;" id="familyArea" onchange="area(2);" name="jtdz"  required>
+                 <option value="">--选择省--</option>
+               </select>
+               <select class="form-control col-sm-3" style="width:48%; display:inline-block;" id="familyCity" name="jtdz"  required>
+                 <option value="">--选择市--</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>邮政编码</label>
+               <input type="text" class="form-control" name="jtyb" placeholder="邮政编码"  required required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+           </div>
+           <div class="form-group">
+               <label for="name">办公电话</label>
+               <input type="number" class="form-control" name="bgdh" placeholder="办公电话">
+           </div>
+           <div class="form-group">
+               <label for="name">住宅电话</label>
+               <input type="number" class="form-control" name="zzdh" placeholder="住宅电话">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>手机</label>
+               <input type="number" class="form-control" name="sj" placeholder="手机号码" pattern="{11,13}"  required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>email</label>
+               <input type="email" class="form-control" name="email" placeholder="电子邮箱" >
+           </div>
+           <div class="form-group" >
+               <label for="name" style="display:block;text-align:left;"><i class="xinghao"> * </i>申请评审专业类别</label>
+                <select class="form-control col-sm-3" style="width:33%;display:inline-block;" name="sqpszylb"  required>
+                 <option value="">--请选择--</option>
+                 <option value="0">一般办公设备</option>
+                 <option value="1">信息类产品</option>
+                 <option value="2">文化装备（器材）</option>
+                 <option value="3">军需物资装备器材</option>
+                 <option value="4">军训器材</option>
+                 <option value="5">医疗卫生设备</option>
+                 <option value="6">教学科研仪器设备</option>
+                 <option value="7">营产营居</option>
+                 <option value="8">服务类</option>
+                 <option value="9">工程类+服务</option>
+               </select>
+               <select class="form-control col-sm-3" style="width:32%; display:inline-block;" name="sqpszylb"   required>
+                 <option value="">--请选择--</option>
+                 <option value="0">一般办公设备</option>
+                 <option value="1">信息类产品</option>
+                 <option value="2">文化装备（器材）</option>
+                 <option value="3">军需物资装备器材</option>
+                 <option value="4">军训器材</option>
+                 <option value="5">医疗卫生设备</option>
+                 <option value="6">教学科研仪器设备</option>
+                 <option value="7">营产营居</option>
+                 <option value="8">服务类</option>
+                 <option value="9">工程类+服务</option>
+               </select>
+               <select class="form-control col-sm-3" style="width:32%; display:inline-block;" name="sqpszylb"  required>
+                 <option value="">--请选择--</option>
+                 <option value="0">一般办公设备</option>
+                 <option value="1">信息类产品</option>
+                 <option value="2">文化装备（器材）</option>
+                 <option value="3">军需物资装备器材</option>
+                 <option value="4">军训器材</option>
+                 <option value="5">医疗卫生设备</option>
+                 <option value="6">教学科研仪器设备</option>
+                 <option value="7">营产营居</option>
+                 <option value="8">服务类</option>
+                 <option value="9">工程类+服务</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>开户银行</label>
+               <input type="text" class="form-control" name="khyh"  placeholder="开户银行" required >
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>银行账号</label>
+               <input type="number" class="form-control" name="yhzh" placeholder="银行账号" pattern="{16,18}"  required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>个人简历</label>
+                <textarea class="form-control" rows="3" name="grjl" placeholder="个人简历"  required></textarea>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>参加咨询评审情况</label>
+                <textarea class="form-control" rows="3" name="cjzxpsqk" placeholder="参加咨询评审情况"  required></textarea>
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>何时取得部门何种技术职称</label>
+                <textarea class="form-control" rows="3" name="hsqdbm" placeholder="何时取得部门何种技术职称" required></textarea>
+           </div>
+               <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>个人照片<i id="hint">( 请上传1寸电子证件照  )</i></label>
+              <input id="file-0" class="file" name="attzp" type="file" data-min-file-count="3">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>身份证(正反)<i id="hint">( 每张图片大小不超过8M  )</i></label>
+               <input id="file-1" name="attsfzfile" type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="2">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>学历证明<i id="hint">( 每张图片大小不超过8M  )</i></label>
+               <input id="file-2" name="attxlzmfile" class="file" type="file"  data-min-file-count="3">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>技术职称<i id="hint">( 每张图片大小不超过8M  )</i></label>
+               <input id="file-3" name="attjszcfile" class="file" type="file"  data-min-file-count="3">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>其他材料证明<i id="hint">( 每张图片大小不超过8M  )</i></label>
+               <input id="file-4" name="attqtzmclfile" class="file" type="file"  data-min-file-count="3">
+           </div>
+           <div class="form-group">
+               <label for="name"><i class="xinghao"> * </i>个人承诺</label>
+                <textarea class="form-control" rows="2" readonly="readonly" >本人承诺以上信息真实有效，将严格遵守《第二军医大学评审专家管理办法》。</textarea>
+           </div>
+           <h4>说明文档</h4>
+           <a href="<%=basePath %>resource/file/第二军医大学物资采购评审专家管理办法.doc" class="list-group-item">第二军医大学物资采购评审专家管理办法.doc</a>
+           <div class="center-block" style="width:114px;margin-top:30px;margin-bottom:20px;">
+               <input class="btn btn-warning" type="reset" value="重置" >
+               <input class="btn btn-primary" type="submit" value="提交" >
+           </div>
+       </form>
+   </body>
+<script>
+	$(document).ready(function() {
+		$.ajax({//加载省
+			type: "POST",
+			async: false,
+			url: '<%=basePath%>backstage/supplier/provincelist',
+	    	data: {pareaid:0},
+			success: function(data){
+				$("#unitArea").html(data);//要刷新的div
+				$("#familyArea").html(data);//要刷新的div
+			}
+		});
+	});
+    $('#file-0').fileinput({
+	       	language: 'zh',
+	        allowedFileExtensions : ['jpg', 'png','gif'],
+	        overwriteInitial: false,
+	           maxFileSize: 8000,
+	           maxFilesNum: 1,
+	           msgFilesTooMany: "({1}) {0}！",
+	           slugCallback: function(filename) {
+	               return filename.replace('(', '_').replace(']', '_');
+	           }
+    });
+    $("#file-1").fileinput({
+           uploadUrl: '', 
+           language: 'zh',
+           allowedFileExtensions : ['jpg', 'png','gif'],
+           overwriteInitial: false,
+           maxFileSize: 8000,
+           maxFilesNum: 2,
+            msgFilesTooMany: "({2}) {0}！",
+           slugCallback: function(filename) {
+               return filename.replace('(', '_').replace(']', '_');
+           }
+   	});
+    $('#file-2').fileinput({
+       	language: 'zh',
+        allowedFileExtensions : ['jpg', 'png','gif'],
+        overwriteInitial: false,
+           maxFileSize: 8000,
+           maxFilesNum: 1,
+           msgFilesTooMany: "({1}) {0}！",
+           slugCallback: function(filename) {
+               return filename.replace('(', '_').replace(']', '_');
+           }
+    });
+    $('#file-3').fileinput({
+    	language: 'zh',
+        allowedFileExtensions : ['jpg', 'png','gif'],
+        overwriteInitial: false,
+           maxFileSize: 8000,
+           maxFilesNum: 1,
+           msgFilesTooMany: "({1}) {0}！",
+           slugCallback: function(filename) {
+               return filename.replace('(', '_').replace(']', '_');
+           }
+    });
+    $('#file-4').fileinput({
+    	language: 'zh',
+        allowedFileExtensions : ['jpg', 'png','gif'],
+        overwriteInitial: false,
+           maxFileSize: 8000,
+           maxFilesNum: 1,
+           msgFilesTooMany: "({1}) {0}！",
+           slugCallback: function(filename) {
+               return filename.replace('(', '_').replace(']', '_');
+           }
+    });
+   	$('.login-form').submit(function() {
+	  $.ajax({
+           cache: true,
+           type: "POST",
+           url:ajaxCallUrl,
+           data:$('.login-form').serialize(),
+           async: false,
+           error: function(request) {
+               alert("error");
+           },
+           success: function(data) {
+           }
+       });
+	});
+	function area(_pd){
+		if(_pd == 1){
+			var province = $("#unitArea").val();
+		}else{
+			var province = $("#familyArea").val();
+		}
+		if(province != ""){
+			$.ajax({
+				type: "POST",
+				async: false,
+				url: '<%=basePath%>backstage/supplier/citylist',
+		    	data: {pareaid:province},
+				success: function(data){
+					if(_pd == 1){
+						$("#unitCity").html(data);//要刷新的div
+					}else{
+						$("#familyCity").html(data);//要刷新的div
+					}
+				}
+			});
+		};
+	}
+</script>
+</html>

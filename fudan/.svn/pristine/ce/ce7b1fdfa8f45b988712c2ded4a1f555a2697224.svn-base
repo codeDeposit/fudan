@@ -1,0 +1,34 @@
+package com.jy.service.workflow.online.apply;
+
+import java.util.Map;
+
+public interface ApproveTaskService {
+	
+	/**
+	 * 办理任务 审核 审核：返回, 审核人id、审核状态（通过：1，拒绝：2）
+	 * 
+	 * @param positionId
+	 *            职务id
+	 * @param approve
+	 * @return
+	 */
+	Map<String, String> review(String positionId, String approveStatus, String approveOption,
+			String processInstanceId);
+	
+	/**
+	 * 查询需要登录账户办理的任务的xqytId(key),processInstanceId(value)
+	 * 
+	 * @return map key: isEnd -----> 代表是否是最后一个, 对应的值value----->字符串 "true" or
+	 *         "false" map中其他值： key: 代表 需求预填id value: 代表 流程实例id
+	 */
+	Map<String, String> list(String biaozhi);
+	
+	/**
+	 * 办理任务, 重新提交已拒绝的任务
+	 * @param processInstanceId
+	 * @return
+	 */
+	Map<String, String> reSubmit(String processInstanceId, String positionId, String xqytId);
+
+	boolean isEndEvent();
+}

@@ -1,0 +1,16 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.List;
+
+import com.jy.entity.oa.communicate.MailAttach;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface MailAttachMapper {
+
+	// 添加邮件与附件的关联
+	int insert(MailAttach mailAttach);
+
+	List<MailAttach> selectBy(Long mailId);
+
+}

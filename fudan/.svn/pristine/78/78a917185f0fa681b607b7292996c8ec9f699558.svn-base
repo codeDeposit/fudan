@@ -1,0 +1,42 @@
+package com.jy.service.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoJsonVo;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.entity.oa.EmployeeSelfInfoVo;
+import com.jy.entity.oa.OARole;
+import com.jy.entity.oa.task.DiaryVo;
+import com.jy.entity.system.account.Account;
+import com.jy.task.utils.ResponseInfoVo;
+
+public interface AccountService {
+
+	public List<Account> list();
+
+	public ResponseInfoVo add(String accountID, int[] eIds);
+
+	public String edit(Account account);
+
+	public ResponseInfoVo delete(Integer[] subIds);
+	
+	public String setOARole(Account account, OARole oaRole);
+	
+	public EmployeeInfoJsonVo listEmployeeInfo(String accountId);
+
+	public EmployeeInfoJsonVo listEmployeeInfoBy(Integer subId);
+
+	public ResponseInfoVo desert(Integer subId);
+
+	public ResponseInfoVo<EmployeeInfoVo> getSub(String name);
+
+	public ResponseInfoVo<DiaryVo> comboSub(String subName);
+
+	public ResponseInfoVo<DiaryVo> subUD(String accountId);
+	
+	public EmployeeSelfInfoVo getItselect(String id);
+
+	public List<Employee> getUpUser(Long long1);
+
+}

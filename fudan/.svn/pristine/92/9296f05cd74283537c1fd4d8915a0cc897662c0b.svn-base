@@ -1,0 +1,60 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!-- 添加 start-->
+<button type="button" class="btn btn-success pull-right"
+	data-toggle="modal" data-target="#addModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+	aria-labelledby="addModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h4 class="modal-title" id="addModalLabel">公文模板添加</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addform" class="form-horizontal" role="form"
+					onsubmit="return add();">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">所属类型</label>
+						<div class="col-sm-10">
+							<select id="addArchiveTemplate"
+								class="form-control col-sm-8 forinBlo" name="archivesType"
+								required="required">
+								<option selected value="">--请选择--</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">模板名称</label>
+						<div class="col-sm-10">
+							<input id="tempName" type="text" class="form-control"
+								name="tempName" maxlength="255" required placeholder="公文模板名称" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">模板附件</label>
+						<div class="col-sm-10">
+							<input id="fileAttachId" name="fileAttach" type="file"
+								class="file" data-upload-url="#" data-overwrite-initial="false"
+								data-min-file-count="1" required> <input
+								id="fileAttachType" name="fileAttachType" value="archive"
+								type="hidden" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button id="submitbtn" type="submit" class="btn btn-success">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->

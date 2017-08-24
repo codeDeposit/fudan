@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.OARoleMapper">
+
+	<select id="getRights" parameterType="Long" resultType="java.lang.String">
+		SELECT rights FROM fudan_oa_role WHERE roleId = #{roleId}
+	</select>
+	
+	<!-- 获取所有启用角色 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.OARole">
+		select * from oa_base_role where isValid = 1
+	</select>
+	<!-- 获取所有启用角色 end -->
+
+</mapper>

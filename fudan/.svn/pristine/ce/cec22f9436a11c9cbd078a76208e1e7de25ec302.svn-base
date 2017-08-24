@@ -1,0 +1,248 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.jy.entity.oa.Employee;
+
+public class PhoneBook {
+
+	private Long phoneId;
+	private String fullname;
+	private String title;
+	private Date birthday;
+	private String nickName;
+	private String duty;
+	private String spouse;
+	private String childs;
+	private String companyName;
+	private String companyAddress;
+	private String companyPhone;
+	private String companyFax;
+	private String homeAddress;
+	private String homeZip;
+	private String mobile;
+	private String phone;
+	private String email;
+	private String qqNumber;
+	private String msn;
+	private String note;
+	private Short isShared;
+	private Long groupId;
+	private String userId;
+	private Employee employee;
+	private PhoneGroup phoneGroup;
+	
+	private String birthday1;
+
+	public String getBirthday1() {
+		return birthday1;
+	}
+
+	public void setBirthday1(String birthday1) {
+		this.birthday1 = birthday1;
+	}
+
+	public Long getPhoneId() {
+		return phoneId;
+	}
+
+	public void setPhoneId(Long phoneId) {
+		this.phoneId = phoneId;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getDuty() {
+		return duty;
+	}
+
+	public void setDuty(String duty) {
+		this.duty = duty;
+	}
+
+	public String getSpouse() {
+		return spouse;
+	}
+
+	public void setSpouse(String spouse) {
+		this.spouse = spouse;
+	}
+
+	public String getChilds() {
+		return childs;
+	}
+
+	public void setChilds(String childs) {
+		this.childs = childs;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getCompanyAddress() {
+		return companyAddress;
+	}
+
+	public void setCompanyAddress(String companyAddress) {
+		this.companyAddress = companyAddress;
+	}
+
+	public String getCompanyPhone() {
+		return companyPhone;
+	}
+
+	public void setCompanyPhone(String companyPhone) {
+		this.companyPhone = companyPhone;
+	}
+
+	public String getCompanyFax() {
+		return companyFax;
+	}
+
+	public void setCompanyFax(String companyFax) {
+		this.companyFax = companyFax;
+	}
+
+	public String getHomeAddress() {
+		return homeAddress;
+	}
+
+	public void setHomeAddress(String homeAddress) {
+		this.homeAddress = homeAddress;
+	}
+
+	public String getHomeZip() {
+		return homeZip;
+	}
+
+	public void setHomeZip(String homeZip) {
+		this.homeZip = homeZip;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getQqNumber() {
+		return qqNumber;
+	}
+
+	public void setQqNumber(String qqNumber) {
+		this.qqNumber = qqNumber;
+	}
+
+	public String getMsn() {
+		return msn;
+	}
+
+	public void setMsn(String msn) {
+		this.msn = msn;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Short getIsShared() {
+		return isShared;
+	}
+
+	public void setIsShared(Short isShared) {
+		this.isShared = isShared;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public PhoneGroup getPhoneGroup() {
+		return phoneGroup;
+	}
+
+	public void setPhoneGroup(PhoneGroup phoneGroup) {
+		this.phoneGroup = phoneGroup;
+	}
+	
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+}

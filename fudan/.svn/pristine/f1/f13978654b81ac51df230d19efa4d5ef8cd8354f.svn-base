@@ -1,0 +1,99 @@
+*::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+            font-family: arial, verdana, Microsoft YaHei, Tahoma, Simsun, sans-serif;
+        }
+        
+        .liItem::before {
+            display: table;
+            content: "";
+        }
+        
+        .xLine {
+            border-bottom: 1px solid #ececec;
+        }
+        
+        .sethead {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            color: #888;
+        }
+        
+        .liItem {
+            padding: 25px 75px 25px 25px;
+            width: 100%;
+            border-bottom: 1px #ececec solid;
+            position: relative;
+        }
+        
+        .liItem .btn {
+            top: 30px;
+            right: 25px;
+            width: 100px;
+            position: absolute;
+        }
+        
+        .liTitle {
+            color: #888;
+            height: 50px;
+            line-height: 50px;
+            font-size: 24px;
+        }
+        
+        .media-heading {
+            font-weight: 500;
+            line-height: 1.1;
+            color: rgb(51, 51, 51);
+        }
+        
+        .media-body p {
+            color: #888;
+            margin-bottom: 0;
+        }
+        
+        .areas {
+            padding: 0 50px 0 30px;
+        }
+        
+        .areas:nth-child(2) {
+            margin-bottom: 50px;
+            color: red;
+        }
+        .liItem:hover{
+            background-color:#f3f3f3;
+        }
+        .media-left{background:url(../../image/wzcg/notice.png) no-repeat 0 8px;background-size:contain;width:100px;}
+        .media-body{padding-left:10px;}
+        a{color:#fff;text-decoration: none;}
+        h1{
+            font-family: "微软雅黑";
+            font-weight: normal;
+        }
+        .savebtn{width:110px;position: absolute;top: 3px;right: 25px;z-index: 1111;cursor: pointer;border:1px solid transparent;text-align: center;}
+        .edui-container {
+            border: none;
+            box-shadow: none;
+        }
+        .edui-container .edui-toolbar {
+            width: 100%;
+        }
+        .savebtn span:hover{
+            border:1px solid #a3bde3;
+            background-color: #1ab394;
+        }
+        .edui-btn-video+.edui-separator,.edui-btn-video,.edui-btn-map{display:none !important;}
+        th:nth-child(2),td:nth-child(2){max-width:300px;}
+    th,td{text-align: center;}
+    .td-text-left{display: inline-block;text-align: left;width: 300px;margin:0 auto;}

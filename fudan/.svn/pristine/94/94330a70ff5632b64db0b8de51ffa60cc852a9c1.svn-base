@@ -1,0 +1,164 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.communicate.PhoneBook;
+import com.jy.entity.oa.communicate.PhoneGroup;
+import com.jy.repository.oa.communicate.PhoneBookMapper;
+import com.jy.repository.oa.communicate.PhoneGroupMapper;
+import com.jy.service.oa.communicate.PhoneBookService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("phoneBookService")
+public class PhoneBookServiceImpl implements PhoneBookService {
+
+	private PhoneBookMapper phoneBookMapper;
+	private PhoneGroupMapper phoneGroupMapper;
+	
+	public PhoneGroupMapper getPhoneGroupMapper() {
+		return phoneGroupMapper;
+	}
+	
+	@Autowired
+	public void setPhoneGroupMapper(PhoneGroupMapper phoneGroupMapper) {
+		this.phoneGroupMapper = phoneGroupMapper;
+	}
+
+	public PhoneBookMapper getPhoneBookMapper() {
+		return phoneBookMapper;
+	}
+
+	@Autowired
+	public void setPhoneBookMapper(PhoneBookMapper phoneBookMapper) {
+		this.phoneBookMapper = phoneBookMapper;
+	}
+
+	// 获取个人通讯簿列表
+	@Override
+	public List<PhoneBook> getBy(String fullname, String title, Long groupId, String userId) {
+		List<PhoneBook> phoneBooks = phoneBookMapper.selectBy(fullname, title, groupId, userId);
+		return phoneBooks;
+	}
+
+	// 添加联系人到通讯录
+	@Override
+	public JsonInfo save(PhoneBook phoneBook) {
+		int result = phoneBookMapper.insert(phoneBook);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取联系人详细信息
+	@Override
+	public PhoneBook getInfoBy(Long phoneId) {
+		PhoneBook phoneBook = phoneBookMapper.selectInfoBy(phoneId);
+		// 获取对应的groupName
+		PhoneGroup pg =  phoneGroupMapper.selectBy(phoneBook.getGroupId());
+		phoneBook.setPhoneGroup(pg);
+		phoneBook.setBirthday1(DateStringUtil.dateToString3(phoneBook.getBirthday()));
+		return phoneBook;
+	}
+
+	// 修改联系人信息
+	@Override
+	public JsonInfo update(PhoneBook phoneBook) {
+		int result = phoneBookMapper.update(phoneBook);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除联系人
+	@Override
+	public JsonInfo del(Long phoneId) {
+		int result = phoneBookMapper.delete(phoneId);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取共享的联系人列表
+	@Override
+	public List<PhoneBook> getShare(String fullName, String shareName) {
+		List<PhoneBook> phoneBooks = phoneBookMapper.selectShare(fullName, shareName);
+		for(PhoneBook pb : phoneBooks) {
+			Employee employee = phoneBookMapper.selectEmpInfoBy(pb.getUserId());
+			pb.setEmployee(employee);
+		}
+		return phoneBooks;
+	}
+
+	// 分页显示列表
+	@Override
+	public List<PhoneBook> getPageList(PageBean pb, String fullname, String title, Long groupId, String userId) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<PhoneBook> pagePhoneBooks = phoneBookMapper.selectPageDate(firstIndex, toIndex, fullname, title, groupId, userId);
+		
+		return pagePhoneBooks;
+	}
+
+	@Override
+	public List<PhoneBook> getPhoneBooks(String fullname, String title,
+			Long[] groupId, String userId) {
+		List<PhoneBook> allNews = new ArrayList<PhoneBook>();
+		for(Long tId :groupId) {
+			List<PhoneBook> phoneBooks = phoneBookMapper.selectBy(fullname, title, tId, userId);
+			allNews.addAll(phoneBooks);
+		}
+		return allNews;
+	}
+
+	@Override
+	public List<PhoneBook> getSharePageList(PageBean pb, String fullname,
+			String shareName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<PhoneBook> pagePhoneBooks = phoneBookMapper.selectSharePageDate(firstIndex, toIndex, fullname, shareName);
+		
+		for(PhoneBook phoneBook : pagePhoneBooks) {
+			Employee employee = phoneBookMapper.selectEmpInfoBy(phoneBook.getUserId());
+			phoneBook.setEmployee(employee);
+		}
+		
+		return pagePhoneBooks;
+	}
+
+}

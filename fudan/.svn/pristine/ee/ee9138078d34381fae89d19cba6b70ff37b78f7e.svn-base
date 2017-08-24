@@ -1,0 +1,169 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="../../common/styleUrl.jsp" %>
+<div class="modal fade" id="dItemEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+	<div class="modal-dialog  modal-md">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-left">添加项目</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="ItemEditForm" onsubmit="return fItemUpdate()" role="form">
+					<input type="hidden" id="id" name="id" value="${wzcgItem.id }">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="ItemEditCategory1" name="category1" onchange="fGetProduct2()" aria-required="true" required >
+								<option value="">-- 请选择 --</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">产&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;品</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="ItemEditCategory2" name="category2" required>
+								<option value="">-- 请选择 --</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">物资名称</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="product" name="product" value="${wzcgItem.product }" minlength="1" maxlength="30" placeholder="项目名称" aria-required="true" required >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">规&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" placeholder="规格" id="norms" name="norms" value="${wzcgItem.norms }" minlength="1" maxlength="30" aria-required="true" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">技术要求</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" placeholder="技术要求" id="requirement" name="requirement" value="${wzcgItem.requirement }" minlength="1" maxlength="30" aria-required="true" required >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</label>
+						<div class="col-sm-10">
+							<input class="file" type="file" id="attachment" name="attachment" value="${wzcgItem.attachment }" data-overwrite-initial="false" data-min-file-count="1" aria-required="true" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计数量</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" id="counts" name="counts" value="${wzcgItem.counts }" minlength="1" maxlength="30" placeholder="数量" aria-required="true" required >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="ItemEditUnit" name="unit" value="${wzcgItem.unit }" aria-required="true" required >
+								<option value="">-- 请选择 --</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计单价</label>
+						<div class="col-sm-10">
+							<div class="input-group col-md-12">
+								<input class="form-control" onchange="fXqytItemAmount()" type="number" id="price" name="price" value="${wzcgItem.price }" minlength="1" maxlength="30" placeholder="预计单价" aria-required="true" required >
+								<span class="input-group-addon"><span>元</span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计金额</label>
+						<div class="col-sm-10">
+							<div class="input-group col-md-12">
+								<input class="form-control" type="number" id="amount" name="amount" minlength="1" maxlength="30" value="${wzcgItem.amount }" placeholder="金额"  aria-required="true" disabled="disabled" required>
+								<span class="input-group-addon"><span>元</span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">交货日期</label>
+						<div class="col-sm-10">
+							<div class="input-group date form_date col-md-12" data-date-format="yyyy-MM-dd">
+					            <input class="form-control" id="endDate" name="endDate" value="${wzcgItem.endDate }" type="text" readonly required>
+					            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					        </div>
+				       </div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">采购方式</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="ItemEditTypes" name="types" value="${wzcgItem.types }" aria-required="true" required >
+								<option value="">-- 请选择 --</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<c:if test="${mark == 2 }">
+							<button type="submit" class="btn btn-success queDing">
+								确定
+							</button>
+						</c:if>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$.ajax({//类别调取
+			type:"post",
+			async:false,
+			url:"${jypath}/backstage/wzcg/kind/list",
+			success:function(data){
+				$('#ItemEditCategory1').html(data);
+			}
+		}); 
+		$.ajax({//单位调取
+			type:"post",
+			async:false,
+			url:"${jypath}/backstage/wzcg/unit/list",
+			success:function(data){
+				$('#ItemEditUnit').html(data);
+			}
+		});
+		$.ajax({//采购方式调取
+			type:"post",
+			async:false,
+			url:"${jypath}/backstage/wzcg/type/list",
+			success:function(data){
+				$('#ItemEditTypes').html(data);
+			}
+		});
+		$('#dItemEdit').modal('show');
+		$("#ItemEditCategory1 option[value='" + '${wzcgItem.category }'.split(",")[0] + "']").attr("selected", true);
+		fGetProduct2();
+		$("#ItemEditCategory2 option[value='" + '${wzcgItem.category }'.split(",")[1] + "']").attr("selected", true);
+		$("#ItemEditUnit option[value=${wzcgItem.unit }]").attr("selected", true);
+		$("#ItemEditTypes option[value=${wzcgItem.types }]").attr("selected", true);
+	});
+	function fGetProduct2(){//产品调取
+		var lId = $('#ItemEditCategory1').val();
+		$.ajax({
+			type:"post",
+			async:false,
+			url:"${jypath}/backstage/wzcg/kind/list2",
+			data:{
+				id:lId
+			},
+			success:function(data){
+				$('#ItemEditCategory2').html(data);
+			}
+		}); 
+	}	
+</script>

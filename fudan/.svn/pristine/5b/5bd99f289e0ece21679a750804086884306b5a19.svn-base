@@ -1,0 +1,14 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgType;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WzcgTypeDao extends BaseDao<WzcgType> {
+	
+	List<WzcgType> find(WzcgType wzcgType);
+
+}

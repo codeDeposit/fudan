@@ -1,0 +1,137 @@
+package com.jy.controller.oa.task;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.task.PlanType;
+import com.jy.service.oa.task.PlanTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/plantype")
+public class PlanTypeController {
+
+	private PlanTypeService planTypeService;
+
+	public PlanTypeService getPlanTypeService() {
+		return planTypeService;
+	}
+
+	@Resource(name="planTypeService")
+	public void setPlanTypeService(PlanTypeService planTypeService) {
+		this.planTypeService = planTypeService;
+	}
+	
+	/**
+	 * 添加计划类型
+	 * @param planType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(PlanType planType) {
+		JsonInfo info = planTypeService.save(planType);
+		return info;
+	}
+	
+	/**
+	 * 获取计划类型的详细信息
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long typeId, String operation) {
+		PlanType planType = planTypeService.getInfoBy(typeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("planType", planType);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/task/plantype_form");
+		
+		return mv;
+	}
+	
+	/**
+	 * 修改计划类型信息
+	 * @param planType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(PlanType planType) {
+		JsonInfo info = planTypeService.update(planType);
+		return info;
+	}
+	
+	/**
+	 * 批量删除计划类型
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] typeId) {
+		JsonInfo info = planTypeService.del(typeId);
+		return info;
+	}
+	
+	/**
+	 * 获取所有计划类型列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<PlanType> planTypes = planTypeService.getAll();
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(planTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后列表
+		List<PlanType> pagePlanTypes = planTypeService.getPageList(pb);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/plantype_table");
+		}else {
+			mv.setViewName("system/oa/task/plantype_list");
+		}
+		mv.addObject("planTypes", pagePlanTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 所有计划类型列表
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<PlanType> listAll() {
+		List<PlanType> planTypes = planTypeService.getAll();
+		return planTypes;
+	}
+
+}

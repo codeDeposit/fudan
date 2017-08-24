@@ -1,0 +1,27 @@
+package com.jy.repository.oa.admin;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.DepreRecord;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DepreRecordMapper {
+
+	//折旧记录总数
+	List<DepreRecord> select(@Param("fixedAssetName")String fixedAssetName, @Param("startDate")Date startDate, @Param("endDate")Date endDate);
+
+	// 获取最近一次日期
+	Date selectMaxDate(Long assetsId);
+
+	// 添加折旧记录
+	void insert(DepreRecord depreRecord);
+
+	// 折旧记录分页列表
+	List<DepreRecord> selectPageData(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex,
+			@Param("fixedAssetName")String fixedAssetName, @Param("startDate")Date startDate, @Param("endDate")Date endDate);
+	
+}

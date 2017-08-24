@@ -1,0 +1,42 @@
+package com.jy.entity.oa.workflow;
+
+public class ProcessTemplate {
+	
+	private String id;			//模板id号
+	private String name;		//模板名称
+	private String processKey;	//流程定义key值
+	private String docPath;		//模板路径
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getProcessKey() {
+		return processKey;
+	}
+
+	public void setProcessKey(String processKey) {
+		this.processKey = processKey;
+	}
+
+	public String getDocPath() {
+		return docPath;
+	}
+
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
+	}
+
+}

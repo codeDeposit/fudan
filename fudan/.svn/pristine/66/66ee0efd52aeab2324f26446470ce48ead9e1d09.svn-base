@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.GoodsImgDao">
+	
+	<resultMap type="com.jy.entity.app.admin.GoodsImg" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_goods_img where 1=1;
+	</select>
+	
+	<update id="update">
+		update app_goods_img <include refid="updateSql"></include> where goods_id = 1 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			goods_img = #{goods_img},
+		</set>
+	</sql>
+	
+</mapper>

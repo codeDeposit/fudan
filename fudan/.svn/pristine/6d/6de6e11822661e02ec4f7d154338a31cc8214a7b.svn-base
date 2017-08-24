@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.document.DocFolderMapper">
+	
+	<!-- 添加目录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.document.DocFolder">
+		insert fudan_oa_doc_folder <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="folderName != null and folderName != '' ">
+				folderName = #{folderName},
+			</if>
+			<if test="parentId != null ">
+				parentId = #{parentId},
+			</if>
+			<if test="path != null and path != '' ">
+				path = #{path},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加目录 end -->
+	
+	
+	<!-- 获取最大的FolderId start -->
+	<select id="selectFolderId" resultType="Long">
+		select max(folderId) from fudan_oa_doc_folder
+	</select>
+	<!-- 获取最大的FolderId end -->
+	
+	
+	<!-- 获取path start -->
+	<select id="selectPath" parameterType="Long" resultType="String">
+		select path from fudan_oa_doc_folder where folderId = #{folderId}
+	</select>
+	<!-- 获取path end -->
+	
+	
+	<!-- 更新path start -->
+	<update id="updatePath" parameterType="com.jy.entity.oa.document.DocFolder">
+		update fudan_oa_doc_folder set path = #{path} where folderId = #{folderId}
+	</update>
+	<!-- 更新path end -->
+	
+	
+	<!-- 获取目录详细信息 start -->
+	<select id="selecInfoBy" parameterType="Long" resultType="com.jy.entity.oa.document.DocFolder">
+		select * from fudan_oa_doc_folder where folderId = #{folderId}
+	</select>
+	<!-- 获取目录详细信息 end -->
+	
+	
+	<!-- 更改目录名称 start -->
+	<update id="update" parameterType="com.jy.entity.oa.document.DocFolder">
+		update fudan_oa_doc_folder 
+		<set>
+			<if test="folderName != null and folderName != '' ">
+				folderName = #{folderName},
+			</if>
+			<if test="parentId != null ">
+				parentId = #{parentId},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+		</set>
+		where folderId = #{folderId}
+	</update>
+	<!-- 更改目录名称 end -->
+	
+	
+	<!-- 删除目录 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_doc_folder where folderId = #{folderId}
+	</delete>
+	<!-- 删除目录 end -->
+	
+	<!-- 获取第一层目录 start -->
+	<select id="selectFirst" parameterType="String" resultType="com.jy.entity.oa.document.DocFolder">
+		select * from fudan_oa_doc_folder where userId = #{userId} and parentId = 0
+		<if test="folderName != null and folderName != '' ">
+			and folderName = #{folderName}
+		</if>
+		<if test="isShared != null ">
+			and isShared = #{isShared}
+		</if>
+	</select>
+	<!-- 获取第一层目录 end -->
+	
+	<!-- 获取第一层目录下的所有子目录 start -->
+	<select id="selectSubFolderBy" resultType="com.jy.entity.oa.document.DocFolder">
+		select * from fudan_oa_doc_folder where parentId = #{folderId} and userId = #{userId}
+		<if test="folderName != null and folderName != '' ">
+			and folderName = #{folderName}
+		</if>
+		<if test="isShared != null ">
+			and isShared = #{isShared}
+		</if>
+	</select>
+	<!-- 获取第一层目录下的所有子目录 end -->
+	
+	
+	<!-- 获取公共目录的Id start -->
+	<select id="selectPublicFolder" resultType="Long">
+		select folderId from fudan_oa_doc_folder where isShared = 1
+	</select>
+	<!-- 获取公共目录的Id end -->
+	
+	
+	<!-- 文件夹转移 start -->
+	<update id="updateParentIdAndPath">
+		update fudan_oa_doc_folder set parentId = #{parentId}, path = #{path} where folderId = #{folderId}
+	</update>
+	<!-- 文件夹转移 end -->
+	
+	
+	<!-- 所有文件夹列表 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.document.DocFolder">
+		select * from fudan_oa_doc_folder where userId = #{userId}
+	</select>
+	<!-- 所有文件夹列表 end -->
+	
+</mapper>

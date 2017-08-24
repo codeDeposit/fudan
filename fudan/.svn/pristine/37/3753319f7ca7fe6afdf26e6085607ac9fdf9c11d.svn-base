@@ -1,0 +1,80 @@
+package com.jy.entity.oa.publics;
+
+import java.util.Date;
+
+public class FileAttach {
+
+	private long fileId;
+	private String fileName;
+	private String filePath;
+	private Date createtime;
+	private String ext;
+	private String fileType;
+	private String note;
+	private String creator;
+
+	public long getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(long fileId) {
+		this.fileId = fileId;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getExt() {
+		return ext;
+	}
+
+	public void setExt(String ext) {
+		this.ext = ext;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+}

@@ -1,0 +1,114 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.CarApply;
+import com.jy.entity.oa.admin.CarApplyVO;
+import com.jy.repository.oa.admin.CarApplyMapper;
+import com.jy.service.oa.admin.CarApplyService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("carApplyService")
+public class CarApplyServiceImpl implements CarApplyService {
+
+	private CarApplyMapper carApplyMapper;
+
+	public CarApplyMapper getCarApplyMapper() {
+		return carApplyMapper;
+	}
+
+	@Autowired
+	public void setCarApplyMapper(CarApplyMapper carApplyMapper) {
+		this.carApplyMapper = carApplyMapper;
+	}
+
+	// 添加车辆申请单
+	@Override
+	public JsonInfo save(CarApply carApply) {
+		int result = carApplyMapper.insert(carApply);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取申请单详细信息
+	@Override
+	public CarApplyVO getInfoBy(Long applyId) {
+		CarApplyVO carApply = carApplyMapper.selectInfoBy(applyId);
+		carApply.setApplyDate1(DateStringUtil.dateToString3(carApply.getApplyDate()));
+		carApply.setStartTime1(DateStringUtil.dateToString3(carApply.getStartTime()));
+		carApply.setEndTime1(DateStringUtil.dateToString3(carApply.getEndTime()));
+		return carApply;
+	}
+
+	// 修改申请单信息
+	@Override
+	public JsonInfo update(CarApply carApply) {
+		int result = carApplyMapper.update(carApply);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除申请单
+	@Override
+	public JsonInfo del(Long[] applyId) {
+		int result = 0;
+		for(Long aId : applyId) {
+			result = carApplyMapper.delete(aId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取申请单列表
+	@Override
+	public List<CarApply> get(String carNo, Short approvalStatus, String userFullname) {
+		List<CarApply> carApplys = carApplyMapper.select(carNo, approvalStatus, userFullname);
+		return carApplys;
+	}
+
+	// 申请单分页列表
+	@Override
+	public List<CarApplyVO> getPageList(PageBean pb, String carNo,
+			Short approvalStatus, String userFullname) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<CarApplyVO> carApplys = carApplyMapper.selectPageData(firstIndex, toIndex, carNo, approvalStatus, userFullname);
+		
+		for(CarApplyVO cav: carApplys) {
+			cav.setApplyDate1(DateStringUtil.dateToString3(cav.getApplyDate()));
+			cav.setStartTime1(DateStringUtil.dateToString3(cav.getStartTime()));
+			cav.setEndTime1(DateStringUtil.dateToString3(cav.getEndTime()));
+		}
+		
+		return carApplys;
+	}
+
+}

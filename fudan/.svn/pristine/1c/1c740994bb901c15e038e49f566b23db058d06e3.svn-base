@@ -1,0 +1,44 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.communicate.PhoneBook;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface PhoneBookMapper {
+
+	// 获取个人通讯簿列表
+	List<PhoneBook> selectBy(@Param("fullname") String fullname, @Param("title") String title,
+			@Param("groupId") Long groupId, @Param("userId") String userId);
+
+	// 添加联系人到通讯录
+	int insert(PhoneBook phoneBook);
+
+	// 获取联系人详细信息
+	PhoneBook selectInfoBy(Long phoneId);
+
+	// 修改联系人信息
+	int update(PhoneBook phoneBook);
+
+	// 删除联系人
+	int delete(Long phoneId);
+
+	// 获取共享的联系人列表
+	List<PhoneBook> selectShare(@Param("fullname") String fullName, @Param("shareName") String shareName);
+
+	Employee selectEmpInfoBy(String userId);
+
+	// 分页显示列表
+	List<PhoneBook> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("fullname") String fullname, @Param("title") String title,
+			@Param("groupId") Long groupId, @Param("userId") String userId);
+
+	// 分页显示共享列表
+	List<PhoneBook> selectSharePageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("fullname") String fullname, @Param("shareName") String shareName);
+
+}

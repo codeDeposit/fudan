@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/views/system/common/head.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/common/styleUrl.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/common/systemInfo.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/noAuthorized.jsp=UTF-8

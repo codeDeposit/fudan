@@ -1,0 +1,239 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog"
+	aria-labelledby="newsAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title text-center" id="newsAddModalLabel">
+					通讯簿信息
+					<c:if test="${operation == 'update'}">(带<font class="xinghao">&nbsp;*&nbsp;</font>的必填)</c:if>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form id="infoOrUpdateform" role="form">
+					<input type="hidden" name="phoneId" value="${phoneBook.phoneId}">
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>联系人分组</label> <select
+							id="phoneGroupInfoOrUpdateSelect"
+							class="form-control col-sm-8 forinBlo" name="groupId" required>
+							<option value="">--请选择--</option>
+						</select>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>称谓</label> <select
+							id="phoneGroupInfoOrUpdateTitleSelect"
+							class="form-control col-sm-8 forinBlo" name="title" required>
+							<c:if test="${phoneBook.title == '先生'}">
+								<option value="">--请选择--</option>
+								<option value="先生" selected>先生</option>
+								<option value="女士">女士</option>
+							</c:if>
+							<c:if test="${phoneBook.title == '女士'}">
+								<option value="">--请选择--</option>
+								<option value="先生">先生</option>
+								<option value="女士" selected>女士</option>
+							</c:if>
+						</select>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">出生时间</label>
+						<div class="input-group date form_date col-md-12" data-date=""
+							data-date-format="yyyy-MM-dd" data-link-field="dtp_input"
+							data-link-format="yyyy-mm-dd">
+							<input class="form-control" size="16" name="birthday" type="text"
+								value="${phoneBook.birthday1}" readonly> <span
+								class="input-group-addon"><span
+								class="glyphicon glyphicon-remove"></span> </span> <span
+								class="input-group-addon"><span
+								class="glyphicon glyphicon-calendar"></span> </span>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>是否共享</label> <select
+							id="phoneGroupInfoOrUpdateIsSharedSelect"
+							class="form-control col-sm-8 forinBlo" name="isShared" required>
+							<c:if test="${phoneBook.isShared == 0}">
+								<option value="">--请选择--</option>
+								<option value="0" selected>否</option>
+								<option value="1">是</option>
+							</c:if>
+							<c:if test="${phoneBook.isShared == 1}">
+								<option value="">--请选择--</option>
+								<option value="0">否</option>
+								<option value="1" selected>是</option>
+							</c:if>
+						</select>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>姓名</label> <input type="text"
+							class="form-control" name="fullname" placeholder="姓名"
+							value="${phoneBook.fullname}" maxlength="20" required>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">昵称</label> <input
+							type="text" class="form-control" name="nickName" placeholder="昵称"
+							value="${phoneBook.nickName}" maxlength="30">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>单位名称</label> <input type="text"
+							class="form-control" name="companyName" placeholder="单位名称"
+							value="${phoneBook.companyName}" required>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>职务</label> <input type="text"
+							class="form-control" name="duty" placeholder="职务"
+							value="${phoneBook.duty}" required>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>单位地址</label> <input type="text"
+							class="form-control" name="companyAddress" placeholder="单位地址"
+							value="${phoneBook.companyAddress}" required>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">单位电话</label> <input
+							type="text" class="form-control" name="companyPhone"
+							placeholder="单位电话" value="${phoneBook.companyPhone}">
+					</div>
+
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">单位传真</label> <input
+							type="text" class="form-control" name="companyFax"
+							placeholder="单位传真" value="${phoneBook.companyFax}">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>手机号码</label> <input type="text"
+							class="form-control" name="mobile" placeholder="手机号码"
+							value="${phoneBook.mobile}" required>
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+
+						<label class="control-label col-sm-4 labelPad">固定电话</label> <input
+							type="text" class="form-control" name="phone" placeholder="固定电话"
+							value="${phoneBook.phone}">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad"><font
+							class="xinghao">*&nbsp;</font>邮箱</label> <input type="text"
+							class="form-control" name="email" placeholder="邮箱"
+							value="${phoneBook.email}" required>
+					</div>
+
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">QQ</label> <input
+							type="text" class="form-control" name="qqNumber" placeholder="QQ"
+							value="${phoneBook.qqNumber}">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">MSN</label> <input
+							type="text" class="form-control" name="msn" placeholder="MSN"
+							value="${phoneBook.msn}">
+					</div>
+
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">家庭住址</label> <input
+							type="text" class="form-control" name="homeAddress"
+							placeholder="家庭住址" value="${phoneBook.homeAddress}">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">家庭邮编</label> <input
+							type="text" class="form-control" name="homeZip"
+							placeholder="家庭邮编" value="${phoneBook.homeZip}">
+					</div>
+
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">配偶</label> <input
+							type="text" class="form-control" name="spouse" placeholder="配偶"
+							value="${phoneBook.spouse}">
+					</div>
+					<div class="form-group col-md-6 col-sm-6">
+						<label class="control-label col-sm-4 labelPad">子女</label> <input
+							type="text" class="form-control" name="childs" placeholder="子女"
+							value="${phoneBook.childs}">
+					</div>
+
+					<div class="form-group col-md-12 col-sm-12">
+						<label class="control-label col-sm-4 labelPad">备注</label>
+						<textarea rows="3" class="form-control" cols="12" name="note"
+							placeholder="备注">${phoneBook.note}</textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<c:if test="${operation == 'update'}">
+							<button id="infoOrUpdatesubmitbtn" type="button" class="btn btn-success">保存</button>
+						</c:if>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('.form_date').datetimepicker({
+			language : 'zh-CN',
+			weekStart : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			minView : 2,
+			forceParse : 0,
+		});
+		$("#infoorupdate").modal("show");
+		getPhoneGroup();
+	});
+	$("#infoOrUpdatesubmitbtn").click(function() {
+		var url = "/oa/phonebook/edit";
+		$.ajax({
+			type : "post",
+			url : jypath + url,
+			data : $("#infoOrUpdateform").serialize(),
+			success : function() {
+				refresh();
+			}
+		});
+	});
+	function getPhoneGroup() {
+		var groupId = "${phoneBook.groupId}";
+		var url = "/oa/phonegroup/listall";
+		$.ajax({
+			type : "get",
+			url : jypath + url,
+			success : function(data) {
+				var phoneGroups = eval("(" + data + ")");
+				for ( var phoneGroup in phoneGroups) {
+					var phoneGroupObj = phoneGroups[phoneGroup];
+					if (groupId == phoneGroupObj.groupId) {
+						$("#phoneGroupInfoOrUpdateSelect")
+								.append(
+										"<option selected value='"+ phoneGroupObj.groupId +"'>"
+												+ phoneGroupObj.groupName
+												+ "</option>");
+					} else {
+						$("#phoneGroupInfoOrUpdateSelect")
+								.append(
+										"<option value='"+ phoneGroupObj.groupId +"'>"
+												+ phoneGroupObj.groupName
+												+ "</option>");
+					}
+				}
+			}
+		});
+	}
+</script>

@@ -1,0 +1,114 @@
+package com.jy.controller.oa.admin;
+
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.DepreRecord;
+import com.jy.service.oa.admin.DepreRecordService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/deprerecord")
+public class DepreRecordController {
+
+	private DepreRecordService depreRecordService;
+
+	public DepreRecordService getDepreRecordService() {
+		return depreRecordService;
+	}
+
+	@Resource(name="depreRecordService")
+	public void setDepreRecordService(DepreRecordService depreRecordService) {
+		this.depreRecordService = depreRecordService;
+	}
+	
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false)String fixedAssetName, 
+			@RequestParam(required=false)String startDateStr, @RequestParam(required=false)String endDateStr ) {
+		Date startDate = null;
+		Date endDate = null;
+		if(startDateStr != null)
+			startDate = DateStringUtil.stringToDate3(startDateStr);
+		if(endDateStr != null)
+		endDate = DateStringUtil.stringToDate3(endDateStr);
+		
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<DepreRecord> depreRecords = depreRecordService.get(fixedAssetName, startDate, endDate);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(depreRecords.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<DepreRecord> pageDepreRecords = depreRecordService.getPageList(pb, fixedAssetName, startDate, endDate);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/deprerecord_table");
+		}else {
+			mv.setViewName("system/oa/admin/deprerecord_list");
+		}
+		
+		mv.addObject("depreRecords", pageDepreRecords);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 资产开始折旧计算
+	 * @param assetsId: 资产ID号
+	 * @param deprePeriod: 折旧方法
+	 * @return
+	 */
+	@RequestMapping("/depreciate")
+	@ResponseBody
+	public JsonInfo depreciate(Long assetsId) {
+		JsonInfo info = depreRecordService.depreciate(assetsId);
+		return info;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+}

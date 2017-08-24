@@ -1,0 +1,176 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.OfficeGoods;
+import com.jy.entity.oa.admin.OfficeGoodsVO;
+import com.jy.service.oa.admin.OfficeGoodsService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/officegoods")
+public class OfficeGoodsController {
+
+	private OfficeGoodsService officeGoodsService;
+
+	public OfficeGoodsService getOfficeGoodsService() {
+		return officeGoodsService;
+	}
+
+	@Resource(name="officeGoodsService")
+	public void setOfficeGoodsService(OfficeGoodsService officeGoodsService) {
+		this.officeGoodsService = officeGoodsService;
+	}
+
+	/**
+	 * 添加办公品
+	 * 
+	 * @param officeGoods
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(OfficeGoods officeGoods) {
+		JsonInfo info = officeGoodsService.save(officeGoods);
+		return info;
+	}
+
+	/**
+	 * 获取办公品详细信息
+	 * 
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long goodsId, String operation) {
+		OfficeGoods officeGoods = officeGoodsService.getInfoBy(goodsId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/admin/officegoods_form");
+		mv.addObject("officeGoods", officeGoods);
+		mv.addObject("operation", operation);
+		
+		return mv;
+	}
+
+	/**
+	 * 修改办公品信息
+	 * 
+	 * @param officeGoods
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(OfficeGoods officeGoods) {
+		JsonInfo info = officeGoodsService.update(officeGoods);
+		return info;
+	}
+
+	/**
+	 * 批量删除办公品
+	 * 
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] goodsId) {
+		JsonInfo info = officeGoodsService.del(goodsId);
+		return info;
+	}
+
+	/**
+	 * 获取办公品列表
+	 * @param goodsName
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String goodsName,
+			@RequestParam(required = false) Long typeId) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<OfficeGoods> officeGoods = officeGoodsService.get(goodsName, typeId);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(officeGoods.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页列表
+		List<OfficeGoodsVO> pageOfficeGoods = officeGoodsService.getPageList(pb, goodsName, typeId);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/officegoods_table");
+		}else {
+			mv.setViewName("system/oa/admin/officegoods_list");
+		}
+		
+		mv.addObject("officeGoods", pageOfficeGoods);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 商品直接以HTML格式打印到页面
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/listbytype")
+	@ResponseBody
+	public String listByType(@RequestParam(required=false) Long typeId) {
+		List<OfficeGoods> officeGoods = officeGoodsService.get(null, typeId);
+		String html = html(officeGoods);
+		return html;
+	}
+	
+	private String html(List<OfficeGoods> officeGoods) {
+		StringBuilder sbd = new StringBuilder();
+		int index = 0;
+		for(OfficeGoods og: officeGoods) {
+			index ++;
+			sbd.append("<tr>");
+			sbd.append("<td class='text-center wiD'><input type='checkbox'></td>");
+			sbd.append("<td class='text-center seQuence'>"+index+"</td>");
+			sbd.append("<td id="+og.getGoodsId()+" class='wiDl'>"+og.getGoodsName()+"</td>");
+			sbd.append("</tr>");
+		}
+		return sbd.toString();
+	}
+	
+	/**
+	 * 所有商品以HTML格式打印到页面
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public String listAll() {
+		List<OfficeGoods> officeGoods = officeGoodsService.get(null, null);
+		String html = html(officeGoods);
+		return html;
+	}
+
+}
+

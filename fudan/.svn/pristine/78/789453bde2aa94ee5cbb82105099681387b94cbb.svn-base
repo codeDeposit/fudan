@@ -1,0 +1,170 @@
+package com.jy.service.oa.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoJsonVo;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.entity.oa.EmployeeSelfInfoVo;
+import com.jy.entity.oa.OARole;
+import com.jy.entity.oa.task.DiaryVo;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.AccountMapper;
+import com.jy.service.oa.AccountService;
+import com.jy.task.utils.ResponseInfoVo;
+
+@Service("accountService")
+public class AccountServiceImpl implements AccountService {
+
+	private AccountMapper accountMapper;
+
+	public AccountMapper getAccountMapper() {
+		return accountMapper;
+	}
+
+	@Autowired
+	public void setAccountMapper(AccountMapper accountMapper) {
+		this.accountMapper = accountMapper;
+	}
+
+	@Override
+	public List<Account> list() {
+		// accountMapper.selectAll();
+		return null;
+	}
+
+	@Override
+	public ResponseInfoVo add(String accountId, int[] eIds) {
+		ResponseInfoVo riv = ResponseInfoVo.getInstance();
+		Integer userId = accountMapper.selectUserIdByAccountId(accountId);
+		for(int subId : eIds) {
+			accountMapper.insert(subId, userId);
+		}
+		riv.setSuccess(true);
+		return riv;
+	}
+
+	@Override
+	public String edit(Account account) {
+		// accountMapper.update(account);
+		return null;
+	}
+
+	@Override
+	public ResponseInfoVo delete(Integer[] subIds) {
+		ResponseInfoVo responseInfoVo = ResponseInfoVo.getInstance();
+		for(int subId : subIds) {
+			accountMapper.delete(subId);
+		}
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	@Override
+	public String setOARole(Account account, OARole oaRole) {
+		// accountMapper.insertOARoleIdIntoAccount(account.getAccountId(),
+		// oaRole.getRoleId());
+		return null;
+	}
+
+	/**
+	 * 将员工信息包装成EmployeeInfoJsonVo辅助类
+	 */
+	@Override
+	public EmployeeInfoJsonVo listEmployeeInfo(String accountId) {
+		List<EmployeeInfoVo> eInfoList = accountMapper.selectEmployeeInfo(accountId);
+		EmployeeInfoJsonVo employeeInfoJsonVo = new EmployeeInfoJsonVo();
+		boolean success = true;
+		if (eInfoList == null || eInfoList.size() == 0) {
+			success = false;
+			employeeInfoJsonVo.setSuccess(success);
+		}
+		employeeInfoJsonVo.setSuccess(success);
+		employeeInfoJsonVo.setTotalCount(eInfoList.size());
+		employeeInfoJsonVo.setEmployeeInfoList(eInfoList);
+		return employeeInfoJsonVo;
+	}
+
+	/*
+	 * 返回下属详细信息
+	 * (non-Javadoc)
+	 * @see com.jy.system.oa.service.AccountService#listEmployeeInfoBy(java.lang.Integer)
+	 */
+	@Override
+	public EmployeeInfoJsonVo listEmployeeInfoBy(Integer subId) {
+		EmployeeInfoJsonVo employeeInfoJsonVo = new EmployeeInfoJsonVo();
+		EmployeeInfoVo employeeInfoVo = accountMapper.selectEmployeeInfoBy(subId);
+		boolean success = true;
+		if(employeeInfoVo == null) {
+			success = false;
+			employeeInfoJsonVo.setSuccess(success);
+		}
+		employeeInfoJsonVo.setSuccess(success);
+		List<EmployeeInfoVo> employeeInfoVoList = new ArrayList<EmployeeInfoVo>();
+		employeeInfoVoList.add(employeeInfoVo);
+		employeeInfoJsonVo.setEmployeeInfoList(employeeInfoVoList);
+		return employeeInfoJsonVo;
+	}
+
+	/*
+	 * 员工离职(non-Javadoc)
+	 * @see com.jy.system.oa.service.AccountService#desert(java.lang.Integer)
+	 */
+	@Override
+	public ResponseInfoVo desert(Integer subId) {
+		ResponseInfoVo responseInfoVo = ResponseInfoVo.getInstance();
+		accountMapper.updateStatus(subId);
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	@Override
+	public ResponseInfoVo<EmployeeInfoVo> getSub(String name) {
+		ResponseInfoVo<EmployeeInfoVo> responseInfoVos = ResponseInfoVo.getInstance();
+		List<EmployeeInfoVo> employeeInfoList = accountMapper.selectSubBy(name);
+		responseInfoVos.setSuccess(true);
+		responseInfoVos.setList(employeeInfoList);
+		responseInfoVos.setTotalCount(employeeInfoList.size());
+		return responseInfoVos;
+	}
+
+	@Override
+	public ResponseInfoVo<DiaryVo> comboSub(String subName) {
+		ResponseInfoVo<DiaryVo> responseInfoVo = ResponseInfoVo.getInstance();
+		List<DiaryVo> diarys = accountMapper.selectBy(subName);
+		responseInfoVo.setList(diarys);
+		responseInfoVo.setTotalCount(diarys.size());
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	@Override
+	public ResponseInfoVo<DiaryVo> subUD(String accountId) {
+		ResponseInfoVo<DiaryVo> responseInfoVo = ResponseInfoVo.getInstance();
+		List<DiaryVo> diarys = accountMapper.selectAllSDBy(accountId);
+		responseInfoVo.setList(diarys);
+		responseInfoVo.setTotalCount(diarys.size());
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	/**
+	 * 获取自身详细信息
+	 */
+	@Override
+	public EmployeeSelfInfoVo getItselect(String id) {
+		EmployeeSelfInfoVo employeeSelfInfoVo = accountMapper.selectSelfInfo(id);
+		return employeeSelfInfoVo;
+	}
+
+	@Override
+	public List<Employee> getUpUser(Long userId) {
+		List<Employee> employees = accountMapper.selectUpUser(userId);
+		return employees;
+	}
+
+}

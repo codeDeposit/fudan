@@ -1,0 +1,103 @@
+package com.jy.controller.oa;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.OAResource;
+import com.jy.service.oa.OAResourceService;
+
+@Controller
+@RequestMapping("/oa/menu")
+public class OAResourceController {
+
+	private OAResourceService oAResourceService;
+
+	public OAResourceService getoAResourceService() {
+		return oAResourceService;
+	}
+
+	@Autowired
+	public void setoAResourceService(OAResourceService oAResourceService) {
+		this.oAResourceService = oAResourceService;
+	}
+	
+	/**
+	 * 根据用户角色，获取对应的菜单栏
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView listMenu(HttpServletRequest request) {
+		
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		
+		// 获取用户对应的菜单
+		List<OAResource> menus = oAResourceService.selectSelfResource();
+
+		StringBuffer html = new StringBuffer();
+		for(OAResource res : menus){
+			String menuhtml = addCss(res, basePath);
+			html.append(menuhtml);
+		}
+		
+		ModelAndView md = new ModelAndView(); 
+		md.setViewName("system/index/menu");
+		md.addObject("menu", html);
+		return md;
+	}
+	
+	// 给每个菜单加入样式
+	public String addCss(OAResource resource, String basePath) {
+		StringBuffer menucss = new StringBuffer();
+		// 一级菜单
+		menucss.append("<li>");
+		if(resource.getResUrl() != null) {
+			menucss.append("<a class='J_menuItem' href='"+basePath+resource.getResUrl()+"')\"><i class='fa fa-home'></i><span class='nav-label'>"+resource.getName()+"</span><span class='icon-angle-right' style='float:right'></span></a>");
+		}else {
+			menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+resource.getName()+"</span><span class='icon-angle-right' style='float:right'></span></a>");
+		}
+		// 二级菜单
+		List<OAResource> subs = resource.getSubResource();
+		if(subs != null) {
+			menucss.append("<ul class='nav nav-second-level'>");
+			for(OAResource sub : subs){
+				menucss.append("<li>");
+				if(sub.getResUrl() != null) {
+					menucss.append("<a class='J_menuItem' href='"+basePath+sub.getResUrl()+"')\"><i class='fa fa-home'></i><span class='nav-label'>"+sub.getName()+"</span>");
+				}else {
+					menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+sub.getName()+"</span>");
+				}
+				//三级菜单
+				List<OAResource> subsubs = sub.getSubResource();
+				if(subsubs != null) {
+					menucss.append("<span class='icon-angle-right' style='float:right'></span></a>");
+					menucss.append("<ul class='nav nav-third-level'>");
+					for(OAResource subsub : subsubs) {
+						menucss.append("<li>");
+						if(subsub.getResUrl() != null) {
+							menucss.append("<a class='J_menuItem' href='"+basePath+subsub.getResUrl()+"')\"><i class='fa fa-home'></i><span class='nav-label'>"+subsub.getName()+"</span></a>");
+						}else {
+							menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+subsub.getName()+"</span></a>");
+						}
+						menucss.append("</li>"); // 三级li
+					}
+					menucss.append("</ul>"); // 三级ul
+				}else {
+					menucss.append("</a>");
+				}
+				menucss.append("</li>"); // 二级li
+			}
+			menucss.append("</ul>");	// 二级ul
+		}
+		menucss.append("</li>");
+		return menucss.toString();
+	}
+
+}

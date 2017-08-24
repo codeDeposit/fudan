@@ -1,0 +1,85 @@
+package com.jy.entity.customer;
+
+public class SaleActivity{
+	
+	private int id;
+	private String byway;
+	private String beginDate;
+	private String level;
+	private String sponsor;
+	private String attachment;
+	private String content;
+	private String location;
+	private String lat;
+	private String lng;
+	private int customerId;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getByway() {
+		return byway;
+	}
+	public void setByway(String byway) {
+		this.byway = byway;
+	}
+	public String getBeginDate() {
+		return beginDate;
+	}
+	public void setBeginDate(String beginDate) {
+		this.beginDate = beginDate;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getSponsor() {
+		return sponsor;
+	}
+	public void setSponsor(String sponsor) {
+		this.sponsor = sponsor;
+	}
+	public String getAttachment() {
+		return attachment;
+	}
+	public void setAttachment(String attachment) {
+		this.attachment = attachment;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getLat() {
+		return lat;
+	}
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	public String getLng() {
+		return lng;
+	}
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
+	public int getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+	
+}
+ 

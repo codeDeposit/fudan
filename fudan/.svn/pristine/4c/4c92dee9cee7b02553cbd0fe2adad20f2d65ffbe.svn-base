@@ -1,0 +1,140 @@
+package com.jy.entity.oa.admin;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class CarApply {
+
+	private Long applyId;
+	private Long carId;
+	private String department;
+	private String userFullname;
+	private Date applyDate;
+	private String reason;
+	private Date startTime;
+	private Date endTime;
+	private String proposer;
+	private Long userId;
+	private BigDecimal mileage;
+	private BigDecimal oilUse;
+	private String notes;
+	private Short approvalStatus;
+
+	public Long getApplyId() {
+		return applyId;
+	}
+
+	public void setApplyId(Long applyId) {
+		this.applyId = applyId;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public String getUserFullname() {
+		return userFullname;
+	}
+
+	public void setUserFullname(String userFullname) {
+		this.userFullname = userFullname;
+	}
+
+	public Date getApplyDate() {
+		return applyDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-DD")
+	public void setApplyDate(Date applyDate) {
+		this.applyDate = applyDate;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-DD")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-DD")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getProposer() {
+		return proposer;
+	}
+
+	public void setProposer(String proposer) {
+		this.proposer = proposer;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public BigDecimal getMileage() {
+		return mileage;
+	}
+
+	public void setMileage(BigDecimal mileage) {
+		this.mileage = mileage;
+	}
+
+	public BigDecimal getOilUse() {
+		return oilUse;
+	}
+
+	public void setOilUse(BigDecimal oilUse) {
+		this.oilUse = oilUse;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public Short getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(Short approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public Long getCarId() {
+		return carId;
+	}
+
+	public void setCarId(Long carId) {
+		this.carId = carId;
+	}
+
+}

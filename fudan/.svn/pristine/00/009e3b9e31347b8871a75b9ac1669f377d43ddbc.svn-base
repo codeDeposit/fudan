@@ -1,0 +1,27 @@
+package com.jy.service.setting;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.setting.WebSite;
+import com.jy.repository.setting.WebSiteDao;
+import com.jy.service.base.BaseServiceImp;
+
+@Service(value = "webSiteService")
+public class WebSiteService extends BaseServiceImp<WebSite>{
+	
+	@Resource
+	private WebSiteDao webSiteDao;
+	
+	public void update(WebSite webSite){
+		webSiteDao.update(webSite);
+	}
+	
+	public List<WebSite> find(){
+		return webSiteDao.find();
+	}
+	
+}

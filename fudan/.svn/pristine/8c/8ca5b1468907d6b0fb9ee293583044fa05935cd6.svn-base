@@ -1,0 +1,97 @@
+package com.jy.service.oa.impl.archive;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.repository.oa.archive.ArchTemplateMapper;
+import com.jy.service.oa.archive.ArchTemplateService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("archTemplateService")
+public class ArchTemplateServiceImpl implements ArchTemplateService {
+
+	private ArchTemplateMapper archTemplateMapper;
+
+	public ArchTemplateMapper getArchTemplateMapper() {
+		return archTemplateMapper;
+	}
+	
+	@Autowired
+	public void setArchTemplateMapper(ArchTemplateMapper archTemplateMapper) {
+		this.archTemplateMapper = archTemplateMapper;
+	}
+
+	/* 添加一条数据 */
+	@Override
+	public JsonInfo save(ArchTemplate archTemplate) {
+		JsonInfo info = new JsonInfo();
+		int result = archTemplateMapper.insert(archTemplate);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/* 根据类型Id，tempName 模糊查询所有列表 */
+	@Override
+	public List<ArchTemplate> getSomeBy(Long typeId, String tempName) {
+		List<ArchTemplate> archTemplates = archTemplateMapper.selectSomeBy(typeId, tempName);
+		return archTemplates;
+	}
+
+	/* 根据 templateId 获取详细信息 */
+	@Override
+	public ArchTemplate getBy(Long templateId) {
+		ArchTemplate archTemplate = archTemplateMapper.selectInfoBy(templateId);
+		return archTemplate;
+	}
+
+	/* 根据 templateId 批量删除 */
+	@Override
+	public JsonInfo del(Long[] templateIds) {
+		JsonInfo info = new JsonInfo();
+		for(Long templateId : templateIds) {
+			archTemplateMapper.delete(templateId);
+		}
+		info.setSuccess(true);
+		return info;
+	}
+
+	/* 分页显示列表 */
+	@Override
+	public List<ArchTemplate> getPageList(PageBean pb, Long typeId, String tempName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<ArchTemplate> pageArchTemplate = archTemplateMapper.selectPageData(firstIndex, toIndex, typeId, tempName);
+		
+		return pageArchTemplate;
+	}
+
+	/* 修改模板数据 */
+	public JsonInfo update(ArchTemplate archTemplate) {
+		JsonInfo info = new JsonInfo();
+		int result = archTemplateMapper.update(archTemplate);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+}

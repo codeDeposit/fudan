@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.SalaryItemMapper">
+
+	<!-- 添加薪酬项目 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.SalaryItem">
+		insert fudan_oa_salary_item <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="itemName != null and itemName !='' ">
+				itemName = #{itemName},
+			</if>
+			<if test="defaultVal != null ">
+				defaultVal = #{defaultVal},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加薪酬项目 end -->
+	
+	
+	<!-- 获取薪酬项目详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.SalaryItem">
+		select * from fudan_oa_salary_item where salaryItemId = #{salaryItemId}
+	</select>
+	<!-- 获取薪酬项目详细信息 end -->
+	
+	
+	<!-- 修改薪酬项目信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.SalaryItem">
+		update fudan_oa_salary_item <include refid="insertSQL"></include>
+		where salaryItemId = #{salaryItemId}
+	</update>
+	<!-- 修改薪酬项目信息 end -->
+	
+	
+	<!-- 删除薪酬项目 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_salary_item where salaryItemId = #{salaryItemId}
+	</delete>
+	<!-- 删除薪酬项目 end -->
+	
+	
+	<!-- 薪酬项目列表 start -->
+	<select id="select" parameterType="String" resultType="com.jy.entity.oa.hrm.SalaryItem">
+		select * from fudan_oa_salary_item where 1=1
+		<if test="itemName != null and itemName !='' ">
+			and itemName like concat("%",#{itemName},"%")
+		</if>
+		<if test="defaultVal != null ">
+			and defaultVal = #{defaultVal}
+		</if>
+		<if test="ids != null and ids !='' ">
+			and salaryItemId not in
+			<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	<!-- 薪酬项目列表 end -->
+	
+	
+	<!-- 薪酬项目分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.SalaryItem">
+		select * from fudan_oa_salary_item where 1=1
+		<if test="itemName != null and itemName !='' ">
+			and itemName like concat("%",#{itemName},"%")
+		</if>
+		<if test="defaultVal != null ">
+			and defaultVal = #{defaultVal}
+		</if>
+		<if test="ids != null and ids !='' ">
+			and salaryItemId not in
+			<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+			</foreach>
+		</if>
+		order by salaryItemId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 薪酬项目分页列表 end -->
+	
+</mapper>

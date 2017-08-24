@@ -1,0 +1,165 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
+<html lang="zn">
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+	</head>
+	<style>
+		.box {
+			width: 70%;
+			background-color: #efefef;
+			border-radius: 10px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+		.regBox {
+			width: 60%;
+			margin: 30px auto 0;
+			padding: 20px;
+		}
+		.head {
+			margin: 30px 0 30px;
+		}
+		.lXian {
+			width: 80%;
+			margin: 30px auto 30px;
+			height: 1px;
+			background-color: #dadada;
+		}
+		.foote {
+			margin-top: 50px;
+		}
+		.copyright {
+			font-size: 12px;
+			color: #999;
+			font-family: "\5FAE\8F6F\96C5\9ED1", "微软雅黑", "Microsoft YaHei", Helvetica, Tahoma, sans-serif;
+		}
+		.titool {
+			padding: 6px 0 6px 24px;
+			color: red;
+			display: none;
+		}
+		/* 弹窗 */
+		.oSuccess {
+			color: green;
+			font-size: 24px;
+			text-align: center;
+		}
+		.iconOk {
+			width: 100px;
+			height: 100px;
+			margin: 0 auto;
+			border-radius: 50px;
+			background-color: #fff;
+		}
+		.iconOk span {
+			font-size: 56px;
+			margin: 20px 0 0 20px;
+			color: green;
+		}
+	</style>
+	<body>
+		<h3 class="text-center head">复单信息协同办公系统注册</h3>
+		<div class="lXian"></div>
+		<div class="box">
+			<div class="regBox">
+				<form class="form-horizontal" role="form" onsubmit="return fSubmit()" id="form1" action="#">
+					<input type="hidden" id="roleId" name="roleId" value="2">
+					<input type="hidden" id="isValid" name="isValid" value="1">
+					<div class="form-group">
+						<label for="firstname" class="col-sm-3 control-label">用户名</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control username" id="name" name="loginName" minlength="3" maxlength="30" placeholder="请输入用户名" required>
+						</div>
+						<span class="col-sm-3 titool tiName">用户名已存在!</span>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">邮箱</label>
+						<div class="col-sm-6">
+							<input type="email" class="form-control" id="email" name="email" placeholder="请输入邮箱" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">密码</label>
+						<div class="col-sm-6">
+							<input type="password" class="form-control passW" id="password1" name="password" minlength="6" maxlength="30" placeholder="请输入密码" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">确认密码</label>
+						<div class="col-sm-6">
+							<input type="password" class="form-control rPassword"  id="password2" minlength="6" maxlength="30" placeholder="请再次输入密码" required>
+						</div>
+						<span class="col-sm-3 titool tiPass">密码不一致!</span>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-6">
+							<span>已有账号？</span>
+							<span><a href="${jypath}/loginIndex">登陆</a></span>
+							<button type="submit" class="btn btn-primary pull-right">
+								注 册
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="text-center foote">
+			<div class="copyright">
+				Copyright © 复单信息科技有限公司 2016 - 2017
+			</div>
+		</div>
+		<!-- 弹窗 -->
+		<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="fasle">
+			<div class="modal-dialog">
+				<div class="modal-content" style="margin-top:188px;">
+					<div class="modal-body">
+						<div class="iconOk">
+							<span class="glyphicon glyphicon-ok"></span>
+						</div>
+						<p class="oSuccess">
+							恭喜注册成功！
+						</p>
+						<a href="${jypath}/loginIndex" type="button" class="btn btn-success col-sm-offset-10 bLog">返回登陆</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script>
+			function fSubmit(){
+				$.ajax({
+					type:"post",
+					async:false,
+					url:"${jypath}/backstage/account/addAcount",
+					data:$("#form1").serialize(),
+					success:function(data){
+						var obj = eval('('+ data +')');
+						if(obj.res == 0){
+							$('.tiName').css('display', 'block');
+						}else{
+							$('.tiName').css('display', 'none');
+							$('#successModal').modal('show');
+						}
+					}
+				});  
+				return false;
+			}
+			//失去焦点检验两次密码输入是否相同
+			$('.rPassword').on('blur', function() {
+				var val = $('.passW').val();
+				if ($(this).val() != val) {
+					$('.tiPass').css('display', 'block');
+					return false;
+				} else {
+					$('.tiPass').css('display', 'none');
+					return true;
+				}
+			})
+		</script>
+	</body>
+</html>

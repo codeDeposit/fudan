@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.workflow.online.apply.ApproverSettingDao">
+
+	<!-- 设置审核职务 start -->
+	<insert id="insert" parameterType="ApproverSetting">
+		insert fudan_workflow_approversetting <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="accountId != null and accountId != '' ">
+				accountId = #{accountId},
+			</if>
+			<if test="positionId != null and positionId != '' ">
+				positionId = #{positionId},
+			</if>
+			<if test="processDefinitionKey != null and processDefinitionKey != '' ">
+				processDefinitionKey = #{processDefinitionKey},
+			</if>
+		</set>
+	</sql>
+	<!-- 设置审核职务 end -->
+	
+	
+	<!-- 查询已设置的职务 start -->
+	<select id="select" resultType="ApproverSetting">
+		select * from fudan_workflow_approversetting where accountId = #{accountId}
+	</select>
+	<!-- 查询已设置的职务 end -->
+	
+	
+	<!-- 判断登录用户是否是审核人 start -->
+	<select id="selectBy" resultType="ApproverSetting">
+		select * from fudan_workflow_approversetting
+		where positionId in
+		<foreach collection="list" index="index" item="position" 
+		open="(" separator="," close=")">
+			#{position.id}
+        </foreach>
+	</select>
+	<!-- 判断登录用户是否是审核人 end -->
+	
+</mapper>

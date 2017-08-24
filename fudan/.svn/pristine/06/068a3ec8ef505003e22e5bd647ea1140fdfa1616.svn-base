@@ -1,0 +1,202 @@
+package com.jy.controller.oa.communicate;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.communicate.InMessageVO;
+import com.jy.entity.oa.communicate.SendVO;
+import com.jy.service.oa.communicate.InMessageService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/inmessage")
+public class InMessageController {
+
+	private InMessageService inMessageService;
+
+	public InMessageService getInMessageService() {
+		return inMessageService;
+	}
+
+	@Resource(name="inMessageService")
+	public void setInMessageService(InMessageService inMessageService) {
+		this.inMessageService = inMessageService;
+	}
+
+	/**
+	 * 站内发消息
+	 * 
+	 * @param inMessage
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(String userId, String userName, String content, Short msgType) {
+		String[] userIds = userId.split(",");
+		String[] userNames = userName.split(",");
+		JsonInfo info = inMessageService.save(userIds, userNames, content, msgType);
+		return info;
+	}
+	
+	/**
+	 * 获取自己发送的消息列表
+	 * 
+	 * @param userFullname
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping("/listsend")
+	public ModelAndView listSended(HttpServletRequest request, @RequestParam(required=false) Short msgType,
+			@RequestParam(required = false) String userFullname,
+			@RequestParam(required = false) String startTime,
+			@RequestParam(required = false) String endTime) {
+		Date startTimeD = null;
+		Date endTimeD = null;
+		//时间转换
+		if(startTime != null && !startTime.equals("")) {
+			startTimeD = DateStringUtil.stringToDate3(startTime);
+		}
+		if(endTime != null && !endTime.equals("")) {
+			endTimeD = DateStringUtil.stringToDate3(endTime);
+		}
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<InMessageVO> inMessageVOs = inMessageService.getSend(userFullname, msgType, startTimeD, endTimeD);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(inMessageVOs.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<SendVO> pageSendVOs = inMessageService.getPageList(pb, userFullname, msgType,
+				startTimeD, endTimeD);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/communicate/sendmessage_table");
+		}else {
+			mv.setViewName("system/oa/communicate/sendmessage_list");
+		}
+		
+		mv.addObject("sendVOs", pageSendVOs);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+	/**
+	 * 获取已收消息列表
+	 * 
+	 * @param msgType
+	 * @param sender
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping("/listaccept")
+	public ModelAndView listAccept(HttpServletRequest request,
+			@RequestParam(required = false) Short msgType,
+			@RequestParam(required = false) String sender,
+			@RequestParam(required = false) String startTime,
+			@RequestParam(required = false) String endTime) {
+		
+		Date startTimeD = null;
+		Date endTimeD = null;
+		//时间转换
+		if(startTime != null && !startTime.equals("")) {
+			startTimeD = DateStringUtil.stringToDate3(startTime);
+		}
+		if(endTime != null && !endTime.equals("")) {
+			endTimeD = DateStringUtil.stringToDate3(endTime);
+		}
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<InMessageVO> inMessageVOs = inMessageService.getAccept(msgType, sender, startTimeD, endTimeD);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(inMessageVOs.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<InMessageVO> pageInMessageVOs = inMessageService.getPageList(pb, msgType, sender, startTimeD, endTimeD);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/communicate/acceptmessage_table");
+		}else {
+			mv.setViewName("system/oa/communicate/acceptmessage_list");
+		}
+		mv.addObject("inMessageVOs", pageInMessageVOs);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+	/**
+	 * 批量删除消息
+	 * 
+	 * @param receiveId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] receiveId) {
+		JsonInfo info = inMessageService.delete(receiveId);
+		return info;
+	}
+	
+	/**
+	 * 消息重发
+	 * @return
+	 */
+	@RequestMapping("/resend")
+	@ResponseBody
+	public JsonInfo resend(Long messageId) {
+		JsonInfo info = inMessageService.resend(messageId);
+		return info;
+	}
+	
+	/**
+	 * 回复消息
+	 * @return
+	 */
+	@RequestMapping("/answer")
+	@ResponseBody
+	public JsonInfo answer(String userId, String userName, String content, Long receiveId) {
+		JsonInfo info = inMessageService.answer(userId, userName, content, receiveId);
+		return info;
+	}
+}

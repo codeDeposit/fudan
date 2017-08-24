@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.archive.ArchTemplateMapper">
+
+	<!-- 基本映射 start -->
+	<resultMap type="com.jy.entity.oa.archive.ArchTemplate"
+		id="baseMap">
+		<id property="templateId" column="templateId" />
+		<result property="tempName" column="tempName" />
+		<result property="tempPath" column="tempPath" />
+		<association property="fileAttach" column="fileId"
+			select="selectFileAttach"></association>
+		<association property="archivesType" column="typeId"
+			select="selectArchivesType"></association>
+	</resultMap>
+
+	<select id="selectFileAttach" parameterType="Long"
+		resultType="com.jy.entity.oa.publics.FileAttach">
+		select * from fudan_oa_file_attach where fileId = #{fileId}
+	</select>
+
+	<select id="selectArchivesType" parameterType="Long"
+		resultType="com.jy.entity.oa.archive.ArchivesType">
+		select * from fudan_oa_archives_type where typeId =
+		#{typeId}
+	</select>
+	<!-- 基本映射 end -->
+
+
+	<!-- 根据类型Id，tempName 模糊查询所有列表 start -->
+	<select id="selectSomeBy" resultMap="baseMap">
+		select * from fudan_oa_arch_template
+		where 1 = 1
+		<if test="typeId != null"> 
+			and typeId = #{typeId}
+		</if>
+		<if test='tempName !=null and tempName !=""'> 
+			and tempName like concat(concat('%',#{tempName}),'%')
+		</if>
+		order by templateId desc
+	</select>
+	<!-- 根据类型Id，tempName 模糊查询所有列表 end -->
+
+
+	<!-- 根据 templateId 获取详细信息 -->
+	<select id="selectInfoBy" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_arch_template where templateId = #{templateId}
+	</select>
+
+
+	<!-- 添加数据 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.archive.ArchTemplate">
+		insert fudan_oa_arch_template
+		<include refid="insertSQL"></include>
+	</insert>
+
+	<sql id="insertSQL">
+		<set>
+			<if test="tempName != null and tempName != '' ">
+				tempName = #{tempName},
+			</if>
+			<if test="tempPath != null and tempPath != '' ">
+				tempPath = #{tempPath},
+			</if>
+			<if test="fileId > 0">
+				fileId = #{fileId},
+			</if>
+			<if test="typeId > 0">
+				typeId = #{typeId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加数据 end -->
+	
+	
+	<!-- 删除数据 start-->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_arch_template where templateId = #{templateId}
+	</delete>
+	<!-- 删除数据 end-->
+	
+	<!-- 分页显示列表 start -->
+	<select id="selectPageData" resultMap="baseMap">
+		select * from fudan_oa_arch_template where 1=1
+		<if test="typeId != null"> 
+			and typeId = #{typeId}
+		</if>
+		<if test='tempName !=null and tempName !=""'> 
+			and tempName like concat('%',#{tempName},'%')
+		</if>
+		order by templateId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页显示列表 end -->
+	
+	<!-- 修改模板数据 start -->
+	<update id="update" parameterType="com.jy.entity.oa.archive.ArchTemplate">
+		update fudan_oa_arch_template <include refid="insertSQL"></include>
+		where templateId = #{templateId}
+	</update>
+	<!-- 修改模板数据 end -->
+
+</mapper>

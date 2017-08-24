@@ -1,0 +1,145 @@
+package com.jy.service.oa.impl.info;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.info.News;
+import com.jy.entity.oa.info.NewsType;
+import com.jy.repository.oa.info.NewsMapper;
+import com.jy.repository.oa.info.NewsTypeMapper;
+import com.jy.service.oa.info.NewsTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("newsTypeService")
+public class NewsTypeServiceImpl implements NewsTypeService {
+
+	private NewsTypeMapper newsTypeMapper;
+	private NewsMapper newsMapper;
+
+	public NewsMapper getNewsMapper() {
+		return newsMapper;
+	}
+
+	@Autowired
+	public void setNewsMapper(NewsMapper newsMapper) {
+		this.newsMapper = newsMapper;
+	}
+
+	public NewsTypeMapper getNewsTypeMapper() {
+		return newsTypeMapper;
+	}
+
+	@Autowired
+	public void setNewsTypeMapper(NewsTypeMapper newsTypeMapper) {
+		this.newsTypeMapper = newsTypeMapper;
+	}
+
+	// 获取列表
+	@Override
+	public List<NewsType> get(String typeName, Short sn) {
+		List<NewsType> newsTypes = newsTypeMapper.select(typeName, sn);
+		return newsTypes;
+	}
+
+	// 添加新闻类型
+	@Override
+	public JsonInfo save(NewsType newsType) {
+		newsType.setSn((short)1);
+		
+		JsonInfo info = new JsonInfo();
+		int result = newsTypeMapper.insert(newsType);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改新闻类型信息
+	@Override
+	public JsonInfo update(NewsType newsType) {
+		JsonInfo info = new JsonInfo();
+		int result = newsTypeMapper.update(newsType);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public NewsType getDetailsBy(Long typeId) {
+		NewsType newsType = newsTypeMapper.selectBy(typeId);
+		return newsType;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo del(Long[] typeId) {
+		// 查询次新闻类别下是否有新闻，如果有，则提示此新闻类别下有新闻了，是否确定删除，如果确定删除则把所有的新闻删除，然后删除新闻类别
+		String subject = "";
+		String author = "";
+		List<News> news = getNews(typeId, subject, author);
+		for(News n: news) {
+			newsMapper.delete(n.getNewsId());
+		}
+		
+		JsonInfo info = new JsonInfo();
+		for(Long id : typeId) {
+			newsTypeMapper.delete(id);
+		}
+		info.setSuccess(true);
+		return info;
+	}
+
+	// 获取最大的sn值
+	@Override
+	public Short getTop() {
+		Short sn = newsTypeMapper.getTop();
+		return sn;
+	}
+
+	// 获取所有类别
+	@Override
+	public List<NewsType> getAll() {
+		List<NewsType> newsTypes = newsTypeMapper.selectAll();
+		return newsTypes;
+	}
+
+	// 分页后的列表
+	@Override
+	public List<NewsType> getPageList(PageBean pb) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<NewsType> pageNewsTypes = newsTypeMapper.selectPageDate(firstIndex, toIndex);
+		
+		return pageNewsTypes;
+	}
+	
+	// 获取新闻类别下的新闻列表
+	public List<News> getNews(Long[] typeId, String subject, String author) {
+		List<News> allNews = new ArrayList<News>();
+		for(Long tId :typeId) {
+			List<News> news = newsMapper.selectBy(tId, subject, author);
+			allNews.addAll(news);
+		}
+		return allNews;
+	}
+	
+}

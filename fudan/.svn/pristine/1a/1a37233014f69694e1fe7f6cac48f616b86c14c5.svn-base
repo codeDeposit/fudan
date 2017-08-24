@@ -1,0 +1,44 @@
+package com.jy.service.oa.personal;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.personal.DutySection;
+import com.jy.repository.oa.personal.DutySectionDao;
+
+@Service("dutySectionService")
+public class DutySectionService {
+	
+	@Resource
+	private DutySectionDao dutySectionMapper;
+	
+	public int delete(DutySection dutySection) {
+		int result = 0;
+		result = dutySectionMapper.delete(dutySection);
+		return result;
+	}
+	
+	public List<DutySection> find(DutySection dutySection){
+		List<DutySection> dutySectionList = dutySectionMapper.find(dutySection);
+		return dutySectionList;
+	}
+	
+	public int insert(DutySection dutySection) {
+		int result = dutySectionMapper.insert(dutySection);
+		return result;
+	}
+	
+	public int update(DutySection dutySection) {
+		int result = dutySectionMapper.update(dutySection);
+		return result;
+	}
+
+	public List<DutySection> search(DutySection dutySection) {
+		List<DutySection> dutySectionList = dutySectionMapper.find(dutySection);
+		return dutySectionList;
+	}
+
+}

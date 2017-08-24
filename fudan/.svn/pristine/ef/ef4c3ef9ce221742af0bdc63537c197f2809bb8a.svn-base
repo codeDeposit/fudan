@@ -1,0 +1,148 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.hrm.Resume;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.hrm.ResumeFileMapper;
+import com.jy.repository.oa.hrm.ResumeMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.hrm.ResumeService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("resumeService")
+public class ResumeServiceImpl implements ResumeService {
+
+	private ResumeMapper resumeMapper;
+	private ResumeFileMapper resumeFileMapper;
+	private FileAttachMapper fileAttachMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	public ResumeFileMapper getResumeFileMapper() {
+		return resumeFileMapper;
+	}
+
+	@Autowired
+	public void setResumeFileMapper(ResumeFileMapper resumeFileMapper) {
+		this.resumeFileMapper = resumeFileMapper;
+	}
+
+	public ResumeMapper getResumeMapper() {
+		return resumeMapper;
+	}
+
+	@Autowired
+	public void setResumeMapper(ResumeMapper resumeMapper) {
+		this.resumeMapper = resumeMapper;
+	}
+
+	// 添加简历
+	@Override
+	public JsonInfo save(Resume resume) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		resume.setRegistor(account.getName());
+		resume.setRegTime(new Date());
+		resume.setStatus("未筛选");
+		int result = 0;
+		// 添加简历
+		result = resumeMapper.insert(resume);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改简历信息
+	@Override
+	public JsonInfo update(Resume resume) {
+		int	result = resumeMapper.update(resume);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取简历详细信息
+	@Override
+	public Resume getInfoBy(Long resumeId) {
+		Resume resume = resumeMapper.selectInfoBy(resumeId);
+		resume.setBirthday1(DateStringUtil.dateToString3(resume.getBirthday()));
+		resume.setStartWorkDate1(DateStringUtil.dateToString3(resume.getStartWorkDate()));
+		resume.setRegTime1(DateStringUtil.dateToString3(resume.getRegTime()));
+		return resume;
+	}
+
+	// 批量删除简历
+	@Override
+	public JsonInfo delete(Long[] resumeId) {
+		int result = 0;
+		for (Long rId : resumeId) {
+			result = resumeMapper.delete(rId);
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取简历列表
+	@Override
+	public List<Resume> get(String fullName, String jobName, String status) {
+		List<Resume> resumes = resumeMapper.select(fullName, jobName, status);
+		return resumes;
+	}
+
+	@Override
+	public List<Resume> getPageList(PageBean pb, String fullName,
+			String jobName, String status) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Resume> resumes = resumeMapper.selectPageData(firstIndex, toIndex, fullName, jobName, status);
+		for (Resume resume : resumes) {
+			resume.setRegTime1(DateStringUtil.dateToString4(resume.getRegTime()));
+		}
+		return resumes;
+	}
+
+}

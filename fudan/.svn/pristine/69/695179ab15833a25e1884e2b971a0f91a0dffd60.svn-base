@@ -1,0 +1,4 @@
+html,body{
+	font-family:Arial,'微软雅黑','黑体',sans-serif !important;
+	min-height:900px !important;
+}

@@ -1,0 +1,29 @@
+package com.jy.repository.oa.workflow;
+
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ProcessTemplateMapper {
+
+	/**
+	 * 添加流程与模板的关联
+	 * @param processTemplate
+	 * @return
+	 */
+	int insert(ProcessTemplate processTemplate);
+
+	/**
+	 * 根据pId选择流程模板
+	 * @param pId
+	 * @return
+	 */
+	ProcessTemplate selectBy(String processKey);
+
+	/**
+	 * 更新processTemplate
+	 * @param processTemplate
+	 */
+	void update(ProcessTemplate processTemplate);
+	
+}

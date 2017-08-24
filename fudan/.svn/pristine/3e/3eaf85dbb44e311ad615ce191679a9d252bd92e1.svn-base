@@ -1,0 +1,100 @@
+	$(function() {
+		fuLoading();
+		//加载数据...
+		setTimeout("init()",200);
+	});
+	function init() {
+		$('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+	    fuCloseLayer();
+	}
+	// 添加公告
+   	$("#noticeaddbtn").click(function() {
+   		var content = getContent();
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/notice/add",
+   			data: $("#noticeaddform").serialize()+"&noticeContent="+content,
+   			success : function(html) {
+   				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   	});
+	// 获取富文本编辑器的内容
+	function getContent() {
+	    var content = UM.getEditor("containerform").getContent();
+	    return content;
+	}
+   	// 查看公告详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/notice/getdetails";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?noticeId="+id+"&operation="+operation,
+   			success: function(data){
+		    	fuCloseLayer();
+		    	$("#getInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+	// 删除公告
+	function fDelete(noticeId) {
+		var url = "/oa/notice/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url,
+			data: {
+				"noticeId" : noticeId
+			},
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	// 查询
+	$("#noticesearchbtn").click(function() {
+		var id = "noticetable";
+		var url = jypath + "/oa/notice/list";
+		var type = "post";
+		var data = $("#noticesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "noticetable";
+		var url= jypath+"/oa/notice/list";
+		var type = "get";
+		var data = $("#noticesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	//发布公告
+	function issue(typeId) {
+		var url = "/oa/notice/issue?noticeId="+typeId;
+		$.ajax({
+			type: "get",
+			url: jypath+url,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}

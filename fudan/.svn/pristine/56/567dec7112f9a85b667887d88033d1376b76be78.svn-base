@@ -1,0 +1,101 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.hrm.SalaryItem;
+import com.jy.repository.oa.hrm.SalaryItemMapper;
+import com.jy.service.oa.hrm.SalaryItemService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("salaryItemService")
+public class SalaryItemServiceImpl implements SalaryItemService {
+
+	private SalaryItemMapper salaryItemMapper;
+
+	public SalaryItemMapper getSalaryItemMapper() {
+		return salaryItemMapper;
+	}
+
+	@Autowired
+	public void setSalaryItemMapper(SalaryItemMapper salaryItemMapper) {
+		this.salaryItemMapper = salaryItemMapper;
+	}
+
+	// 添加薪酬项目
+	@Override
+	public JsonInfo save(SalaryItem salaryItem) {
+		int result = salaryItemMapper.insert(salaryItem);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取薪酬项目详细信息
+	@Override
+	public SalaryItem getInfoBy(Long salaryItemId) {
+		SalaryItem salaryItem = salaryItemMapper.selectInfoBy(salaryItemId);
+		return salaryItem;
+	}
+
+	// 修改薪酬项目信息
+	@Override
+	public JsonInfo update(SalaryItem salaryItem) {
+		int result = salaryItemMapper.update(salaryItem);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除薪酬项目
+	@Override
+	public JsonInfo delete(Long[] salaryItemId) {
+		int result = 0;
+		for(Long sId : salaryItemId) {
+			result = salaryItemMapper.delete(sId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取薪酬项目列表
+	@Override
+	public List<SalaryItem> get(String itemName, BigDecimal defaultVal, Long[] ids) {
+		List<SalaryItem> salaryItems = salaryItemMapper.select(itemName, defaultVal, ids);
+		return salaryItems;
+	}
+
+	@Override
+	public List<SalaryItem> getPageList(PageBean pb, String itemName, BigDecimal defaultVal, Long[] ids) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<SalaryItem> salaryItems = salaryItemMapper.selectPageData(firstIndex, toIndex, itemName, defaultVal, ids);
+		return salaryItems;
+	}
+
+}

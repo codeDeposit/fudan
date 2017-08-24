@@ -1,0 +1,189 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<script type="text/javascript" src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/customer/customer.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/file/ajaxfileupload.js"></script>
+		<title>合同修改</title>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-btn aui-pull-left" tapmode href="../customer/pBasic"> <span class="aui-iconfont aui-icon-left">返回</span> </a>
+			<div class="aui-title" >
+				合同修改
+			</div>
+		</header>
+		<form id="Form_contract_add" enctype="multipart/form-data" onsubmit="return fContractAdd()">
+			<input type="hidden" id="customerId" name="customerId" value="${contract.customerId }">
+			<input type="hidden" id="contract_add_salesJson" name="salesJson">
+			<div class="aui-content aui-margin-b-15">
+			    <ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同名称
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="name" id="contractName" maxlength="255" placeholder="合同名称" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同编号
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="number" id="contracNumber" maxlength="255" onfocus="this.blur()" placeholder="合同编号" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="amount" id="contractAmount" maxlength="255" placeholder="合同金额" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="attachments2" id="contractAttachment2" maxlength="255" placeholder="附件" required>
+			                </div>
+			            </div>
+			        </li> 
+			   	</ul>
+		    </div>
+		    <div class="aui-content" >
+		    	<div class="aui-label aui-label-primary" style="margin:15px;">销售人数</div>
+		    	<ul class="aui-list aui-form-list" id="contract_sales_detail">
+			        <!-- <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-info">
+			                  	销  售  1
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="contractSalesPeople1" name="salesPeople" maxlength="255" placeholder="企业名称" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="contractSalesPrice1" name="salesPrice" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> --> 
+		       </ul>
+		    </div>
+		    <div class="aui-content ">
+			    <ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-danger">
+			                  	技术提成
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="percentage" id="contractPercentage" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> 
+			   	</ul>
+		    </div>
+		    <div class="aui-content" >
+		    	<div class="aui-label aui-label-primary"  style="margin:15px;">付款次数</div>
+		    	<ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第一次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="contractTime1" name="time1" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="contractPrice1" name="price1" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第二次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="contractTime2" name="time2" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="contractPrice2" name="price2" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第三次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="contractTime3" name="time3" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="contractPrice3" name="price3" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>    
+		       </ul>
+		    </div>
+		   	<div class="aui-content-padded">
+	        	<p><button class="aui-btn aui-btn-success aui-btn-block aui-btn-sm">提	交</button></p>
+		   	</div>
+		</form>
+	</body>
+	<script>
+		window.onload = function(){
+			toast = new auiToast();
+			dialog = new auiDialog();
+			fContractDetail();
+		}
+	</script>
+</html>

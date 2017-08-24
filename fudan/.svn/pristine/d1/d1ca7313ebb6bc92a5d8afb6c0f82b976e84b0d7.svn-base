@@ -1,0 +1,20 @@
+package com.jy.repository.oa.communicate;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.ShortMessage;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ShortMessageMapper {
+
+	// 添加消息
+	int insert(ShortMessage shortMessage);
+
+	// 获取刚添加消息的Id号
+	Long selectMaxId();
+
+	// 获取短消息内容
+	ShortMessage selectInfoBy(@Param("messageId") Long messageId);
+
+}

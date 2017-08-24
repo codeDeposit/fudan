@@ -1,0 +1,176 @@
+package com.jy.controller.oa.document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.document.DocFolder;
+import com.jy.entity.oa.document.DocFolderVO;
+import com.jy.entity.oa.document.Node;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.document.DocFolderService;
+import com.jy.task.utils.JsonInfo;
+
+@Controller
+@RequestMapping("/oa/docfolder")
+public class DocFolderController {
+
+	private DocFolderService docFolderService;
+
+	public DocFolderService getDocFolderService() {
+		return docFolderService;
+	}
+
+	@Resource(name="docFolderService")
+	public void setDocFolderService(DocFolderService docFolderService) {
+		this.docFolderService = docFolderService;
+	}
+	
+	/**
+	 * 添加目录
+	 * @param docFolder
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(DocFolder docFolder) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		docFolder.setUserId(account.getAccountId());
+		JsonInfo info = docFolderService.save(docFolder);
+		return info;
+	}
+	
+	/**
+	 * 获取目录列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(@RequestParam(required=false) String folderName, @RequestParam(required=false) Short isShared) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/document/docfolder_list");
+		return mv;
+	}
+	
+	@RequestMapping("/listjson")
+	@ResponseBody
+	public List<DocFolderVO> listJson(@RequestParam(required=false) String folderName, @RequestParam(required=false) Short isShared) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<DocFolderVO> docFolders = docFolderService.getAll(account.getAccountId(), folderName, isShared);
+		return docFolders;
+	}
+	
+	/**
+	 * 查询文件夹树形菜单
+	 * @return
+	 */
+	@RequestMapping("/listtree")
+	@ResponseBody
+	public List<Node> listTree() {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<DocFolderVO> docFolders = docFolderService.getAll(account.getAccountId(), null, null);
+		List<Node> nodess = toNode(docFolders);
+		Node node = new Node((long)0,"全部文件夹");
+		node.setNodes(nodess);
+		List<Node> nodes = new ArrayList<Node>();
+		nodes.add(node);
+		return nodes;
+	}
+	
+	private List<Node> toNode(List<DocFolderVO> docFolders) {
+		List<Node> nodes = new ArrayList<Node>();
+		for (DocFolderVO docFolderVO : docFolders) {
+			DocFolder fatherFolder = docFolderVO.getFatherFolder();
+			Node node = new Node(fatherFolder.getFolderId(), fatherFolder.getFolderName());
+			if(docFolderVO.getChildFolders() != null && docFolderVO.getChildFolders().size() > 0) {
+				node.setNodes(toNode(docFolderVO.getChildFolders()));
+			}
+			nodes.add(node);
+		}
+		return nodes;
+	}
+	
+	
+	/**
+	 * 获取目录详细信息
+	 * @param folderId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long folderId, String operation) {
+		DocFolder docFolder = docFolderService.getInfo(folderId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("docFolder", docFolder);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/document/docfolder_form");
+		return mv;
+	}
+	
+	/**
+	 * 更改目录名称
+	 * @param docFolder
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(DocFolder docFolder) {
+		JsonInfo info = docFolderService.update(docFolder);
+		return info;
+	}
+	
+	/**
+	 * 删除目录
+	 * @param folderId
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo del(Long folderId) {
+		JsonInfo info = docFolderService.delete(folderId);
+		return info;
+	}
+	
+	/**
+	 * 文件夹转移
+	 * @param fatherFolderId
+	 * @param childFolderId
+	 * @return
+	 */
+	@RequestMapping("/transfer")
+	@ResponseBody
+	public JsonInfo transfer(Long fatherFolderId, Long childFolderId) {
+		JsonInfo info = docFolderService.transfer(fatherFolderId, childFolderId);
+		return info;
+	}
+	
+	/**
+	 * 返回转移文件夹的页面
+	 * @return
+	 */
+	@RequestMapping("/transferfolder")
+	public ModelAndView transferFolder() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/document/docfolder_transfer");
+		return mv;
+	}
+	
+	/**
+	 * 获取某一个账号所有文件夹列表
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<DocFolder> listAll() {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<DocFolder> docFolders = docFolderService.getAllByUserId(account.getAccountId());
+		return docFolders;
+	}
+
+}

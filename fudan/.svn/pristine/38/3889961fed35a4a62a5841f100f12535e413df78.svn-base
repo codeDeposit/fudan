@@ -1,0 +1,56 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.MailBox;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface MailBoxMapper {
+
+	// 邮箱与邮件关联
+	int insert(MailBox mailBox);
+
+	// 删除邮件,即更新邮件内容
+	int delete(MailBox mailBox);
+
+	// 根据boxId获取详细信息
+	MailBox selectInfoBy(@Param("boxId") Long boxId);
+
+	// 获取邮件列表
+	List<MailBox> select(@Param("subject") String subject,
+			@Param("sender") String sender,
+			@Param("recipientNames") String recipientNames,
+			@Param("folderId") Long folderId, @Param("userId") String userId);
+
+	int deleteBy(@Param("boxId") Long boxId);
+
+	/**
+	 * 邮件转移目录
+	 * 
+	 * @param boxId
+	 * @param folderId
+	 * @return
+	 */
+	int transfer(@Param("boxId") Long boxId, @Param("folderId") Long folderId);
+
+	/**
+	 * 邮件分页列表
+	 * 
+	 * @param pb
+	 * @param subject
+	 * @param sender
+	 * @param recipientNames
+	 * @param folderId
+	 * @param userId
+	 * @return
+	 */
+	List<MailBox> selectPageData(@Param("firstIndex") int firstIndex,
+			@Param("toIndex") int toIndex, @Param("subject") String subject,
+			@Param("sender") String sender,
+			@Param("recipientNames") String recipientNames,
+			@Param("folderId") Long folderId, @Param("userId") String userId);
+
+}

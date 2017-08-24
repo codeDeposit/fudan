@@ -1,0 +1,85 @@
+$(function() {
+	fuLoading();
+	// 初始化日期组件
+	$('.form_date').datetimepicker({
+		language : 'zh-CN',
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+	});
+	fuCloseLayer();
+})
+// 查看详细信息或修改
+function openForm(id, operation) {
+	fuLoading();
+	var url = "/oa/diary/getdetails";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?diaryId=" + id + "&operation=" + operation,
+		success : function(data) {
+			fuCloseLayer();
+			$("#getInfoOrUpdate").html(data);
+		}
+	});
+}
+// 删除公文模板
+function fDelete(typeId) {
+	var url = "/oa/diary/multidel";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?diaryId=" + typeId,
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+// 查询
+$("#appointmentsearchbtn").click(function() {
+	fuLoading();
+	var id = "diarytable";
+	var url = jypath + "/oa/diary/list";
+	var type = "post";
+	var data = $("#appointmentsearchform").serialize();
+	partRefresh(id, url, type, data);
+});
+// pageNos: 第几页
+function pageturn(pageNos) {
+	fuLoading();
+	if (pageNos == 0) {
+		pageNos = $("#zhuandao").val();
+	}
+	var id = "diarytable";
+	var url = jypath + "/oa/diary/list";
+	var type = "post";
+	var data = $("#appointmentsearchform").serialize() + "&pageNos=" + pageNos;
+	pageturning(id, url, type, data);
+}
+// 获取富文本编辑器的内容
+function getContent() {
+	var content = UM.getEditor("containerform").getContent();
+	return content;
+}
+// 添加日志
+$("#calendarplansaddbtn").click(function() {
+	var content = getContent();
+	$.ajax({
+		type : "post",
+		url : jypath + "/oa/diary/add",
+		data : $("#calendarplanaddform").serialize() + "&content=" + content,
+		success : function(html) {
+			$("#calendarplansaddbtn").attr("data-dismiss", "modal");
+			fuShowSuccess();
+			refresh();
+		}
+	});
+});
+function fuSure(param) {
+	fuLoading();
+	fuClose();
+	setTimeout('fDelete(\'' + param + '\')', 200);
+}

@@ -1,0 +1,165 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.hrm.HireIssue;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.hrm.HireInssueMapper;
+import com.jy.service.oa.hrm.HireIssueService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("hireInssueService")
+public class HireInssueServiceImpl implements HireIssueService {
+
+	private HireInssueMapper hireInssueMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public HireInssueMapper getHireInssueMapper() {
+		return hireInssueMapper;
+	}
+
+	@Autowired
+	public void setHireInssueMapper(HireInssueMapper hireInssueMapper) {
+		this.hireInssueMapper = hireInssueMapper;
+	}
+
+	// 添加招聘信息
+	@Override
+	public JsonInfo save(HireIssue hireIssue) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		hireIssue.setRegFullname(employee.getFullname());
+		hireIssue.setRegDate(new Date());
+		hireIssue.setStatus(hireIssue.getNOTYETPASS_CHECK());
+		
+		int result = hireInssueMapper.insert(hireIssue);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改招聘信息
+	@Override
+	public JsonInfo update(HireIssue hireIssue) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		hireIssue.setModifyFullname(employee.getFullname());
+		hireIssue.setModifyDate(new Date());
+		
+		int result = hireInssueMapper.update(hireIssue);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 招聘详细信息
+	@Override
+	public HireIssue getInfoBy(Long hireId) {
+		HireIssue hireIssue = hireInssueMapper.selectInfoBy(hireId);
+		
+		hireIssue.setStartDate1(DateStringUtil.dateToString3(hireIssue.getStartDate()));
+		hireIssue.setEndDate1(DateStringUtil.dateToString3(hireIssue.getEndDate()));
+		hireIssue.setRegDate1(DateStringUtil.dateToString4(hireIssue.getRegDate()));
+		if(hireIssue.getModifyDate() != null) 
+			hireIssue.setModifyDate1(DateStringUtil.dateToString3(hireIssue.getModifyDate()));
+		//审核
+		if(hireIssue.getStatus() != 0) {
+			hireIssue.setCheckDate1(DateStringUtil.dateToString3(hireIssue.getCheckDate()));
+		}
+		
+		return hireIssue;
+	}
+
+	// 审核招聘信息
+	@Override
+	public JsonInfo reviewInfo(HireIssue hireIssue) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		hireIssue.setCheckFullname(employee.getFullname());
+		hireIssue.setCheckDate(new Date());
+		
+		int result = hireInssueMapper.reviewUpdate(hireIssue);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除招聘信息
+	@Override
+	public JsonInfo delete(Long[] hireId) {
+		int result = 0;
+		for(Long hId : hireId) {
+			result = hireInssueMapper.delete(hId);
+		}
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取招聘信息列表
+	@Override
+	public List<HireIssue> get(String jobName, String regFullname) {
+		List<HireIssue> hireIssues = hireInssueMapper.select(jobName, regFullname);
+		return hireIssues;
+	}
+	
+	//招聘信息分页列表
+	@Override
+	public List<HireIssue> getPageList(PageBean pb, String jobName,
+			String regFullname) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<HireIssue> hireIssues = hireInssueMapper.selectPageData(firstIndex, toIndex, jobName, regFullname);
+		
+		for(HireIssue hi: hireIssues) {
+			hi.setStartDate1(DateStringUtil.dateToString3(hi.getStartDate()));
+			hi.setEndDate1(DateStringUtil.dateToString3(hi.getEndDate()));
+			hi.setRegDate1(DateStringUtil.dateToString4(hi.getRegDate()));
+		}
+		
+		return hireIssues;
+	}
+
+}

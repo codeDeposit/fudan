@@ -1,0 +1,189 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.BookBorRet;
+import com.jy.service.oa.admin.BookBorRetService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/bookborret")
+public class BookBorRetController {
+
+	private BookBorRetService bookBorRetService;
+
+	public BookBorRetService getBookBorRetService() {
+		return bookBorRetService;
+	}
+
+	@Resource(name="bookBorRetService")
+	public void setBookBorRetService(BookBorRetService bookBorRetService) {
+		this.bookBorRetService = bookBorRetService;
+	}
+
+	/**
+	 * 新增借阅记录
+	 * 
+	 * @param bookBorRet
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(BookBorRet bookBorRet) {
+		JsonInfo info = bookBorRetService.save(bookBorRet);
+		return info;
+	}
+
+	/**
+	 * 获取借阅记录详细信息
+	 * 
+	 * @param recordId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long recordId, String operation) {
+		BookBorRet bookBorRet = bookBorRetService.getInfoBy(recordId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("bookBorRet", bookBorRet);
+		mv.setViewName("system/oa/admin/bookbor_form");
+		
+		return mv;
+	}
+
+	/**
+	 * 修改记录信息
+	 * 
+	 * @param bookBorRet
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(BookBorRet bookBorRet) {
+		JsonInfo info = bookBorRetService.update(bookBorRet);
+		return info;
+	}
+
+	/**
+	 * 获取借阅记录列表
+	 * @param bookName
+	 * @param borrowIsbn
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request,
+			@RequestParam(required = false) String bookName,
+			@RequestParam(required = false) String borrowIsbn) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<BookBorRet> bookBorRets = bookBorRetService.get(bookName, borrowIsbn);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(bookBorRets.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<BookBorRet> pageBookBorRets = bookBorRetService.getPageList(pb, bookName, borrowIsbn);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/bookbor_table");
+		}else {
+			mv.setViewName("system/oa/admin/bookbor_list");
+		}
+		
+		mv.addObject("bookBors", pageBookBorRets);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 归还图书
+	 * @param bookBorRet
+	 * @return
+	 */
+	@RequestMapping("/return")
+	@ResponseBody
+	public JsonInfo returnBook(BookBorRet bookBorRet) {
+		JsonInfo info = bookBorRetService.updateLastReturnTime(bookBorRet);
+		return info;
+	}
+	
+	/**
+	 * 归还图书列表
+	 * @param bookName
+	 * @param borrowIsbn
+	 * @return
+	 */
+	@RequestMapping("/listret")
+	public ModelAndView listReturn(HttpServletRequest request,
+			@RequestParam(required = false) String bookName,
+			@RequestParam(required = false) String borrowIsbn) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<BookBorRet> bookBorRets = bookBorRetService.getRet(bookName, borrowIsbn);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(bookBorRets.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后列表
+		List<BookBorRet> pageBookBorRets = bookBorRetService.getPageRetList(pb, bookName, borrowIsbn);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/bookret_table");
+		}else {
+			mv.setViewName("system/oa/admin/bookret_list");
+		}
+		
+		mv.addObject("bookRets", pageBookBorRets);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	@RequestMapping("/getretdetails")
+	public ModelAndView getReturnInfo(Long recordId) {
+		BookBorRet bookBorRet = bookBorRetService.getInfoBy(recordId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("bookBorRet", bookBorRet);
+		mv.setViewName("system/oa/admin/bookret_form");
+		
+		return mv;
+	}
+
+}

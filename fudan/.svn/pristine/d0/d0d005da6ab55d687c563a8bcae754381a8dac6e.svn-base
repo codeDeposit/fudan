@@ -1,0 +1,153 @@
+package com.jy.controller.customer;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.customer.SaleProject;
+import com.jy.entity.system.account.Account;
+import com.jy.service.customer.SaleProjectService;
+import com.jy.service.system.org.RoleService;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller("saleProjectController")
+@RequestMapping({"backstage/saleProject"})
+public class SaleProjectController extends BaseController<Object>{
+	
+	 @Resource(name="saleProjectService")
+	 private SaleProjectService saleProjectService;
+	 @Autowired
+	 public RoleService roleService;
+	 
+	/**
+	 * 列表
+	 * @param request
+	 * @param model
+	 * @param saleProject
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping({"/list"})
+	public String list(HttpServletRequest request, Model model,SaleProject saleProject) throws Exception {
+		boolean mark = false;
+		List<SaleProject> saleProjectList = this.saleProjectService.find(saleProject);
+		for(int i=0;i<saleProjectList.size();i++){
+			//项目来源
+			if(saleProjectList.get(i).getQuarry().equals("1")){
+				saleProjectList.get(i).setQuarry("广告");
+			}else if(saleProjectList.get(i).getQuarry().equals("2")){
+				saleProjectList.get(i).setQuarry("来店");
+			}else if(saleProjectList.get(i).getQuarry().equals("3")){
+				saleProjectList.get(i).setQuarry("搜索引擎");
+			}else if(saleProjectList.get(i).getQuarry().equals("4")){
+				saleProjectList.get(i).setQuarry("客户介绍");
+			}else if(saleProjectList.get(i).getQuarry().equals("5")){
+				saleProjectList.get(i).setQuarry("其他");
+			}
+			//阶段
+			if(saleProjectList.get(i).getStage().equals("1")){
+				saleProjectList.get(i).setStage("初步接洽");
+			}else if(saleProjectList.get(i).getStage().equals("2")){
+				saleProjectList.get(i).setStage("需求确定");
+			}else if(saleProjectList.get(i).getStage().equals("3")){
+				saleProjectList.get(i).setStage("利润评估");
+			}else if(saleProjectList.get(i).getStage().equals("4")){
+				saleProjectList.get(i).setStage("决策报备");
+			}else if(saleProjectList.get(i).getStage().equals("5")){
+				saleProjectList.get(i).setStage("方案/报价");
+			}else if(saleProjectList.get(i).getStage().equals("6")){
+				saleProjectList.get(i).setStage("谈判审核");
+			}else if(saleProjectList.get(i).getStage().equals("7")){
+				saleProjectList.get(i).setStage("赢单");
+			}else if(saleProjectList.get(i).getStage().equals("8")){
+				saleProjectList.get(i).setStage("输单");
+			}
+		}
+		//权限判断
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		String orgId = roleService.getOrg(currentAccount.getRoleId()).getId();
+		if(orgId.equals("9")){
+			mark = true;
+		}
+		model.addAttribute("mark",mark);
+		model.addAttribute("list",saleProjectList);
+		model.addAttribute("count",saleProjectList.size());
+		return "system/customer/saleProject/saleProject_list";
+	}
+	
+	/**
+	 * 添加
+	 * @param request
+	 * @param saleProject
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/add")  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,SaleProject saleProject){
+		AjaxRes ar = getAjaxRes();
+		saleProjectService.insert(saleProject);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,SaleProject saleProject)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		saleProjectService.delete(saleProject);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 详细
+	 * @param request
+	 * @param model
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/detail")  
+	public String detail(HttpServletRequest request,Model model,SaleProject saleProject)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		saleProject = saleProjectService.find(saleProject).get(0);
+		model.addAttribute("saleProject",saleProject);
+		model.addAttribute("mark",mark);
+		return "system/customer/saleProject/saleProject_detail";
+	}
+	
+	/**
+	 * 更新
+	 * @param request
+	 * @param model
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/update")  
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,SaleProject saleProject)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		saleProjectService.update(saleProject);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+}

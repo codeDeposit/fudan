@@ -1,0 +1,258 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.communicate.InMessage;
+import com.jy.entity.oa.communicate.InMessageVO;
+import com.jy.entity.oa.communicate.SendVO;
+import com.jy.entity.oa.communicate.ShortMessage;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.communicate.InMessageMapper;
+import com.jy.repository.oa.communicate.ShortMessageMapper;
+import com.jy.service.oa.communicate.InMessageService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("inMessageService")
+public class InMessageServiceImpl implements InMessageService {
+
+	private InMessageMapper inMessageMapper;
+	private ShortMessageMapper shortMessageMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public ShortMessageMapper getShortMessageMapper() {
+		return shortMessageMapper;
+	}
+
+	@Autowired
+	public void setShortMessageMapper(ShortMessageMapper shortMessageMapper) {
+		this.shortMessageMapper = shortMessageMapper;
+	}
+
+	public InMessageMapper getInMessageMapper() {
+		return inMessageMapper;
+	}
+
+	@Autowired
+	public void setInMessageMapper(InMessageMapper inMessageMapper) {
+		this.inMessageMapper = inMessageMapper;
+	}
+
+	// 站内发消息
+	@Override
+	public JsonInfo save(String[] userId, String[] userName, String content, Short msgType) {
+		
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		
+		ShortMessage shortMessage = new ShortMessage();
+		shortMessage.setContent(content);
+		shortMessage.setSender(employee.getFullname());
+		shortMessage.setSenderId(employee.getUserId());
+		shortMessage.setSendTime(new Date());
+		shortMessage.setMsgType(msgType);
+		// 添加消息
+		int result = shortMessageMapper.insert(shortMessage);
+		// 获取刚添加的shortMessageId号
+		Long shortMessageId = shortMessageMapper.selectMaxId();
+
+		// 设置发送消息
+		InMessage inMessage = new InMessage();
+		inMessage.setMessageId(shortMessageId);
+		for (int i = 0; i < userId.length; i++) {
+			inMessage.setDelFlag(InMessage.getFlagUndel());
+			inMessage.setReadFlag(InMessage.getFlagUnread());
+			inMessage.setUserId(userId[i]);
+			inMessage.setUserFullname(userName[i]);
+			result = inMessageMapper.insert(inMessage);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+
+	}
+
+	// 获取自已发送消息的列表
+	@Override
+	public List<InMessageVO> getSend(String userFullname, Short msgType, Date startTime, Date endTime) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<InMessageVO> inMessageVOs = inMessageMapper.selectSend(userFullname, msgType, startTime, endTime, account.getAccountId());
+		return inMessageVOs;
+	}
+
+	// 获取已收到信息列表
+	@Override
+	public List<InMessageVO> getAccept(Short msgType, String sender,
+			Date startTime, Date endTime) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<InMessageVO> inMessageVOs = inMessageMapper.selectAccept(msgType,
+				sender, startTime, endTime, account.getAccountId());
+		return inMessageVOs;
+	}
+
+	// 批量删除消息
+	@Override
+	public JsonInfo delete(Long[] receiveId) {
+		int result = 0;
+		for(Long rId:receiveId) {
+			//删除发送的消息
+			result = inMessageMapper.delete(rId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 分页显示已收消息列表
+	@Override
+	public List<InMessageVO> getPageList(PageBean pb, Short msgType,
+			String sender, Date startTime, Date endTime) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<InMessageVO> pageInMessageVOs = inMessageMapper.selectPageDate(firstIndex, toIndex, msgType, sender, startTime, endTime, account.getAccountId());
+		
+		for(InMessageVO inMessageVO: pageInMessageVOs) {
+			inMessageVO.setSendTime1(DateStringUtil.dateToString4(inMessageVO.getSendTime()));
+		}
+		
+		return pageInMessageVOs;
+	}
+
+	// 分页显示已发消息列表
+	@Override
+	public List<SendVO> getPageList(PageBean pb, String userFullname, Short msgType,
+			Date startTime, Date endTime) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<SendVO> pageSendVOs = inMessageMapper.selectPageData(firstIndex, toIndex, userFullname, msgType, startTime, endTime, account.getAccountId());
+		
+		for(SendVO sendvo: pageSendVOs) {
+			sendvo.setSendTime1(DateStringUtil.dateToString4(sendvo.getSendTime()));
+		}
+		
+		return pageSendVOs;
+	}
+
+	// 消息重发
+	@Override
+	public JsonInfo resend(Long messageId) {
+		//获取短消息内容
+		ShortMessage shortMessage = shortMessageMapper.selectInfoBy(messageId);
+		shortMessage.setMessageId(null);
+		shortMessage.setSendTime(new Date());
+		
+		// 添加消息
+		int result = shortMessageMapper.insert(shortMessage);
+		// 获取刚添加的shortMessageId号
+		Long shortMessageId = shortMessageMapper.selectMaxId();
+
+		//获取短消息的收信人ID与name
+		List<InMessage> inMessages = inMessageMapper.selectInfoBy(messageId);
+		
+		// 设置发送消息
+		InMessage inMessage = new InMessage();
+		inMessage.setMessageId(shortMessageId);
+		for (int i = 0; i < inMessages.size(); i++) {
+			InMessage im = inMessages.get(i);
+			inMessage.setDelFlag(InMessage.getFlagUndel());
+			inMessage.setReadFlag(InMessage.getFlagUnread());
+			inMessage.setUserId(im.getUserId());
+			inMessage.setUserFullname(im.getUserFullname());
+			result = inMessageMapper.insert(inMessage);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 消息回复
+	@Override
+	public JsonInfo answer(String userId, String userName, String content, Long receiveId) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		
+		//更新消息已读
+		inMessageMapper.updateReadFlag(receiveId);
+		
+		ShortMessage shortMessage = new ShortMessage();
+		shortMessage.setContent(content);
+		shortMessage.setSender(employee.getFullname());
+		shortMessage.setSenderId(employee.getUserId());
+		shortMessage.setSendTime(new Date());
+		shortMessage.setMsgType(shortMessage.getMSG_TYPE_PERSONAL());
+		// 添加消息
+		int result = shortMessageMapper.insert(shortMessage);
+		// 获取刚添加的shortMessageId号
+		Long shortMessageId = shortMessageMapper.selectMaxId();
+
+		// 设置发送消息
+		InMessage inMessage = new InMessage();
+		inMessage.setMessageId(shortMessageId);
+		inMessage.setDelFlag(InMessage.getFlagUndel());
+		inMessage.setReadFlag(InMessage.getFlagUnread());
+		inMessage.setUserId(userId);
+		inMessage.setUserFullname(userName);
+		result = inMessageMapper.insert(inMessage);
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+}

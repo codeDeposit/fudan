@@ -1,0 +1,92 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp"%>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/oa/empselect.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<!-- layer弹窗插件-->
+		<script src="${jypath}/static/plugins/layer/2.1/layer.js"></script>
+	</head>
+	<body>
+		<%@ include file="../../common/toast.jsp"%>
+		<!-- padding盒子 start-->
+    	<div>
+    		<div>
+    			<table class="table table-bordered table-striped table-hover text-center">
+    				<thead>
+    					<th>序号</th>
+    					<th>申请标题</th>
+    					<th>申请时间</th>
+    					<th>上传文件</th>
+    					<th>申请状态</th>
+    					<th>当前节点</th>
+    				</thead>
+    				<tbody>
+    					<c:choose>
+    						<c:when test="${applies != null and fn:length(applies) != 0}">
+    							<c:forEach var="apply" items="${applies}" varStatus="index">
+    								<tr>
+    									<td>${index.count}</td>
+    									<td>${apply.title}</td>
+    									<td>${apply.applyTime1}</td>
+    									<td><a class="text-success" href="${jypath}/${apply.docPath}" download="文件">${apply.docName}</a></td>
+    									<c:if test="${apply.status == 1}">
+    										<td><font style="color:blue;">审批中</span></td>
+    									</c:if>
+    									<c:if test="${apply.status == 2}">
+    										<td><font style="color:green;">审批通过</span></td>
+    									</c:if>
+    									<c:if test="${apply.status == 3}">
+    										<td><font style="color:red;">审批未通过</span></td>
+    									</c:if>
+    									<td>
+    										<a class="text-info" href="javascritp:void(0);" onclick="currentNode('${apply.processDefinitionId}','${apply.pId}')">${apply.taskName}</a>
+    									</td>
+    								</tr>
+    							</c:forEach>
+    						</c:when>
+    						<c:otherwise>
+	    						<tr>
+	    							<td colspan="6">无数据</td>
+	    						</tr>
+    						</c:otherwise>
+    					</c:choose>
+    				</tbody>
+    			</table>
+    		</div>
+	    </div>
+    	<!-- padding盒子 end -->
+    	
+	</body>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		fuLoading();
+		fuCloseLayer();
+	});
+
+	function currentNode(pdId,pIId){
+		var width=document.documentElement.clientWidth * 0.85+"px";
+		var height=document.documentElement.clientHeight * 0.85+"px";
+		layer.open({
+		    type: 2,
+		    title: '当前节点',
+		    shadeClose: true,
+		    maxmin: true,
+		    area: [width, height],
+		    content: jypath+"/act-process-editor/diagram-viewer/index.html?processDefinitionId="+pdId+"&processInstanceId="+pIId //iframe的url
+		});
+	}
+
+</script>
+</html>

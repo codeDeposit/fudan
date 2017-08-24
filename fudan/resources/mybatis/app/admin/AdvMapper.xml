@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.AdvDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Adv" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_adv where 1=1 <include refid="findSql"></include> order by slide_sort asc
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_adv where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="adv_id != 0">  
+		    AND adv_id = #{adv_id}
+		</if>  
+		<if test="slide_sort != 0">  
+		    AND slide_sort = #{slide_sort}
+		</if>
+		<if test="state != 0">  
+		    AND state = #{state}
+		</if> 
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="adv_id != 0">  
+		    AND adv_id = #{adv_id}
+		</if>  
+		<if test="slide_sort != 0">  
+		    AND slide_sort = #{slide_sort}
+		</if>
+		<if test="state != 0">  
+		    AND state = #{state}
+		</if> 
+	</sql>
+	
+	<insert id="insert">
+		insert into app_adv (adv_id,slide_sort,img,state,click_num) 
+			values 
+		(#{adv_id},#{slide_sort},#{img},#{state},#{click_num})
+	</insert>
+	
+	<update id="update">
+		update app_adv <include refid="updateSql"></include> where adv_id = #{adv_id}
+	</update>
+	
+	<update id="upOrDown">
+		update app_adv set slide_sort = #{sort} where slide_sort = #{slide_sort}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="slide_sort != 0">  
+		    	slide_sort = #{slide_sort},
+			</if>
+			<if test="state != 0">  
+		    	state = #{state},
+			</if> 
+			<if test="img != '' and img != null">  
+		    	img = #{img},
+			</if>
+			<if test="click_num != 0">  
+		    	click_num = #{click_num},
+			</if>  
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_adv where 
+		<if test="adv_id != 0">
+			adv_id = #{adv_id}
+		</if>
+		<if test="slide_sort != 0">
+			slide_sort = #{slide_sort}
+		</if>
+	</delete>
+</mapper>

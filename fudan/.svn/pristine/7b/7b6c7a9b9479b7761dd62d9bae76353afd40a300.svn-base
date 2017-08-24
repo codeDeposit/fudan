@@ -1,0 +1,30 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.CarRepair;
+import com.jy.entity.oa.admin.CarRepairVO;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface CarRepairService {
+
+	// 添加车辆维修单
+	JsonInfo save(CarRepair carRepair);
+
+	// 获取详细信息
+	CarRepairVO getInfoBy(Long repairId);
+
+	// 修改维修单信息
+	JsonInfo update(CarRepair carRepair);
+
+	// 批量删除维修单
+	JsonInfo del(Long[] repairId);
+
+	// 获取维修单列表
+	List<CarRepair> get(String carNo, String repairType);
+
+	// 维修单分页列表
+	List<CarRepairVO> getPageList(PageBean pb, String carNo, String repairType);
+
+}

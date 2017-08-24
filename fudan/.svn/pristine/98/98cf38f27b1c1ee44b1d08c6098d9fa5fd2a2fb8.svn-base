@@ -1,0 +1,32 @@
+package com.jy.service.oa.info;
+
+import java.util.List;
+
+import com.jy.entity.oa.info.Notice;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface NoticeService {
+
+	// 根据 标题、发布者 模糊查询
+	List<Notice> get(String noticeTitle, String postName);
+
+	// 添加公告
+	JsonInfo save(Notice notice);
+
+	// 获取详细信息
+	Notice getDetails(Long noticeId);
+
+	// 修改公告
+	JsonInfo update(Notice notice);
+
+	// 批量删除
+	JsonInfo del(Long[] noticeId);
+
+	// 分页显示公告列表
+	List<Notice> getPageList(PageBean pb, String noticeTitle, String postName);
+
+	// 批量发布公告
+	JsonInfo issue(Long[] noticeId);
+	
+}

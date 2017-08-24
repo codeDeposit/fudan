@@ -1,0 +1,21 @@
+package com.jy.service.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.repository.base.JYBatis;
+import com.jy.task.utils.JsonInfo;
+
+@JYBatis
+public interface EmployeeService {
+	
+	public List<Employee> list(String roleId, String orgId, String positionId);
+
+	public Employee getItSelfDetails(String accountId);
+
+	public JsonInfo editInfo(String accountId,EmployeeInfoVo employeeInfo);
+
+	public JsonInfo resetPass(String accountId, String pass);
+
+}

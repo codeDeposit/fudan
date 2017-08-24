@@ -1,0 +1,183 @@
+package com.jy.controller.oa.communicate;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.communicate.PhoneBook;
+import com.jy.entity.oa.communicate.PhoneGroup;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.communicate.PhoneBookService;
+import com.jy.service.oa.communicate.PhoneGroupService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/phonegroup")
+public class PhoneGroupController {
+
+	private PhoneGroupService phoneGroupService;
+	private PhoneBookService phoneBookService;
+
+	public PhoneBookService getPhoneBookService() {
+		return phoneBookService;
+	}
+
+	@Resource(name="phoneBookService")
+	public void setPhoneBookService(PhoneBookService phoneBookService) {
+		this.phoneBookService = phoneBookService;
+	}
+
+	public PhoneGroupService getPhoneGroupService() {
+		return phoneGroupService;
+	}
+
+	@Resource(name="phoneGroupService")
+	public void setPhoneGroupService(PhoneGroupService phoneGroupService) {
+		this.phoneGroupService = phoneGroupService;
+	}
+	
+	/**
+	 * 获取联系人分组列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String groupName, @RequestParam(required=false) Short isShared) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNosStr = request.getParameter("pageNos");
+		Integer pageNos = null;
+		if(!(pageNosStr == null)) {
+			pageNos = Integer.valueOf(pageNosStr);
+		}else {
+			pageNos = 1;
+		}
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		List<PhoneGroup> phoneGroups = phoneGroupService.getBy(groupName, isShared, userId);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(phoneGroups.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<PhoneGroup> pagePhoneGroups = phoneGroupService.getPageList(pb, groupName, isShared, userId);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/communicate/phonegroup_table");
+		}else {
+			mv.setViewName("system/oa/communicate/phonegroup_list");
+		}
+		mv.addObject("phoneGroups", pagePhoneGroups);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 添加联系人分组
+	 * @param phoneGroup
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(PhoneGroup phoneGroup) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		phoneGroup.setUserId(account.getAccountId());
+		JsonInfo info = phoneGroupService.save(phoneGroup);
+		return info;
+	}
+	
+	/**
+	 * 修改联系人分组信息
+	 * @param phoneGroup
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(PhoneGroup phoneGroup) {
+		JsonInfo info = phoneGroupService.update(phoneGroup);
+		return info;
+	}
+	
+	/**
+	 * 获取联系人分组信息
+	 * @param phoneGroup
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long groupId, String operation) {
+		PhoneGroup phoneGroup = phoneGroupService.getBy(groupId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("phoneGroup", phoneGroup);
+		mv.setViewName("system/oa/communicate/phonegroup_form");
+		mv.addObject("operation", operation);
+		return mv;
+	}
+	
+	/**
+	 * 删除联系人分组
+	 * @param phoneGroup
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo delete(Long[] groupId) {
+		//删除分组下的所有联系人
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		String fullname = "";
+		String title = "";
+		List<PhoneBook> phoneBooks = phoneBookService.getPhoneBooks(fullname, title, groupId, userId);
+		int count = phoneBooks.size();
+		// 先删除分组下的所有内容
+		if(count != 0) {
+			for(int i=0; i<count; i++) {
+				phoneBookService.del(phoneBooks.get(i).getPhoneId());
+			}
+		}
+		//删除分组
+		JsonInfo info = phoneGroupService.del(groupId);
+		return info;
+	}
+	
+	/**
+	 * 查找新闻类别下的新闻
+	 * @return
+	 */
+	@RequestMapping("/getphonebooks")
+	public ModelAndView getPhoneBooks(Long[] groupId, @RequestParam(required=false) String fullname, @RequestParam(required=false) String title) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		List<PhoneBook> phoneBooks = phoneBookService.getPhoneBooks(fullname, title, groupId, userId);
+		
+		ModelAndView mv = new ModelAndView();
+		if(null != phoneBooks && !(phoneBooks.isEmpty())) {
+			mv.addObject("phoneBooks", phoneBooks);
+			mv.addObject("count", phoneBooks.size());
+		}else {
+			mv.addObject("count", 0);
+		}
+		mv.addObject("parm", Arrays.toString(groupId));
+		mv.setViewName("system/oa/common/data_toast");
+		
+		return mv;
+	}
+	
+	// 获取所有分类
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<PhoneGroup> listAll() {
+		List<PhoneGroup> phoneGroups = phoneGroupService.getAll();
+		return phoneGroups;
+	}
+	
+}

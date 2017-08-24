@@ -1,0 +1,40 @@
+package com.jy.service.app;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.AppCart;
+import com.jy.repository.app.AppCartDao;
+
+@Service(value = "appCartService")
+public class AppCartService{
+	
+	@Resource
+	private AppCartDao cartDao;
+	
+	public int insert(AppCart cart) {
+		return this.cartDao.insert(cart);
+	}
+	
+	public List<AppCart> find(AppCart cart) {
+		List<AppCart> list = this.cartDao.find(cart);
+		return list;
+	}
+	
+	public List<AppCart> search(AppCart cart) {
+		return this.cartDao.search(cart);
+	}
+
+	public int update(AppCart cart) {
+		return this.cartDao.update(cart);
+	}
+
+	public int update2(AppCart cart) {
+		return this.cartDao.update2(cart);
+	}
+	
+	public int delete(AppCart cart) {
+		return this.cartDao.delete(cart);
+	}
+	
+}

@@ -1,0 +1,95 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+    	<%@ include file="../common/styleUrl.jsp" %>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="renderer" content="webkit">
+        <title>掌上医苑后台登陆</title>
+        <link rel='icon' href='${jypath}/app/img/icon.ico ' type='image/x-ico' />
+        <link rel="stylesheet" href="${jypath}/app/css/bootstrap.min.css?v=3.4.0" rel="stylesheet" >
+        <link rel="stylesheet" href="${jypath}/app/font-awesome/css/font-awesome.css?v=4.3.0" rel="stylesheet">
+        <link rel="stylesheet" href="${jypath}/app/css/animate.css" rel="stylesheet">
+        <link rel="stylesheet" href="${jypath}/app/css/animate.css" rel="stylesheet">
+        <link rel="stylesheet" href="${jypath}/app/css/style.css?v=2.2.0" rel="stylesheet">
+        <%@ include file="../common/js.jsp" %>
+        <script src="${jypath}/pc/js/jquery/jquery.md5.js"></script>
+        <style>
+            html,body{background-image:url('${jypath}/app/img/banner.png') !important; height:100% !important;}
+            .logo-name{font-size:50px !important;letter-spacing:8px;}
+            .middle-box{padding-top:120px !important;}
+            .form-control{border-radius: 30px !important;font-size:12px !important;text-align:center !important;}
+            .btn{border-radius: 30px !important;}
+            .m-t{margin-top:28px !important;}
+        </style>
+    </head>
+    <body>
+   	 	<%@ include file="../common/toast.jsp"%>
+    	<div style="position:fixed;top:120px;width:100%;text-align:center;">
+    		<h1 class="logo-name">掌上医苑后台管理</h1>
+    	</div>
+        <div class="middle-box text-center loginscreen  animated fadeInDown">
+        	<div style="height:200px;">
+        	</div>
+            <div>
+                <form style="margin-top:40px !important;" onsubmit="return loginCheck()">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="accountName" name="accountName" placeholder="用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="密 码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width m-b" style="outline:none">登录</button>
+                </form>
+            </div>
+        </div>
+        <div style="position:relative;bottom:-120px;width:100%;text-align:center;">
+        	<div style="width:49%;float:left;text-align:right;">
+        		<img src="${jypath}/app/img/1.png" width="120px"/>	
+        	</div>
+        	<div style="width:49%;float:right;text-align:left;">
+        		<img src="${jypath}/app/img/2.png"  width="120px"/>	
+        	</div>
+        </div>	
+        <div style="width:100%;position:relative;bottom:-160px;text-align:center;height:30px;line-height:30px;color:#e6e6e6;font-size:16px;">
+        	copyright© 上海复单信息技术有限公司
+        </div>
+        <script>
+        	function loginCheck(){//登录
+				if("" == $("#accountNameId").val()){
+					fuShowError("用户名不能为空！");
+				}else if("" == $("#passwordId").val()){
+					fuShowError("密码不能为空！");
+				}else{
+					var loginname = $("#accountName").val();
+					var password = $("#password").val();
+					$.ajax({
+						type:"post",
+						async:false,
+						url:"${jypath}/appAdminLogin/loginCheck",
+						data:{
+							admin_name:loginname,
+							admin_password:password
+						},
+						success:function(data){
+							var obj = eval('('+ data +')');
+							if(obj.res == 0){
+								alert(obj.resMsg);
+							}else if(obj.res == 3){
+								fuError('无此用户,请重新输入');
+							}else if(obj.res == 2){
+								fuError('密码输入错误,请重新输入');
+							}else if(obj.res == 1){
+								window.location.href=jypath+"/appAdminLogin/menu";
+							}
+						}
+					}); 
+				}
+				return false;
+			}
+        </script>	
+    </body>
+</html>

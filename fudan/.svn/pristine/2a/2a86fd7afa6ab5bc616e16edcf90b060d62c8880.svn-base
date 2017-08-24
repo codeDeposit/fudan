@@ -1,0 +1,60 @@
+package com.jy.controller.setting;
+
+import javax.annotation.Resource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.setting.InfoBack;
+import com.jy.service.setting.InfoBackService;
+
+@Controller
+@RequestMapping(value = "/backstage/setting/infoBack")
+public class InfoBackController extends BaseController<InfoBack>{
+	
+	@Resource(name = "infoBackService")
+	private InfoBackService infoBackService;
+	
+	@RequestMapping("/insert")
+	public void insert(){
+		InfoBack infoBack = new InfoBack();
+		infoBack.setCreatedate("123");
+		infoBack.setModuleId(1);
+		infoBack.setStatus(2);
+		infoBack.setText("456");
+		infoBackService.insert(infoBack);
+	}
+	
+	@RequestMapping("/delete")
+	public void delete(){
+		InfoBack infoBack = new InfoBack();
+		infoBack.setId(1);
+		infoBackService.delete(infoBack);
+	}
+	
+	@RequestMapping("/update")
+	public void update(){
+		InfoBack infoBack = new InfoBack();
+		infoBack.setId(1);
+		infoBack.setStatus(99);
+		infoBack.setModuleId(22);
+		infoBack.setText("www.baidu.com");
+		infoBack.setCreatedate("2015/9/9/");
+		infoBackService.update(infoBack);
+	}
+	
+	@RequestMapping("/select")
+	public void select(){
+		InfoBack infoBack = new InfoBack();
+		infoBack.setId(1);
+		infoBack = infoBackService.select(infoBack);
+	}
+	
+//	@RequestMapping("/find")
+//	public void find(){
+//		List<InfoBack> infoBacks = new ArrayList<InfoBack>();
+//		InfoBack infoBack = new InfoBack();
+//		infoBack.setText("");
+//		infoBacks = infoBackService.find(infoBack);
+//	}
+	
+}

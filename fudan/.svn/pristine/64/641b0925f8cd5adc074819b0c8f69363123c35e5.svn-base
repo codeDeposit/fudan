@@ -1,0 +1,74 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button type="button" class="btn btn-success pull-right"
+	data-toggle="modal" data-target="#sendAddModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;发消息
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="sendAddModal" tabindex="-1" role="dialog"
+	aria-labelledby="phoneGroupAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h4 class="modal-title" id="phoneGroupAddModalLabel">消息发送</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addform" class="form-horizontal aForm" role="form">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">收信人</label>
+						<div class="col-sm-7">
+							<input type="text" id="recipientName" class="form-control"
+								name="userName" readonly="readonly" required
+								aria-required="true"> <input type="hidden" id="recipientID"
+								name="userId" />
+						</div>
+						<div class="col-sm-3">
+							<div class="col-sm-6">
+								<button type="button" class="btn btn-success btn-sm"
+									data-toggle="modal" data-target="#addMod">
+									<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+								</button>
+							</div>
+							<div class="col-sm-6">
+								<button type="button" class="btn btn-danger btn-sm"
+									onclick="removeData('userFullnames','userIds')">
+									<i class="glyphicon glyphicon-trash"></i>&nbsp;移除
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">消息类型</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="msgType">
+								<option value="">---请选择---</option>
+								<option value="1">个人信息</option>
+								<option value="2">日程安排</option>
+								<option value="3">计划任务</option>
+								<option value="4">系统消息</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">内容</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" rows="3" name="content"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button id="submitbtn" type="button" class="btn btn-success">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->
+
+<!-- 收信人选择弹窗 start -->
+<%@ include file="../common/employee_modal.jsp"%>

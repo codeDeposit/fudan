@@ -1,0 +1,145 @@
+package com.jy.entity.oa.workflow;
+
+import java.util.Date;
+
+public class Apply {
+	
+	private String id;			//申请id
+	private String title;		//申请标题（流程名_姓名（申请人）_申请日期）
+	private String applier;		//申请人姓名
+	private String applierId;	//申请人id
+	private String pId;			//流程定义id
+	private Date applyTime;		//申请时间
+	private int status;			//申请状态(1:审批中  2:审批通过  3:审批未通过)
+	private String refuseReason;//拒绝原因
+	private String docPath;		//填写的文档目录
+	private String orgId;		//部门id
+	private String orgName;		//部门名称
+	private String docName;		//文件名称
+	
+	//用于展示
+	private String applyTime1;
+	private String taskName;
+	private String processDefinitionId;
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public String getProcessDefinitionId() {
+		return processDefinitionId;
+	}
+
+	public void setProcessDefinitionId(String processDefinitionId) {
+		this.processDefinitionId = processDefinitionId;
+	}
+
+	public String getApplyTime1() {
+		return applyTime1;
+	}
+
+	public void setApplyTime1(String applyTime1) {
+		this.applyTime1 = applyTime1;
+	}
+
+	public String getDocName() {
+		return docName;
+	}
+
+	public void setDocName(String docName) {
+		this.docName = docName;
+	}
+
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getApplier() {
+		return applier;
+	}
+
+	public void setApplier(String applier) {
+		this.applier = applier;
+	}
+
+	public String getApplierId() {
+		return applierId;
+	}
+
+	public void setApplierId(String applierId) {
+		this.applierId = applierId;
+	}
+
+	public String getpId() {
+		return pId;
+	}
+
+	public void setpId(String pId) {
+		this.pId = pId;
+	}
+
+	public Date getApplyTime() {
+		return applyTime;
+	}
+
+	public void setApplyTime(Date applyTime) {
+		this.applyTime = applyTime;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getRefuseReason() {
+		return refuseReason;
+	}
+
+	public void setRefuseReason(String refuseReason) {
+		this.refuseReason = refuseReason;
+	}
+
+	public String getDocPath() {
+		return docPath;
+	}
+
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
+	}
+
+}

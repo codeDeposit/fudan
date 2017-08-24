@@ -1,0 +1,285 @@
+package com.jy.controller.app.admin;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.FileUpload;
+import com.jy.common.utils.IPUtil;
+import com.jy.common.utils.base.Const;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.tree.MenuTreeUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.app.admin.Admin;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.log.LoginLog;
+import com.jy.entity.system.resources.Resources;
+import com.jy.service.app.admin.AdminService;
+import com.jy.service.system.log.LoginLogService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.system.resources.ResourcesService;
+
+@Controller("appAdminLoginController")
+@RequestMapping(value="/appAdminLogin")
+public class AppAdminLoginController extends BaseController<Object> {
+	
+	@Resource(name="adminService")
+	private AdminService adminService;
+	@Autowired
+	public ResourcesService menuService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	private LoginLogService loginLogService;
+	
+	/**
+	 * 登录页面
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/login")  
+	public String login(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/login";
+	}
+	
+	/**
+	 * 登录检测
+	 * @param request
+	 * @param model
+	 * @param admin
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/loginCheck")  
+	@ResponseBody
+	public AjaxRes loginCheck(HttpServletRequest request,Model model,Admin admin)throws Exception{	
+		admin.setAdmin_password(admin.getAdmin_password()); 
+		List<Admin> list = adminService.find(admin);
+		AjaxRes ar = getAjaxRes();
+		if(list.size() == 0){//无此用户
+			ar.setSucceed(list,3);
+		}else{
+			List<Admin> list2 = adminService.find(admin);
+			if(list2.size() != 0){//登陆成功
+				//用户登录记录
+				admin.setAdmin_id(list2.get(0).getAdmin_id());
+				admin.setAdmin_login_num((list2.get(0).getAdmin_login_num() + 1));
+				SimpleDateFormat myFmt = new SimpleDateFormat("yyyy-MM-dd");
+				Date time = new Date();
+				admin.setAdmin_login_time(myFmt.format(time));
+				adminService.update(admin);
+				list2.get(0).setRole_name(roleService.getRole(list2.get(0).getAdmin_gid()).getName());
+				getSession().setAttribute("admin",list2.get(0));
+				ar.setSucceed(list2.get(0),1);
+				//权限分配session注入
+//				Account account = new Account();
+//				account.setAccountId(Integer.toString(list2.get(0).getAdmin_id()));
+//				getSession().setAttribute(Const.SESSION_USER,account);
+				Subject currentUser = SecurityUtils.getSubject();//shiro管理的session
+				UsernamePasswordToken token = new UsernamePasswordToken("app","e10adc3949ba59abbe56e057f20f883e");
+				token.setRememberMe(true);
+				currentUser.login(token);
+				//记录登录日志
+				String accountId = AccountShiroUtil.getCurrentUser().getAccountId();
+				String loginIP = IPUtil.getIpAddr(getRequest());//获取用户登录IP
+				LoginLog loginLog = new LoginLog(accountId,loginIP);
+				loginLogService.saveLoginLog(loginLog);
+			}else{//密码错误
+				ar.setSucceed(list.get(0),2);	
+			}
+		}
+		return ar;
+	}
+	
+	/*
+	 * 系统设置页面
+	 */
+	@RequestMapping("/systemSetting")
+	public String systemSetting(Model model) {	
+		return "/system/system/systemSetting2";
+	}
+	
+	/**
+	 * 系统设置菜单获取
+	 * @return
+	 */
+	@RequestMapping("/getMenu")
+	@ResponseBody
+	public AjaxRes getMenu(){	
+		AjaxRes ar = getAjaxRes();
+		List<Resources> menus = new ArrayList<Resources>();
+		PageData pd = this.getPageData();
+		String ref = pd.getString("ref");
+		String layer = pd.getString("layer");
+		Object menu_o = null;
+		try {
+			//获得用户
+			Account account = (Account) getSession().getAttribute(Const.SESSION_USER);
+			//获得用户Id
+			String userId = account.getAccountId();
+			if(!"y".equals(ref)){	
+				menu_o = session.getAttribute(Const.SESSION_MENULIST);
+			}
+			menus=(List<Resources>)menu_o;
+			if(menus == null){
+				if(StringUtils.isBlank(layer))layer = "1";
+				menus = menuService.findMenuTree(userId,layer);
+				session.setAttribute(Const.SESSION_MENULIST, menus);
+			}
+			if(menus != null){
+				//将对象处理成树
+				String html = MenuTreeUtil.buildTreeHtml(menus);			
+				ar.setSucceed(html);
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+			ar.setFailMsg("获取菜单失败");
+		}			
+		return ar;
+	}
+	
+	/**
+	 * 网站菜单获取
+	 * @param request
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/menu")
+	public String menu(HttpServletRequest request,Model model){
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		List<Resources> menus = new ArrayList<Resources>();//菜单列表数组定义
+		String layer = "0";
+		String menuId = "61aa10e07f4b403ba2966a9b741a35ab";
+		StringBuffer html = new StringBuffer();
+		try {
+			Admin admin = (Admin) session.getAttribute("admin");//获得用户
+			String roleId = admin.getAdmin_gid();//获得用户Id
+			menus = menuService.appMenuTree(roleId,layer);
+			for(Resources res : menus){
+				if(res.getParentId().equals(menuId)){
+					html.append("<li>");
+					html.append("<a href='javascript:void(0)'><i class='"+ res.getIcon() +"'></i> <span class='nav-label'>"+ res.getName() +"</span><span class='icon-angle-right' style='float:right'></span></a>"); 
+					html.append("<ul class='nav nav-second-level collapse'>");
+					for(Resources res2:menus){
+						if(res2.getParentId().equals(res.getId())){
+							html.append("<li id='"+ res2.getId() +"'><a target='right' href='"+basePath+""+ res2.getResUrl() +"' class='J_menuItem' ><i class='"+ res2.getIcon() +"'></i>"+ res2.getName() +"</a></li>");
+						}
+					}
+					html.append("</ul></li>");
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+		}			
+		model.addAttribute("menu",html);
+		Admin admin = (Admin) getSession().getAttribute("admin");
+		admin.setRole_name(roleService.getRole(admin.getAdmin_gid()).getName());
+		model.addAttribute("admin",admin);
+		return "app/admin/index";
+	}
+
+	/**
+	 * 管理员信息修改页面
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/info")  
+	public String info(HttpServletRequest request,Model model)throws Exception{	
+		model.addAttribute("admin", (getSession().getAttribute("admin")));
+		return "app/common/systemInfo";
+	}
+	
+	/**
+	 * 管理员头像修改
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/adminAvatorModify")  
+	@ResponseBody
+	public AjaxRes adminAvatorModify(HttpServletRequest request,Model model,
+			@RequestParam(value = "picUrl", required = false) MultipartFile file,Admin admin)throws Exception{	
+		//取出图片路径
+		String filePath = "c:\\image\\admin\\" + admin.getAdmin_id();	
+		String fileName = "";
+		if (file != null && !file.isEmpty()){
+			FileUpload.fileUp(file, filePath,admin.getAdmin_id() + file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")));
+			fileName = admin.getAdmin_id() + file.getOriginalFilename();
+			admin.setAdmin_avator(fileName);
+		}
+		int res = adminService.update(admin);
+		admin = adminService.find(admin).get(0);
+		admin.setRole_name(roleService.getRole(admin.getAdmin_gid()).getName());
+		getSession().setAttribute(Const.SESSION_USER,admin);
+		return resMsg(res);
+	}
+	
+	/**
+	 * 管理员信息更改
+	 * @param request
+	 * @param model
+	 * @param admin
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/adminUpdate")  
+	@ResponseBody
+	public AjaxRes adminUpdate(HttpServletRequest request,Model model,Admin admin)throws Exception{	
+		int res = adminService.update(admin);
+		admin = adminService.find(admin).get(0);
+		admin.setRole_name(roleService.getRole(admin.getAdmin_gid()).getName());
+		getSession().setAttribute("admin",admin);
+		return resMsg(res);
+	}
+	
+	/**
+	 * 数据统计
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/statistics")  
+	public String statistics(HttpServletRequest request,Model model)throws Exception{	
+		Admin admin = (Admin) getSession().getAttribute("admin");
+		model.addAttribute("mark", admin.getAdmin_gid());
+		return "app/admin/statistics";
+	}
+
+	/*
+     * 帐号注销
+     */
+    @RequestMapping("/system_logout")
+    public String logout(HttpServletRequest request,HttpSession session,Model model) {
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.logout();
+        session = request.getSession(true);
+        session.removeAttribute("admin");
+        session.removeAttribute(Const.SESSION_USER);
+		return "app/admin/login";
+    }
+    
+}

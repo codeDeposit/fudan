@@ -1,0 +1,21 @@
+package com.jy.repository.customer;
+
+import java.util.List;
+
+import com.jy.entity.customer.SaleActivity;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface SaleActivityDao{
+	
+	public List<SaleActivity> find(SaleActivity saleActivity);
+
+	public List<SaleActivity> search(SaleActivity saleActivity);
+
+	public int insert(SaleActivity saleActivity);
+
+	public int update(SaleActivity saleActivity);
+
+	public int delete(SaleActivity saleActivity);
+	
+}

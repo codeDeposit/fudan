@@ -1,0 +1,159 @@
+package com.jy.controller.oa.communicate;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.communicate.PhoneBook;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.communicate.PhoneBookService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/phonebook")
+public class PhoneBookController {
+
+	private PhoneBookService phoneBookService;
+
+	public PhoneBookService getPhoneBookService() {
+		return phoneBookService;
+	}
+
+	@Resource(name="phoneBookService")
+	public void setPhoneBookService(PhoneBookService phoneBookService) {
+		this.phoneBookService = phoneBookService;
+	}
+	
+	/**
+	 * 获取个人通讯簿列表
+	 * @param fullname
+	 * @param title
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String fullname,
+			@RequestParam(required = false) String title, @RequestParam(required = false) Long groupId) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		List<PhoneBook> phoneBooks = phoneBookService.getBy(fullname, title, groupId, userId);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(phoneBooks.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<PhoneBook> pagePhoneBooks = phoneBookService.getPageList(pb, fullname, title, groupId, userId);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/communicate/phonebook_table");
+		}else {
+			mv.setViewName("system/oa/communicate/phonebook_list");
+		}
+		mv.addObject("phoneBooks", pagePhoneBooks);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 添加联系人到通讯录
+	 * @param phoneBook
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(PhoneBook phoneBook) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		phoneBook.setUserId(account.getAccountId());
+		JsonInfo info = phoneBookService.save(phoneBook);
+		return info;
+	}
+	
+	/**
+	 * 获取联系人详细信息
+	 * @param phoneId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long phoneId, String operation) {
+		PhoneBook phoneBook = phoneBookService.getInfoBy(phoneId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("phoneBook", phoneBook);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/communicate/phonebook_form");
+		return mv;
+	}
+	
+	/**
+	 * 修改联系人信息
+	 * @param phoneBook
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(PhoneBook phoneBook) {
+		JsonInfo info = phoneBookService.update(phoneBook);
+		return info;
+	}
+	
+	/**
+	 * 删除联系人
+	 * @param phoneId
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo delete(Long phoneId) {
+		JsonInfo info = phoneBookService.del(phoneId);
+		return info;
+	}
+	
+	/**
+	 * 获取共享的联系人列表
+	 * @return
+	 */
+	@RequestMapping("/sharelist")
+	public ModelAndView share(HttpServletRequest request, @RequestParam(required=false) String fullname, @RequestParam(required=false) String shareName) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<PhoneBook> phoneBooks = phoneBookService.getShare(fullname, shareName);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(phoneBooks.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<PhoneBook> pagePhoneBooks = phoneBookService.getSharePageList(pb, fullname, shareName);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/communicate/share_table");
+		}else {
+			mv.setViewName("system/oa/communicate/share_list");
+		}
+		mv.addObject("phoneBooks", pagePhoneBooks);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+}

@@ -1,0 +1,16 @@
+package com.jy.service.oa.communicate;
+
+import java.util.List;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public interface MailAttachService {
+	
+	/**
+	 * 根据邮件Id查询所有与此邮件关联的附件
+	 * @param mailId
+	 * @return
+	 */
+	List<FileAttach> getBy(Long mailId);
+
+}

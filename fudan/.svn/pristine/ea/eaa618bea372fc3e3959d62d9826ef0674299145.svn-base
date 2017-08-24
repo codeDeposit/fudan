@@ -1,0 +1,121 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button type="button" class="btn btn-success pull-right"
+	data-toggle="modal" data-target="#addModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">文档添加</h4>
+			</div>
+			<form id="addform" class="form-horizontal" role="form"
+				onsubmit="return addDocument();">
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="col-sm-1 control-label">文件夹</label>
+						<div class="col-sm-10">
+							<input id="parentFolder" type="text" class="form-control"
+								onclick="$('#treeview').show()" required="required">
+							<div id="treeview" style="display: none;"></div>
+							<input id="parentId" type="hidden" name="folderId">
+						</div>
+						<div class="col-sm-1">
+							<a title="移除" href="#"
+								onclick="remove('parentFolder','parentId')"> <i
+								class="glyphicon glyphicon-remove"></i>&nbsp; </a>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-1 control-label">文档名称</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control" name="docName"
+								required="required" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-1 control-label">文档内容</label>
+						<!-- 页面加载完成后，将UMeditor编辑器加入newsContent中  -->
+						<div id="newsContent" class="col-sm-11">
+							<%@ include file="../common/editor.jsp" %>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-1 control-label">附件</label>
+						<div class="col-sm-8 attach" id="fileattach"></div>
+						<div class="col-sm-3">
+							<button class="btn btn-info btn-sm col-sm-6" type="button"
+								data-toggle="modal" data-target="#addfileattach1">
+								<i class="glyphicon glyphicon-paperclip"></i>&nbsp;添加附件
+							</button>
+							<button class="btn btn-danger btn-sm col-sm-6" type="button"
+								onclick="removeData('fileattach')">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;清除附件
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="submit" class="btn btn-success">保存</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->
+
+<!-- 添加附件模态库 start -->
+<div class="modal fade" id="addfileattach1" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="margin-top:200px;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">添加附件</h4>
+			</div>
+			<div class="modal-body">
+				<table id="inputfiletable" class="table table-striped active">
+					<!-- 列表形式存放选择的附件名称(动态添加) -->
+					<!-- <td>1</td>
+							<td>文件名</td> -->
+					<thead>
+						<th>序号</th>
+						<th>文件名</th>
+						<th>操作</th>
+					</thead>
+				</table>
+				<div style="display: none">
+					<form id="fileform" enctype="multipart/form-data">
+						<input name="fileAttachType" value="document" type="hidden">
+						<!-- 所有inputFile标签都放在这里 -->
+						<!-- <input id="file1..file2..filen" type="file" name="files" /> -->
+						<!-- 每点击一次添加按钮，动态在此生	成一个<input type="file" name="files" />标签,关联这个标签的点击事件 -->
+					</form>
+				</div>
+			</div>
+			<span id="tip"> <!-- 提示 --> </span>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					关闭</button>
+				<!-- 隐藏input #file -->
+				<!-- <input type="file" onchange="getFilePath(this.files)" id="files" style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;" ></button> -->
+				<button type="button" class="btn btn-primary" id="add">添加</button>
+				<button type="button" class="btn btn-primary" id="upload"
+					onclick="upload()">上传</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 添加附件模态库 end -->

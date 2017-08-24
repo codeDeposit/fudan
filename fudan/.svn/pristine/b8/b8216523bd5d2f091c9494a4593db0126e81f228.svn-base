@@ -1,0 +1,47 @@
+body {
+    background-color: #fff;
+}
+
+.bBox {
+    width: 1.4rem;
+    height: 1.4rem;
+    margin: 0 auto;
+}
+
+.bBox img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.aui-popup-top-right {
+    top: 2.5rem;
+}
+
+a {
+    color: #666;
+}
+
+.footer {
+    font-size: .5rem;
+    color: #999;
+    font-family: "\5FAE\8F6F\96C5\9ED1", "微软雅黑", "Microsoft YaHei", Helvetica, Tahoma, sans-serif;
+    position: fixed;
+    bottom: .5rem;
+    left: 0;
+    width: 100%;
+}
+
+.aui-row {
+    border-bottom: 1px solid #efefef;
+    background-color: #fff;
+}
+
+.aui-grid {
+    padding: 0 .5rem;
+}
+
+.aui-title {
+    font-size: .9rem;
+}

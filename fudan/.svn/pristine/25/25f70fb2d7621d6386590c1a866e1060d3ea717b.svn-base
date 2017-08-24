@@ -1,0 +1,60 @@
+window.onload = function() {
+    document.getElementById('getcode').addEventListener('click', function() {
+        that = this;
+        that.setAttribute('disabled', 'disabled');
+        var timeTo = 60;
+        
+        var timer = setInterval(function() {
+            timeTo--;
+            that.textContent = timeTo + 's';
+            if (timeTo < 0) {
+                that.textContent = '获取验证码';
+                that.removeAttribute('disabled');
+                clearInterval(timer);
+            }
+        }, 1000);
+
+        var email = document.getElementById('hiddenMail').value;
+        var data = 'email=' + email;
+
+        var xhr = null;
+        try {
+            xhr = new XMLHttpRequest();
+        } catch (e) {
+            xhr = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var responseText = xhr.responseText;
+                    var obj = JSON.parse(responseText);
+                    if (obj.res == 1) {
+                    	document.getElementById('scode').value=obj.resMsg;  
+                    } else {
+                        email.setAttribute('placeholder', obj.resMsg)
+                    }
+                }
+            }
+        }
+
+        xhr.open('post', jypath + '/backstage/tool/email/sendCode', false);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+        xhr.send(data);
+    })
+}
+document.getElementById('tcode').addEventListener('input',function(){
+    if(this.value==document.getElementById('scode').value){
+         document.getElementById('nextstep').removeAttribute('disabled');
+         document.getElementsByClassName('aui-icon-correct')[0].style.display="block";
+    }else{
+       document.getElementById('nextstep').setAttribute('disabled','disabled');
+        document.getElementsByClassName('aui-icon-correct')[0].style.display="none";
+    }
+});
+function subFun() {
+	var email = document.getElementById('hiddenMail').value;
+    var data = 'email=' + email;
+    window.location.href = jypath + "/mobile/account/step3?"+data;
+    return false
+}

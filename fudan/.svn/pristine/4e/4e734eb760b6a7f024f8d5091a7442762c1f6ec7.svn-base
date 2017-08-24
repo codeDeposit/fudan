@@ -1,0 +1,53 @@
+package com.jy.service.oa.document;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import com.jy.entity.oa.document.Document;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface DocumentService {
+
+	// 添加文档
+	JsonInfo save(Document document);
+
+	// 获取文档详细信息
+	Document getInfo(Long docId);
+
+	// 修改文档信息
+	JsonInfo update(Document document);
+
+	// 文档共享
+	JsonInfo share(Document document);
+
+	// 批量删除文档
+	JsonInfo del(Long[] docId);
+
+	// 获取可以看到的文档列表：自己创建的文档，共享的文档，公共文档
+	Set<Document> getInfo(String docName, Date startDate, Date endDate);
+
+	// 获取共享文档列表
+	List<Document> getShare(String docName, String sharedUserNames, Date startDate, Date endDate);
+
+	// 获取公共文档列表
+	List<Document> getPublic(String docName, Date startDate, Date endDate);
+
+	// 获取页面列表
+	Set<Document> getPageList(PageBean pb, String docName, Date startDate,
+			Date endDate);
+
+	// 获取个人文档(自己创建的文档)
+	List<Document> getSelf(String docName, Long folderId, Date startDate, Date endDate);
+
+	// 分页个人文档列表（自己创建的文档）
+	List<Document> getSelfPageList(PageBean pb, String docName, Long folderId, Date startDate,
+			Date endDate);
+	
+	// 分页个人文档列表（自己创建的文档）
+	List<Document> getSharePageList(PageBean pb, String docName, String sharedUserNames, Date startDate,
+			Date endDate);
+
+}

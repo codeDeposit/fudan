@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+*{margin: 0;padding: 0}
+ul,li{list-style: none;}
+a:link,a:visited{text-decoration: none;}
+.list{width: 210px;border:2px solid #fff;}
+.list i{color:#8f8f94}
+.list span{color:#95CACA;margin:0px 4px 0px 4px;font-size:10px;}
+.list ul li .inactive{ background:url(../../image/select/plus.png) no-repeat 240px center;}
+.list ul li .inactives{background:url(../../image/select/jian.png) no-repeat 240px center;} 
+.list ul li a{padding-left:30px;color:#8f8f94; font-size:12px; display: block; font-weight:bold; height:36px;line-height: 36px;position: relative;}/* 请选择 */
+.list ul li ul{display: none;width:80%;margin:0 auto;}
+.list ul li ul li { border-left:0; border-right:0;border-top:1px solid #fff}
+.list ul li ul li a{ padding-left:40px; color:#8f8f94} /* 部门 */
+.list ul li ul li ul{display: none;}
+.list ul li ul li ul li a{ color:#8f8f94; padding-left:60px;}/* 职务 */
+.list ul li ul li ul li ul li a{ color:#23c6c8; padding-left:80px;} /* 用户 */
+.list ul li ul li ul li ul li a:visited{background-color:#23c6c8}

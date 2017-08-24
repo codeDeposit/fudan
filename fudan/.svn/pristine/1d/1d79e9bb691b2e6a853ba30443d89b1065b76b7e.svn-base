@@ -1,0 +1,115 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.Car;
+import com.jy.repository.oa.admin.CarMapper;
+import com.jy.service.oa.admin.CarService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("carService")
+public class CarServiceImpl implements CarService {
+
+	private CarMapper carMapper;
+
+	public CarMapper getCarMapper() {
+		return carMapper;
+	}
+
+	@Autowired
+	public void setCarMapper(CarMapper carMapper) {
+		this.carMapper = carMapper;
+	}
+
+	// 添加车辆
+	@Override
+	public JsonInfo save(Car car) {
+		int result = carMapper.insert(car);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取车的详细信息
+	@Override
+	public Car getInfoBy(Long carId) {
+		Car car = carMapper.selectInfoBy(carId);
+		
+		car.setBuyInsureTime1(DateStringUtil.dateToString3(car.getBuyInsureTime()));
+		car.setBuyDate1(DateStringUtil.dateToString3(car.getBuyDate()));
+		car.setAuditTime1(DateStringUtil.dateToString3(car.getAuditTime()));
+		
+		return car;
+	}
+
+	// 修改车的信息
+	@Override
+	public JsonInfo update(Car car) {
+		int result = carMapper.update(car);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo update(Long[] carId) {
+		int result = 0;
+		for(Long cId : carId) {
+			result = carMapper.delete(cId);
+		}
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取车列表
+	@Override
+	public List<Car> get(Car car) {
+		List<Car> cars = carMapper.select(car);
+		return cars;
+	}
+
+	// 车分页列表
+	@Override
+	public List<Car> getPageList(PageBean pb, Car car) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<Car> cars = carMapper.selectPageList(firstIndex, toIndex, car);
+		
+		for(Car c:cars) {
+			c.setBuyInsureTime1(DateStringUtil.dateToString3(c.getBuyInsureTime()));
+			c.setBuyDate1(DateStringUtil.dateToString3(c.getBuyDate()));
+			c.setAuditTime1(DateStringUtil.dateToString3(c.getAuditTime()));
+		}
+		
+		return cars;
+	}
+
+}

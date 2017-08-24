@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.AccountMapper">
+	
+	<resultMap type="com.jy.entity.system.account.Account" id="selectItself">
+		<id property="accountId" column="id"/>
+		<result property="loginName" column="loginName"/>
+		<result property="name" column="name"/>
+		<association property="employee" column="eId" select="selectEmployee"/>
+	</resultMap>
+	
+	<select id="selectEmployee" parameterType="Integer" resultType="com.jy.entity.oa.Employee">
+		select * from fudan_oa_employee where userId = #{userId}
+	</select>
+
+	<select id="selectAll" resultType="com.jy.entity.system.account.Account">
+
+	</select>
+
+	<select id="selectUserIdByAccountId" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT eId FROM jy_base_account WHERE id = #{accountId}
+	</select>
+
+	<insert id="insert" parameterType="com.jy.entity.oa.Employee">
+		INSERT INTO
+		fudan_user_sub(subUserId, userId) VALUES(#{0},#{1})
+	</insert>
+
+	<update id="update" parameterType="com.jy.entity.system.account.Account">
+
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+
+	</delete>
+
+	<update id="insertOARoleIdIntoAccount"></update>
+
+	<update id="updateStatus" parameterType="java.lang.Integer">
+		UPDATE fudan_oa_employee
+		SET `status`=2 WHERE userId = #{subId}
+	</update>
+
+	<select id="selectEmployeeInfo" parameterType="java.lang.String"
+		resultType="com.jy.entity.oa.EmployeeInfoVo">
+		SELECT userId,fullName, oname, pname, telphone,
+		accessionTime FROM
+		user_sub_view usv WHERE usv.id = #{accountId} AND
+		`status`=1 AND
+		delFlag=0
+	</select>
+
+	<select id="selectEmployeeInfoBy" parameterType="java.lang.Integer"
+		resultType="com.jy.entity.oa.EmployeeInfoVo">
+		SELECT * FROM
+		user_sub_view usv WHERE usv.userId = #{subId}
+		AND
+		`status`=1 AND
+		delFlag=0
+	</select>
+
+	<!-- 模糊查询 -->
+	<select id="selectSubBy" parameterType="java.lang.String"
+		resultType="com.jy.entity.oa.EmployeeInfoVo">
+		SELECT * FROM user_sub_view usv WHERE usv.fullname like
+		CONCAT('%',#{empname},'%' ) AND
+		`status`=1 AND
+		delFlag=0
+	</select>
+
+	<!-- 模糊查询 -->
+	<select id="selectBy" parameterType="java.lang.String"
+		resultType="com.jy.entity.oa.task.DiaryVo">
+		SELECT diaryId,dayTime,content,diaryType,fullname FROM
+		emp_diary_view edv WHERE edv.fullname like
+		CONCAT('%',#{subName},'%' )
+		AND edv.diaryType = 1;
+	</select>
+
+	<select id="selectAllSDBy" parameterType="java.lang.String"
+		resultType="com.jy.entity.oa.task.DiaryVo">
+		SELECT diaryId,dayTime,content,diaryType,fullname FROM
+		emp_diary_view edv WHERE edv.userId IN (SELECT userId FROM
+		user_sub_view WHERE id = #{accountId})
+		AND
+		edv.diaryType = 1;
+	</select>
+
+	<select id="getEId" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT eId FROM jy_base_account WHERE id = #{accountId}
+	</select>
+	
+	<!-- 用户查询自身详细信息 -->
+	<select id="selectSelfInfo" parameterType="String" resultMap="selectItself">
+		select id, loginName, name from jy_base_account where id = #{id}
+	</select>
+	
+	<select id="selectUpUser" parameterType="Long" resultType="com.jy.entity.oa.Employee">
+		select * from fudan_oa_employee where userId in (select userId from fudan_user_sub where subUserId = #{userId})
+	</select>
+	
+	<select id="selectEmployeeByAccountId" parameterType="String" resultType="com.jy.entity.oa.Employee">
+		select userId,orgId,fullname,roleId from oa_base_employee where userId = #{userId}
+	</select>
+
+</mapper>

@@ -1,0 +1,196 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.jy.entity.oa.admin.Book;
+import com.jy.entity.oa.admin.BookSn;
+import com.jy.service.oa.admin.BookService;
+import com.jy.service.oa.admin.BookSnService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/book")
+public class BookController {
+
+	private BookService bookService;
+	private BookSnService bookSnService;
+
+	public BookSnService getBookSnService() {
+		return bookSnService;
+	}
+
+	@Resource(name="bookSnService")
+	public void setBookSnService(BookSnService bookSnService) {
+		this.bookSnService = bookSnService;
+	}
+
+	public BookService getBookService() {
+		return bookService;
+	}
+
+	@Resource(name="bookService")
+	public void setBookService(BookService bookService) {
+		this.bookService = bookService;
+	}
+	
+	/**
+	 * 添加图书
+	 * @param book
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Book book) {
+		JsonInfo info = bookService.save(book);
+		return info;
+	}
+	
+	/**
+	 * 获取图书详细信息
+	 * @param bookId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long bookId, String operation) {
+		Book book = bookService.getInfoBy(bookId);
+		
+		List<BookSn> booksns = bookSnService.getBy(bookId);
+		
+		// 转成JSON字符串
+		Gson gson = new Gson();
+		String json = gson.toJson(booksns);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/admin/book_form");
+		mv.addObject("book", book);
+		mv.addObject("operation", operation);
+		mv.addObject("json", json);
+		
+		return mv;
+	}
+	
+	/**
+	 * 修改图书信息
+	 * @param book
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Book book, Long[] bookSnId) {
+		JsonInfo info = bookService.update(book, bookSnId);
+		
+		return info;
+	}
+	
+	/**
+	 * 修改图书数量
+	 * @param bookId
+	 * @param addAmount
+	 * @return
+	 */
+	@RequestMapping("/updateamount")
+	@ResponseBody
+	public JsonInfo updateAmount(Long bookId, Integer addAmount) {
+		JsonInfo info = bookService.updateAmount(bookId, addAmount);
+		return info;
+	}
+	
+	/**
+	 * 批量删除图书
+	 * @param bookId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] bookId) {
+		JsonInfo info = bookService.delete(bookId);
+		return info;
+	}
+	
+	/**
+	 * 获取图书列表
+	 * @param book
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) Long typeId,
+			@RequestParam(required=false) String author, @RequestParam(required=false) String bookName) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		// 获取所有的记录列表
+		List<Book> books = bookService.get(typeId, author, bookName);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(books.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<Book> pageBooks = bookService.getPageList(pb, typeId, author, bookName);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/book_table");
+		}else {
+			mv.setViewName("system/oa/admin/book_list");
+		}
+		
+		mv.addObject("books", pageBooks);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 以html语言打印到table中
+	 * @return
+	 */
+	@RequestMapping("/listhtml")
+	@ResponseBody
+	public String listHtml(Long typeId) {
+		String author = null;
+		String bookName = null;
+		// 获取某个图书类别下的所有书籍
+		List<Book> books = bookService.get(typeId, author, bookName);
+		String html = bookHtml(books);
+		return html;
+	}
+	
+	private String bookHtml(List<Book> books) {
+		StringBuilder sbd = new StringBuilder();
+		if(books != null && books.size() >0) {
+			int count = 1;
+			for(Book b : books) {
+				sbd.append("<tr>");
+				sbd.append("<td class='text-center wiD'><input type='checkbox'></td>");
+				sbd.append("<td class='text-center seQuence'>"+ count +"</td>");
+				sbd.append("<td id='"+ b.getBookId() +"' class='wiDl'>"+ b.getBookName() +"</td>");
+				sbd.append("</tr>");
+				count ++ ;
+			}
+		}else {
+			sbd.append("<tr><td colspan=3>没有数据</td></tr>");
+		}
+		return sbd.toString();
+	}
+}

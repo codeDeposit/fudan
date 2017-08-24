@@ -1,0 +1,179 @@
+package com.jy.entity.oa.personal;
+
+public class DutySection {
+
+	private Long sectionId;
+	private String sectionName;
+	private String dutyStartTime; // 上班时间
+	private String dutyEndTime; // 下班时间
+	private Short isNoontimeRest; // 是否午休
+	private String restStartTime; // 午休开始时间
+	private String restEndTime; // 午休结束时间
+	private String totalTime; //总时长
+	private Short isSign; // 下班是否打卡
+	private Short isLate; // 是否设置允许迟到时间
+	private Integer lateMinute; // 允许迟到时间
+	private Short isSeriousLate; // 严重迟到
+	private Integer seriousLateMinute; // 严重迟到时间
+	private Short isAbsenteeism; // 旷工设置
+	private Integer absenteeismMinute;// 旷工时间
+	
+	private String dutyStartTime1;
+	private String dutyEndTime1;
+	private String restStartTime1;
+	private String restEndTime1;
+	
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
+
+	public String getDutyStartTime1() {
+		return dutyStartTime1;
+	}
+
+	public void setDutyStartTime1(String dutyStartTime1) {
+		this.dutyStartTime1 = dutyStartTime1;
+	}
+
+	public String getDutyEndTime1() {
+		return dutyEndTime1;
+	}
+
+	public void setDutyEndTime1(String dutyEndTime1) {
+		this.dutyEndTime1 = dutyEndTime1;
+	}
+
+	public String getRestStartTime1() {
+		return restStartTime1;
+	}
+
+	public void setRestStartTime1(String restStartTime1) {
+		this.restStartTime1 = restStartTime1;
+	}
+
+	public String getRestEndTime1() {
+		return restEndTime1;
+	}
+
+	public void setRestEndTime1(String restEndTime1) {
+		this.restEndTime1 = restEndTime1;
+	}
+
+	public Long getSectionId() {
+		return sectionId;
+	}
+
+	public void setSectionId(Long sectionId) {
+		this.sectionId = sectionId;
+	}
+
+	public String getSectionName() {
+		return sectionName;
+	}
+
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
+
+	public String getDutyStartTime() {
+		return dutyStartTime;
+	}
+
+	public void setDutyStartTime(String dutyStartTime) {
+		this.dutyStartTime = dutyStartTime;
+	}
+
+	public String getDutyEndTime() {
+		return dutyEndTime;
+	}
+
+	public void setDutyEndTime(String dutyEndTime) {
+		this.dutyEndTime = dutyEndTime;
+	}
+
+	public Short getIsNoontimeRest() {
+		return isNoontimeRest;
+	}
+
+	public void setIsNoontimeRest(Short isNoontimeRest) {
+		this.isNoontimeRest = isNoontimeRest;
+	}
+
+	public String getRestStartTime() {
+		return restStartTime;
+	}
+
+	public void setRestStartTime(String restStartTime) {
+		this.restStartTime = restStartTime;
+	}
+
+	public String getRestEndTime() {
+		return restEndTime;
+	}
+
+	public void setRestEndTime(String restEndTime) {
+		this.restEndTime = restEndTime;
+	}
+
+	public Short getIsSign() {
+		return isSign;
+	}
+
+	public void setIsSign(Short isSign) {
+		this.isSign = isSign;
+	}
+
+	public Short getIsLate() {
+		return isLate;
+	}
+
+	public void setIsLate(Short isLate) {
+		this.isLate = isLate;
+	}
+
+	public Integer getLateMinute() {
+		return lateMinute;
+	}
+
+	public void setLateMinute(Integer lateMinute) {
+		this.lateMinute = lateMinute;
+	}
+
+	public Short getIsSeriousLate() {
+		return isSeriousLate;
+	}
+
+	public void setIsSeriousLate(Short isSeriousLate) {
+		this.isSeriousLate = isSeriousLate;
+	}
+
+	public Integer getSeriousLateMinute() {
+		return seriousLateMinute;
+	}
+
+	public void setSeriousLateMinute(Integer seriousLateMinute) {
+		this.seriousLateMinute = seriousLateMinute;
+	}
+
+	public Short getIsAbsenteeism() {
+		return isAbsenteeism;
+	}
+
+	public void setIsAbsenteeism(Short isAbsenteeism) {
+		this.isAbsenteeism = isAbsenteeism;
+	}
+
+	public Integer getAbsenteeismMinute() {
+		return absenteeismMinute;
+	}
+
+	public void setAbsenteeismMinute(Integer absenteeismMinute) {
+		this.absenteeismMinute = absenteeismMinute;
+	}
+
+}

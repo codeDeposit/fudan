@@ -1,0 +1,28 @@
+package com.jy.service.oa.workflow;
+
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.task.utils.JsonInfo;
+
+public interface ProcessTemplateService {
+
+	/**
+	 * 添加流程与模板之间的关联
+	 * @param processTemplate
+	 * @return
+	 */
+	JsonInfo save(ProcessTemplate processTemplate);
+	
+	/**
+	 * 根据pId获取流程模板
+	 * @param pId
+	 * @return
+	 */
+	ProcessTemplate getBy(String pId);
+
+	/**
+	 * 更新processTemplate
+	 * @param processTemplate
+	 */
+	void update(ProcessTemplate processTemplate);
+
+}

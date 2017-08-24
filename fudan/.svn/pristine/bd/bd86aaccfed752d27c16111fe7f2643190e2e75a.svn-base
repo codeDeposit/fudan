@@ -1,0 +1,221 @@
+package com.jy.entity.oa.hrm;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class HireIssue {
+	private final Short PASS_CHECK = 1;// 通过审核
+	private final Short NOTPASS_CHECK = 2;// 不通过审核
+	private final Short NOTYETPASS_CHECK = 0;// 未审核
+
+	private Long hireId;
+	private String title;
+	private Date startDate;
+	private Date endDate;
+	private Integer hireCount;
+	private String jobName;
+	private String jobCondition;
+	private String regFullname;
+	private Date regDate;
+	private String modifyFullname;
+	private Date modifyDate;
+	private String checkFullname;
+	private String checkOpinion;
+	private Date checkDate;
+	private Short status;
+	private String memo;
+	
+	//用于展示
+	private String startDate1;
+	private String endDate1;
+	private String regDate1;
+	private String modifyDate1;
+	private String checkDate1;
+
+	public String getStartDate1() {
+		return startDate1;
+	}
+
+	public void setStartDate1(String startDate1) {
+		this.startDate1 = startDate1;
+	}
+
+	public String getEndDate1() {
+		return endDate1;
+	}
+
+	public void setEndDate1(String endDate1) {
+		this.endDate1 = endDate1;
+	}
+
+	public String getRegDate1() {
+		return regDate1;
+	}
+
+	public void setRegDate1(String regDate1) {
+		this.regDate1 = regDate1;
+	}
+
+	public String getModifyDate1() {
+		return modifyDate1;
+	}
+
+	public void setModifyDate1(String modifyDate1) {
+		this.modifyDate1 = modifyDate1;
+	}
+
+	public String getCheckDate1() {
+		return checkDate1;
+	}
+
+	public void setCheckDate1(String checkDate1) {
+		this.checkDate1 = checkDate1;
+	}
+
+	public Long getHireId() {
+		return hireId;
+	}
+
+	public void setHireId(Long hireId) {
+		this.hireId = hireId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public Integer getHireCount() {
+		return hireCount;
+	}
+
+	public void setHireCount(Integer hireCount) {
+		this.hireCount = hireCount;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public String getJobCondition() {
+		return jobCondition;
+	}
+
+	public void setJobCondition(String jobCondition) {
+		this.jobCondition = jobCondition;
+	}
+
+	public String getRegFullname() {
+		return regFullname;
+	}
+
+	public void setRegFullname(String regFullname) {
+		this.regFullname = regFullname;
+	}
+
+	public Date getRegDate() {
+		return regDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
+	}
+
+	public String getModifyFullname() {
+		return modifyFullname;
+	}
+
+	public void setModifyFullname(String modifyFullname) {
+		this.modifyFullname = modifyFullname;
+	}
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
+	public String getCheckFullname() {
+		return checkFullname;
+	}
+
+	public void setCheckFullname(String checkFullname) {
+		this.checkFullname = checkFullname;
+	}
+
+	public String getCheckOpinion() {
+		return checkOpinion;
+	}
+
+	public void setCheckOpinion(String checkOpinion) {
+		this.checkOpinion = checkOpinion;
+	}
+
+	public Date getCheckDate() {
+		return checkDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public void setCheckDate(Date checkDate) {
+		this.checkDate = checkDate;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public Short getPASS_CHECK() {
+		return PASS_CHECK;
+	}
+
+	public Short getNOTPASS_CHECK() {
+		return NOTPASS_CHECK;
+	}
+
+	public Short getNOTYETPASS_CHECK() {
+		return NOTYETPASS_CHECK;
+	}
+
+}

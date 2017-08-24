@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.task.PlanTypeMapper">
+
+	<!-- 添加计划类型 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.task.PlanType">
+		insert fudan_oa_plan_type <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="typeName != null and typeName != '' ">
+				typeName = #{typeName}
+			</if>
+		</set>
+	</sql>
+	<!-- 添加计划类型 end -->
+	
+	
+	<!-- 获取计划类型的详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.task.PlanType">
+		select * from fudan_oa_plan_type where typeId = #{typeId}
+	</select>
+	<!-- 获取计划类型的详细信息 end -->
+	
+	
+	<!-- 修改计划类型信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.task.PlanType">
+		update fudan_oa_plan_type set typeName = #{typeName} where typeId = #{typeId}
+	</update>
+	<!-- 修改计划类型信息 end -->
+	
+	
+	<!-- 批量删除计划类型 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_plan_type where typeId = #{typeId}
+	</delete>
+	<!-- 批量删除计划类型 end -->
+	
+	
+	<!-- 获取所有计划类型列表 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.task.PlanType">
+		select * from fudan_oa_plan_type
+	</select>
+	<!-- 获取所有计划类型列表 end -->
+	
+	
+	<!-- 分页获取列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.task.PlanType">
+		select * from fudan_oa_plan_type
+		order by typeId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取列表 end -->
+	
+</mapper>

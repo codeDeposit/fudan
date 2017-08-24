@@ -1,0 +1,49 @@
+package com.jy.repository.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.entity.oa.EmployeeSelfInfoVo;
+import com.jy.entity.oa.task.DiaryVo;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AccountMapper {
+
+	public List<Account> selectAll();
+	
+	public EmployeeSelfInfoVo selectSelfInfo(String id);
+	
+	public Integer selectUserIdByAccountId(String accountId);
+
+	public Integer insert(Integer subId, Integer userId);
+
+	public Integer update(Account account);
+
+	public void delete(Integer subId);
+
+	public Integer insertOARoleIdIntoAccount(Integer accountId, Integer oaRoleId);
+	
+	public List<EmployeeInfoVo> selectEmployeeInfo(String accountId);
+
+	public EmployeeInfoVo selectEmployeeInfoBy(Integer subId);
+
+	public void updateStatus(Integer subId);
+
+	public List<EmployeeInfoVo> selectSubBy(String name);
+
+	//查找下属的工作日志
+	public List<DiaryVo> selectBy(String subName);
+
+	public List<DiaryVo> selectAllSDBy(String accountId);
+
+	public Integer getEId(String accountId);
+
+	public List<Employee> selectUpUser(Long userId);
+
+	// 获取员工信息
+	public Employee selectEmployeeByAccountId(String userId);
+
+}

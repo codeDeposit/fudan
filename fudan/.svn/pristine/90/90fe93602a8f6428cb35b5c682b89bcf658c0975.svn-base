@@ -1,0 +1,150 @@
+package com.jy.controller.oa.workflow;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.workflow.Apply;
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.entity.oa.workflow.MyTaskVO;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.workflow.ApplyService;
+import com.jy.service.oa.workflow.ApproveService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+
+@Controller
+@RequestMapping("/workflow/mytask")
+public class OAMyTaskController extends BaseController<OAMyTaskController> {
+
+	private TaskService taskService;
+	private ApplyService applyService;
+	private ApproveService approveService;
+	
+	public ApproveService getApproveService() {
+		return approveService;
+	}
+
+	@Resource(name="approveService")
+	public void setApproveService(ApproveService approveService) {
+		this.approveService = approveService;
+	}
+
+	public ApplyService getApplyService() {
+		return applyService;
+	}
+
+	@Resource(name="applyService")
+	public void setApplyService(ApplyService applyService) {
+		this.applyService = applyService;
+	}
+
+	public TaskService getTaskService() {
+		return taskService;
+	}
+
+	@Autowired
+	public void setTaskService(TaskService taskService) {
+		this.taskService = taskService;
+	}
+
+	/**
+	 * 待办任务列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request) {
+		
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null && pageNoStr.length() > 0)
+			pageNos = Integer.valueOf(pageNoStr);
+		
+		Account account = AccountShiroUtil.getCurrentUser();
+		//获取所有代办任务列表
+		TaskQuery query = taskService.createTaskQuery();
+		query.taskAssignee(account.getAccountId());
+		query.orderByTaskCreateTime().desc();
+		int maxResults = 15;
+		int firstResult = pageNos*maxResults-maxResults;
+		List<Task> tasks = query.listPage(firstResult, maxResults);
+		List<MyTaskVO> mytaskvos = new ArrayList<MyTaskVO>();
+		for(Task task: tasks) {
+			String processInstanceId = task.getProcessInstanceId();
+			Apply apply = applyService.getBy(processInstanceId);
+			MyTaskVO mtvo = new MyTaskVO();
+			if(apply != null) {
+				apply.setApplyTime1(DateStringUtil.dateToString3(apply.getApplyTime()));
+				mtvo.setApply(apply);
+			}
+			mtvo.setTaskName(task.getName());
+			mtvo.setTaskId(task.getId());
+			mytaskvos.add(mtvo);
+		}
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/workflow/mytask_list");
+		mv.addObject("mytaskvos",mytaskvos);
+		return mv;
+	}
+	
+	/**
+	 *  办理任务
+	 */
+	@RequestMapping("/complete")
+	@ResponseBody
+	public JsonInfo complete(String taskId, String nextApprover, Approve approve) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		int input = 2;
+		Map<String, Object> variables = new HashMap<String, Object>();
+		//同意---input=1, 拒绝---input=2
+		Short status = approve.getApproveStatus();
+		if(status == 1) {
+			input = 1;
+			variables.put("input",input);
+		}else if(status == 2) {
+			input = 2;
+			variables.put("input",input);
+		}
+		variables.put("approver", nextApprover);
+		
+		//增添审批记录
+		approve.setId(get32UUID());
+		approve.setApprover(account.getAccountId());
+		JsonInfo info = approveService.save(approve);
+		
+		//办理任务，同时设置下一审批人
+		taskService.complete(taskId, variables);
+		return info;
+	}
+	
+	/**
+	 * 查询自己已完结的申请
+	 * @return
+	 */
+	@RequestMapping("/completed")
+	public ModelAndView completed() {
+		List<Apply> applys = applyService.getCompleted();
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/workflow/completed_list");
+		mv.addObject("applys", applys);
+		return mv;
+	}
+	
+}

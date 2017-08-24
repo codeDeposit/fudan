@@ -1,0 +1,13 @@
+@charset "UTF-8";
+html,body{margin:0px;font-family:Arial,'微软雅黑','黑体',sans-serif;background-color:#fff !important;}
+a{text-decoration: none !important;} 
+#systemLogo{width: 159px;padding: 8px;}
+#systemName{margin-top: 10px; font-size: 23px; margin-left: 10px;color:#fff;}
+#userImage{position:absolute;top:11px;right:125px;}
+#userImage img{width:30px;}
+#systemSetting{display:none;position:absolute;top:38px;right:23px;width: 132px;background-color:#1AB394;border-radius:8px;color:#fff;text-align:center;padding-left:0px;}
+#systemSetting a{color:#fff;}
+#systemSetting ul{text-align:center;}
+#systemSetting li{width:100%;border-bottom:1px solid #fff;padding:4px;}
+#systemSetting li:hover{color:#F4F4F4 !important;}
+

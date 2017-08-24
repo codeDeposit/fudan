@@ -1,0 +1,37 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.BookSn;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface BookSnMapper {
+
+	// 保存每本书对应的sn号和借阅状态
+	int insert(BookSn bookSn);
+
+	// 更新图书对应的booksn号
+	int update(BookSn bookSn);
+
+	// 获取booksn信息
+	List<BookSn> selectBy(Long bookId);
+
+	// 删除某一本书
+	int delete(Long bookId);
+
+	// 改变书的状态
+	int updateStatus(@Param("borrowIsbn") String borrowIsbn, @Param("status") Short status);
+
+	// 获取bookId
+	Long selectBookId(Long bookSnId);
+
+	// 获取图书对应没外接的booksn
+	List<BookSn> selectListBy(Long bookId);
+
+	// 获取已借阅booksn列表
+	List<BookSn> selectBorsnBy(Long bookId);
+
+}

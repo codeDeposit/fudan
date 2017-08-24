@@ -1,0 +1,64 @@
+package com.jy.repository.oa.task;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.task.WorkPlan;
+import com.jy.entity.oa.task.WorkPlanVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WorkPlanMapper {
+
+	// 添加工作计划
+	int insert(WorkPlan workPlan);
+
+	// 获取最大的id
+	Long selectMaxId();
+
+	// 将工作计划的相关附件保存
+	int insertFile(@Param("fileId") Long fId, @Param("planId") Long planId);
+
+	// 获取工作计划
+	WorkPlan selectWorkPlanBy(Long planId);
+
+	// 获取工作计划对应的fileId
+	List<Long> selectFileIdBy(Long planId);
+
+	// 更新工作计划信息
+	int update(WorkPlan workPlan);
+
+	// 删除之前所有附件信息
+	int deleteFile(Long planId);
+
+	// 删除工作计划
+	int delete(Long pId);
+
+	// 工作计划列表
+	List<WorkPlan> select(@Param("planName") String planName, @Param("isPersonal") Short isPersonal);
+
+	// 我的计划列表
+	List<WorkPlan> selectMy(@Param("planName") String planName, @Param("typeId") Long typeId, @Param("userId") String accountId);
+
+	// 部门计划列表
+	List<WorkPlan> selectOrg(@Param("planName") String planName, @Param("typeId") Long typeId,
+			@Param("principal") String principal, @Param("orgId") String orgId);
+
+	// 分页列表
+	List<WorkPlanVO> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, 
+			@Param("planName") String planName, @Param("isPersonal") Short isPersonal);
+
+	// 我的计划分页列表
+	List<WorkPlanVO> selectMyPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("planName") String planName, @Param("typeId") Long typeId, @Param("userId") String accountId);
+
+	// 部门计划分页列表
+	List<WorkPlanVO> selectOrgPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("planName") String planName, @Param("typeId") Long typeId,
+			@Param("principal") String principal, @Param("orgId") String orgId);
+
+	//激活或禁用
+	int updates(@Param("planId") Long planId, @Param("status") Short status);
+
+}

@@ -1,0 +1,343 @@
+package com.jy.controller.wzcg;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.DateUtil;
+import com.jy.common.utils.ObjectExcelView;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+import com.jy.entity.wzcg.WzcgItem;
+import com.jy.entity.wzcg.WzcgXqtb;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.PositionService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.workflow.online.apply.ApproveTaskService;
+import com.jy.service.workflow.online.apply.ProcessApplyService;
+import com.jy.service.wzcg.WzcgItemService;
+import com.jy.service.wzcg.WzcgXqtbService;
+
+@Controller("wzcgXqtbController")
+@RequestMapping(value="/backstage/wzcg/xqtb")
+public class WzcgXqtbController extends BaseController<WzcgXqtb> {
+	
+	@Resource(name="wzcgXqtbService")
+	private WzcgXqtbService WzcgXqtbService;
+	@Resource(name="wzcgItemService")
+	private WzcgItemService WzcgItemService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	public AccountService accountService;
+	@Resource(name="processApplyService")
+	private ProcessApplyService processApplyService; 
+	@Resource(name="approveTaskService")
+	private ApproveTaskService approveTaskService;
+	@Autowired
+	private PositionService positionService;
+	
+	/**
+	 * 首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		currentAccount.setRoleName(roleService.getRole(currentAccount.getRoleId()).getName());
+		currentAccount.setOrgName(roleService.getOrg(currentAccount.getRoleId()).getName());
+		model.addAttribute("currentAccount",currentAccount);
+		return "system/wzcg/xqtb/xqtb_index";
+	}
+	
+	@RequestMapping("/list")  
+	public String list(HttpServletRequest request,Model model)throws Exception{		
+		boolean mark = false;
+		Account account = AccountShiroUtil.getCurrentUser();
+		Org org = roleService.getAccountOrg(account.getAccountId());
+		List<WzcgXqtb> xqtbList = new ArrayList<WzcgXqtb>();
+		if(!org.getId().equals("9")){
+			mark = WzcgXqtbService.isApprove();//判断是否为审批者
+		}else{
+			mark = true;
+		}
+		xqtbList = WzcgXqtbService.getXqtbList();
+		xqtbList = WzcgXqtbService.getXqtbListFull(xqtbList);//数组数据完善（得到填报人员，得到审批人，得到职务名称）
+		boolean isEndEvent = WzcgXqtbService.isOver();//流程判断是否为最后一步
+		ApproverSetting approverSetting = WzcgXqtbService.getFlowData();//得到流程调用数据
+		model.addAttribute("isEndEvent",isEndEvent);//是否为流程最后一步
+		model.addAttribute("workFlow",approverSetting);
+		model.addAttribute("mark",mark);
+		model.addAttribute("xqtbList",xqtbList);
+		model.addAttribute("count",xqtbList.size());//数据数量
+		return "system/wzcg/xqtb/xqtb_list";
+	}
+	
+	/**
+	 * 增加
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/add")  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		AjaxRes ar = getAjaxRes();
+ 		wzcgXqtb.setXqtbId("XQTB" + DateUtil.getDateString());
+		wzcgXqtb.setState("1");
+		wzcgXqtb.setCreator(currentAccount.getAccountId());
+		wzcgXqtb.setBm(roleService.getOrg(accountService.accountInfo(currentAccount).getRoleId()).getId());//得到需求部门
+		WzcgXqtbService.insert(wzcgXqtb);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 删除
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		WzcgXqtbService.delete(wzcgXqtb);
+		//预填子项目删除
+		WzcgItem wzcgItem = new WzcgItem();
+		wzcgItem.setProjectId(wzcgXqtb.getXqtbId());
+		WzcgItemService.delete(wzcgItem);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+
+	/**
+	 * 更新页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateView")  
+	public String updateView(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		wzcgXqtb = WzcgXqtbService.find(wzcgXqtb).get(0);
+		Account o = new Account();
+		o.setAccountId(wzcgXqtb.getCreator());
+		wzcgXqtb.setBm(roleService.getAccountOrg(wzcgXqtb.getCreator()).getName());//需求部门
+		wzcgXqtb.setCreator(accountService.find(o).get(0).getName());//填报人员
+		model.addAttribute("xqtb",wzcgXqtb);
+		model.addAttribute("mark",mark);
+		return "system/wzcg/xqtb/xqtb_edit";
+	}
+	
+	/**
+	 * 更新数据
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateData")  
+	@ResponseBody
+	public AjaxRes updateData(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		WzcgXqtbService.update(wzcgXqtb);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 更新数据 提交
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateStatus")  
+	@ResponseBody
+	public AjaxRes updateStatus(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		String processDefinitionKey = request.getParameter("processDefinitionKey");
+		String positionId = request.getParameter("positionId");
+		Map<String, String> map = processApplyService.apply(processDefinitionKey, positionId, wzcgXqtb.getXqtbId(),"xqtb");
+		wzcgXqtb.setProcessInstanceId(map.get("processInstanceId"));
+		wzcgXqtb.setProcessDefinitionId(map.get("processDefinitionId"));
+		WzcgXqtbService.update(wzcgXqtb);
+		//item数据状态更新
+		WzcgItem wzcgItem = new WzcgItem();
+		wzcgItem.setProjectId(wzcgXqtb.getXqtbId());
+		wzcgItem.setState(wzcgXqtb.getState());
+		WzcgItemService.updateState(wzcgItem);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 更新数据 审核
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateStatusS")  
+	@ResponseBody
+	public AjaxRes updateStatusS(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		String processInstanceId = request.getParameter("processInstanceId");
+		String approveStatus = request.getParameter("approveStatus");
+		String approveOption = request.getParameter("approveOption");
+		String positionId = request.getParameter("positionId");
+		String isOver = request.getParameter("isOver");
+		Map<String, String> map = approveTaskService.review(positionId,approveStatus,approveOption,processInstanceId);
+		if(approveStatus.equals("2")){//审核拒绝
+			wzcgXqtb.setState("3");
+		}else if(isOver.equals("true")){//审核完成
+			wzcgXqtb.setState("4");
+		}else{//审核通过
+			wzcgXqtb.setState("2");
+		}
+		//item数据状态更新
+		WzcgItem wzcgItem = new WzcgItem();
+		wzcgItem.setProjectId(wzcgXqtb.getXqtbId());
+		wzcgItem.setState(wzcgXqtb.getState());
+		WzcgItemService.updateState(wzcgItem);
+		wzcgXqtb.setApproveId(map.get("accountId"));
+		wzcgXqtb.setPositionId(map.get("positionId"));
+		WzcgXqtbService.update(wzcgXqtb);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 更新数据 再次提交
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/againSubmit")  
+	@ResponseBody
+	public AjaxRes againSubmit(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		String processInstanceId = request.getParameter("processInstanceId");
+		String positionId = request.getParameter("positionId");
+		approveTaskService.reSubmit(processInstanceId,positionId,wzcgXqtb.getXqtbId());
+		wzcgXqtb.setState("2");
+		WzcgXqtbService.update(wzcgXqtb);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 更新数据
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/workFlowDetail")  
+	public String workFlowDetail(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		return "system/wzcg/xqtb/xqtb_workflow_detail";
+	}
+	
+	/**
+	 * 搜索
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb)throws Exception{		
+		String priceMinStr = request.getParameter("priceMi");
+		String priceMaxStr = request.getParameter("priceMa");
+		int priceMin = 0;
+		int priceMax = 0;
+		if(!priceMinStr.equals("")){
+			priceMin = Integer.parseInt(priceMinStr);
+		}
+		if(!priceMaxStr.equals("")){
+			priceMax = Integer.parseInt(priceMaxStr);
+		}
+		wzcgXqtb.setPriceMin(priceMin);
+		wzcgXqtb.setPriceMax(priceMax);
+		List<WzcgXqtb> wzcgList = WzcgXqtbService.search(wzcgXqtb);
+		boolean mark = WzcgXqtbService.isApprove();//判断是否为审批者
+		List<WzcgXqtb> xqtbListAll =WzcgXqtbService.SearchList(wzcgList);
+		boolean isEndEvent = WzcgXqtbService.isOver();//流程判断是否为最后一步
+		ApproverSetting approverSetting = WzcgXqtbService.getFlowData();//得到流程调用数据
+		model.addAttribute("isEndEvent",isEndEvent);//是否为流程最后一步
+		model.addAttribute("mark",mark);
+		model.addAttribute("workFlow",approverSetting);
+		model.addAttribute("xqtbList",xqtbListAll);
+		model.addAttribute("count",xqtbListAll.size());//数据数量
+		return "system/wzcg/xqtb/xqtb_list";
+	}
+	
+	/**
+	 * Excel导出
+	 */
+	@RequestMapping(value="/excel")
+	public ModelAndView Excel(HttpServletRequest request,Model model,@ModelAttribute WzcgXqtb wzcgXqtb){
+		String priceMinStr = request.getParameter("priceMi");
+		String priceMaxStr = request.getParameter("priceMa");
+		int priceMin = 0;
+		int priceMax = 0;
+		if(priceMinStr != null && !priceMinStr.equals("")){
+			priceMin = Integer.parseInt(priceMinStr);
+		}
+		if(priceMaxStr != null && !priceMaxStr.equals("")){
+			priceMax = Integer.parseInt(priceMaxStr);
+		}
+		wzcgXqtb.setPriceMin(priceMin);
+		wzcgXqtb.setPriceMax(priceMax);
+		ModelAndView mv = null;
+		try{
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();//表格标题
+			titles.add("需求预填编号");  		
+			titles.add("需求名称");			
+			titles.add("需求部门");	
+			titles.add("填报人");
+			titles.add("金额");			
+			titles.add("填报日期");			
+			titles.add("状态");
+			titles.add("审批人");	
+			titles.add("职务");	
+			dataMap.put("titles", titles);
+			List<PageData> varList = new ArrayList<PageData>();
+			List<WzcgXqtb> WzcgXqtbList = WzcgXqtbService.search(wzcgXqtb);
+			List<WzcgXqtb> WzcgXqtbListResult = WzcgXqtbService.SearchList(WzcgXqtbList);
+			for(int i=0;i<WzcgXqtbListResult.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", WzcgXqtbListResult.get(i).getXqtbId());		
+				vpd.put("var2", WzcgXqtbListResult.get(i).getName());		
+				vpd.put("var3", WzcgXqtbListResult.get(i).getBm());			
+				vpd.put("var4", WzcgXqtbListResult.get(i).getCreator());	
+				vpd.put("var5", WzcgXqtbListResult.get(i).getPrice());		
+				vpd.put("var6", WzcgXqtbListResult.get(i).getCreatedate());
+				if(WzcgXqtbListResult.get(i).getState().equals("1")){
+					vpd.put("var7","未提交");
+				}else if(WzcgXqtbListResult.get(i).getState().equals("2")){
+					vpd.put("var7","已提交");	
+				}else if(WzcgXqtbListResult.get(i).getState().equals("3")){
+					vpd.put("var7","已拒绝");	
+				}else{
+					vpd.put("var7","已完成");	
+				}
+				vpd.put("var8", WzcgXqtbListResult.get(i).getApproveId());
+				vpd.put("var9", WzcgXqtbListResult.get(i).getPositionId());
+				varList.add(vpd);
+			}
+			dataMap.put("varList",varList);
+			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+			mv = new ModelAndView(erv,dataMap);
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+
+}

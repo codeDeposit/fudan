@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.BookMapper">
+
+	
+
+	<!-- 添加图书 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.Book">
+		insert fudan_oa_book <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="typeId != null">
+				typeId = #{typeId},
+			</if>
+			<if test="bookName != null and bookName != '' ">
+				bookName = #{bookName},
+			</if>
+			<if test="author != null and author != '' ">
+				author = #{author},
+			</if>
+			<if test="isbn != null and isbn != '' ">
+				isbn = #{isbn},
+			</if>
+			<if test="publisher != null and publisher != '' ">
+				publisher = #{publisher},
+			</if>
+			<if test="price != null ">
+				price = #{price},
+			</if>
+			<if test="location != null and location != '' ">
+				location = #{location},
+			</if>
+			<if test="orgNames != null and orgNames != '' ">
+				orgNames = #{orgNames},
+			</if>
+			<if test="orgIds != null and orgIds != '' ">
+				orgIds = #{orgIds},
+			</if>
+			<if test="amount != null ">
+				amount = #{amount},
+			</if>
+			<if test="leftAmount != null ">
+				leftAmount = #{leftAmount},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加图书 end -->
+	
+	
+	<!-- 获取新增图书Id号 start -->
+	<select id="selectMax" resultType="Long">
+		select max(bookId) from fudan_oa_book
+	</select>
+	<!-- 获取新增图书Id号 end -->
+	
+	
+	<!-- 修改图书信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.Book">
+		update fudan_oa_book <include refid="insertSQL"></include>
+	</update>
+	<!-- 修改图书信息 end -->
+	
+	
+	<!-- 获取ISBN号 start -->
+	<select id="selectISBNBy" parameterType="Long" resultType="String">
+		select isbn from fudan_oa_book where bookId = #{bookId}
+	</select>
+	<!-- 获取ISBN号 end -->
+	
+	
+	<!-- 获取图书信息 start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.admin.Book">
+		select * from fudan_oa_book where bookId = #{bookId}
+	</select>
+	<!-- 获取图书信息 end -->
+	
+	
+	<!-- 更新图书信息 start -->
+	<update id="updateAmount" parameterType="com.jy.entity.oa.admin.Book">
+		update fudan_oa_book <include refid="updateSQL"></include>
+		where bookId = #{bookId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="amount != null ">
+				amount = #{amount},
+			</if>
+			<if test="leftAmount != null ">
+				leftAmount = #{leftAmount},
+			</if>
+		</set>
+	</sql>
+	<!-- 更新图书信息 end -->
+	
+	
+	<!-- 删除图书 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_book where bookId = #{bookId}
+	</delete>
+	<!-- 删除图书 end -->
+	
+	
+	<!-- 获取图书列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.admin.Book">
+		select * from fudan_oa_book where 1=1
+		<if test="typeId != null">
+			and typeId = #{typeId}
+		</if>
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%",#{bookName},"%")
+		</if>
+		<if test="author != null and author != '' ">
+			and author like concat("%",#{author},"%")
+		</if>
+	</select>
+	<!-- 获取图书列表 end -->
+	
+	
+	<!-- leftAmount - 1 start -->
+	<update id="updateLeftAmount" parameterType="Long">
+		update fudan_oa_book set leftAmount = leftAmount-1 where bookId = #{bookId}
+	</update>
+	<!-- leftAmount - 1 end -->
+	
+	
+	<!-- leftAmount + 1 start -->
+	<update id="updateLeftAmountJia" parameterType="Long">
+		update fudan_oa_book set leftAmount = leftAmount+1 where bookId = #{bookId}
+	</update>
+	<!-- leftAmount + 1 end -->
+	
+	
+	<!-- 分页获取列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.admin.Book">
+		select * from fudan_oa_book where 1=1
+		<if test="typeId != null">
+			and typeId = #{typeId}
+		</if>
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%",#{bookName},"%")
+		</if>
+		<if test="author != null and author != '' ">
+			and author like concat("%",#{author},"%")
+		</if>
+		order by bookId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取列表 end -->
+	
+</mapper>

@@ -1,0 +1,132 @@
+a {
+	color:#fff;
+}
+* {
+	padding:0;
+	margin:0;
+	font-family:Arial,'微软雅黑','黑体',sans-serif !important;
+}
+a:hover {
+	color:#fff;
+}
+#modify_box {
+	width:100%;
+	height:100%;
+	background-color:#1C8BD7;
+	overflow:hidden;
+	position:relative;
+	background:-webkit-radial-gradient(circle,#21A2E2,#1C8BD7,#1C8BD7);
+	background:-o-radial-gradient(circle,#21A2E2,#1C8BD7,#1C8BD7);
+	background:-moz-radial-gradient(circle,#21A2E2,#1C8BD7,#1C8BD7);
+	background:#1C8BD7;
+}
+#modify_footer {
+	color:#efefef;
+	position:fixed;
+	bottom:0;
+	width:100%;
+	height:4em;
+	background-color:rgba(0,0,0,.5);
+	line-height:4em;
+}
+#loginBtn {
+	margin:0 auto;
+	width:88px;
+	border-radius:17px;
+	display:block;
+}
+.modify_content {
+	width:80%;
+	height:100%;
+	margin:0 auto;
+	position:relative;
+}
+.title-logo {
+	width:32em;
+	position:absolute;
+	top:10%;
+	left:50%;
+	margin-left:-16em;
+	height:8em;
+	-webkit-transition:2s ease-in;
+	transition:2s ease-in;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+.title-logo img {
+	width:100%;
+}
+.title-logo span {
+	font-size:24px;
+}
+.title-logo p {
+	font-size:34px;
+	color:#fff;
+	font-weight:bold;
+}
+.login-form {
+	width:12%;
+	min-width:250px;
+	position:absolute;
+	top:30%;
+	left:65%;
+	font-size:12px;
+	-webkit-transition:1s ease-in-out;
+	transition:1s ease-in-out;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+.picWork {
+	position:absolute;
+	right:50%;
+	top:30%;
+	height:220px;
+	width:440px;
+	-webkit-transition:1s ease-in-out;
+	transition:1s ease-in-out;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+.picWork img {
+	height:100%;
+}
+.link-reg {
+	color:#fff;
+	text-align:center;
+	padding-top:20px;
+	width:100%;
+	border-top:1px solid #ccc;
+}
+.wrice {
+	height:220px;
+	border-right:1px solid #ccc;
+	position:absolute;
+	top:30%;
+	left:57%;
+	-webkit-transition:2s ease-in-out;
+	transition:2s ease-in-out;
+	opacity:0;
+	filter:alpha(opacity=0);
+}
+}.form-group input {
+	border-radius:17px;
+}
+.checkbox input[type="checkbox"] {
+	margin:3px 0 0 -18px;
+}
+.checkbox {
+	padding-right:1em;
+}
+.logGif {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:rgba(255,255,255,0) url('../../image/login/load.gif') no-repeat 105px 60px;
+	border-radius:10px;
+	display:none;
+}
+.form-group input {
+    border-radius: 17px;
+}

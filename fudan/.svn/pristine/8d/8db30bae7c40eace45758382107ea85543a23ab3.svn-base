@@ -1,0 +1,31 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.Car;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface CarMapper {
+
+	// 添加车辆
+	int insert(Car car);
+
+	// 获取车的详细信息
+	Car selectInfoBy(Long carId);
+
+	// 修改车的信息
+	int update(Car car);
+
+	// 批量删除
+	int delete(Long carId);
+
+	// 获取车列表
+	List<Car> select(Car car);
+
+	// 车分页列表
+	List<Car> selectPageList(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("car") Car car);
+
+}

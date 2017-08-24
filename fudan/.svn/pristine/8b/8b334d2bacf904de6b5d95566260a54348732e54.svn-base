@@ -1,0 +1,99 @@
+package com.jy.entity.oa.info;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Notice {
+	// 公告属性：公告ID号、发布人、发布标题、发布内容、生效日期、失效日期、当前状态
+	private Long noticeId;
+	private String postName;
+	private String noticeTitle;
+	private String noticeContent;
+	private Date effectiveDate;
+	private Date expirationDate;
+	// 状态：1表示正式发布0表示草稿
+	private Short state;
+	
+	// 用于格式化日期
+	private String effectiveDate1;
+	private String expirationDate1;
+	
+
+	// 相应的setter/getter方法
+
+	public String getEffectiveDate1() {
+		return effectiveDate1;
+	}
+
+	public void setEffectiveDate1(String effectiveDate1) {
+		this.effectiveDate1 = effectiveDate1;
+	}
+
+	public String getExpirationDate1() {
+		return expirationDate1;
+	}
+
+	public void setExpirationDate1(String expirationDate1) {
+		this.expirationDate1 = expirationDate1;
+	}
+
+	public String getPostName() {
+		return postName;
+	}
+
+	public Long getNoticeId() {
+		return noticeId;
+	}
+
+	public void setNoticeId(Long noticeId) {
+		this.noticeId = noticeId;
+	}
+
+	public void setPostName(String postName) {
+		this.postName = postName;
+	}
+
+	public String getNoticeTitle() {
+		return noticeTitle;
+	}
+
+	public void setNoticeTitle(String noticeTitle) {
+		this.noticeTitle = noticeTitle;
+	}
+
+	public String getNoticeContent() {
+		return noticeContent;
+	}
+
+	public void setNoticeContent(String noticeContent) {
+		this.noticeContent = noticeContent;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public Short getState() {
+		return state;
+	}
+
+	public void setState(Short state) {
+		this.state = state;
+	}
+
+}

@@ -1,0 +1,214 @@
+package com.jy.service.oa.impl.task;
+
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.service.oa.task.CalendarPlanService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.task.CalendarPlan;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.task.CalendarPlanMapper;
+
+
+@Service("calendarPlanService")
+public class CalendarPlanServiceImpl implements CalendarPlanService {
+
+	private CalendarPlanMapper CalendarPlanMapper;
+	private EmployeeMapper employeeMapper;
+	
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public CalendarPlanMapper getCalendarPlanMapper() {
+		return CalendarPlanMapper;
+	}
+
+	@Autowired
+	public void setCalendarPlanMapper(CalendarPlanMapper calendarPlanMapper) {
+		CalendarPlanMapper = calendarPlanMapper;
+	}
+
+	// 添加日程
+	@Override
+	public JsonInfo save(CalendarPlan calendarPlan) {
+		String assignerId = AccountShiroUtil.getCurrentUser().getAccountId();
+		String fullname = employeeMapper.selectItSelf(assignerId).getFullname();
+		
+		calendarPlan.setStatus((short)0);
+		calendarPlan.setAssignerName(fullname);
+		calendarPlan.setAssignerId(assignerId);
+		
+		int result = CalendarPlanMapper.insert(calendarPlan);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取日程详细信息
+	@Override
+	public CalendarPlan getInfoBy(Long planId) {
+		CalendarPlan calendarPlan = CalendarPlanMapper.selectInfoBy(planId);
+		
+		if(calendarPlan.getTaskType() == 1) {
+			calendarPlan.setStartTime1(DateStringUtil.dateToString4(calendarPlan.getStartTime()));
+			calendarPlan.setEndTime1(DateStringUtil.dateToString4(calendarPlan.getEndTime()));
+		}else {
+			calendarPlan.setStartTime1("不限定日期");
+			calendarPlan.setEndTime1("不限定日期");
+		}
+		
+		return calendarPlan;
+	}
+
+	// 修改日程信息
+	@Override
+	public JsonInfo update(CalendarPlan calendarPlan) {
+		int result = CalendarPlanMapper.update(calendarPlan);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除日程
+	@Override
+	public JsonInfo del(Long[] planId) {
+		int result = 0;
+		for(Long pId : planId) {
+			result = CalendarPlanMapper.delete(pId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 完成任务
+	@Override
+	public JsonInfo complete(Long planId, String feedback) {
+		int result = CalendarPlanMapper.updateComplete(planId, feedback);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取要执行的任务列表
+	@Override
+	public List<CalendarPlan> get(CalendarPlan calendarPlan) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		calendarPlan.setUserId(userId);
+		List<CalendarPlan> calendarPlans = CalendarPlanMapper.selectZX(calendarPlan);
+		return calendarPlans;
+	}
+
+	// 获取我分配的任务列表
+	@Override
+	public List<CalendarPlan> getFP(CalendarPlan calendarPlan) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		calendarPlan.setAssignerId(userId);
+		List<CalendarPlan> calendarPlans = CalendarPlanMapper.selectFP(calendarPlan);
+		return calendarPlans;
+	}
+
+	// 分页列表
+	@Override
+	public List<CalendarPlan> getZXPageList(PageBean pb, CalendarPlan calendarPlan) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<CalendarPlan> calendarPlans = CalendarPlanMapper.selectZXPageData(firstIndex, toIndex, calendarPlan.getStartTime(), calendarPlan.getEndTime(), 
+											calendarPlan.getUrgent(), calendarPlan.getContent(), calendarPlan.getAssignerName(), calendarPlan.getStatus()
+											, userId);
+		
+		for(CalendarPlan c: calendarPlans) {
+			if(c.getTaskType() == 1) {
+				c.setStartTime1(DateStringUtil.dateToString4(c.getStartTime()));
+				c.setEndTime1(DateStringUtil.dateToString4(c.getEndTime()));
+			}else {
+				c.setStartTime1("不限定日期");
+				c.setEndTime1("不限定日期");
+			}
+		}
+		
+		return calendarPlans;
+	}
+
+	// 分页获取我分配的任务列表
+	@Override
+	public List<CalendarPlan> getFPPageList(PageBean pb, CalendarPlan calendarPlan) {
+		
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<CalendarPlan> calendarPlans = CalendarPlanMapper.selectFPPageData(firstIndex, toIndex, calendarPlan.getStartTime(), calendarPlan.getEndTime(), 
+				calendarPlan.getUrgent(), calendarPlan.getContent(), calendarPlan.getAssignerName(), calendarPlan.getStatus(), userId);
+		
+		for(CalendarPlan c: calendarPlans) {
+			if(c.getTaskType() == 1) {
+				c.setStartTime1(DateStringUtil.dateToString4(c.getStartTime()));
+				c.setEndTime1(DateStringUtil.dateToString4(c.getEndTime()));
+			}else {
+				c.setStartTime1("不限定日期");
+				c.setEndTime1("不限定日期");
+			}
+		}
+		
+		return calendarPlans;
+	}
+
+	/**
+	 * 所有限期任务列表
+	 */
+	@Override
+	public List<CalendarPlan> getAllXQ() {
+		List<CalendarPlan> calendarPlans = CalendarPlanMapper.selectXQ();
+		
+		for(CalendarPlan c: calendarPlans) {
+			c.setStartTime1(DateStringUtil.dateToString4(c.getStartTime()));
+			c.setEndTime1(DateStringUtil.dateToString4(c.getEndTime()));
+		}
+		
+		return calendarPlans;
+	}
+
+}

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.SignInMapper">
+
+	<!-- 开始签到 -->
+	<insert id="insert" parameterType="com.jy.entity.oa.personal.SignIn">
+		insert fudan_oa_signin <include refid="insertsql"></include>
+	</insert>
+	<sql id="insertsql">
+		<set>
+			<if test="time != null">
+				time = #{time},
+			</if>
+			<if test="accountId != null and accountId != ''">
+				accountId = #{accountId},
+			</if>
+			<if test="address != null and address != ''">
+				address = #{address},
+			</if>
+			<if test="signInNote != null and signInNote != ''">
+				signInNote = #{signInNote},
+			</if>
+			<if test="signOutNote != null and signOutNote != ''">
+				signOutNote = #{signOutNote},
+			</if>
+			<if test="fullname != null and fullname != ''">
+				fullname = #{fullname},
+			</if>
+			<if test="isLate != null">
+				isLate = #{isLate},
+			</if>
+			<if test="type != null">
+				type = #{type},
+			</if>
+			<if test="lateMinutes != null">
+				lateMinutes = #{lateMinutes},
+			</if>
+			<if test="isLeaveEarly != null">
+				isLeaveEarly = #{isLeaveEarly},
+			</if>
+			<if test="leaveEarlyMinutes != null">
+				leaveEarlyMinutes = #{leaveEarlyMinutes},
+			</if>
+			<if test="sectionName != null and sectionName != ''">
+				sectionName = #{sectionName},
+			</if>
+			<if test="signOutTime != null">
+				signOutTime = #{signOutTime},
+			</if>
+			<if test="signInTime != null ">
+				signInTime = #{signInTime},
+			</if>
+			<if test="locationNote != null and locationNote != ''">
+				locationNote = #{locationNote},
+			</if>
+			<if test="longitude != null and longitude != ''">
+				longitude = #{longitude},
+			</if>
+			<if test="latitude != null and latitude != ''">
+				latitude = #{latitude},
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 查询今天签到次数 -->
+	<select id="select" resultType="Integer">
+		select count(*) from fudan_oa_signin where accountId = #{accountId} and time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY)
+	</select>
+	
+	<select id="selectBy" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=2
+		<if test="date != null">
+			and time &gt;=date(#{date}) and time &lt; DATE_ADD(date(#{date}),INTERVAL 1 DAY)
+		</if>
+	</select>
+	
+	<select id="selectPageDate" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=2
+		<if test="date != null">
+			and time &gt;=date(#{date}) and time &lt; DATE_ADD(date(#{date}),INTERVAL 1 DAY)
+		</if>
+		order by id desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+	<select id="selectSignInToday" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where accountId = #{accountId} and 
+		time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY) and type=1 and signInNote is not null
+	</select>
+	
+	<select id="selectSignOutToday" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where accountId = #{accountId} and 
+		time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY) and type=1 and signOutNote is not null
+	</select>
+	
+	<select id="selectTodaySignIn" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where accountId = #{accountId} and 
+		time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY) and type=1 and signInNote is not null
+	</select>
+	
+	<select id="selectDailySign" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=1
+		<if test="startDate != null">
+			and time &gt;=date(#{startDate})
+		</if>
+		<if test="startDate == null and endDate == null">
+			and time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY)
+		</if>
+		<if test="endDate != null">
+			and time &lt; DATE_ADD(date(#{endDate}),INTERVAL 1 DAY)
+		</if>
+		and accountId in (SELECT id FROM (SELECT account.*,role.orgId FROM jy_base_account account, jy_base_role role WHERE account.roleId = role.id) AS p
+		<where>
+			<if test="accountId != null and accountId != '' ">
+				p.id = #{accountId}
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				or p.orgId = #{orgId}
+			</if>
+		</where>
+		) order by id desc
+	</select>
+	
+	<select id="selectDailySignPageList" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=1
+		<if test="startDate != null">
+			and time &gt;=date(#{startDate})
+		</if>
+		<if test="startDate == null and endDate == null">
+			and time &gt;=date(now()) and time &lt; DATE_ADD(date(now()),INTERVAL 1 DAY)
+		</if>
+		<if test="endDate != null">
+			and time &lt; DATE_ADD(date(#{endDate}),INTERVAL 1 DAY)
+		</if>
+		and accountId in (SELECT id FROM (SELECT account.*,role.orgId FROM jy_base_account account, jy_base_role role WHERE account.roleId = role.id) AS p
+		<where>
+			<if test="accountId != null and accountId != '' ">
+				p.id = #{accountId}
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				or p.orgId = #{orgId}
+			</if>
+		</where>
+		)
+		order by id desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+	<update id="update" parameterType="com.jy.entity.oa.personal.SignIn">
+		update fudan_oa_signin <include refid="updatesql"></include>
+		where id = #{id}
+	</update>
+	<sql id="updatesql">
+		<set>
+			<if test="signOutTime != null">
+				signOutTime = #{signOutTime},
+			</if>
+			<if test="isLeaveEarly != null">
+				isLeaveEarly = #{isLeaveEarly},
+			</if>
+			<if test="leaveEarlyMinutes != null">
+				leaveEarlyMinutes = #{leaveEarlyMinutes},
+			</if>
+			<if test="signOutNote != null and signOutNote != ''">
+				signOutNote = #{signOutNote},
+			</if>
+		</set>
+	</sql>
+	
+	<select id="selectSelfSign" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=1 and accountId = #{accountId} order by time desc
+	</select>
+	
+	<select id="selectPageSelfSign" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=1 and accountId = #{accountId} order by time desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+	<select id="selectSelfSignLocation" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=2 and accountId = #{accountId} order by time,id desc
+	</select>
+	
+	<select id="selectPageSelfSignLocation" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where type=2 and accountId = #{accountId} order by time desc,id desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+	<select id="search" parameterType="String" resultType="com.jy.entity.oa.personal.SignIn">
+		select * from fudan_oa_signin where 1=1 <include refid="searchSql"></include>
+	</select>	
+	
+	<sql id="searchSql">
+		<if test="beginDate != null and beginDate != ''">  
+		    AND time &gt;= #{beginDate}
+		</if>  
+		<if test="endDate != null and endDate != ''">  
+		    AND time &lt;= #{endDate}
+		</if>  
+			AND accountId = #{accountId}
+	</sql>
+	
+</mapper>

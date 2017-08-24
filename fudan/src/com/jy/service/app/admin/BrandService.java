@@ -1,0 +1,85 @@
+package com.jy.service.app.admin;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.jy.common.utils.base.Const;
+import com.jy.entity.app.admin.Brand;
+import com.jy.entity.app.admin.Class;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.app.admin.BrandDao;
+import com.jy.repository.app.admin.ClassDao;
+import com.jy.service.base.BaseService;
+
+@Service(value = "brandService")
+public class BrandService{
+	
+	@Resource
+	private BrandDao goodsBrandDao;
+	@Resource
+	private ClassDao classDao;
+	
+	public int insert(Brand goodsBrand) {
+		//类别名称
+		Class goodsClass = new Class();
+		goodsBrand.setBrand_class(classDao.find(goodsClass).get(0).getGc_name());
+		return this.goodsBrandDao.insert(goodsBrand);
+	}
+	
+	public Map<String,Object> mapFind(Brand goodsBrand) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		//品牌总数
+		int total = this.find(goodsBrand).size();
+		//显示品牌
+		Brand brand = new Brand();
+		brand.setBrand_apply(1);
+		int showNum = this.find(brand).size();
+		//推荐品牌
+		Brand brand2 = new Brand();
+		brand2.setBrand_recommend(2);
+		int tuiNum = this.find(brand2).size();
+		map.put("list",this.find(goodsBrand));
+		map.put("total", total);
+		map.put("showNum", showNum);
+		map.put("tuiNum",tuiNum);
+		return map;
+	}
+	
+	public List<Brand> find(Brand goodsBrand) {
+		List<Brand> list = goodsBrandDao.find(goodsBrand);
+		//图片地址添加
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getBrand_pic() != null){
+				list.get(i).setBrand_pic(Const.IMG("goods/brand/"+ list.get(i).getBrand_pic()));
+			}else{
+				list.get(i).setBrand_pic(Const.NULL_IMG());
+			}
+		}
+		return list;
+	}
+
+	public List<Brand> search(Brand goodsBrand) {
+		return this.goodsBrandDao.search(goodsBrand);
+	}
+
+	public int update(Brand goodsBrand) {
+		return this.goodsBrandDao.update(goodsBrand);
+	}
+
+	public int update2(Brand goodsBrand) {
+		return this.goodsBrandDao.update2(goodsBrand);
+	}
+	
+	public int delete(Brand goodsBrand) {
+		return this.goodsBrandDao.delete(goodsBrand);
+	}
+	
+}

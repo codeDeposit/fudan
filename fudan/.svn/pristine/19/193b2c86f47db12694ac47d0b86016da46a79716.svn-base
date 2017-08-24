@@ -1,0 +1,39 @@
+package com.jy.service.setting;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.setting.InfoBack;
+import com.jy.repository.setting.InfoBackDao;
+import com.jy.service.base.BaseServiceImp;
+
+@Service(value = "infoBackService")
+public class InfoBackService extends BaseServiceImp<InfoBack>{
+	
+	@Resource
+	private InfoBackDao infoBackDao;
+	
+	public void insert(InfoBack infoBack){
+		infoBackDao.insert(infoBack);
+	}
+	
+	public void delete(InfoBack infoBack){
+		infoBackDao.delete(infoBack);
+	}
+	
+	public void update(InfoBack infoBack){
+		infoBackDao.update(infoBack);
+	}
+	
+	public InfoBack select(InfoBack infoBack){
+		return infoBackDao.select(infoBack);
+	}
+	
+	public List<InfoBack> find(InfoBack infoBack){
+		return infoBackDao.find(infoBack);
+	}
+	
+}

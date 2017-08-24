@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.BrandDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Brand" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_brand where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_brand where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="brand_name != null and brand_name != ''">  
+		    AND brand_name like ('%', #{brand_name}, '%') 
+		</if>  
+		<if test="brand_class != null and brand_class != ''">  
+		    AND brand_class = #{brand_class}
+		</if> 
+		<if test="brand_pic != null and brand_pic != ''">  
+		    AND gc_keywords = #{gc_keywords}
+		</if> 
+		<if test="brand_recommend != 0">  
+		    AND brand_recommend = #{brand_recommend}
+		</if> 
+		<if test="brand_apply != 0">  
+		    AND brand_apply = #{brand_apply}
+		</if> 
+		<if test="class_id != 0">  
+		    AND class_id = #{class_id}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="brand_name != null and brand_name != ''">  
+		    AND brand_name like ('%', #{brand_name}, '%') 
+		</if>  
+		<if test="brand_class != null and brand_class != ''">  
+		    AND brand_class = #{brand_class}
+		</if> 
+		<if test="brand_pic != null and brand_pic != ''">  
+		    AND gc_keywords = #{gc_keywords}
+		</if> 
+		<if test="brand_recommend != 0">  
+		    AND brand_recommend = #{brand_recommend}
+		</if> 
+		<if test="brand_apply != 0">  
+		    AND brand_apply = #{brand_apply}
+		</if> 
+		<if test="class_id != 0">  
+		    AND class_id = #{class_id}
+		</if>       
+	</sql>
+	
+	<insert id="insert">
+		insert into app_brand (brand_name,brand_class,brand_pic,brand_recommend,brand_apply,class_id) 
+			values 
+		(#{brand_name},#{brand_class},#{brand_pic},#{brand_recommend},#{brand_apply},#{class_id})
+	</insert>
+	
+	<update id="update">
+		update app_brand <include refid="updateSql"></include> where brand_id = #{brand_id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="brand_name != null and brand_name != ''">  
+		    	brand_name = #{brand_name},
+			</if>  
+			<if test="brand_recommend != 0">  
+		    	brand_recommend = #{brand_recommend},
+			</if>  
+			<if test="brand_apply != 0">  
+		    	brand_apply = #{brand_apply},
+			</if>  
+			<if test="brand_pic != null and brand_pic != '' ">  
+		    	brand_pic = #{brand_pic},
+			</if>  
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_brand where 
+		<if test="brand_id != 0">
+			brand_id = #{brand_id}
+		</if>
+	</delete>
+</mapper>

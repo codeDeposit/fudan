@@ -1,0 +1,43 @@
+// 添加类型
+   	function add() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/archivestype/add",
+   			data: $("#addform").serialize(),
+   			success : function(html) {
+   				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   		return false;
+   	}
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/archivestype/getinfo";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?typeId="+id+"&operation="+operation,
+   			success: function(data){
+		    	$("#getInfoOrUpdate").html(data);
+		    	fuCloseLayer();
+		    }
+   		});
+   	}
+	// 删除公文模板
+	function fDelete(typeId) {
+		var url = "/oa/archivestype/del";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?typeId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}

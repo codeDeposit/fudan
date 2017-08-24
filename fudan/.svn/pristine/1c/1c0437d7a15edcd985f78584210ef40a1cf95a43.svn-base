@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.DutyRegisterMapper">
+
+	<!-- 考勤补签 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.personal.DutyRegister">
+		insert fudan_oa_duty_register
+		<include refid="insertSQL"></include>
+	</insert>
+
+	<sql id="insertSQL">
+		<set>
+			<if test="registerDate !=null ">
+				registerDate = #{registerDate},
+			</if>
+			<if test="regFlag !=null ">
+				regFlag = #{regFlag},
+			</if>
+			<if test="regMins !=null ">
+				regMins = #{regMins},
+			</if>
+			<if test="reason !=null and reason !='' ">
+				reason = #{reason},
+			</if>
+			<if test="dayOfWeek !=null ">
+				dayOfWeek = #{dayOfWeek},
+			</if>
+			<if test="inOffFlag !=null ">
+				inOffFlag = #{inOffFlag},
+			</if>
+			<if test="fullname !=null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="userId !=null and userId !='' ">
+				userId = #{userId},
+			</if>
+			<if test="sectionId !=null and sectionId !='' ">
+				sectionId = #{sectionId},
+			</if>
+		</set>
+	</sql>
+	<!-- 考勤补签 end -->
+
+
+	<!-- 删除补签信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from
+		fudan_oa_duty_register where registerId = #{registerId}
+	</delete>
+	<!-- 删除补签信息 end -->
+
+
+	<!-- 获取补签信息列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.personal.DutyRegister">
+		select * from fudan_oa_duty_register where 1=1
+		<if test="inOffFlag != null">
+			and inOffFlag = #{inOffFlag}
+		</if>
+		<if test="userId != null and userId != ''">
+			and userId in (#{userId})
+		</if>
+		<if test="regMins != null">
+			and regFlag = #{regMins}
+		</if>
+	</select>
+	<!-- 获取补签信息列表 end -->
+	
+	
+	<!-- 补签信息分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.personal.DutyRegister">
+		select * from fudan_oa_duty_register where 1=1 
+		<if test="inOffFlag != null">
+			and inOffFlag = #{inOffFlag}
+		</if>
+		<if test="userId != null and userId != ''">
+			and userId in (#{userId})
+		</if>
+		<if test="regMins != null">
+			and regFlag = #{regMins}
+		</if>
+		order by registerId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 补签信息分页列表 end -->
+	
+</mapper>

@@ -1,0 +1,48 @@
+package com.jy.service.oa.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.OAOrg;
+import com.jy.repository.oa.OAOrgMapper;
+import com.jy.service.oa.OAOrgService;
+
+@Service("oaOrgService")
+public class OAOrgServiceImpl implements OAOrgService{
+	
+	private OAOrgMapper oaOrgMapper;
+
+	public OAOrgMapper getOaOrgMapper() {
+		return oaOrgMapper;
+	}
+
+	@Autowired
+	public void setOaOrgMapper(OAOrgMapper oaOrgMapper) {
+		this.oaOrgMapper = oaOrgMapper;
+	}
+
+
+	// 获取所有部门
+	@Override
+	public List<OAOrg> getAll() {
+		List<OAOrg> orgs = oaOrgMapper.selectAll();
+		return orgs;
+	}
+
+	// 获取部门详细信息(自身及下属部门信息)
+	@Override
+	public List<OAOrg> getInfoBy(String orgId) {
+		List<OAOrg> orgs = oaOrgMapper.selectInfoBy(orgId);
+		return orgs;
+	}
+
+	// 根据员工姓名获取部门
+	@Override
+	public OAOrg getInfoByEmpId(String userId) {
+		OAOrg org = oaOrgMapper.selectInfoByEmpId(userId);
+		return org;
+	}
+
+}

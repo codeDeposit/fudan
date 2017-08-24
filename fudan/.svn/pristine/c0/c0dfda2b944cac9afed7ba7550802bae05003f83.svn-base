@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.wzcg.WzcgTypeDao">
+	
+	<resultMap type="com.jy.entity.wzcg.WzcgType" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="isValid" property="isValid"/>
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="find" parameterType="String" resultMap="ResultMap" >
+		select * from wzcg_type where 1 = 1   
+		<if test="id != null and id != ''">  
+		    AND id = #{id} 
+		</if>
+		<if test="isValid != null and isValid != ''">
+			AND isValid = #{isValid},
+		</if>
+		order by id asc
+	</select>
+	
+</mapper>

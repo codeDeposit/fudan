@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.customer.ContactsDao">
+	
+	<resultMap type="com.jy.entity.customer.Contacts" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="sex" property="sex"/>
+		<result column="phone" property="phone"/>
+		<result column="bm" property="bm"/>
+		<result column="job" property="job"/>
+		<result column="customerId" property="customerId"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from cus_contacts where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from cus_contacts where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="name != null and name != ''">  
+		    AND name like concat('%', #{name}, '%') 
+		</if>  
+		<if test="sex != null and sex != ''">  
+		    AND sex = #{sex}
+		</if> 
+		<if test="phone != null and phone != ''">  
+		    AND phone = #{phone}
+		</if> 
+		<if test="bm != null and bm != ''">  
+		    AND bm = #{bm}
+		</if> 
+		<if test="job != null and job != ''">  
+		    AND job = #{job}
+		</if>    
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>        
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="name != null and name != ''">  
+		    AND name like concat('%', #{name}, '%') 
+		</if>  
+		<if test="sex != null and sex != ''">  
+		    AND sex = #{sex}
+		</if> 
+		<if test="phone != null and phone != ''">  
+		    AND phone = #{phone}
+		</if> 
+		<if test="bm != null and bm != ''">  
+		    AND bm = #{bm}
+		</if> 
+		<if test="job != null and job != ''">  
+		    AND job = #{job}
+		</if>    
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>          
+	</sql>
+	
+	<insert id="insert">
+		insert into cus_contacts (name,sex,phone,bm,job,customerId) 
+			values 
+		(#{name},#{sex},#{phone},#{bm},#{job},#{customerId})
+	</insert>
+	
+	<update id="update">
+		update cus_contacts <include refid="updateSql"></include> where id = #{id} 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != null and name != ''">  
+				name = #{name},
+			</if>
+			<if test="sex != null and sex != ''">  
+				sex = #{sex},
+			</if>
+			<if test="phone != null and phone != ''">  
+				phone = #{phone},
+			</if>
+			<if test="bm != null and bm != ''">  
+				bm = #{bm},
+			</if>
+			<if test="job != null and job != ''">  
+				job = #{job},
+			</if>
+			<if test="customerId != 0">  
+				customerId = #{customerId},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from cus_contacts where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+		<if test="customerId != 0">
+			customerId = #{customerId}
+		</if>
+	</delete>
+	
+</mapper>

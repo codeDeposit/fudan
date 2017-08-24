@@ -1,0 +1,50 @@
+package com.jy.service.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import com.jy.entity.oa.personal.SignIn;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface SignInService {
+	
+	//定位签到(插入数据)
+	public JsonInfo signInLocation(SignIn signIn);
+
+	public int getCountToday(String accountId, Date date);
+
+	public List<SignIn> get(Date date);
+
+	public List<SignIn> getPageList(PageBean pb, Date date);
+
+	//今天上班是否打卡
+	public boolean getIsSignToday(String id, Date date);
+	//今天下班是否打卡
+	public boolean getIsSignOutToday(String id, Date date);
+
+	//每日统计：默认获取今天的打卡记录
+	public List<SignIn> getDailySign(Date startDate, Date endDate,
+			String accountId, String orgId);
+
+	//每日统计：默认获取今天的打卡记录
+	public List<SignIn> getDailySignPageList(PageBean pb, Date startDate,
+			Date endDate, String accountId, String orgId);
+
+	//账户的上班打卡记录
+	public SignIn getSignInRecord(String id, Date date);
+	//签退打卡
+	public JsonInfo update(SignIn signIn);
+
+	//查询账号的打卡记录
+	public List<SignIn> getSelfSign(String accountId);
+	//查询账号的打卡记录,分页
+	public List<SignIn> getPageSelfSign(PageBean pb, String accountId);
+	//查询账号的定位签到
+	public List<SignIn> getSelfSignLocation(String accountId);
+	//查询账号的定位签到,分页
+	public List<SignIn> getPageSelfSignLocation(PageBean pb, String accountId);
+	//上下班签到
+	public JsonInfo signIn(SignIn signIn);
+	public List<SignIn> search(SignIn signIn);
+}

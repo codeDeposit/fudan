@@ -1,0 +1,70 @@
+package com.jy.entity.customer;
+
+public class SaleProject{
+	
+	private int id;
+	private String responsible;
+	private String name;
+	private String quarry;
+	private String stage;
+	private String amount;
+	private String date;
+	private String depict;
+	private int customerId;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getResponsible() {
+		return responsible;
+	}
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getQuarry() {
+		return quarry;
+	}
+	public void setQuarry(String quarry) {
+		this.quarry = quarry;
+	}
+	public String getStage() {
+		return stage;
+	}
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+	public String getAmount() {
+		return amount;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	public String getDepict() {
+		return depict;
+	}
+	public void setDepict(String depict) {
+		this.depict = depict;
+	}
+	public int getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+	
+}

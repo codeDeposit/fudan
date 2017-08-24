@@ -1,0 +1,121 @@
+package com.jy.entity.oa.admin;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class BookBorRet {
+
+	private Long recordId;
+	private Long bookSnId;				//借出图书Id
+	private Date borrowTime;			//借阅时间
+	private Date returnTime;			//还书时间
+	private Date lastReturnTime;		
+	private String borrowIsbn;			//借出图书的ISBN号
+	private String bookName;
+	private String registerName;		//登记人
+	private String fullname;			//借阅人
+	
+	//用于页面展示
+	private String borrowTime1;
+	private String returnTime1;
+	private String lastReturnTime1;
+
+	public String getLastReturnTime1() {
+		return lastReturnTime1;
+	}
+
+	public void setLastReturnTime1(String lastReturnTime1) {
+		this.lastReturnTime1 = lastReturnTime1;
+	}
+
+	public String getBorrowTime1() {
+		return borrowTime1;
+	}
+
+	public void setBorrowTime1(String borrowTime1) {
+		this.borrowTime1 = borrowTime1;
+	}
+
+	public String getReturnTime1() {
+		return returnTime1;
+	}
+
+	public void setReturnTime1(String returnTime1) {
+		this.returnTime1 = returnTime1;
+	}
+
+	public Long getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(Long recordId) {
+		this.recordId = recordId;
+	}
+
+	public Long getBookSnId() {
+		return bookSnId;
+	}
+
+	public void setBookSnId(Long bookSnId) {
+		this.bookSnId = bookSnId;
+	}
+
+	public Date getBorrowTime() {
+		return borrowTime;
+	}
+
+	public void setBorrowTime(Date borrowTime) {
+		this.borrowTime = borrowTime;
+	}
+
+	public Date getReturnTime() {
+		return returnTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setReturnTime(Date returnTime) {
+		this.returnTime = returnTime;
+	}
+
+	public Date getLastReturnTime() {
+		return lastReturnTime;
+	}
+
+	public void setLastReturnTime(Date lastReturnTime) {
+		this.lastReturnTime = lastReturnTime;
+	}
+
+	public String getBorrowIsbn() {
+		return borrowIsbn;
+	}
+
+	public void setBorrowIsbn(String borrowIsbn) {
+		this.borrowIsbn = borrowIsbn;
+	}
+
+	public String getBookName() {
+		return bookName;
+	}
+
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+
+	public String getRegisterName() {
+		return registerName;
+	}
+
+	public void setRegisterName(String registerName) {
+		this.registerName = registerName;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+}

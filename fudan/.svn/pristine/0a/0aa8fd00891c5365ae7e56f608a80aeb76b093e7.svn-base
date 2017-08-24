@@ -1,0 +1,148 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="row fu-margin-none fu-margin-bottom fu-border-bottom">
+	<div class="col-md-3 text-center">
+  		<h1><small class="text-primary">抽 取 名 单</small></h1>
+	</div>
+	<div class="col-md-3 pull-right">
+  		<h2><small>总计&nbsp;<span class="fu-color-word" id="count1">${count1 }</span>&nbsp;条</small></h2>
+	</div>
+</div>
+<table class="table table-striped table-bordered table-hover">
+	<thead class="headBg">
+		<tr>
+			<th>序号</th>
+			<th>姓名</th>
+			<th>性别</th>
+			<th>专业类别</th>
+			<th>技术职称</th>
+			<th>从事专业年限</th>
+			<th>工作单位</th>
+			<th>状态</th>
+		</tr>
+	</thead>
+	<tbody id="dTable">
+		<c:choose>
+			<c:when test="${not empty expertList1}">
+				<c:forEach items="${expertList1}" var="expert" varStatus="vs">
+					<tr class="gradX" id="${expert.userId }">
+						<input type="hidden" name="result_1" value="${expert.userId }">
+						<td>${vs.index+1}</td>
+						<td><a href="javascript:void(0);" onclick="fexpertDetail('${expert.userId}')">${expert.name }</a></td>
+						<td> ${expert.sex} </td>
+						<td>${expert.profession}</td>
+						<td>${expert.job_name}</td>
+						<td>${expert.work_time}</td>
+						<td>${expert.work_unit}</td>
+						<td>
+							<c:if test="${expert.state == 1}">
+								<span class="text-primary">已注册</span>
+							</c:if>
+							<c:if test="${expert.state == 2}">
+								<span class="text-info">初审中</span>
+							</c:if>
+							<c:if test="${expert.state == 3}">
+								<span class="text-info">初审通过</span>
+							</c:if>
+							<c:if test="${expert.state == 4}">
+								<span class="text-warning">初审未通过</span>
+							</c:if>
+							<c:if test="${expert.state == 5}">
+								<span class="text-danger">已冻结</span>
+							</c:if>
+							<c:if test="${expert.state == 6}">
+								<span class="text-success">完成入库</span>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td colspan="100" align="center"><i class=" icon-comments"></i> 没有相关数据 </td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+	</tbody>
+</table>
+<div class="row fu-margin-none fu-margin-bottom fu-border-bottom">
+	<div class="col-md-3 text-center">
+  		<h1><small class="text-primary">备 选 名 单</small></h1>
+	</div>
+	<div class="col-md-3 pull-right">
+  		<h2><small>总计&nbsp;<span class="fu-color-word" id="count2">${count2 }</span>&nbsp;条</small></h2>
+	</div>
+</div>
+<table class="table table-striped table-bordered table-hover">
+	<thead class="headBg">
+		<tr>
+			<th>序号</th>
+			<th>姓名</th>
+			<th>性别</th>
+			<th>专业类别</th>
+			<th>技术职称</th>
+			<th>从事专业年限</th>
+			<th>工作单位</th>
+			<th>状态</th>
+		</tr>
+	</thead>
+	<tbody id="dTable">
+		<c:choose>
+			<c:when test="${not empty expertList2}">
+				<c:forEach items="${expertList2}" var="expert" varStatus="vs">
+					<tr class="gradX" id="${expert.userId }">
+						<input type="hidden" name="result_2" value="${expert.userId }">
+						<td>${vs.index+1}</td>
+						<td><a href="javascript:void(0);" onclick="fexpertDetail('${expert.userId}')">${expert.name }</a></td>
+						<td> ${expert.sex} </td>
+						<td>${expert.profession}</td>
+						<td>${expert.job_name}</td>
+						<td>${expert.work_time}</td>
+						<td>${expert.work_unit}</td>
+						<td>
+							<c:if test="${expert.state == 1}">
+								<span class="text-primary">已注册</span>
+							</c:if>
+							<c:if test="${expert.state == 2}">
+								<span class="text-info">初审中</span>
+							</c:if>
+							<c:if test="${expert.state == 3}">
+								<span class="text-info">初审通过</span>
+							</c:if>
+							<c:if test="${expert.state == 4}">
+								<span class="text-warning">初审未通过</span>
+							</c:if>
+							<c:if test="${expert.state == 5}">
+								<span class="text-danger">已冻结</span>
+							</c:if>
+							<c:if test="${expert.state == 6}">
+								<span class="text-success">完成入库</span>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td colspan="100" align="center"><i class=" icon-comments"></i> 没有相关数据 </td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+	</tbody>
+</table>
+<div class="row">
+	<div class="col-md-12" style="text-align:center;">
+		<nav>
+		  	<ul class="pagination">
+			    <li><a href="javascript:;">上一页</a></li>
+			    <li class="active"><a href="javascript:;">1</a></li>
+			    <li><a href="javascript:;">2</a></li>
+			    <li><a href="javascript:;">3</a></li>
+			    <li><a href="javascript:;">4</a></li>
+			    <li><a href="javascript:;">5</a></li>
+			    <li><a href="javascript:;">下一页</a></li>
+		  	</ul>
+		</nav>
+	</div>
+</div>

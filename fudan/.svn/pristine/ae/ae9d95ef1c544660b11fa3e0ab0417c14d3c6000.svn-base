@@ -1,0 +1,65 @@
+package com.jy.service.oa.personal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.jy.entity.oa.personal.DutySystem;
+import com.jy.repository.oa.personal.DutySystemDao;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("dutySystemService")
+public class DutySystemService {
+	
+	@Resource
+	private DutySystemDao dutySystemDao;
+	
+	public List<DutySystem> find(DutySystem dutySystem){
+		List<DutySystem> DutySystemList = dutySystemDao.find(dutySystem);
+		return DutySystemList;
+	}
+	
+	public int delete(DutySystem dutySystem) {
+		return dutySystemDao.delete(dutySystem);
+	}
+	
+	public List<DutySystem> search(DutySystem dutySystem){
+		List<DutySystem> dutySystemList = dutySystemDao.search(dutySystem);
+		return dutySystemList;
+	}
+	
+	// 添加班制定义
+	public int save(DutySystem dutySystem) {
+		int result = dutySystemDao.insert(dutySystem);
+		return result;
+	}
+
+	//设置其他默认为不是默认
+	private void setOther() {
+		DutySystem dutySystem = dutySystemDao.selectDefault();
+		if(dutySystem != null) {
+			dutySystem.setIsDefault((short)0);
+			update(dutySystem);
+		}
+	}
+
+	// 修改班制定义
+	public int update(DutySystem dutySystem) {
+		int result = dutySystemDao.update(dutySystem);
+		return result;
+	}
+
+	//缺省的dutySystem
+	public DutySystem getDefault() {
+		DutySystem dutySystems = dutySystemDao.selectDefault();
+		return dutySystems;
+	}
+
+}

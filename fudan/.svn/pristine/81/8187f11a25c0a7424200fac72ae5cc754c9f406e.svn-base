@@ -1,0 +1,22 @@
+package com.jy.service.oa.impl.archive;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.repository.oa.archive.ArchivesDepMapper;
+import com.jy.service.oa.archive.ArchivesDepService;
+
+
+@Service("archivesDepService")
+public class ArchivesDepServiceImpl implements ArchivesDepService {
+
+	private ArchivesDepMapper archivesDepMapper;
+
+	public ArchivesDepMapper getArchivesDepMapper() {
+		return archivesDepMapper;
+	}
+
+	public void setArchivesDepMapper(ArchivesDepMapper archivesDepMapper) {
+		this.archivesDepMapper = archivesDepMapper;
+	}
+
+}

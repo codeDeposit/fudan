@@ -1,0 +1,42 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.jy.entity.app.admin.Order;
+import com.jy.repository.app.admin.OrderDao;
+
+@Service(value = "orderService")
+public class OrderService{
+	
+	@Resource
+	private OrderDao orderDao;
+	
+	public List<Order> find(Order order) {
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();	
+		String imgUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/image/goods/";
+		List<Order> list = this.orderDao.find(order);
+		for(int i=0;i<list.size();i++){
+//			list.get(i).setGoods_image(imgUrl + list.get(i).getGoods_image());
+		}
+		return this.orderDao.find(order);
+	}
+
+	public List<Order> search(Order order) {
+		return this.orderDao.search(order);
+	}
+
+	public int insert(Order order) {
+		return this.orderDao.insert(order);
+	}
+	
+	public int delete(Order order) {
+		return this.orderDao.delete(order);
+	}
+	
+}

@@ -1,0 +1,228 @@
+package com.jy.service.workflow.online.apply;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.base.UuidUtil;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Position;
+import com.jy.service.oa.workflow.ApproveService;
+import com.jy.service.system.org.PositionService;
+import com.jy.service.workflow.online.apply.ApproveTaskService;
+
+@Service("approveTaskService")
+public class ApproveTaskServiceImpl implements ApproveTaskService {
+
+	@Autowired
+	private RuntimeService runtimeService;
+	@Autowired
+	private TaskService taskService;
+	@Autowired
+	private ApproveService approveService;
+	@Autowired
+	private PositionService positionService;
+	@Autowired
+	private RepositoryService repositoryService;
+
+	/**
+	 * 办理任务 审核 审核：返回, 审核人id、审核状态（通过：1，拒绝：2）
+	 * 
+	 * @param positionId
+	 *            职务id
+	 * @param approve
+	 * @return 部门、审批人、职务
+	 */
+	public Map<String, String> review(String positionId, String approveStatus, String approveOption,
+			String processInstanceId) {
+		Short status = 0;
+		if(approveStatus != null && approveStatus != "") {
+			status = Short.valueOf(approveStatus);
+		}
+		Account account = AccountShiroUtil.getCurrentUser();
+		int input = 2;
+		Map<String, Object> variables = new HashMap<String, Object>();
+		// 同意---input=1, 拒绝---input=2
+		if (status == 1) {
+			input = 1;
+			variables.put("input", input);
+		} else if (status == 2) {
+			input = 2;
+			variables.put("input", input);
+		}
+		variables.put("positionId", positionId);
+		// 增添审批记录
+		Approve approve = new Approve();
+		approve.setApproveStatus(status);
+		approve.setApproveOption(approveOption);
+		approve.setId(UuidUtil.get32UUID());
+		approve.setApprover(account.getAccountId());
+		approveService.save(approve);
+		// 根据流程实例id获取task
+		TaskQuery query = taskService.createTaskQuery();
+		Task task = query.processInstanceId(processInstanceId).singleResult();
+		// 办理任务，同时设置下一审批人
+		taskService.complete(task.getId(), variables);
+		
+		Map<String, String> info = new HashMap<String, String>();
+		info.put("accountId", account.getAccountId());
+		info.put("roleId", account.getRoleId());
+		List<Position> positions = positionService.getBy(account.getOrgId());
+		List<Position> list = positionService.getPossBy(account.getAccountId());
+		if(list.size() == 1) {
+			info.put("positionId", list.get(0).getId());
+			return info;
+		}
+		for (Position position : list) {
+			if(positions.contains(position)) {
+				info.put("positionId", position.getId());
+			}
+		}
+		return info;
+	}
+
+	/**
+	 * 判断当前任务节点是否是最后一个节点
+	 * 
+	 * @param activityImpl
+	 *            当前结点
+	 * @param processDefinition
+	 *            当前流程定义
+	 * @return
+	 */
+	public boolean isEndEvent() {
+		boolean flag = false;
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(account.getAccountId()).list();
+		if(tasks == null || tasks.size() == 0) return flag; 
+		String executionId = tasks.get(0).getExecutionId();
+		Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
+		String processInstanceId = execution.getProcessInstanceId();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+		ActivityImpl activityImpl = getExcutingActivityImpl(processInstance.getProcessDefinitionKey());
+		if(activityImpl == null) return flag;
+		// 获取当前节点的下一节点
+		flag = diGui(activityImpl);
+		return flag;
+	}
+	
+	private boolean diGui(PvmActivity activityImpl) {
+		boolean flag = false;
+		List<PvmTransition> outgoingTransitions = activityImpl
+				.getOutgoingTransitions();
+		for (PvmTransition pvmTransition : outgoingTransitions) {
+			PvmActivity destination = pvmTransition.getDestination();
+			if (destination.getProperty("type").equals("endEvent"))
+				flag = true;
+			else if(!destination.getProperty("type").equals("userTask")) {
+				flag = diGui(destination);
+			}else {
+				continue;
+			}
+		}
+		return flag;
+	}
+	
+	/**
+	 * 获取当前节点
+	 * @return
+	 */
+	private ActivityImpl getExcutingActivityImpl(String processDefinitionKey) {
+		ActivityImpl activityImplI = null;
+		Account account = AccountShiroUtil.getCurrentUser();
+		// 获取所有关于登录账号的任务
+		TaskQuery query = taskService.createTaskQuery();
+		List<Task> tasks = query.taskCandidateUser(account.getAccountId()).processDefinitionKey(processDefinitionKey).list();
+		if(tasks != null && tasks.size() != 0) {
+			//根据流程定义获取当前节点
+			ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl)repositoryService).getProcessDefinition(tasks.get(0).getProcessDefinitionId());
+			List<ActivityImpl> activitiList = def.getActivities();
+			String excId = tasks.get(0).getExecutionId();
+			ExecutionEntity execution = (ExecutionEntity) runtimeService.createExecutionQuery().executionId(excId).singleResult();
+			String activitiId = execution.getActivityId();
+			for(ActivityImpl activityImpl:activitiList){
+				String id = activityImpl.getId();
+				if(activitiId.equals(id)){
+					activityImplI = activityImpl;
+				}
+			}
+		}
+		return activityImplI;
+	}
+
+	/**
+	 * 查询需要登录账户办理的任务的xqytId(key),processInstanceId(value)
+	 * 
+	 * @return map key: isEnd -----> 代表是否是最后一个, 对应的值value----->字符串 "true" or
+	 *         "false" map中其他值： key: 代表 需求预填id value: 代表 流程实例id
+	 */
+	public Map<String, String> list(String biaozhi) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		// 获取所有关于登录账号的任务
+		TaskQuery query = taskService.createTaskQuery();
+		List<Task> tasks = query.taskCandidateUser(account.getAccountId()).processVariableValueEquals("biaozhi", biaozhi).list();
+		Map<String, String> map = new HashMap<String, String>();
+		for (Task task : tasks) {
+			// 获取当前任务节点
+			String executionId = task.getExecutionId();
+			ProcessInstanceQuery processInstanceQuery = runtimeService
+					.createProcessInstanceQuery();
+			ProcessInstance processInstance = processInstanceQuery
+					.processInstanceId(task.getProcessInstanceId())
+					.singleResult();
+			String xqytId = (String) runtimeService.getVariable(executionId, biaozhi+"Id");
+			map.put(xqytId, processInstance.getId());
+		}
+		return map;
+	}
+
+	/**
+	 * 办理任务, 重新提交已拒绝的任务
+	 * @param processInstanceId
+	 * @return
+	 */
+	@Override
+	public Map<String, String> reSubmit(String processInstanceId, String positionId, String xqytId) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		// 获取正在运行的任务节点
+		TaskQuery query = taskService.createTaskQuery();
+		query.processInstanceId(processInstanceId);
+		Task task = query.singleResult();
+		task.setAssignee(account.getAccountId());
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("positionId", positionId);
+		variables.put("xqytId", xqytId);
+		/* 在流程监听器中设置职务下的所有人为审批人，谁审批都可以 ... */
+		taskService.complete(task.getId(), variables);
+		
+		//获取流程定义id
+		ProcessInstanceQuery query2 = runtimeService.createProcessInstanceQuery();
+		ProcessInstance processInstance = query2.processInstanceId(processInstanceId).singleResult();
+		String processDefinitionId = processInstance.getProcessDefinitionId();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("processInstanceId", processInstanceId);
+		map.put("processDefinitionId", processDefinitionId);
+		return map;
+	}
+
+}

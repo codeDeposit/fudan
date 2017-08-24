@@ -1,0 +1,177 @@
+package com.jy.service.wzcg;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.area.Area;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgExpert;
+import com.jy.entity.wzcg.WzcgExtract;
+import com.jy.repository.wzcg.WzcgExpertDao;
+import com.jy.repository.wzcg.WzcgExtractDao;
+import com.jy.service.area.AreaService;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.service.system.org.RoleService;
+
+@Service(value = "wzcgExpertService")
+public class WzcgExpertService extends BaseServiceImp<WzcgExpert> {
+	
+	@Resource
+	private WzcgExpertDao wzcgExpertDao;
+	@Resource(name = "wzcgKindService")
+	private WzcgKindService kindService;
+	@Resource
+	private WzcgExtractDao wzcgExtractDao;
+	@Autowired
+	public AreaService areaService;
+	@Autowired
+	public RoleService roleService;
+	
+	public List<WzcgExpert> find(WzcgExpert expert) {
+		return wzcgExpertDao.find(expert);
+	}
+	
+	public void insert(WzcgExpert expert){
+		wzcgExpertDao.insert(expert);
+	}
+	
+	public void update(WzcgExpert expert){
+		wzcgExpertDao.update(expert);
+	}
+	
+	public void delete(String id){
+		wzcgExpertDao.delete(id);
+	}
+	
+	public Map<Boolean,List<WzcgExpert>> list(){
+		Map<Boolean,List<WzcgExpert>> map = new HashMap<Boolean, List<WzcgExpert>>();
+		boolean mark = false;//按钮显示判断
+		Account account = AccountShiroUtil.getCurrentUser();
+		WzcgExpert expert = new WzcgExpert();
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		//判断用户是否为管理员组织
+		if(roleService.getOrg(account.getRoleId()).getId().equals("9")){//管理员登录
+			expertList = this.find(expert);
+			mark = true;
+		}else{//非管理员登陆
+			expert.setUserId(account.getAccountId());
+			expertList = this.find(expert);
+		}
+		map.put(mark,expertList);
+		return map;
+	}
+	
+	public Map<Boolean,List<WzcgExpert>> searchList(WzcgExpert expert){
+		Map<Boolean,List<WzcgExpert>> map = new HashMap<Boolean, List<WzcgExpert>>();
+		boolean mark = true;//按钮显示判断
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		expertList = wzcgExpertDao.search(expert);
+		map.put(mark,expertList);
+		return map;
+	}
+	
+	public List<WzcgExpert> listFull(List<WzcgExpert> expertList) {
+		for(int i=0;i<expertList.size();i++){
+			//得到性别
+			if(expertList.get(i).getSex().equals("1")){
+				expertList.get(i).setSex("男");
+			}else{
+				expertList.get(i).setSex("女");
+			}
+			//得到学历
+			if(expertList.get(i).getKnowledge().equals("1")){
+				expertList.get(i).setKnowledge("本科");
+			}else if(expertList.get(i).getKnowledge().equals("2")){
+				expertList.get(i).setKnowledge("硕士");
+			}else{
+				expertList.get(i).setKnowledge("博士");
+			}
+			//得到单位地址,家庭地址
+			String workAddressStr[] = expertList.get(i).getWork_address().split(",");
+			String AddressStr[] = expertList.get(i).getAddress().split(",");
+			String workAddress = "";
+			String address = "";
+			for(int g=0;g<workAddressStr.length;g++){
+				Area area1 = new Area();
+				Area area2 = new Area();
+				area1.setId(workAddressStr[g]);
+				area2.setId(AddressStr[g]);
+//				workAddress += areaService.selectListBy(area1).get(0).getName() + ",";
+//				address += areaService.selectListBy(area2).get(0).getName() + ",";
+			}
+			expertList.get(i).setWork_address(workAddress);
+			expertList.get(i).setAddress(address);
+			//得到技术职称
+			if(expertList.get(i).getJob_name().equals("0")){
+				expertList.get(i).setJob_name("中级");
+			}else if(expertList.get(i).getJob_name().equals("1")){
+				expertList.get(i).setJob_name("副高级");
+			}else{
+				expertList.get(i).setJob_name("高级");
+			}
+			//得到专业类别
+			String strList[] = expertList.get(i).getProfession().split(",");
+			String str = "";
+			for(int j=0;j<strList.length;j++){
+				str += kindService.getKind(Integer.parseInt(strList[j])).getName() + ",";
+			}
+			expertList.get(i).setProfession(str);
+		}
+		return expertList;
+	}
+	
+	/**
+	 * 抽取方法
+	 */
+
+	/**
+	 * 抽取内容详情
+	 * @param expert
+	 * @return
+	 */
+	public Map<List<WzcgExpert>,List<WzcgExpert>> extractDetail(WzcgExtract extract){
+		Map<List<WzcgExpert>,List<WzcgExpert>> map = new HashMap<List<WzcgExpert>,List<WzcgExpert>>();
+		List<WzcgExpert> expert1List = new ArrayList<WzcgExpert>();
+		List<WzcgExpert> expert2List = new ArrayList<WzcgExpert>();
+		extract = wzcgExtractDao.find(extract).get(0);
+		if(!extract.getResult1().equals("")){
+			String result1[] = extract.getResult1().split(",");
+			for(int i=0;i<result1.length;i++){
+				WzcgExpert expert = new WzcgExpert();
+				expert.setUserId(result1[i]);
+				expert1List.add(wzcgExpertDao.find(expert).get(0));
+			}
+		}
+		if(!extract.getResult2().equals("")){
+			String result2[] = extract.getResult2().split(",");
+			for(int i=0;i<result2.length;i++){
+				WzcgExpert expert = new WzcgExpert();
+				expert.setUserId(result2[i]);
+				expert2List.add(wzcgExpertDao.find(expert).get(0));
+			}
+		}
+		map.put(expert1List,expert2List);
+		return map;
+	}
+	
+	/*
+	 * 抽取搜索
+	 */
+	public Map<Boolean,List<WzcgExpert>> extractSearchList(WzcgExpert expert){
+		Map<Boolean,List<WzcgExpert>> map = new HashMap<Boolean, List<WzcgExpert>>();
+		boolean mark = true;//按钮显示判断
+		List<WzcgExpert> expertList = new ArrayList<WzcgExpert>();
+		expertList = wzcgExpertDao.extractSearch(expert);
+		map.put(mark,expertList);
+		return map;
+	}
+	
+}

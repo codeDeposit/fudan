@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.SalaryPayoffMapper">
+
+	<!-- 添加发放登记 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.SalaryPayoff">
+		insert fudan_oa_salary_payoff <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="fullname != null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+			<if test="profileNo != null and profileNo !='' ">
+				profileNo = #{profileNo},
+			</if>
+			<if test="idNo != null and idNo !='' ">
+				idNo = #{idNo},
+			</if>
+			<if test="standAmount != null ">
+				standAmount = #{standAmount},
+			</if>
+			<if test="encourageAmount != null ">
+				encourageAmount = #{encourageAmount},
+			</if>
+			<if test="deductAmount != null ">
+				deductAmount = #{deductAmount},
+			</if>
+			<if test="achieveAmount != null ">
+				achieveAmount = #{achieveAmount},
+			</if>
+			<if test="encourageDesc != null and encourageDesc !='' ">
+				encourageDesc = #{encourageDesc},
+			</if>
+			<if test="deductDesc != null and deductDesc !='' ">
+				deductDesc = #{deductDesc},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="acutalAmount != null ">
+				acutalAmount = #{acutalAmount},
+			</if>
+			<if test="checkStatus != null ">
+				checkStatus = #{checkStatus},
+			</if>
+			<if test="regTime != null ">
+				regTime = #{regTime},
+			</if>
+			<if test="register != null and register !='' ">
+				register = #{register},
+			</if>
+			<if test="startTime != null ">
+				startTime = #{startTime},
+			</if>
+			<if test="endTime != null ">
+				endTime = #{endTime},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加发放登记 end -->
+	
+	
+	<!-- 修改发放登记信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.SalaryPayoff">
+		update fudan_oa_salary_payoff <include refid="insertSQL"></include>
+		where recordId = #{recordId}
+	</update>
+	<!-- 修改发放登记信息 end -->
+	
+	
+	<!-- 获取发放登记详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.SalaryPayoff">
+		select * from fudan_oa_salary_payoff where recordId = #{recordId}
+	</select>
+	<!-- 获取发放登记详细信息 end -->
+	
+	
+	<!-- 审核发放登记信息 start -->
+	<update id="updateReview" parameterType="com.jy.entity.oa.hrm.SalaryPayoff">
+		update fudan_oa_salary_payoff <include refid="updateReviewSQL"></include>
+		where recordId = #{recordId}
+	</update>
+	
+	<sql id="updateReviewSQL">
+		<set>
+			<if test="checkName !=null and checkName !='' ">
+				checkName = #{checkName},
+			</if>
+			<if test="checkTime !=null ">
+				checkTime = #{checkTime},
+			</if>
+			<if test="checkStatus !=null ">
+				checkStatus = #{checkStatus},
+			</if>
+			<if test="checkOpinion !=null and checkOpinion !='' ">
+				checkOpinion = #{checkOpinion},
+			</if>
+		</set>
+	</sql>
+	<!-- 审核发放登记信息 end -->
+	
+	
+	<!-- 删除发放登记信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_salary_payoff where recordId = #{recordId}
+	</delete>
+	<!-- 删除发放登记信息 end -->
+	
+	
+	<!-- 获取发放登记列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.SalaryPayoff">
+		select * from fudan_oa_salary_payoff
+		<where>
+			<if test="fullname !=null and fullname !='' ">
+				and fullname like concat("%",#{fullname},"%") 
+			</if>
+			<if test="checkStatus !=null ">
+				and checkStatus = #{checkStatus}
+			</if>
+		</where>
+	</select>
+	<!-- 获取发放登记列表 end -->
+	
+	
+	<!-- 发放登记分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.SalaryPayoff">
+		select * from fudan_oa_salary_payoff
+		<where>
+			<if test="fullname !=null and fullname !='' ">
+				and fullname like concat("%",#{fullname},"%") 
+			</if>
+			<if test="checkStatus !=null ">
+				and checkStatus = #{checkStatus}
+			</if>
+		</where>
+		order by recordId desc limit #{firstIndex},#{toIndex}
+	</select>
+	<!-- 发放登记分页列表 end -->
+	
+</mapper>

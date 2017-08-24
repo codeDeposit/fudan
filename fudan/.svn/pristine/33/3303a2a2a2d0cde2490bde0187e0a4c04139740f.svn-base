@@ -1,0 +1,556 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp"%>
+		<%@ include file="../../common/toast.jsp" %>
+		<base href="<%=basePath %>">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>日程安排</title>
+		<link rel="stylesheet" href="pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="pc/css/common/style.min.css">
+		<link rel="stylesheet" href="pc/css/date/jquery.datetimepicker.css">
+		<link rel="stylesheet" href="pc/css/date/fullcalendar.css">
+		<script src="pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="pc/js/date/fullcalendar.min.js"></script>
+		<script src="pc/js/date/jquery-ui-1.10.2.custom.min.js"></script>
+		<script src="pc/js/date/jquery.datetimepicker.js"></script>
+		<!-- 刷新js -->
+		<script src="pc/js/oa/refresh.js"></script>
+		<style type="text/css">
+			#addTask td{border-top-width: 0;}
+			#addTask .padCen{padding-top: 13px;}
+			#calendar{width:1000px; margin:20px auto 10px auto}
+			#titleArea{width: 100%;height: 100%;border-width: 0;}
+			.havHead{background: #efefef;}
+			.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			a{text-decoration: none;}
+			a:hover{text-decoration: none;}
+			a:focus{text-decoration: none;}
+			li{list-style: none;}
+			ul{padding:0;margin:0;}
+			.leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+			.firstLevel li{cursor: pointer;}
+			.secondLevel{display: none;}
+			.thirdLevel{display: none;}
+			.fIndent{padding-left: 8px;}
+			.sIndent{padding-left: 24px;}
+			.tIndent{padding-left: 40px;}
+			.rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+			.rightContent .table{margin-bottom: 5px;height: 234px;}
+			.tBody{display: block;height:196px;overflow: auto;}
+			.rightContent thead tr{display: block;}
+			.wiD{width: 36px;}
+			.seQuence{width: 45px;}
+			.wiDl{width: 280px;}
+			.close{margin:5px;}
+			.aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+			.aHover:hover{background-color: #ccc;}
+			.aHover.active{background-color:#999;color: #fff;}
+			.pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+			#pageNum{width: 335px;margin:0 auto;}
+			.modal-content{border-radius: 6px;overflow: hidden;}
+			.pagination{margin:5px 0;}
+			.headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<div id='calendar' class="col-sm-10"></div>
+			<div class="col-sm-2">
+				<table>
+					<tr>
+						<td><span><font style="color:GREEN;">绿色:</font></span></td>
+						<td><span>已完成</span></td>
+					</tr>
+					<tr>
+						<td><span><font style="color:RED;">红色:</font></span></td>
+						<td><span>未完成：紧急任务</span></td>
+					</tr>
+					<tr>
+						<td><span><font style="color:ORANGE;">橘黄色:</font></span></td>
+						<td><span>未完成：重要任务</span></td>
+					</tr>
+					<tr>
+						<td><span><font style="color:#3A87AD;">蓝色:</font></span></td>
+						<td><span>未完成：一般任务</span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<%@ include file="calendarplanXQ_add.jsp" %>
+		<!-- 日程显示模态窗 -->
+		<div class="modal fade" id="showTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">任务信息</h4>
+					</div>
+					<div class="modal-body">
+						<table class="table tableShow">
+							<tr>
+								<td class="text-right">执行人：</td>
+								<td class="doMan"></td>
+							</tr>
+							<tr>
+								<td class="text-right">分配人：</td>
+								<td class="ditriMan"></td>
+							</tr>
+							<tr>
+								<td class="text-right">内容：</td>
+								<td class="backContent"></td>
+							</tr>
+							<tr>
+								<td class="text-right">紧急程度：</td>
+								<td class="jinji"></td>
+							</tr>
+							<tr>
+								<td class="text-right">任务类型：</td>
+								<td class="taskType"></td>
+							</tr>
+							<tr class="tTime">
+								<td class="text-right">开始时间：</td>
+								<td class="startTime"></td>
+							</tr>
+							<tr class="tTime">
+								<td class="text-right">结束时间：</td>
+								<td class="endTime"></td>
+							</tr>
+							<tr>
+								<td class="text-right">状态：</td>
+								<td class="tState"></td>
+							</tr>
+							<tr class="taskBack1">
+								<td class="text-right">任务反馈：</td>
+								<td class="backC"></td>
+							</tr>
+							<tr class="taskBack2">
+								<td class="text-right">反馈：</td>
+								<td rowspan="2" colspan="2">
+									<textarea name="textBack" class="form-control" id="taskText" cols="30" rows="4"></textarea>
+								</td>
+							</tr>
+							<input type="hidden" name="planId" value="" id="planIds">
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" onclick="removeId('planIds')">关闭</button>
+						<button type="button" class="btn btn-success taskDone">完成</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 员工选择弹窗 start -->
+		<%@ include file="../common/employee_modal.jsp" %>
+		<!-- 员工选择弹窗 end -->
+		<script type="text/javascript">
+			var calendarPlansArray = ${calendarPlans};//日程任务数据
+			var test = '${calendarPlans}';
+			$(function() {
+				getAllEmp();
+				$('.taskBack2').hide();
+				$('.taskDone').hide();
+				$('.tableShow tr').children('td').eq(0).width(100);
+				$('.taskDate').on('click', 'input[name="limitDate"]', function() {
+					if ($(this).val() == '2') {
+						$('.showY').hide();
+						$('.showY').find('input').val(' ');
+					} else {
+						$('.showY').show();
+					}
+				})
+				function startToStr(start) {
+					var dateTime;
+					var yy = start.toString().substring(11, 15);
+					var mm = start.toString().substring(4, 7);
+					var dd = start.toString().substring(8, 10);
+					var ii = start.toString().substring(16, 21);
+					var dat = new Date();
+					var strH = dat.getHours() < 10 ? '0' + dat.getHours() : dat.getHours();
+					var strM = dat.getMinutes() < 10 ? '0' + dat.getMinutes() : dat.getMinutes();
+					switch (mm) {
+						case 'Dec':
+							mm = '12';
+							break;
+						case 'Nov':
+							mm = '11';
+							break;
+						case 'Oct':
+							mm = '10';
+							break;
+						case 'Sep':
+							mm = '09';
+							break;
+						case 'Aug':
+							mm = '08';
+							break;
+						case 'Jul':
+							mm = '07';
+							break;
+						case 'Jun':
+							mm = '06';
+							break;
+						case 'May':
+							mm = '05';
+							break;
+						case 'Apr':
+							mm = '04';
+							break;
+						case 'Mar':
+							mm = '03';
+							break;
+						case 'Feb':
+							mm = '02';
+							break;
+						case 'Jan':
+							mm = '01';
+							break;
+						default :
+							//do
+							break;
+					}
+					if (ii == '00:00') {
+						dateTime = yy + '-' + mm + '-' + dd + ' ' + strH + ':' + strM;
+					} else {
+						dateTime = yy + '-' + mm + '-' + dd + ' ' + ii;
+					}
+					return dateTime;
+				}
+				function checkInputa(name) {
+					$('input[name=' + name + ']').on('input propertychange', function() {
+						if ($('input[name=' + name + ']').val() != ' ') {
+							$(this).parents('tr').find('td').eq(0).css('color', '#000');
+						}
+					})
+				}
+				function checkInputb(name) {
+					$('input[name=' + name + ']').on('change', function() {
+						$(this).parents('tr').find('td').eq(0).css('color', '#000');
+					})
+				}
+				function checkInputc(name) {
+					$('.table').on('input propertychange', 'textarea', function() {
+						if ($(this).val() != ' ') {
+							$(this).parents('tr').find('td').eq(0).css('color', '#000');
+						}
+					})
+				}
+				checkInputa('distriT');
+				checkInputa('eTime');
+				checkInputb('limitDate');
+				checkInputb('jjcd');
+				checkInputc('titleArea');
+				function checkRequired(elem) {
+					var name = elem.name;
+					if (elem.type == "checkbox" || elem.type == "radio") {
+						var results = [];
+						results.numChecked = 0;
+						var input = document.getElementsByTagName("input");
+						for (var i = 0; i < input.length; i++) {
+							if (input[i].name == name) {
+								results.push(input[i]);
+								if (input[i].checked) {
+									results.numChecked++;
+								}
+							}
+						}
+						return results.numChecked;
+					} else {
+						return elem.value.length > 0 && elem.value != elem.defaultValue;
+					}
+				}
+
+				function doCheck(id) {
+					var elem = document.getElementById(id);
+					if (elem != null) {
+						if (!checkRequired(elem)) {
+							$('#' + id).parents('tr').find('td').eq(0).css('color', 'red');
+							return false;
+						}
+					} else {
+						return true;
+					}
+					return true;
+				}
+				$('#addTask').on('hide.bs.modal', function() {
+					$('#addTask').find('#recipientName').val(' ');
+					$('#addTask').find('#endT').val(' ');
+					$('#addTask').find('input[type="radio"]').removeAttr('checked');
+					$('#addTask').find('textarea').val(' ');
+					$(this).find('tr').children('td').css('color', '#000');
+				})
+				$('#showTask').on('hide.bs.modal', function() {
+					$('.taskBack2').hide();
+				})
+				$('#addSavaBtn').on('click', function() {
+					var title = getContent();
+					var start = $('#starT').val().replace(/T/, ' ') + ":00";
+					var status = 0;
+					var end = $('#endT').val().replace(/T/, ' ') + ":00";
+					var jjcd = $('input[name="jjcd"]:checked').val();
+					var doman = $('#recipientName').val();
+					var userId = $("#recipientID").val();
+					var tasktype = $('input[name="limitDate"]:checked').val();
+					var showstyle = $('input[name="showStyle"]:checked').val();
+					var backVal = doCheck('reqiured1') && doCheck('recipientName') && doCheck('reqiured3') && doCheck('starT') && doCheck('endT');
+					var eventData = {
+						'urgent' : jjcd,
+						'userId' : userId,
+						'fullname' : doman,
+						'taskType' : tasktype,
+						'content' : title,
+						'startTime' : start,
+						'endTime' : end,
+						'status' : status,
+						'showStyle' : showstyle,
+						'feedback' : backVal
+					};
+					if (backVal) {//加上一个表单不为空验证
+						//do ajax;
+						$.ajax({
+							type : "post",
+							url : jypath + "/oa/calendarplan/add",
+							data : eventData,
+							success : function(data) {
+								fuShowSuccess();
+								refresh();
+							},
+							error: function() {
+								fuShowError();
+								refresh();
+							}
+						});
+					}
+				});
+				$('.taskDone').on('click', function() {
+					if ($('.taskBack2').css('display') == 'none') {
+						$('.taskBack2').show();
+					} else {
+						if (doCheck('taskText')) {
+							var tText = $('#taskText').val();
+							$('.taskBack2').hide();
+							$('.taskBack1').show();
+							$('.backC').html(tText);
+							$('.taskDone').remove();
+							//do ajax
+							var planId = $("#planIds").val();
+							var data = {
+								"feedback" : tText,
+								"planId" : planId
+							};
+							$.ajax({
+								type : "post",
+								url : jypath + "/oa/calendarplan/complete",
+								data : data,
+								success : function(data) {
+									$("#showTask").modal("hide");
+									refresh();
+								}
+							});
+						}
+					}
+				})
+				$('#calendar').fullCalendar({
+					//defaultView: 'agendaWeek',//初始化默认视图
+					header : {
+						left : 'prev, today',
+						center : 'title',
+						right : 'month,agendaWeek,agendaDay next'
+					},
+					//firstDay:0,//周日是第一天
+					selectable : true,
+					editable : true,
+					eventLimit : true,
+					timeFormat : 'H:mm',
+					axisFormat : 'H:mm',
+					select : function(start) {
+						$('#addTask').modal('show');
+						$('#starT').val(startToStr(start));
+					},
+					eventClick : function(start, end, title) {
+						$('#showTask').modal('show');
+						var tasktype = start['tasktype'];
+						var tState = start['tState'];
+						var jinji = start['jinji'];
+						if (tasktype == '限期任务') {
+							$('.taskType').css('color', '#0000FF');
+							$('.tTime').show();
+						} else {
+							$('.taskType').css('color', '#008000');
+							$('.tTime').hide();
+							//隐藏开始结束时间
+						};
+						if (jinji == '紧急') {
+							$('.jinji').css('color', '#FF0000');
+						} else if (jinji == '重要') {
+							$('.jinji').css('color', '#990000');
+						} else {
+							$('.jinji').css('color', '#0000FF');
+						}
+						if (tState == '未完成') {
+							$('.tState').css('color', '#FF0000');
+							$('.taskBack1').hide();
+							$('.taskDone').show();
+						} else {
+							$('.tState').css('color', '#008000');
+							$('.taskDone').hide();
+						};
+						$('.doMan').html(start['doman']);
+						$('.ditriMan').html(start['distrim']);
+						$('.backContent').html(start['title']);
+						$('.jinji').html(start['jinji']);
+						$('.taskType').html(tasktype);
+						$('.startTime').html(startToStr(start['start']));
+						$('.endTime').html(startToStr(start['end']));
+						$('.tState').html(tState);
+						$('.backC').html(start['beback']);
+						$('#planIds').val(start['planId']);
+					},
+					//events:calendarPlansArray// {
+					//url: 'php/get-events.php',//地址
+					//error: function() {
+					//    $('#script-warning').show();
+					//}
+					//}
+					//,
+					/*events:[//样式
+					 {
+					 "doman": "xiao er",
+					 "distrim": "xiao wang",
+					 "title": "All Day Event",
+					 "jinji": "非常",
+					 "tasktype": "非限期任务",
+					 "start": "2016-12-08 12:31",
+					 "end": "2016-12-10 12:30",
+					 "allDay":false,//这个不在列表显示
+					 "tState":"完成",
+					 "backgroundColor":"green",
+					 "Beback":"a1",
+					 },
+					 {
+					 "doman": "张三",
+					 "distrim": "李四",
+					 "title": "Long Event",
+					 "jinji": "非常",
+					 "tasktype": "限期任务",
+					 "start": "2016-12-08 12:35",
+					 "end": "2016-12-09 12:33",
+					 "allDay":false,
+					 "tState":"未完成",
+					 "backgroundColor":"Blue",
+					 //"Beback":"a1",
+					 },
+					 ]*/
+					events : calendarPlansArray
+				});
+			});
+			function chooseTime(tid, bid) {
+				$('#' + tid).datetimepicker({
+					step : 1,
+					lang : 'ch',
+					format : 'Y-m-d H:i',
+				});
+				$('#' + bid).on('click', function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+					$('#' + tid).datetimepicker('show');
+				})
+			}
+			chooseTime('starT', 'starBtn');
+			chooseTime('endT', 'endBtn');
+			// 获取所有部门
+			function getAllDep() {
+				var url = "/oa/org/listorg";
+				$.ajax({
+					type : "get",
+					url : jypath + url,
+					success : function(data) {
+						var obj = eval("(" + data + ")");
+						$("#orgs").html(obj);
+					}
+				});
+			}
+			// 获取某一个部门下的员工
+			function getEmpByOrg(id) {
+				var url = "/oa/listEm";
+				id = id + "";
+				$.ajax({
+					type : "get",
+					url : jypath + url,
+					data : "orgId=" + id,
+					success : function(data) {
+						$("#employeetable").html(data);
+					}
+				});
+			}
+			// 获取所有员工
+			function getAllEmp() {
+				var url = "/oa/listEm";
+				$.ajax({
+					type : "get",
+					url : jypath + url,
+					success : function(data) {
+						$("#employeetable").html(data);
+					}
+				});
+			}
+			//获取所有角色
+			function getAllRole() {
+				var url = "/oa/role/listhtml";
+				$.ajax({
+					type : "get",
+					url : jypath + url,
+					success : function(data) {
+						var obj = eval("(" + data + ")");
+						$("#roles").html(obj);
+					}
+				});
+			}
+			// 获取某一个角色下的员工
+			function getEmpByRole(id) {
+				var url = "/oa/listEm";
+				id += "";
+				$.ajax({
+					type : "get",
+					url : jypath + url,
+					data : "roleId=" + id,
+					success : function(data) {
+						$("#employeetable").html(data);
+					}
+				});
+			}
+			//删除id为id的元素的内容
+			function removeData(id, id1) {
+				$("#" + id).val("");
+				$("#" + id1).val("");
+			}
+			// 获取富文本编辑器的内容
+			function getContent() {
+				var content = UM.getEditor("containerform").getContent();
+				return content;
+			}
+			//清除Id号
+			function removeId(id) {
+				$("#" + id).val("");
+			}
+			function show(id, id1) {
+				$("#"+id).show();
+				$("#"+id1).show();
+			}
+			function hide(id, id1) {
+				$("#"+id).hide();
+				$("#"+id1).hide();
+			}
+		</script>
+	</body>
+</html>

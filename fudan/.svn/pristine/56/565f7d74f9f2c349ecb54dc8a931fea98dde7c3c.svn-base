@@ -1,0 +1,240 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %> 
+		<%@ include file="../../common/title.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<link rel="stylesheet" href="${jypath}/pc/css/wzcg/supplierReg.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增 日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增  语言-->
+		<script src="${jypath}/pc/js/wzcg/supplierReg.js"></script>
+	</head>
+	<body>
+		<%@ include file="../../common/toast.jsp" %> 
+		<div id="headLayer">
+			<div id="title">
+				物资采购供应商资格申请表
+			</div>
+			<div id="subhead">
+				（带 * 的为必填项目）
+			</div>
+		</div>
+		<!-- 表单区 -->
+		<div id="form">
+			<form id="form1" method="post" class="reg-form" enctype="multipart/form-data" onsubmit="return fSubmit()">
+		        <div class="form-group col-md-6">
+		            <label for="account"><i class="xinghao"> * </i>登陆账号</label>&nbsp;&nbsp;&nbsp;<span style="color:red" id="accountHint"></span>
+		            <input type="text" class="form-control" id="account" name="loginName" minlength="3" maxlength="20" onblur="checkName()" placeholder="登陆账号" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="password"><i class="xinghao"> * </i>登陆密码</label>
+		            <input type="password" class="form-control" id="password" name="password" minlength="6" maxlength="20" placeholder="登陆密码" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="company"><i class="xinghao"> * </i>企业名称</label>
+		            <input type="text" class="form-control" id="company" name="company" minlength="2" maxlength="20" placeholder="企业名称" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="represent" style="display:block;text-align:left;"><i class="xinghao"> * </i>法定代表人</label>
+		             <input type="text" class="form-control" id="represent" name="represent" maxlength="20" placeholder="法定代表人" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="company_address" style="display:block;text-align:left;"><i class="xinghao"> * </i>企业注册地址</label>
+		            <select class="form-control col-sm-3" id="province1" name="company_address1" onchange="getCity(1)" style="width:48%;display:inline-block;margin-right:2%;" required>
+		                <option value="">-- 选择省 --</option>
+		            </select>
+		            <select class="form-control col-sm-3" id="city1" name="company_address2" style="width:48%; display:inline-block;margin-right:2%;" required>
+		                <option value="">-- 选择市 --</option>
+		            </select>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="zip_code"><i class="xinghao"> * </i>邮政编码</label>
+		            <input type="text" class="form-control" id="zip_code" name="zip_code" minlength="6" maxlength="6"　onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="邮编（6位）" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="ID_card" style="display:block;text-align:left;"><i class="xinghao"> * </i>法人身份证号码</label>
+		            <input type="text" class="form-control" id="ID_card" name="ID_card" minlength="18" maxlength="20" placeholder="法人身份证号码" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="bankroll"><i class="xinghao"> * </i>注册资金</label>
+		            <div class="input-group">
+			            <input type="text" class="form-control" id="bankroll" name="bankroll" maxlength="20" placeholder="注册资金" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" required >
+			            <span class="input-group-addon" id="basic-addon">万元</span>
+			        </div>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="company_register_number"><i class="xinghao"> * </i>营业执照注册号</label>
+		            <input type="text" class="form-control" id="company_register_number" name="company_register_number" maxlength="20" placeholder="营业执照注册号" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="license"><i class="xinghao"> * </i>营业执照编号</label>
+		            <input type="text" class="form-control" id="license" name="license" maxlength="20" placeholder="营业执照编号" required >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="national_tax"><i class="xinghao"></i>国税登记号</label>
+		            <input type="text" class="form-control" id="national_tax" name="national_tax" maxlength="20" placeholder="国税登记号" >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="land_tax"><i class="xinghao"></i>地税登记号</label>
+		            <input type="text" class="form-control" id="land_tax" name="land_tax" maxlength="20" placeholder="地税登记号" >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="organization"><i class="xinghao"></i>组织机构代码</label>
+		            <input type="text" class="form-control" id="organization" name="organization" maxlength="20" placeholder="组织机构代码" >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="company_type"><i class="xinghao"></i>企业类型</label>
+		            <input type="text" class="form-control" id="company_type" name="company_type" maxlength="20" placeholder="企业类型" >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="profession_class" style="display:block;text-align:left;"><i class="xinghao"> * </i>行业分类</label>
+		            <input type="text" class="form-control" id="profession_class" name="profession_class" maxlength="20" placeholder="行业分类" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="charge" style="display:block;text-align:left;"><i class="xinghao"></i>主管部门</label>
+		            <input type="text" class="form-control" id="charge" name="charge" maxlength="20" placeholder="主管部门">
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="admin_number"><i class="xinghao"></i>行政管理资质号</label>
+		            <input type="text" class="form-control" id="admin_number" name="admin_number" maxlength="20" placeholder="行政管理资质号"  >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="office1" style="display:block;text-align:left;"><i class="xinghao"></i>发证机关</label>
+		            <input type="text" class="form-control" id="office1" name="office1" maxlength="20" placeholder="发证机关"  >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="produce_card"><i class="xinghao"></i>生产许可证</label>
+		            <input type="text" class="form-control" id="produce_card" name="produce_card" maxlength="20" placeholder="生产许可证" >
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="office2">发证机关</label>
+		            <input type="text" class="form-control" id="office2" name="office2" maxlength="20" placeholder="发证机关">
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="found_time"><i class="xinghao"> * </i>成立时间</label>
+		            <div class="input-group date form_date col-md-12" data-date-format="yyyy-MM-dd">
+		                <input type="text" class="form-control" id="found_time" name="found_time" value="" required="required" readonly>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		            </div>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="apply_time"><i class="xinghao"> * </i>申请时间</label>
+		            <div class="input-group date form_date col-md-12" data-date-format="yyyy-MM-dd">
+		                <input type="text" class="form-control" id="apply_time" name="apply_time" value="" required="required" readonly>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		            </div>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="business_scope" style="display:block;text-align:left;"><i class="xinghao"> * </i>经营范围</label>
+		            <select class="form-control col-sm-3" id="business_scope1" name="business_scope1" style="width:48%;display:inline-block;margin-right:2%;" required>
+		                <option value="">-- 请选择  --</option>
+		            </select>
+		            <select class="form-control col-sm-3" id="business_scope2" name="business_scope2" style="width:48%; display:inline-block;margin-right:2%;" required>
+		                <option value="">-- 请选择  --</option>
+		            </select>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for=bank><i class="xinghao"> * </i>开户银行</label>
+		            <input type="text" class="form-control" id="bank" name="bank" maxlength="20" placeholder="开户银行" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="account"><i class="xinghao"> * </i>银行账号</label>
+		            <input type="text" class="form-control" id="account" name="account" maxlength="20" placeholder="银行账号" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="contacts"><i class="xinghao"> * </i>联系人</label>
+		            <input type="text" class="form-control" id="contacts" name="contacts" maxlength="20" placeholder="联系人" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="contacts_phone"><i class="xinghao"> * </i>联系电话</label>
+		            <input type="text" class="form-control" id="contacts_phone" name="contacts_phone" maxlength="11" placeholder="联系电话" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="fax_phone"><i class="xinghao"> * </i>传真</label>
+		            <input type="text" class="form-control" id="fax_phone" name="fax_phone" maxlength="20" placeholder="传真" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="mobile_number"><i class="xinghao"> * </i>手机号码</label>
+		            <input type="text" class="form-control" id="mobile_number" name="mobile_number" minlength="11" maxlength="11" placeholder="手机号码" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" required>
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="email"><i class="xinghao"> * </i>电子邮件</label>
+		            <input type="email" class="form-control" id="email" name="email" maxlength="20" placeholder="电子邮件" required>
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="website"><i class="xinghao"></i>企业网址</label>
+		            <input type="text" class="form-control" id="website" name="website" maxlength="20" placeholder="企业网址" >
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="main_product"><i class="xinghao"> * </i>主营产品</label>
+		            <textarea class="form-control" rows="3" id="main_product" name="main_product" maxlength="1500" placeholder="主营产品（字数不超过1000字）" required ></textarea>
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="part_time_product"><i class="xinghao"> * </i>兼营产品</label>
+		            <textarea class="form-control" rows="3" id="part_time_product" name="part_time_product" maxlength="1000" placeholder="兼营产品（字数不超过1000字）" required ></textarea>
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="experience"><i class="xinghao"> * </i>参加投标经历</label>
+		            <textarea class="form-control" rows="3" id="experience" name="experience" maxlength="3000" placeholder="参加投标经历，不能超过3000字" required ></textarea>
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="brief_introduction"><i class="xinghao"> * </i>企业简介</label>
+		            <textarea class="form-control" rows="3" id="brief_introduction" name="brief_introduction" maxlength="3000" placeholder="(企业所在地、机构设置、主要技术、经济技术、经营业绩、售后服务体系、是否纳入军队或上海市供应商库等）不能超过3000字" required></textarea>
+		        </div>
+		        <div class="form-group col-md-12">
+		            <label for="promise"><i class="xinghao"> * </i>供应商承诺</label>
+		            <textarea class="form-control" rows="3" id="promise" name="promise" readonly="true" maxlength="1000" required>我方同意按照 《物资供应商库管理办法》的有关要求履行义务。</textarea>
+		        </div>
+		        <div class="form-group col-md-12">
+					<label for="cgbcdyj" class="col-sm-2 control-label">附件</label>
+					<div class="col-md-12" align="left">
+						<a href="<%=basePath%>resource/file/关于征集第二军医大学供应商的公告.doc" class="form-control">关于征集供应商的公告.doc</a>
+					</div>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="cgbcdyj" class="col-sm-2 control-label"></label>
+					<div class="col-md-12" align="left">
+						<a href="<%=basePath%>resource/file/第二军医大学供应商入库标准和程序.doc" class="form-control">供应商入库标准和程序.doc</a>
+					</div>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="cgbcdyj" class="col-sm-2 control-label"></label>
+					<div class="col-md-12" align="left">
+						<a href="<%=basePath%>resource/file/第二军医大学物资集中采购目录（试行）.doc" class="form-control">物资集中采购目录（试行）.doc</a>
+					</div>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="cgbcdyj" class="col-sm-2 control-label"></label>
+					<div class="col-md-12" align="left">
+						<a href="<%=basePath%>resource/file/第二军医大学物资供应商库供应商登记申请表.doc" class="form-control">物资供应商库供应商登记申请表.doc</a>
+					</div>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="cgbcdyj" class="col-sm-2 control-label"></label>
+					<div class="col-md-12" align="left">
+						<a href="<%=basePath%>resource/file/第二军医大学物资供应商入库初审表.doc" class="form-control">物资供应商入库初审表.doc</a>
+					</div>
+				</div>
+		        <div class="form-group col-md-12">
+			        <div id="hint"></div>
+		            <div class="center-block" style="width:80%;margin:0 auto;text-align:center;margin-top:30px;margin-bottom:20px;">
+		                <a href="<%=basePath%>/loginIndex">
+	                		<input class="btn btn-warning" type="button" value="返回">
+	                	</a>
+	                	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		                <input class="btn btn-success" type="submit" value="提交">
+		            </div>
+	        	</div>
+	    	</form>
+		</div>
+		<!-- end -->
+	</body>
+</html>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.wzcg.WzcgItemDao">
+	
+	<resultMap type="com.jy.entity.wzcg.WzcgItem" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="projectId" property="projectId"/>
+		<result column="cgjhId" property="cgjhId"/>
+		<result column="creator" property="creator"/>
+		<result column="category" property="category"/>
+		<result column="product" property="product"/>
+		<result column="norms" property="norms"/>
+		<result column="requirement" property="requirement"/>
+		<result column="attachment" property="attachment"/>
+		<result column="counts" property="counts"/>
+		<result column="unit" property="unit"/>
+		<result column="price" property="price"/>
+		<result column="amount" property="amount"/>
+		<result column="endDate" property="endDate"/>
+		<result column="types" property="types"/>
+		<result column="state" property="state"/>
+		<result column="bm" property="bm"/>
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="find" parameterType="Integer" resultMap="ResultMap" >
+		select * from wzcg_item where 1 = 1
+		<if test="projectId != null and projectId != ''">  
+			And projectId = #{projectId}
+		</if>
+		<if test="cgjhId != null and cgjhId != ''">  
+			And cgjhId = #{cgjhId}
+		</if>
+		<if test="id != null and id != '' and id != 0">  
+			And id = #{id}
+		</if>
+		<if test="creator != null and creator != ''">  
+			And creator = #{creator}
+		</if>
+		<if test="state != null and state != ''">  
+			And state = #{state}
+		</if>
+		<if test="product != null and product != ''">  
+			And product = #{product}
+		</if>
+		<if test="norms != null and norms != ''">  
+			And norms = #{norms}
+		</if>
+		<if test="requirement != null and requirement != ''">  
+			And requirement = #{requirement}
+		</if>
+		<if test="counts != null and counts != '' and counts != 0">  
+			And counts = #{counts}
+		</if>
+		<if test="unit != null and unit != ''">  
+			And unit = #{unit}
+		</if>
+		<if test="price != null and price != '' and price != 0">  
+			And price = #{price}
+		</if>
+		<if test="amount != null and amount != '' and amount != 0">  
+			And amount = #{amount}
+		</if>
+		<if test="endDate != null and endDate != ''">  
+			And endDate = #{endDate}
+		</if>
+		<if test="types != null and types != ''">  
+			And types = #{types}
+		</if>
+	</select>
+	<!-- 搜索 -->
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_item where 1 = 1  
+		<if test="projectId !=null and projectId !=''">  
+		    AND projectId like concat('%', #{projectId}, '%') 
+		</if> 
+		<if test="cgjhId != null and cgjhId != ''">  
+			And cgjhId = #{cgjhId}
+		</if>
+		<if test="state !=null and state !=''">  
+		    AND state = #{state} 
+		</if> 
+		<if test="bm !=null and bm !=''">  
+		    AND bm = #{bm} 
+		</if> 
+		<if test="priceMin !=null and priceMin !=''">  
+		    AND amount >= #{priceMin} 
+		</if>
+		<if test="priceMax !=null and priceMax !=''">  
+		    AND amount &lt;= #{priceMax} 
+		</if>
+		<if test="category !=null and category !=''">  
+		    AND category like concat('%', #{category}, '%')  
+		</if> 
+		<if test="types !=null and types !=''">  
+		    AND types = #{types} 
+		</if> 
+		<if test="endDate !=null and endDate !=''">  
+		    AND endDate &lt;= #{endDate} 
+		</if> 
+	</select>
+	<!-- 新增 -->
+	<insert id="insert">
+		insert into wzcg_item
+		(projectId,
+		 cgjhId,
+		 creator,
+		 state,
+		 category,
+		 product,
+		 norms,
+		 requirement,
+		 attachment,
+		 counts,
+		 unit,
+		 price,
+		 amount,
+		 endDate,
+		 types,
+		 bm)
+			values
+		(#{projectId},
+		 #{cgjhId},
+		 #{creator},
+		 #{state},
+		 #{category},
+		 #{product},
+		 #{norms},
+		 #{requirement},
+		 #{attachment},
+		 #{counts},
+		 #{unit},
+		 #{price},
+		 #{amount},
+		 #{endDate},
+		 #{types},
+		 #{bm})
+	</insert>
+	<!-- 删除 -->
+	<delete id="delete">
+		delete from wzcg_item where 1 = 1
+		<if test="id != null and id != ''">  
+			And id = #{id}
+		</if>
+		<if test="projectId != null and projectId != ''">  
+			And projectId = #{projectId}
+		</if>
+		<if test="cgjhId != null and cgjhId != ''">  
+			And cgjhId = #{cgjhId}
+		</if>
+	</delete>
+	<!-- 信息更新 -->	
+	<update id="update">
+		update wzcg_item <include refid="updateSQL"></include> where 1 = 1
+		<if test="id != null and id != ''">  
+			And id = #{id}
+		</if>
+		<if test="projectId != null and projectId != ''">  
+			And projectId = #{projectId}
+		</if>
+	</update>
+	<sql id="updateSQL">
+		<set>
+			cgjhId = #{cgjhId}
+			<if test="state != null and state != ''">  
+				state=#{state},
+			</if>
+			<if test="category != null and category != ''">  
+				category=#{category},
+			</if>
+			<if test="product != null and product != ''">  
+				product=#{product},
+			</if>
+			<if test="norms != null and norms != ''">  
+				norms=#{norms},
+			</if>
+			<if test="requirement != null and requirement != ''">  
+				requirement=#{requirement},
+			</if>
+			<if test="attachment != null and attachment != ''">  
+				attachment=#{attachment},
+			</if>
+			<if test="counts != null and counts != ''">  
+				counts=#{counts},
+			</if>
+			<if test="unit != null and unit != ''">  
+				unit=#{unit},
+			</if>
+			<if test="price != null and price != ''">  
+				price=#{price},
+			</if>
+			<if test="amount != null and amount != ''">  
+				amount=#{amount},
+			</if>
+			<if test="endDate != null and endDate != ''">  
+				endDate=#{endDate},
+			</if>
+			<if test="types != null and types != ''">  
+				types=#{types},
+			</if>
+		</set>
+	</sql>
+</mapper>

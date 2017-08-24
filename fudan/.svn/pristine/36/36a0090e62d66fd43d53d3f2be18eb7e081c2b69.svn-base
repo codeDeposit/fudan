@@ -1,0 +1,103 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="utf-8"%>
+	<!-- 收信人选择弹窗 start -->
+	<div class="modal fade" id="addMod2" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- <div class="modal-header"> -->
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title headBg">
+					<i class="glyphicon glyphicon-user"
+						style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i> &nbsp;人员选择
+				</h4>
+				<!-- </div> -->
+				<div class="modal-body" style="height:300px;">
+					<div class="leftList pull-left">
+						<ul class="firstLevel">
+							<li><span class="secondT aHover fIndent"> <i
+									class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门 </span>
+								<ul id="orgs2" class="secondLevel">
+									<!-- 所有部门打印在此处 -->
+								</ul></li>
+							<li><span class="secondT aHover fIndent"> <i
+									class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色 </span>
+								<ul id="roles2" class="secondLevel">
+									<!-- 所有角色打印在此处 -->
+								</ul></li>
+						</ul>
+					</div>
+					<div id="employeetable2" class="rightContent pull-right"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" onclick="$('#addMod2').modal('hide');">关闭</button>
+					<button type="button" class="btn btn-success aYes22">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 收信人选择弹窗 end -->
+</body>
+<script type="text/javascript">
+	$(function(){
+		$('.secondT').on('click', function(event) {
+            var theLev=$(this).parent().find('.secondLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.secondLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.thirdT').on('click', function(event) {
+            var theLev=$(this).parent().find('.thirdLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.thirdLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.aHover').on('click',function(event) {
+            event.preventDefault();
+            $('.aHover').removeClass('active');
+            $(this).addClass('active');
+        });
+    	//初始化数据..加载所有部门
+		getAllDep();
+		//初始化数据..加载所有角色
+		getAllRole();
+    });
+    //判断是否选中
+    $('.aYes22').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#employeetable2 .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#recipientName2").val(arrayName);
+	        	$("#recipientID2").val(arrayId);
+	        	$("#addMod2").modal('hide');
+	        }
+	    });
+    });
+	//全选
+    function chooseAll(){
+        if($('#checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+            $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+</script>
+</html>

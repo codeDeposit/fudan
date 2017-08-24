@@ -1,0 +1,82 @@
+package com.jy.service.workflow.online.apply;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Position;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+import com.jy.repository.system.account.AccountDao;
+import com.jy.repository.workflow.online.apply.ApproverSettingDao;
+
+@Service("approverSettingService")
+public class ApproverSettingServiceImpl implements ApproverSettingService {
+
+	private ApproverSettingDao approverSettingDao;
+	private AccountDao accountDao;
+	
+	public AccountDao getAccountDao() {
+		return accountDao;
+	}
+
+	@Autowired
+	public void setAccountDao(AccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
+
+	public ApproverSettingDao getApproverSettingDao() {
+		return approverSettingDao;
+	}
+
+	@Autowired
+	public void setApproverSettingDao(ApproverSettingDao approverSettingDao) {
+		this.approverSettingDao = approverSettingDao;
+	}
+
+	/**
+	 * 设置审核职务
+	 */
+	@Override
+	public AjaxRes save(ApproverSetting approverSetting) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		approverSetting.setAccountId(account.getAccountId());
+		AjaxRes info = new AjaxRes();
+		int result = approverSettingDao.insert(approverSetting);
+		if(result > 0) {
+			info.setSucceedMsg("操作成功");
+		}else {
+			info.setFailMsg("操作失败");
+		}
+		return info;
+	}
+
+	/**
+	 * 查询已设置的职务
+	 */
+	@Override
+	public ApproverSetting get() {
+		Account account = AccountShiroUtil.getCurrentUser();
+		ApproverSetting approverSetting = approverSettingDao.select(account.getAccountId());
+		return approverSetting;
+	}
+
+	/**
+	 * 判断登录用户是否是审核人
+	 */
+	@Override
+	public boolean isApprover() {
+		boolean flag = false;
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<Position> positions = accountDao.getPoss(account.getAccountId());
+		List<ApproverSetting> approverSettings = approverSettingDao.selectBy(positions);
+		if(approverSettings.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+}

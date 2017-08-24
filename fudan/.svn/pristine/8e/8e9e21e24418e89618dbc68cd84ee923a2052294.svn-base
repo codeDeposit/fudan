@@ -1,0 +1,102 @@
+package com.jy.service.oa.impl.task;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.task.PlanType;
+import com.jy.repository.oa.task.PlanTypeMapper;
+import com.jy.service.oa.task.PlanTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("planTypeService")
+public class PlanTypeServiceImpl implements PlanTypeService {
+
+	private PlanTypeMapper planTypeMapper;
+
+	public PlanTypeMapper getPlanTypeMapper() {
+		return planTypeMapper;
+	}
+
+	@Autowired
+	public void setPlanTypeMapper(PlanTypeMapper planTypeMapper) {
+		this.planTypeMapper = planTypeMapper;
+	}
+
+	// 添加计划类型
+	@Override
+	public JsonInfo save(PlanType planType) {
+		int result = planTypeMapper.insert(planType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取计划类型的详细信息
+	@Override
+	public PlanType getInfoBy(Long typeId) {
+		PlanType planType = planTypeMapper.selectInfoBy(typeId);
+		return planType;
+	}
+
+	// 修改计划类型信息
+	@Override
+	public JsonInfo update(PlanType planType) {
+		int result = planTypeMapper.update(planType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除计划类型
+	@Override
+	public JsonInfo del(Long[] typeId) {
+		int result = 0;
+		for(Long tId : typeId) {
+			result = planTypeMapper.delete(tId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取所有计划类型列表
+	@Override
+	public List<PlanType> getAll() {
+		List<PlanType> planTypes = planTypeMapper.selectAll();
+		return planTypes;
+	}
+
+	// 分页获取列表
+	@Override
+	public List<PlanType> getPageList(PageBean pb) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<PlanType> planTypes = planTypeMapper.selectPageData(firstIndex, toIndex);
+		
+		return planTypes;
+	}
+
+}

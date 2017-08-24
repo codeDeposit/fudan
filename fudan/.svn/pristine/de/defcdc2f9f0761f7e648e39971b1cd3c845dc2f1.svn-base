@@ -1,0 +1,18 @@
+package com.jy.service.oa.publics;
+
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.task.utils.JsonInfo;
+
+
+public interface FileAttachService {
+	
+	/*添加附件信息*/
+	public JsonInfo save(FileAttach fileAttach);
+
+	/* 获取附件信息 */
+	public FileAttach getBy(String filePath);
+
+	/* 获取最新插入的附件Id */
+	public Long getMax();
+
+}

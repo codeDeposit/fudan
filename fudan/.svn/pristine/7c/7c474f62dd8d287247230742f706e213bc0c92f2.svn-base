@@ -1,0 +1,103 @@
+package com.jy.controller.oa.personal;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.personal.DutyRegister;
+import com.jy.service.oa.personal.DutyRegisterService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/dutyregister")
+public class DutyRegisterController {
+
+	private DutyRegisterService dutyRegisterService;
+
+	public DutyRegisterService getDutyRegisterService() {
+		return dutyRegisterService;
+	}
+
+	@Autowired
+	public void setDutyRegisterService(DutyRegisterService dutyRegisterService) {
+		this.dutyRegisterService = dutyRegisterService;
+	}
+
+	/**
+	 * 考勤补签
+	 * 
+	 * @param dutyRegister
+	 * @return
+	 */
+	@RequestMapping("/retroactive")
+	@ResponseBody
+	public JsonInfo retroactive(DutyRegister dutyRegister) {
+		JsonInfo info = dutyRegisterService.retroactive(dutyRegister);
+		return info;
+	}
+
+	/**
+	 * 批量删除补签信息
+	 * 
+	 * @param registerId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] registerId) {
+		JsonInfo info = dutyRegisterService.delete(registerId);
+		return info;
+	}
+
+	/**
+	 * 获取补签信息列表
+	 * 
+	 * @param inOffFlag
+	 * @param userId
+	 * @param regMins
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) Short inOffFlag,
+			@RequestParam(required = false) Long[] userId, @RequestParam(required = false) Long regFlag) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<DutyRegister> dutyRegisters = dutyRegisterService.get(inOffFlag, userId, regFlag);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(dutyRegisters.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<DutyRegister> pageDutyRegisters = dutyRegisterService.getPageList(pb, inOffFlag, userId, regFlag);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/personal/dutyregister_table");
+		}else {
+			mv.setViewName("system/oa/personal/dutyregister_list");
+		}
+		mv.addObject("dutyRegisters", pageDutyRegisters);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+}

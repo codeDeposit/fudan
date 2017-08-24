@@ -1,0 +1,132 @@
+package com.jy.controller.oa.info;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.info.Notice;
+import com.jy.service.oa.info.NoticeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/notice")
+public class NoticeController {
+
+	private NoticeService noticeService;
+
+	public NoticeService getNoticeService() {
+		return noticeService;
+	}
+
+	@Resource(name="noticeService")
+	public void setNoticeService(NoticeService noticeService) {
+		this.noticeService = noticeService;
+	}
+
+	/**
+	 * 根据 标题、发布者 模糊查询
+	 * 
+	 * @param noticeTitle
+	 * @param postName
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String noticeTitle,
+			@RequestParam(required = false) String postName) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<Notice> notices = noticeService.get(noticeTitle, postName);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(notices.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<Notice> pageNotices = noticeService.getPageList(pb,noticeTitle, postName);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/info/notice_table");
+		}else {
+			mv.setViewName("system/oa/info/notice_list");
+		}
+		mv.addObject("notices", pageNotices);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 添加公告
+	 * @param notice
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Notice notice) {
+		JsonInfo info = noticeService.save(notice);
+		return info;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param noticeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long noticeId, String operation) {
+		Notice notice = noticeService.getDetails(noticeId);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/info/notice_form");
+		mv.addObject("notice", notice);
+		mv.addObject("operation", operation);
+		return mv;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param noticeId
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Notice notice) {
+		JsonInfo info = noticeService.update(notice);
+		return info;
+	}
+	
+	/**
+	 * 批量删除
+	 * @param noticeId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] noticeId) {
+		JsonInfo info = noticeService.del(noticeId);
+		return info;
+	}
+	
+	/**
+	 * 公告发布
+	 * @return
+	 */
+	@RequestMapping("/issue")
+	@ResponseBody
+	public JsonInfo issue(Long[] noticeId) {
+		JsonInfo info = noticeService.issue(noticeId);
+		return info;
+	}
+
+}

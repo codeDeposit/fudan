@@ -1,0 +1,21 @@
+package com.jy.repository.customer;
+
+import java.util.List;
+
+import com.jy.entity.customer.Customer;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface CustomerDao{
+	
+	 public List<Customer> find(Customer custom);
+	 
+	 public List<Customer> search(Customer custom);
+	 
+	 public int update(Customer custom);
+	  
+	 public int insert(Customer custom);
+	 
+	 public int delete(Customer custom);
+	
+}

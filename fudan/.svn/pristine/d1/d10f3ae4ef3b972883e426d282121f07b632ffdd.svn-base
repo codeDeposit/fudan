@@ -1,0 +1,118 @@
+package com.jy.controller.app.admin;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.FileUpload;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.app.admin.Adv;
+import com.jy.service.app.admin.AppAdvService;
+
+@Controller("appAdminAdvController")
+@RequestMapping(value="/appAdminAdv")
+public class AppAdminAdvController extends BaseController<Object> {
+	
+	@Resource(name="appAdvService")
+	private AppAdvService appAdvService;
+	
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/adv/adv_index";
+	}
+	
+	@RequestMapping("/list")
+	@ResponseBody
+	public AjaxRes list(HttpServletRequest request,Model model,Adv adv)throws Exception{	
+		return resMsg(1,appAdvService.find(adv));
+	}
+	
+	@RequestMapping("/add")  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,Model model,Adv adv,
+			@RequestParam(value = "file", required = false) MultipartFile file)throws Exception{	
+		String filePath = "c:\\image\\adv\\";	
+		String fileName = "";
+		if (file != null && !file.isEmpty()){
+			FileUpload.fileUp(file, filePath,file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")));
+			fileName = file.getOriginalFilename();
+		}
+		adv.setImg(fileName);
+		int res = appAdvService.insert(adv);
+		return resMsg(res);
+	}
+	
+	/**
+	 * 广告图片更新
+	 * @param request
+	 * @param model
+	 * @param adv
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateImg")  
+	@ResponseBody
+	public AjaxRes updateImg(HttpServletRequest request,Model model,Adv adv,
+			@RequestParam(value = "file", required = false) MultipartFile file)throws Exception{	
+		String filePath = "c:\\image\\adv\\";	
+		String fileName = "";
+		if (file != null && !file.isEmpty()){
+			FileUpload.fileUp(file, filePath,file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")));
+			fileName = file.getOriginalFilename();
+		}
+		adv.setImg(fileName);
+		int res = appAdvService.update(adv);
+		return resMsg(res);
+	}
+	
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,Adv adv)throws Exception{	
+		int res = appAdvService.update(adv);
+		return resMsg(res);
+	}
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,Model model,Adv adv)throws Exception{	
+		int res = appAdvService.delete(adv);
+		return resMsg(res);
+	}
+	
+	/**
+	 * 广告上移
+	 * @param request
+	 * @param model
+	 * @param adv
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/up")
+	@ResponseBody
+	public AjaxRes up(HttpServletRequest request,Model model,Adv adv)throws Exception{	
+		int res = appAdvService.up(adv);
+		return resMsg(res);
+	}
+	
+	/**
+	 * 广告下移
+	 * @param request
+	 * @param model
+	 * @param adv
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/down")
+	@ResponseBody
+	public AjaxRes down(HttpServletRequest request,Model model,Adv adv)throws Exception{	
+		int res = appAdvService.down(adv);
+		return resMsg(res);
+	}
+	
+}

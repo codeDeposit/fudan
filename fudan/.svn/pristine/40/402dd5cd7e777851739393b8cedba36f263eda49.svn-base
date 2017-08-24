@@ -1,0 +1,234 @@
+	<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="../../common/styleUrl.jsp" %>
+<div class="modal fade" id="Modal_contract_funds_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">应付账款</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" role="form" id="Form_contract_funds_detail" onsubmit="return fContractFundsUpdate()">
+					<input type="hidden" id="id" name="id" value="${contract.id}">
+					<div class="form-group text-left">
+						<label class="col-sm-4 control-label text-info">合同总额：</label>
+						<div class="col-sm-8">
+							<label class="col-sm-12 control-label text-info">${contract.amount}￥</label>
+						</div>
+					</div>
+					<div class="form-group text-left">
+						<label class="col-sm-4 control-label text-danger">应付账款：</label>
+						<div class="col-sm-8">
+							<label class="col-sm-12 control-label text-danger"><span id="contract_funds_detail_total_price"></span>￥</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							 &nbsp;&nbsp;<span class="label label-muted">计划付款</span>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-muted">第&nbsp;&nbsp;一&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time1" name="time1" type="text" value="${contract.time1}" placeholder="第一次付款日期"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="contract_funds_detail_price1" name="price1" value="${contract.price1}" maxlength="255" placeholder="0.0" readonly required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-muted">第&nbsp;&nbsp;二&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time2" name="time2" type="text" value="${contract.time2}" placeholder="第二次付款日期"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="contract_funds_detail_price2" name="price2" value="${contract.price2}" maxlength="255" readonly placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-muted">第&nbsp;&nbsp;三&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time3" name="time3" type="text" value="${contract.time3}" placeholder="第三次付款日期"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="contract_funds_detail_price3" name="price3" value="${contract.price3}" maxlength="255" readonly placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div> 
+					<div class="form-group">
+						<div class="col-sm-12">
+							 &nbsp;&nbsp;<span class="label label-muted">已付款</span>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label">第&nbsp;&nbsp;一&nbsp;&nbsp;次&nbsp;</label>
+						<input type="hidden" id="price1Mark" type="text" value="${contract.price1End}" >
+						<div class="col-sm-5">
+							<c:if test="${contract.price1End == 0 }">
+								<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+									<input class="form-control" id="time1End" name="time1End" type="text" value="${contract.time1End}" placeholder="第一次付款日期" >
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</c:if>
+							<c:if test="${contract.price1End != 0 }">
+								<input class="form-control" id="time1End" name="time1End" type="text" value="${contract.time1End}" readonly placeholder="第一次付款日期" >
+							</c:if>
+						</div>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<c:if test="${contract.price1End == 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price1End" name="price1End" value="${contract.price1End}" oninput="elementEvent(event)" onporpertychange="elementEvent(event)" maxlength="255" placeholder="0.0" >
+								</c:if>
+								<c:if test="${contract.price1End != 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price1End" name="price1End" value="${contract.price1End}" maxlength="255" readonly placeholder="0.0" >
+								</c:if>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+						<c:if test="${contract.price1End == 0 }">
+							<label class="col-sm-2 control-label text-warning"><i class=" icon-remove-sign"></i>未付款</label>
+						</c:if>
+						<c:if test="${contract.price1End != 0 }">
+							<label class="col-sm-2 control-label text-success"><i class="icon-ok-sign"></i>已付款</label>
+						</c:if>
+					</div>
+					<div class="form-group">
+						<input type="hidden" id="price2Mark" type="text" value="${contract.price2End}" >
+						<label class="col-sm-2 control-label">第&nbsp;&nbsp;二&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+						<c:if test="${contract.price2End == 0 }">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time2End" name="time2End" type="text" value="${contract.time2End}" placeholder="第二次付款日期" >
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</c:if>
+						<c:if test="${contract.price2End != 0 }">
+							<input class="form-control" id="time2End" name="time2End" type="text" value="${contract.time2End}" readonly placeholder="第二次付款日期" >
+						</c:if>
+						</div>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<c:if test="${contract.price2End == 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price2End" name="price2End" value="${contract.price2End}" oninput="elementEvent(event)" onporpertychange="elementEvent(event)" maxlength="255"  placeholder="0.0" >
+								</c:if>
+								<c:if test="${contract.price2End != 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price2End" name="price2End" value="${contract.price2End}" maxlength="255" readonly  placeholder="0.0" >
+								</c:if>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+						<c:if test="${contract.price2End == 0 }">
+							<label class="col-sm-2 control-label text-warning"><i class=" icon-remove-sign"></i>未付款</label>
+						</c:if>
+						<c:if test="${contract.price2End != 0 }">
+							<label class="col-sm-2 control-label text-success"><i class="icon-ok-sign"></i>已付款</label>
+						</c:if>
+					</div>  
+					<div class="form-group">
+						<input type="hidden" id="price3Mark" type="text" value="${contract.price3End}" >
+						<label class="col-sm-2 control-label">第&nbsp;&nbsp;三&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+						<c:if test="${contract.price3End == 0 }">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time3End" name="time3End" type="text" value="${contract.time3End}" placeholder="第三次付款日期" >
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</c:if>
+						<c:if test="${contract.price3End != 0 }">
+								<input class="form-control" id="time3End" name="time3End" type="text" value="${contract.time3End}" readonly placeholder="第三次付款日期" >
+						</c:if>
+						</div>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<c:if test="${contract.price3End == 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price3End" name="price3End" value="${contract.price3End}" maxlength="255" oninput="elementEvent(event)" onporpertychange="elementEvent(event)" placeholder="0.0" >
+								</c:if>
+								<c:if test="${contract.price3End != 0 }">
+									<input type="text" class="form-control" id="contract_funds_detail_price3End" name="price3End" value="${contract.price3End}" maxlength="255" readonly placeholder="0.0" >
+								</c:if>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+						<c:if test="${contract.price3End == 0 }">
+							<label class="col-sm-2 control-label text-warning"><i class=" icon-remove-sign"></i>未付款</label>
+						</c:if>
+						<c:if test="${contract.price3End != 0 }">
+							<label class="col-sm-2 control-label text-success"><i class="icon-ok-sign"></i>已付款</label>
+						</c:if>
+					</div>       
+					<div class="form-group">
+						<div class="col-sm-12 text-center">
+							 &nbsp;&nbsp;<span class="label label-danger" id="contract_funds_detail_hint"></span>
+						</div>
+					</div> 
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success">
+							提交
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$('#Modal_contract_funds_detail').modal('show');
+	 	$('.form_date').datetimepicker({/*时间初始化*/
+		    language: 'zh-CN',
+		    weekStart: 1,
+		    todayBtn: 1,
+		    autoclose: 1,
+		    todayHighlight: 1,
+		    startView: 2,
+		    minView: 2,
+		    forceParse: 0,
+		}); 
+		getMoney();
+	});
+	function getMoney(){
+		var price1 = 0;
+		var price2 = 0;
+		var price3 = 0;
+		var total1 = ${contract.amount};
+		if(${contract.price1End} != 0){
+			price1 = ${contract.price1End}
+		}
+		if(${contract.price2End} != 0){
+			price2 = ${contract.price2End}
+		}
+		if(${contract.price3End} != 0){
+			price3 = ${contract.price3End}
+		}
+		var total2 = parseInt(total1);
+		var total3 = parseInt(price1) + parseInt(price2) + parseInt(price3);
+		document.getElementById('contract_funds_detail_total_price').innerHTML = total2-total3;
+	}
+</script>

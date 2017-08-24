@@ -1,0 +1,196 @@
+package com.jy.controller.oa.admin;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.OfficeGoods;
+import com.jy.entity.oa.admin.OfficeGoodsType;
+import com.jy.service.oa.admin.OfficeGoodsService;
+import com.jy.service.oa.admin.OfficeGoodsTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/officegoodstype")
+public class OfficeGoodsTypeController {
+
+	private OfficeGoodsTypeService officeGoodsTypeService;
+	private OfficeGoodsService officeGoodsService;
+
+	public OfficeGoodsService getOfficeGoodsService() {
+		return officeGoodsService;
+	}
+
+	@Autowired
+	public void setOfficeGoodsService(OfficeGoodsService officeGoodsService) {
+		this.officeGoodsService = officeGoodsService;
+	}
+
+	public OfficeGoodsTypeService getOfficeGoodsTypeService() {
+		return officeGoodsTypeService;
+	}
+
+	@Autowired
+	public void setOfficeGoodsTypeService(OfficeGoodsTypeService officeGoodsTypeService) {
+		this.officeGoodsTypeService = officeGoodsTypeService;
+	}
+	
+	/**
+	 * 添加办公品类型
+	 * @param officeGoodsType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(OfficeGoodsType officeGoodsType) {
+		JsonInfo info = officeGoodsTypeService.save(officeGoodsType);
+		return info;
+	}
+	
+	/**
+	 * 获取办公品类型详细信息
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long typeId, String operation) {
+		OfficeGoodsType officeGoodsType = officeGoodsTypeService.getInfoBy(typeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("officeGoodsType", officeGoodsType);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/admin/officegoodstype_form");
+		
+		return mv;
+	}
+	
+	/**
+	 * 修改办公品类型信息
+	 * @param officeGoodsType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(OfficeGoodsType officeGoodsType) {
+		JsonInfo info = officeGoodsTypeService.update(officeGoodsType);
+		return info;
+	}
+	
+	/**
+	 * 删除办公品类型
+	 * @param officeGoodsType
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo del(Long[] typeId) {
+		JsonInfo info = officeGoodsTypeService.delete(typeId);
+		return info;
+	}
+	
+	/**
+	 * 获取类型列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String typeName) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<OfficeGoodsType> officeGoodsTypes = officeGoodsTypeService.getAll(typeName);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(officeGoodsTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<OfficeGoodsType> pageOfficeGoodsTypes = officeGoodsTypeService.getPageList(pb, typeName);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/officegoodstype_table");
+		}else {
+			mv.setViewName("system/oa/admin/officegoodstype_list");
+		}
+		
+		mv.addObject("officeGoodsTypes", pageOfficeGoodsTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	// 删除模态框（分类下有数据使用）
+	@RequestMapping("/datatoast")
+	public ModelAndView dataToast(Long[] param) {
+		
+		ModelAndView mv = new ModelAndView();
+		
+		int count = 0;
+		String goodsName = "";
+		for(Long parm: param) {
+			List<OfficeGoods> officeGoods = officeGoodsService.get(goodsName, parm);
+			if(officeGoods != null) {
+				count += officeGoods.size();
+			}
+		}
+		mv.addObject("count", count);
+		mv.addObject("parm", Arrays.toString(param));
+		mv.setViewName("system/oa/common/data_toast");
+		
+		return mv;
+	}
+	
+	/**
+	 * 所有类别列表
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<OfficeGoodsType> listAll() {
+		List<OfficeGoodsType> officeGoodsTypes = officeGoodsTypeService.getAll(null);
+		return officeGoodsTypes;
+	}
+
+	/**
+	 * 商品类型 html
+	 * @return
+	 */
+	@RequestMapping("/listhtml")
+	@ResponseBody
+	public String listHtml() {
+		List<OfficeGoodsType> officeGoodsTypes = officeGoodsTypeService.getAll(null);
+		String html = html(officeGoodsTypes);
+		return html;
+	}
+	
+	private String html(List<OfficeGoodsType> officeGoodsTypes) {
+		StringBuilder sbd = new StringBuilder();
+		for(OfficeGoodsType ogt: officeGoodsTypes) {
+			sbd.append("<li>");
+			sbd.append("<a onclick=\"getGoodsByType('"+ ogt.getTypeId() +"')\" class='aHover sIndent'>");
+			sbd.append("<i class='glyphicon glyphicon-file'></i>&nbsp;"+ogt.getTypeName());
+			sbd.append("</a>");
+			sbd.append("</li>");
+		}
+		return sbd.toString();
+	}
+	
+}

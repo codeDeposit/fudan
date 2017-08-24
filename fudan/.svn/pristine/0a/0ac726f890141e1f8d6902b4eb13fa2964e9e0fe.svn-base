@@ -1,0 +1,61 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="This is my page">
+		<link href="${jypath}/pc/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="${jypath}/pc/css/wzcg/wzcgSetting.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+	</head>
+	<body>
+		<div class="sethead">
+		</div>
+		<div class="areas">
+			<h4 class="liTitle">专家管理</h4>
+			<div class="xLine"></div>
+			<div class="liItem">
+				<div class="media-left"></div>
+				<div class="media-body">
+					<h4 class="media-heading"><span class="label label-success">专家公告编辑</span></h4>
+					<p>
+						用于显示专家注册的公告信息
+					</p>
+				</div>
+				<a href="${jypath }/backstage/setting/webSite/wzcgEdit?mark=1" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> &nbsp;编辑</a>
+			</div>
+		</div>
+		<div class="areas">
+			<h4 class="liTitle">供应商管理</h4>
+			<div class="xLine"></div>
+			<div class="liItem">
+				<div class="media-left">
+					</i>
+				</div>
+				<div class="media-body">
+					<h4 class="media-heading"><span class="label label-success">供应商公告编辑</span></h4>
+					<p>
+						用于显示供应商注册的公告信息
+					</p>
+				</div>
+				<a href="${jypath }/backstage/setting/webSite/wzcgEdit?mark=2" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> &nbsp;编辑</a>
+			</div>
+			<div class="liItem">
+				<div class="media-left" style="background-image:url(${jypath }/pc/image/wzcg/cgwz.png);"></div>
+				<div class="media-body">
+					<h4 class="media-heading"><span class="label label-success">采购物资选择</span></h4>
+					<p>
+						用于显示采购的物资类别
+					</p>
+				</div>
+				<a href="${jypath }/backstage/setting/webSite/wzcgCategory" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> &nbsp;编辑</a>
+			</div>
+		</div>
+	</body>
+</html>

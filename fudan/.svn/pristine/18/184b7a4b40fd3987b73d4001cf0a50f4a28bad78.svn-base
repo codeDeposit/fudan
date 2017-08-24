@@ -1,0 +1,150 @@
+package com.jy.service.oa.impl.admin;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.DepreType;
+import com.jy.entity.oa.admin.FixedAssets;
+import com.jy.entity.oa.admin.FixedAssetsVO;
+import com.jy.repository.oa.admin.DepreTypeMapper;
+import com.jy.repository.oa.admin.FixedAssetsMapper;
+import com.jy.service.oa.admin.FixedAssetsService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("fixedAssetsService")
+public class FixedAssetsServiceImpl implements FixedAssetsService {
+
+	private FixedAssetsMapper fixedAssetsMapper;
+	private DepreTypeMapper depreTypeMapper;
+
+	public DepreTypeMapper getDepreTypeMapper() {
+		return depreTypeMapper;
+	}
+
+	@Autowired
+	public void setDepreTypeMapper(DepreTypeMapper depreTypeMapper) {
+		this.depreTypeMapper = depreTypeMapper;
+	}
+
+	public FixedAssetsMapper getFixedAssetsMapper() {
+		return fixedAssetsMapper;
+	}
+
+	@Autowired
+	public void setFixedAssetsMapper(FixedAssetsMapper fixedAssetsMapper) {
+		this.fixedAssetsMapper = fixedAssetsMapper;
+	}
+	
+	// 添加固定资产
+	@Override
+	public JsonInfo save(FixedAssets fixedAssets) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss-SSSS");// 自动生成商品号
+		fixedAssets.setAssetsNo(sdf.format(new Date()));
+		Long typeId = fixedAssets.getDepreTypeId();
+		if (typeId != null) {
+			DepreType depreType = depreTypeMapper.selectInfoBy(typeId);
+			if (depreType.getCalMethod() != 2) {// 不为工作量折算时
+				BigDecimal remainRate = fixedAssets.getRemainValRate();
+				BigDecimal depreRate = new BigDecimal("1").subtract(remainRate.divide(new BigDecimal("100"))).divide(fixedAssets.getIntendTerm(), 2, 2); // 折旧率
+				fixedAssets.setDepreRate(depreRate);
+			}
+		}
+
+		int result = fixedAssetsMapper.insert(fixedAssets);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+	// 修改固定资产
+	@Override
+	public JsonInfo update(FixedAssets fixedAssets) {
+		Long typeId = fixedAssets.getDepreTypeId();
+		if (typeId != null) {
+			DepreType depreType = depreTypeMapper.selectInfoBy(typeId);
+			if (depreType.getCalMethod() != 2) {// 不为工作量折算时
+				BigDecimal remainRate = fixedAssets.getRemainValRate();
+				BigDecimal depreRate = new BigDecimal("1").subtract(remainRate.divide(new BigDecimal("100"))).divide(fixedAssets.getIntendTerm(), 2, 2); // 折旧率
+				fixedAssets.setDepreRate(depreRate);
+			}
+		}
+		int result = fixedAssetsMapper.update(fixedAssets);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+	// 删除固定资产
+	@Override
+	public JsonInfo delete(Long[] assetsId) {
+		int result = 0;
+		for (Long aId : assetsId) {
+			result = fixedAssetsMapper.delete(aId);
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+	// 获取详细信息
+	@Override
+	public FixedAssetsVO getInfoBy(Long assetsId) {
+		FixedAssetsVO fixedAssets = fixedAssetsMapper.selectInfoBy(assetsId);
+		
+		fixedAssets.setStartDepre1(DateStringUtil.dateToString3(fixedAssets.getStartDepre()));
+		fixedAssets.setBuyDate1(DateStringUtil.dateToString3(fixedAssets.getBuyDate()));
+		fixedAssets.setManuDate1(DateStringUtil.dateToString3(fixedAssets.getManuDate()));
+		
+		return fixedAssets;
+	}
+	
+	// 获取固定资产列表
+	@Override
+	public List<FixedAssets> get(String assetsName, String beDep, Long assetsTypeId) {
+		List<FixedAssets> fixedAssets = fixedAssetsMapper.select(assetsName, beDep, assetsTypeId);
+		return fixedAssets;
+	}
+
+	@Override
+	public List<FixedAssetsVO> selectPageList(PageBean pb, String assetsName,
+			String beDep, Long assetsTypeId) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<FixedAssetsVO> fixedAssets = fixedAssetsMapper.selectPageList(firstIndex, toIndex, assetsName, beDep, assetsTypeId);
+		
+		for(FixedAssetsVO fav: fixedAssets) {
+			fav.setStartDepre1(DateStringUtil.dateToString3(fav.getStartDepre()));
+		}
+		
+		return fixedAssets;
+	}
+
+}

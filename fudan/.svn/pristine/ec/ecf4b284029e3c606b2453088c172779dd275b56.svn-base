@@ -1,0 +1,33 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.CarRepair;
+import com.jy.entity.oa.admin.CarRepairVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface CarRepairMapper {
+
+	// 添加车辆维修单
+	int insert(CarRepair carRepair);
+
+	// 获取详细信息
+	CarRepairVO selectInfoBy(Long repairId);
+
+	// 修改维修单信息
+	int update(CarRepair carRepair);
+
+	// 批量删除维修单
+	int delete(Long repairId);
+
+	// 获取维修单列表
+	List<CarRepair> select(@Param("carNo") String carNo, @Param("repairType") String repairType);
+
+	// 维修单分页列表
+	List<CarRepairVO> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, 
+			@Param("carNo") String carNo, @Param("repairType") String repairType);
+
+}

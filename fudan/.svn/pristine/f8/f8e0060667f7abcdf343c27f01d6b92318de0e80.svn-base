@@ -1,0 +1,83 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+
+public class InMessageVO {
+
+	private Long receiveId;
+	private String content;
+	private Date sendTime;
+
+	private String sender;
+	private Short msgType;
+	private Short readFlag;
+	private String senderId;
+
+	public String getSenderId() {
+		return senderId;
+	}
+
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+
+	// 用于展示
+	private String sendTime1;
+
+	public Long getReceiveId() {
+		return receiveId;
+	}
+
+	public void setReceiveId(Long receiveId) {
+		this.receiveId = receiveId;
+	}
+
+	public String getSendTime1() {
+		return sendTime1;
+	}
+
+	public void setSendTime1(String sendTime1) {
+		this.sendTime1 = sendTime1;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public Short getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(Short msgType) {
+		this.msgType = msgType;
+	}
+
+	public Short getReadFlag() {
+		return readFlag;
+	}
+
+	public void setReadFlag(Short readFlag) {
+		this.readFlag = readFlag;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+}

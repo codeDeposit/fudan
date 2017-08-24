@@ -1,0 +1,266 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<script type="text/javascript" src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/customer/customer.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/file/ajaxfileupload.js"></script>
+		<title>新增合同</title>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-btn aui-pull-left" tapmode href="index"> <span class="aui-iconfont aui-icon-left">返回</span> </a>
+			<div class="aui-title" >
+				新增合同
+			</div>
+		</header>
+		<form id="Form_contract_add" enctype="multipart/form-data" onsubmit="return fContractAdd()">
+			<input type="hidden" id="customerId" name="customerId" value="${contract.customerId }">
+			<input type="hidden" id="contract_add_salesJson" name="salesJson">
+			<div class="aui-content aui-margin-b-15">
+			    <ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同名称
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="name" id="name" maxlength="255" placeholder="合同名称" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同编号
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="number" id="number" maxlength="255" value="" placeholder="合同编号" onfocus="this.blur()" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	合同金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="amount" id="contract_add_amount" maxlength="255" placeholder="合同金额" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label">
+			                  	附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="file" name="attachments2" id="attachment2" maxlength="255" placeholder="附件" required>
+			                </div>
+			            </div>
+			        </li> 
+			   	</ul>
+		    </div>
+		    <div class="aui-content" >
+		    	<div class="aui-label aui-label-primary" style="margin:15px;">销售人数</div>
+		    	<ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-info">
+			                  	销  售  1
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPeople1" name="salesPeople" maxlength="255" placeholder="选择销售人" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPrice1" name="salesPrice" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-info">
+			                  	销  售  2
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPeople2" name="salesPeople" maxlength="255" placeholder="选择销售人" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPrice2" name="salesPrice" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-info">
+			                  	销  售  3
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPeople3" name="salesPeople" maxlength="255" placeholder="选择销售人" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="salesPrice3" name="salesPrice" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>    
+			        <p><center><div class="aui-btn aui-btn-success"><i class="aui-iconfont aui-icon-roundaddfill"></i>增加</div></center></p>  
+		       </ul>
+		    </div>
+		    <div class="aui-content ">
+			    <ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-danger">
+			                  	技术提成
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" name="percentage" id="percentage" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> 
+			   	</ul>
+		    </div>
+		    <div class="aui-content" >
+		    	<div class="aui-label aui-label-primary"  style="margin:15px;">付款次数</div>
+		    	<ul class="aui-list aui-form-list">
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第一次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="time1" name="time1" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="price1" name="price1" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li> 
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第二次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="time2" name="time2" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="price2" name="price2" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			                <div class="aui-list-item-label aui-text-warning">
+			                  	第三次
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="date" id="time3" name="time3" maxlength="255" placeholder="第一次付款日期" required>
+			                </div>
+			            </div>
+			        </li>
+			        <li class="aui-list-item">
+			            <div class="aui-list-item-inner">
+			            	<div class="aui-list-item-label aui-text-danger">
+			            		金额
+			                </div>
+			                <div class="aui-list-item-input">
+			                    <input type="text" id="price3" name="price3" maxlength="255" placeholder="0.0" required>
+			                </div>
+			            </div>
+			        </li>    
+		       </ul>
+		    </div>
+		   	<div class="aui-content-padded">
+	        	<p><button class="aui-btn aui-btn-success aui-btn-block aui-btn-sm">提	交</button></p>
+		   	</div>
+		</form>
+	</body>
+	<script>
+		$(document).ready(function(){
+			getDate();
+		});
+		function getDate(){
+			var count = ${count};
+			var date = new Date();
+	        var seperator1 = "-";
+	        var seperator2 = ":";
+	        var month = date.getMonth() + 1;
+	        var strDate = date.getDate();
+	        if (month >= 1 && month <= 9) {
+	            month = "0" + month;
+	        }
+	        if (strDate >= 0 && strDate <= 9) {
+	            strDate = "0" + strDate;
+	        }
+	        var currentdate = date.getFullYear() + month + strDate;
+	        var number = "HT-" + currentdate.toString() + "-" + (count+1);
+			$("#number").val(number);
+		}
+		function salesAdd(){
+			var number1 = document.getElementsByName('salesPeople').length;
+			var number = (number1 + 1);
+			document.getElementById('salesArea').innerHTML += '<div class="form-group" id="salesArea'+ number +'">'
+							+'<label class="col-sm-2 control-label text-primary">销&nbsp;&nbsp;售&nbsp;&nbsp;'+ number +'&nbsp;</label>'
+							+'<div class="col-sm-5">'
+								+'<input class="form-control" id="salesPeople'+ number +'" name="salesPeople" data-toggle="modal" onclick="fDefault('+ number +')" data-target="#Modal_emplayee_listxx" placeholder="选择销售人" onfocus="this.blur()" required>'
+							+'</div>'
+							+'<div class="col-sm-4">'
+								+'<div class="input-group">'
+									+'<input type="text" class="form-control" id="salesPrice"'+ number +' name="salesPrice" maxlength="255" placeholder="0.0" required>'
+									+'<span class="input-group-addon" id="basic-addon">元</span>'
+								+'</div>'
+							+'</div>'
+							+'<label class="col-sm-1 control-label text-danger text-center"><a href="javascript:void(0)" onclick="salesDelete('+ number +')"><i class="glyphicon glyphicon-minus text-danger"></i></a></label>'
+						+'</div>';
+			salesData(number);
+		}
+		function salesDelete(param){
+			$("#salesArea"+param).remove();
+		}
+	</script>
+</html>

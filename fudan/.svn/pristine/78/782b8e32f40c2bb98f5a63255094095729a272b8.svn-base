@@ -1,0 +1,11 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<option value="">-- 请选择 --</option>
+<c:choose>
+	<c:when test="${not empty list}">
+		<c:forEach items="${list}" var="kind" varStatus="vs">
+			<option value="${kind.id}">${kind.name}</option>
+		</c:forEach>
+	</c:when>
+</c:choose>

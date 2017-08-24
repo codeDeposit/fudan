@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.InMessageMapper">
+
+	<resultMap type="com.jy.entity.oa.communicate.SendVO" id="sendMessageMap">
+		<result property="receiveId" column="receiveId"/>
+		<result property="acceptName" column="userFullname"/>
+		<result property="content" column="content"/>
+		<result property="sendTime" column="sendTime"/>
+	</resultMap>
+
+	<!-- 发送消息 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.InMessage">
+		insert fudan_oa_in_message
+		<include refid="insertSQL"></include>
+	</insert>
+
+	<sql id="insertSQL">
+		<set>
+			<if test="messageId !=null ">
+				messageId = #{messageId},
+			</if>
+			<if test="userId !=null ">
+				userId = #{userId},
+			</if>
+			<if test="userFullname !=null and userFullname !='' ">
+				userFullname = #{userFullname},
+			</if>
+			<if test="readFlag !=null ">
+				readFlag = #{readFlag},
+			</if>
+			<if test="delFlag !=null ">
+				delFlag = #{delFlag},
+			</if>
+		</set>
+	</sql>
+	<!-- 发送消息 end -->
+
+
+	<!-- 查看已发送消息列表 start -->
+	<select id="selectSend" resultType="com.jy.entity.oa.communicate.InMessageVO">
+		select im.receiveId,im.userFullname, sm.content, sm.sendTime from
+		fudan_oa_in_message im, fudan_oa_short_message sm where im.messageId = sm.messageId and
+		senderId = #{senderId} and im.delFlag != 1
+		<if test="userFullname !=null and userFullname !='' ">
+			and im.userFullname like concat("%",#{userFullname},"%")
+		</if>
+		<if test="startTime !=null ">
+			and sm.sendTime &gt;= #{startTime}
+		</if>
+		<if test="msgType !=null ">
+			and sm.msgType = #{msgType}
+		</if>
+		<if test="endTime !=null ">
+			and sm.sendTime &lt;= #{endTime}
+		</if>
+	</select>
+	<!-- 查看已发送消息列表 end -->
+	
+	
+	<!-- 获得已接收消息列表 start -->
+	<select id="selectAccept" resultType="com.jy.entity.oa.communicate.InMessageVO">
+		select im.receiveId, im.readFlag, sm.msgType, sm.sender, sm.content, sm.sendTime
+		from fudan_oa_in_message im, fudan_oa_short_message sm
+		where im.messageId = sm.messageId and im.userId = #{userId} and im.delFlag != 1
+		<if test="sender !=null and sender !='' ">
+			and sm.sender like concat("%",#{sender},"%")
+		</if>
+		<if test="msgType !=null ">
+			and sm.msgType = #{msgType}
+		</if>
+		<if test="startTime !=null ">
+			and sm.sendTime &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null ">
+			and sm.sendTime &lt;= #{endTime}
+		</if>
+		
+		
+	</select>
+	<!-- 获得已接收消息列表 end -->
+	
+	
+	<!-- 删除消息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_in_message where receiveId = #{receiveId}
+	</delete>
+	<!-- 删除消息 end -->
+	
+	<!-- 分页显示已收消息列表 start -->
+	<select id="selectPageDate" resultType="com.jy.entity.oa.communicate.InMessageVO">
+		select im.receiveId, im.readFlag, sm.msgType, sm.sender, sm.content, sm.sendTime, sm.senderId
+		from fudan_oa_in_message im, fudan_oa_short_message sm
+		where im.messageId = sm.messageId and im.userId = #{userId} and im.delFlag != 1
+		<if test="sender !=null and sender !='' ">
+			and sm.sender like concat("%", #{sender}, "%")
+		</if>
+		<if test="msgType != null ">
+			and sm.msgType = #{msgType}
+		</if>
+		<if test="startTime !=null ">
+			and sm.sendTime &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null ">
+			and sm.sendTime &lt;= #{endTime}
+		</if>
+		order by im.receiveId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页显示已收消息列表 end -->
+	
+	<!-- 分页显示已发消息列表 start -->
+	<select id="selectPageData" resultMap="sendMessageMap">
+		select sm.messageId, im.userFullname, sm.content, sm.sendTime from
+		fudan_oa_in_message im, fudan_oa_short_message sm where im.messageId = sm.messageId and
+		sm.senderId = #{senderId} and im.delFlag != 1
+		<if test="userFullname !=null and userFullname !='' ">
+			and im.userFullname like concat("%",#{userFullname},"%")
+		</if>
+		<if test="startTime !=null ">
+			and sm.sendTime &gt;= #{startTime}
+		</if>
+		<if test="msgType !=null ">
+			and sm.msgType = #{msgType}
+		</if>
+		<if test="endTime !=null ">
+			and sm.sendTime &lt;= #{endTime}
+		</if>
+		order by im.receiveId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页显示已发消息列表 end -->
+	
+	<!-- 收信人信息 start -->
+	<select id="selectInfoBy" resultType="com.jy.entity.oa.communicate.InMessage">
+		select userFullname,userId from fudan_oa_in_message where messageId = #{messageId}
+	</select>
+	<!-- 收信人信息 end -->
+	
+	<!-- 标记信息已读 start -->
+	<update id="updateReadFlag" parameterType="Long">
+		update fudan_oa_in_message set readFlag = 1 where receiveId = #{receiveId}
+	</update>
+	<!-- 标记信息已读 end -->
+
+</mapper>

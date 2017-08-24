@@ -1,0 +1,153 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.hrm.JobChange;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.hrm.JobChangeMapper;
+import com.jy.service.oa.hrm.JobChangeService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("jobChangeService")
+public class JobChangeServiceImpl implements JobChangeService {
+
+	private JobChangeMapper jobChangeMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public JobChangeMapper getJobChangeMapper() {
+		return jobChangeMapper;
+	}
+
+	@Autowired
+	public void setJobChangeMapper(JobChangeMapper jobChangeMapper) {
+		this.jobChangeMapper = jobChangeMapper;
+	}
+
+	// 登记调动信息
+	@Override
+	public JsonInfo save(JobChange jobChange) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		jobChange.setRegName(employee.getFullname());
+		jobChange.setRegTime(new Date());
+		
+		int result = jobChangeMapper.insert(jobChange);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改调动信息
+	@Override
+	public JsonInfo update(JobChange jobChange) {
+		int result = jobChangeMapper.update(jobChange);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取调动详细信息
+	@Override
+	public JobChange getInfoBy(Long changeId) {
+		JobChange jobChange = jobChangeMapper.selectInfoBy(changeId);
+		
+		jobChange.setRegTime1(DateStringUtil.dateToString3(jobChange.getRegTime()));
+		if(jobChange.getCheckTime() != null) {
+			jobChange.setCheckTime1(DateStringUtil.dateToString3(jobChange.getCheckTime()));
+		}
+		return jobChange;
+	}
+
+	// 审核调动信息
+	@Override
+	public JsonInfo review(JobChange jobChange) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		
+		jobChange.setCheckName(employee.getFullname());
+		jobChange.setCheckTime(new Date());
+		
+		int result = jobChangeMapper.updateReview(jobChange);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除调动信息
+	@Override
+	public JsonInfo delete(Long[] changeId) {
+		int result = 0;
+		for(Long cId: changeId) {
+			result = jobChangeMapper.delete(cId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取调动信息列表
+	@Override
+	public List<JobChange> get(String profileNo, String userName,
+			String orgJobName, String newJobName) {
+		List<JobChange> jobChanges = jobChangeMapper.select(profileNo, userName, orgJobName, newJobName);
+		return jobChanges;
+	}
+
+	// 调动分页列表
+	@Override
+	public List<JobChange> getPageList(PageBean pb, String profileNo,
+			String userName, String orgJobName, String newJobName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<JobChange> jobChanges = jobChangeMapper.selectPageData(firstIndex, toIndex, profileNo, userName, orgJobName, newJobName);
+		
+		for(JobChange jc: jobChanges) {
+			jc.setRegTime1(DateStringUtil.dateToString3(jc.getRegTime()));
+		}
+		
+		return jobChanges;
+	}
+
+}

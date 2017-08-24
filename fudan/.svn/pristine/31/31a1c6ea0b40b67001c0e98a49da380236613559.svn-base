@@ -1,0 +1,37 @@
+package com.jy.repository.oa.info;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.info.NewsType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface NewsTypeMapper {
+
+	// 获取列表
+	List<NewsType> select(@Param("typeName") String typeName, @Param("sn") Short sn);
+
+	// 添加新闻类型
+	int insert(NewsType newsType);
+
+	// 修改新闻类型信息
+	int update(NewsType newsType);
+
+	// 获取详细信息
+	NewsType selectBy(Long typeId);
+
+	// 批量删除
+	void delete(Long typeId);
+
+	// 获取最大的sn值
+	Short getTop();
+
+	// 获取所有列表
+	List<NewsType> selectAll();
+
+	// 分页后的列表
+	List<NewsType> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex);
+
+}

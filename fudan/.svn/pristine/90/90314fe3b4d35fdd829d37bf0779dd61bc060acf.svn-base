@@ -1,0 +1,48 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.BookSn;
+import com.jy.repository.oa.admin.BookSnMapper;
+import com.jy.service.oa.admin.BookSnService;
+
+
+@Service("bookSnService")
+public class BookSnServiceImpl implements BookSnService {
+
+	private BookSnMapper bookSnMapper;
+
+	public BookSnMapper getBookSnMapper() {
+		return bookSnMapper;
+	}
+
+	@Autowired
+	public void setBookSnMapper(BookSnMapper bookSnMapper) {
+		this.bookSnMapper = bookSnMapper;
+	}
+
+	// 获取为借阅图书的booksn列表
+	@Override
+	public List<BookSn> get(Long bookId) {
+		List<BookSn> booksn = bookSnMapper.selectListBy(bookId);
+		return booksn;
+	}
+
+	// 获取图书对应的booksn列表
+	@Override
+	public List<BookSn> getBy(Long bookId) {
+		List<BookSn> booksns = bookSnMapper.selectBy(bookId);
+		return booksns;
+	}
+
+	// 获取已借阅booksn列表
+	@Override
+	public List<BookSn> getBorsn(Long bookId) {
+		List<BookSn> booksns = bookSnMapper.selectBorsnBy(bookId);
+		return booksns;
+	}
+
+}

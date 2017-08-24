@@ -1,0 +1,139 @@
+package com.jy.entity.oa.info;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class News {
+
+	protected Long newsId;
+	protected String subjectIcon;
+	protected String subject;
+	protected String author;
+	protected Date createtime;
+	protected Integer replyCounts;
+	protected Integer viewCounts;
+	protected String content;
+	protected Date updateTime;
+	protected Integer status;
+	protected NewsType newsType;
+	protected String issuer;
+
+	// 用于转换日期
+	private String createtime1;
+	private String updatetime1;
+
+	public String getCreatetime1() {
+		return createtime1;
+	}
+
+	public void setCreatetime1(String createtime1) {
+		this.createtime1 = createtime1;
+	}
+
+	public String getUpdatetime1() {
+		return updatetime1;
+	}
+
+	public void setUpdatetime1(String updatetime1) {
+		this.updatetime1 = updatetime1;
+	}
+
+	public Long getNewsId() {
+		return newsId;
+	}
+
+	public void setNewsId(Long newsId) {
+		this.newsId = newsId;
+	}
+
+	public String getSubjectIcon() {
+		return subjectIcon;
+	}
+
+	public void setSubjectIcon(String subjectIcon) {
+		this.subjectIcon = subjectIcon;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public java.util.Date getCreatetime() {
+		return createtime;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	public void setCreatetime(java.util.Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public Integer getReplyCounts() {
+		return replyCounts;
+	}
+
+	public void setReplyCounts(Integer replyCounts) {
+		this.replyCounts = replyCounts;
+	}
+
+	public Integer getViewCounts() {
+		return viewCounts;
+	}
+
+	public void setViewCounts(Integer viewCounts) {
+		this.viewCounts = viewCounts;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public java.util.Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(java.util.Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public NewsType getNewsType() {
+		return newsType;
+	}
+
+	public void setNewsType(NewsType newsType) {
+		this.newsType = newsType;
+	}
+
+	public String getIssuer() {
+		return issuer;
+	}
+
+	public void setIssuer(String issuer) {
+		this.issuer = issuer;
+	}
+
+}

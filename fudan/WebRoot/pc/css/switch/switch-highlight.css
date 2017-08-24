@@ -1,0 +1,317 @@
+/*
+
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+
+*/
+li {
+            list-style: none;
+        }
+        
+        ul {
+            padding: 0;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 400;
+            margin: 0;
+            line-height: 60px;
+            height: 60px;
+        }
+        
+        body {
+            background-color: #ffffff;
+            font-family: "helvetica neue", arial, sans-serif;
+        }
+        
+        .col-sm-3,
+        .col-sm-8,
+        .col-sm-1 {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .line {
+            width: 992px;
+            border-bottom: 1px solid rgba(34, 25, 25, .1);
+            margin-left: -26px;
+        }
+        
+        .settingBox {
+            width: 93%;
+            margin: 20px auto 0;
+            background-color: #fff;
+            padding: 0 26px 26px;
+            border-radius: 8px;
+            color:#888;
+        }
+        
+        .t-item {
+            /* height: 60px;*/
+            border-bottom: 1px solid rgba(34, 25, 25, .1);
+            border-top: 1px solid rgba(255, 255, 255, .7);
+            /*cursor: pointer;*/
+            line-height: 60px;
+            position: relative;
+        }
+        
+        .item-title {
+            font-size: 18px;
+            color: #888;
+            height: 60px;
+            padding-left: 20px;
+        }
+        
+        .item-details {
+            font-size: 14px;
+            height: 60px;
+            -webkit-transition: opacity 0.2s ease-in;
+            transition: opacity 0.2s ease-in;
+        }
+        
+        .item-edit {
+            background: url('../image/editor_arrow.png') no-repeat 895px -35px;
+        }
+        
+        .item-edit:hover {
+            color: #ff0000;
+            cursor: pointer;
+        }
+        
+        .iconBox {
+            width: 40px;
+            height: 40px;
+            margin-top: 10px;
+        }
+        
+        .iconBox img {
+            width: 46px;
+        }
+        
+        .loginBox {
+            height: 40px;
+            width: auto;
+            margin-top: 10px;
+        }
+        
+        .loginBox img {
+            height: 100%;
+            width: auto;
+        }
+        
+        .t-content {
+            width: 100%;
+            border-top: 1px dotted rgba(34, 25, 25, .1);
+            padding: 20px 20px 10px 250px;
+            display: none;
+        }
+        
+        .col-sm-1.control-label {
+            line-height: 27px;
+        }
+        
+        .switch {
+            height: 35px;
+        }
+        
+        .col-6 {
+            width: 50%;
+            line-height: 34px;
+        }
+        
+        .c_bg_box img,
+        .c_log_box img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .c_ico_box {
+            width: 72px;
+            height: 72px;
+            padding: 0;
+        }
+        
+        .c_ico_box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .t-item:hover {
+            background-color: #fafafa;
+        }
+        
+        .logo-B {
+            height: 0;
+            overflow: hidden;
+            -webkit-transition: height 0.3s ease-in;
+            transition: height 0.3s ease-in;
+            width: 100%;
+        }
+        
+        .title-B {
+            overflow: hidden;
+            -webkit-transition: height 0.3s ease-in;
+            transition: height 0.3s ease-in;
+        }
+        
+        #alerTip {
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            z-index: 11;
+            -webkit-transition: top 0.3s ease-in;
+            transition: top 0.3s ease-in;
+        }
+        
+        .texOlog {
+            width: 100%;
+            margin:22px;
+            height: 34px;
+        }
+.hljs {
+  display: block; padding: 0.5em;
+  background: #F0F0F0;
+}
+
+.hljs,
+.hljs-subst,
+.hljs-tag .hljs-title,
+.lisp .hljs-title,
+.clojure .hljs-built_in,
+.nginx .hljs-title {
+  color: black;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-constant,
+.hljs-parent,
+.hljs-tag .hljs-value,
+.hljs-rules .hljs-value,
+.hljs-rules .hljs-value .hljs-number,
+.hljs-preprocessor,
+.hljs-pragma,
+.haml .hljs-symbol,
+.ruby .hljs-symbol,
+.ruby .hljs-symbol .hljs-string,
+.hljs-aggregate,
+.hljs-template_tag,
+.django .hljs-variable,
+.smalltalk .hljs-class,
+.hljs-addition,
+.hljs-flow,
+.hljs-stream,
+.bash .hljs-variable,
+.apache .hljs-tag,
+.apache .hljs-cbracket,
+.tex .hljs-command,
+.tex .hljs-special,
+.erlang_repl .hljs-function_or_atom,
+.asciidoc .hljs-header,
+.markdown .hljs-header,
+.coffeescript .hljs-attribute {
+  color: #800;
+}
+
+.smartquote,
+.hljs-comment,
+.hljs-annotation,
+.hljs-template_comment,
+.diff .hljs-header,
+.hljs-chunk,
+.asciidoc .hljs-blockquote,
+.markdown .hljs-blockquote {
+  color: #888;
+}
+
+.hljs-number,
+.hljs-date,
+.hljs-regexp,
+.hljs-literal,
+.hljs-hexcolor,
+.smalltalk .hljs-symbol,
+.smalltalk .hljs-char,
+.go .hljs-constant,
+.hljs-change,
+.lasso .hljs-variable,
+.makefile .hljs-variable,
+.asciidoc .hljs-bullet,
+.markdown .hljs-bullet,
+.asciidoc .hljs-link_url,
+.markdown .hljs-link_url {
+  color: #080;
+}
+
+.hljs-label,
+.hljs-javadoc,
+.ruby .hljs-string,
+.hljs-decorator,
+.hljs-filter .hljs-argument,
+.hljs-localvars,
+.hljs-array,
+.hljs-attr_selector,
+.hljs-important,
+.hljs-pseudo,
+.hljs-pi,
+.haml .hljs-bullet,
+.hljs-doctype,
+.hljs-deletion,
+.hljs-envvar,
+.hljs-shebang,
+.apache .hljs-sqbracket,
+.nginx .hljs-built_in,
+.tex .hljs-formula,
+.erlang_repl .hljs-reserved,
+.hljs-prompt,
+.asciidoc .hljs-link_label,
+.markdown .hljs-link_label,
+.vhdl .hljs-attribute,
+.clojure .hljs-attribute,
+.asciidoc .hljs-attribute,
+.lasso .hljs-attribute,
+.coffeescript .hljs-property,
+.hljs-phony {
+  color: #88F
+}
+
+.hljs-keyword,
+.hljs-id,
+.hljs-title,
+.hljs-built_in,
+.hljs-aggregate,
+.css .hljs-tag,
+.hljs-javadoctag,
+.hljs-phpdoc,
+.hljs-yardoctag,
+.smalltalk .hljs-class,
+.hljs-winutils,
+.bash .hljs-variable,
+.apache .hljs-tag,
+.go .hljs-typename,
+.tex .hljs-command,
+.asciidoc .hljs-strong,
+.markdown .hljs-strong,
+.hljs-request,
+.hljs-status {
+  font-weight: bold;
+}
+
+.asciidoc .hljs-emphasis,
+.markdown .hljs-emphasis {
+  font-style: italic;
+}
+
+.nginx .hljs-built_in {
+  font-weight: normal;
+}
+
+.coffeescript .javascript,
+.javascript .xml,
+.lasso .markup,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
+  opacity: 0.5;
+}

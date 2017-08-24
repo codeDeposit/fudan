@@ -1,0 +1,58 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="${jypath}/pc/js/file/fileUploadPackage.js"></script>
+		<script src="${jypath}/pc/js/file/ajaxfileupload.js"></script>
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增语言-->
+		<script type="text/javascript" src="${jypath}/pc/js/wzcg/cgjh.js"></script>
+		<script src="${jypath}/static/plugins/layer/2.1/layer.js"></script>
+	</head>
+	<body>
+		<%@ include file="../../common/toast.jsp"%>
+		<%@ include file="cgjh_search.jsp" %><!-- 搜索 -->
+		<%@ include file="cgjh_add.jsp" %><!-- 添加 -->
+		<div id="cgjh_detail"><!-- 详情--></div>
+		<div id="cgjh_list"><!-- 数据列表 --></div>
+		<!-- cgjhItem列表 -->
+		<div class="modal fade bs-example-modal-lg" id="Modal_cgjh_item_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header headBg">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							×                                                                                                                                                                                                                                                                                             
+						</button>
+						<h3 class="modal-title text-center" id="myModalLabel">采购计划项目</h3>
+					</div>
+					<div class="modal-body">
+						<div class="row" style="margin-bottom:10px;">
+							<div class="col-md-12">
+								<button type="button" id="Button_cgjh_add" class="btn btn-success" onclick="fItemAdd()"><i class="glyphicon glyphicon-plus"></i>&nbsp;添加项目</button>
+							</div>
+						</div>
+						<div id="cgjh_item_list">
+							<!-- 表格数据 -->
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								关闭
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="jhItem/cgjh_item_add.jsp" %><!-- 采购计划项目添加 -->
+		<div id="cgjh_item_detail"><!-- item详情 --></div>
+	</body>
+</html>

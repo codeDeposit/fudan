@@ -1,0 +1,82 @@
+package com.jy.entity.oa.archive;
+
+import java.util.Date;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public class DocHistory {
+
+	private Long historyId;
+	private String docName;
+	private String path;
+	private Integer version;
+	private Date updatetime;
+	private String mender;
+	private FileAttach fileAttach;
+	private ArchivesDoc archivesDoc;
+
+	public Long getHistoryId() {
+		return historyId;
+	}
+
+	public void setHistoryId(Long historyId) {
+		this.historyId = historyId;
+	}
+
+	public String getDocName() {
+		return docName;
+	}
+
+	public void setDocName(String docName) {
+		this.docName = docName;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	public String getMender() {
+		return mender;
+	}
+
+	public void setMender(String mender) {
+		this.mender = mender;
+	}
+
+	public FileAttach getFileAttach() {
+		return fileAttach;
+	}
+
+	public void setFileAttach(FileAttach fileAttach) {
+		this.fileAttach = fileAttach;
+	}
+
+	public ArchivesDoc getArchivesDoc() {
+		return archivesDoc;
+	}
+
+	public void setArchivesDoc(ArchivesDoc archivesDoc) {
+		this.archivesDoc = archivesDoc;
+	}
+
+}

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.DoctorDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Doctor" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_doctor where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_doctor where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="mobile != '' and mobile != null">  
+		    AND mobile = #{mobile}
+		</if>  
+		<if test="name != null and name != ''">  
+		    AND name = #{name}
+		</if> 
+		<if test="jobState != 0">  
+		    AND jobState = #{jobState}
+		</if>
+		<if test="state != 0">  
+		    AND state = #{state}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="mobile != '' and mobile != null">  
+		    AND mobile = #{mobile}
+		</if>   
+		<if test="name != null and name != ''">  
+		    AND name = #{name}
+		</if> 
+		<if test="jobState != 0">  
+		    AND jobState = #{jobState}
+		</if>
+		<if test="state != 0">  
+		    AND state = #{state}
+		</if>     
+	</sql>
+	
+	<insert id="insert">
+		insert into app_doctor (id,fileImg,mobile,passWord,name,job,jobClass,info,infoGood,start,addTime,jobState,state,reason,picture) 
+			values 
+		(#{id},#{fileImg},#{mobile},#{passWord},#{name},#{job},#{jobClass},#{info},#{infoGood},#{start},now(),#{jobState},#{state},#{reason},#{picture})
+	</insert>
+	
+	<update id="update">
+		update app_doctor <include refid="updateSql"></include> where 1=1
+		<if test="id != 0">
+			and id = #{id}
+		</if>
+		<if test="jobState != 0">
+			and jobState = #{jobState}
+		</if>
+		<if test="mobile != '' and mobile != null">  
+		    and mobile = #{mobile}
+		</if> 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != null and name != ''">  
+		    	name = #{name},
+			</if>
+			<if test="job != null and job != ''">  
+		    	job = #{job},
+			</if> 
+			<if test="jobClass != null and jobClass != ''">  
+		    	jobClass = #{jobClass},
+			</if> 
+			<if test="info != null and info != ''">  
+		    	info = #{info},
+			</if>
+			<if test="infoGood != null and infoGood != ''">  
+		    	infoGood = #{infoGood},
+			</if> 
+			<if test="start !=  0">  
+		    	start = #{start},
+			</if> 
+			<if test="jobState != 0">  
+		    	jobState = #{jobState},
+			</if>  
+			<if test="state != 0">  
+		    	state = #{state},
+			</if>  
+			<if test="reason != null and reason != ''">  
+		    	reason = #{reason},
+			</if>  
+			<if test="picture != '' and picture != null">
+				picture = #{picture},
+			</if>
+			<if test="fileImg != '' and fileImg != null">
+				fileImg = #{fileImg},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_doctor where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+	</delete>
+</mapper>

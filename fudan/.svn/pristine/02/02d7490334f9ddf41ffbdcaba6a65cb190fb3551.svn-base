@@ -1,0 +1,242 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<%@ include file="../../common/title.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/file/fileUploadStyle.css">
+		<link href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+		<link rel="stylesheet" href="${jypath}/pc/css/wzcg/expertReg.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增 日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增  语言-->
+		<script src="${jypath}/pc/js/wzcg/expertReg.js"></script>
+	</head>
+	<body>
+		<%@ include file="../../common/toast.jsp" %>
+		<div id="headLayer">
+			<div id="title">
+				<!-- 标题显示 -->
+				物资采购评审专家资格申请表 <!-- end -->
+			</div>
+			<div id="subhead">
+				（带 * 的为必填项目）
+			</div>
+		</div>
+		<!-- 表单区 -->
+		<div id="form">
+			<form id="form1" class="reg-form" enctype="multipart/form-data" action="#" onsubmit="return fSubmit()">
+				<div class="form-group col-md-6">
+					<label for="account"><i class="xinghao"> * </i>登陆账号</label>&nbsp;&nbsp;&nbsp;<span style="color:red" id="accountHint"></span>
+					<input type="text" class="form-control" id="account" name="loginName" minlength="3" maxlength="20" onblur="checkName()" placeholder="登陆账号" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="password"><i class="xinghao"> * </i>登陆密码</label>
+					<input type="password" class="form-control" id="password" name="password" minlength="6" maxlength="20" placeholder="登陆密码" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="username"><i class="xinghao"> * </i>姓名</label>
+					<input type="text" class="form-control" id="name" name="name" maxlength="20" placeholder="姓名" required >
+					<label for="xb" style="display:block;text-align:left;"><i class="xinghao"> * </i>性别</label>
+					<select class="form-control col-sm-3" name="sex" id="sex" required>
+						<option value="">-- 请选择 --</option>
+						<option value="1">男</option>
+						<option value="2">女</option>
+					</select>
+					<P></P>
+					<label for="birthday"><i class="xinghao"> * </i>出生年月</label>
+					<div class="input-group date form_date col-md-12" data-date-format="yyyy-MM-dd">
+						<input class="form-control" size="16" id="birthday" name="birthday" type="text" value="" required="required" readonly>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="xl" style="display:block;text-align:left;" id="fileHintWordXX" ></label>
+					<div class="col-md-4">
+						<div class="thumbnail" id="filePictureImgXXBox" onclick="fileAddImage()">
+							<img id="filePictureImgXX" onerror="this.src='${jypath}/pc/image/setting/add.png'" src="">
+						</div>
+						<a href="javascript:void(0)" id="filePictureInput">
+							<div style="position:absolute;overflow:hidden;opacity:0;">
+								<!-- input打印区域 -->
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="xl" style="display:block;text-align:left;"><i class="xinghao"> * </i>学历</label>
+					<select class="form-control col-sm-3" name="knowledge" id="knowledge" required>
+						<option value="">--请选择--</option>
+						<option value="1">本科</option>
+						<option value="2">硕士</option>
+						<option value="3">博士</option>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="sfzh"><i class="xinghao"> * </i>身份证号码</label>
+					<input type="text" class="form-control" name="ID_card" id="ID_card" placeholder="身份证号码" maxlength="20" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="byxy"><i class="xinghao"> * </i>毕业院校</label>
+					<input type="text" class="form-control" id="school" name="school" placeholder="毕业院校" maxlength="20" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="sxzy"><i class="xinghao"> * </i>所学专业</label>
+					<input type="text" class="form-control" name="specialty" id="specialty" placeholder="所学专业" maxlength="20" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="workTime"><i class="xinghao"> * </i>参加工作时间</label>
+					<div class="input-group date form_date col-md-12" data-date-format="yyyy-MM-dd">
+						<input class="form-control" size="16" id="begin_work_time" name="begin_work_time" type="text" value="" required readonly>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="csbzysj"><i class="xinghao"> * </i>从事本专业年限</label>
+					<div style="height:34px;">
+						<input type="number" class="form-control" name="work_time" id="work_time" maxlength="2" style="width:80%;display:inline-block;" placeholder="从事本专业年限" required >
+						<p style="display:inline-block;text-align:center;width:18%;height:34px;background:#eee;border:1px solid #ccc;padding:0;margin:0;line-height:32px;border-radius:4px;">
+							年
+						</p>
+					</div>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="gzdw"><i class="xinghao"> * </i>工作单位</label>
+					<input type="text" class="form-control" name="work_unit" id="work_unit" placeholder="工作单位" required maxlength="20">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="fzr"><i class="xinghao"> * </i>负责人</label>
+					<input type="text" class="form-control" name="responsible_person" id="responsible_person" placeholder="负责人" maxlength="20" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="xrzw"><i class="xinghao"> * </i>现任职务</label>
+					<input type="text" class="form-control" name="job_function" id="job_function" placeholder="现任职务" maxlength="20" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="jszc" style="display:block;text-align:left;"><i class="xinghao"> * </i>技术职称</label>
+					<select class="form-control col-sm-3" name="job_name" id="job_name" datatype="select" errormsg="请选择您的职称！" required>
+						<option value="">--请选择--</option>
+						<option value="0">中级</option>
+						<option value="1">副高级</option>
+						<option value="2">高级</option>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="province" style="display:block;text-align:left;"><i class="xinghao"> * </i>单位地址</label>
+					<select class="form-control col-sm-3" id="province1" name="work_address1" onchange="getCity(1)" style="width:48%;display:inline-block;margin-right:2%;" required>
+						<option value="">-- 选择省 --</option>
+					</select>
+					<select class="form-control col-sm-3" id="city1" name="work_address2" style="width:48%; display:inline-block;margin-right:2%;" required>
+						<option value="">-- 选择市 --</option>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="dwyb"><i class="xinghao"> * </i>单位编码</label>
+					<input type="text" class="form-control" name="work_zip_code" id="work_zip_code" minlength="6" maxlength="6"　onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="邮编（6位）" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="province2" style="display:block;text-align:left;"><i class="xinghao"> * </i>家庭住址</label>
+					<select class="form-control col-sm-3" id="province2" name="address1" onchange="getCity(2)" style="width:48%;display:inline-block;margin-right:2%;" required>
+						<option value="">-- 选择省 --</option>
+					</select>
+					<select class="form-control col-sm-3" id="city2" name="address2" style="width:48%; display:inline-block;margin-right:2%;" required>
+						<option value="">-- 选择市 --</option>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="jtyb"><i class="xinghao"> * </i>家庭编码</label>
+					<input type="text" class="form-control" name="zip_code" id="zip_code" minlength="6" maxlength="6"　onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="邮编（6位）" required >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="bgdh">办公电话</label>
+					<input type="text" class="form-control" name="work_phone" id="work_phone" maxlength="11" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="办公电话"  >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="zzdh">住宅电话</label>
+					<input type="text" class="form-control" name="phone" id="phone" maxlength="11" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="住宅电话" >
+				</div>
+				<div class="form-group col-md-6">
+					<label for="sj"><i class="xinghao"> * </i>手机</label>
+					<input type="text" class="form-control" name="mobile_phone" id="mobile_phone" maxlength="11" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" placeholder="手机号码" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="email"><i class="xinghao"> * </i>email</label>
+					<input type="email" class="form-control" name="email" id="email" maxlength="30" placeholder="电子邮箱" required>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="sqpszylb" style="display:block;text-align:left;"><i class="xinghao"> * </i>申请评审专业类别</label>
+					<select class="form-control col-sm-3" name="profession1" id="profession1" style="width:32%;display:inline-block;margin-right:1%;" required>
+						<option value="">-- 请选择 --</option>
+					</select>
+					<select class="form-control col-sm-3" name="profession2" id="profession2" style="width:32%; display:inline-block;margin-right:1%;" required>
+						<option value="">-- 请选择 --</option>
+					</select>
+					<select class="form-control col-sm-3" name="profession3" id="profession3" style="width:32%; display:inline-block;margin-right:1%;" required>
+						<option value="">-- 请选择 --</option>
+					</select>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="grjl"><i class="xinghao"> * </i>个人简历</label>
+					<textarea class="form-control" rows="3" name="resume" id="resume" placeholder="个人简历(不超过1000字)" maxlength="1000" required></textarea>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="cjzxpsqk"><i class="xinghao"> * </i>参加咨询评审情况</label>
+					<textarea class="form-control" rows="3" name="experience_a" id="experience_a" placeholder="参加咨询评审情况(不超过1000字)" maxlength="1000" ></textarea>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="hsqdbm"><i class="xinghao"> * </i>何时取得部门何种技术职称</label>
+					<textarea class="form-control" rows="3" name="experience_b" id="experience_b" placeholder="何时取得部门何种技术职称(不超过1000字)" maxlength="1000" required></textarea>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="attsfz"><i class="xinghao"> * </i>个人照片</label>
+					<div id="fileArea">
+						<div id="slogan">
+							选择上传图片(可选<i id="XXNumber"></i>张,图片格式:JPG、PNG、JPEG、ICO,每张图片大小不超过<i id="XXSize"></i>M)
+						</div>
+						<div id="Box">
+							<!-- 图片打印区 -->
+						</div>
+						<div class="fileButton">
+							<a href="javascript:void(0)" onclick="fileAreaAddImage()"> <span class="span1"> 添加图片 </span> </a>
+							<a href="javascript:void(0)" id="fileInput">
+							<div style="position:absolute;overflow:hidden;opacity:0;">
+								<!-- input打印区域 -->
+							</div> </a>
+							<span id="fileUploadSuccess"> <!-- 上传成功按钮 --> </span>
+							<div id="fileHintWord" class="hintWord">
+								<!-- 提示语句 -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-md-12">
+					<label for="name"><i class="xinghao"> * </i>个人承诺</label>
+					<textarea class="form-control" rows="2" id="promise" name="promise" readonly="readonly">本人承诺以上信息真实有效，将严格遵守《评审专家管理办法》。</textarea>
+				</div>
+				<div class="form-group col-md-12">
+					<h4>说明文档</h4>
+					<a href="http://123.57.235.82:8080/wzcg/resource/file/第二军医大学物资采购评审专家管理办法.doc" class="list-group-item">物资采购评审专家管理办法.doc</a>
+				</div>
+				<div class="form-group col-md-12">
+					<div id="hint"></div>
+					<div class="center-block" style="width:80%;margin:0 auto;text-align:center;margin-top:30px;margin-bottom:20px;">
+						<a href="<%=basePath%>/loginIndex">
+						<input class="btn btn-warning" type="button" value="返回">
+						</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input class="btn btn-success" type="submit" value="提交">
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end -->
+	</body>
+	<script src="${jypath}/pc/js/file/fileUploadPackage.js"></script>
+	<script src="${jypath}/pc/js/file/ajaxfileupload.js"></script>
+</html>

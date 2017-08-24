@@ -1,0 +1,25 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.CarType;
+import com.jy.task.utils.JsonInfo;
+
+public interface CarTypeService {
+
+	// 添加车类型
+	JsonInfo save(CarType carType);
+
+	// 获取详细信息
+	CarType getInfoBy(Integer typeId);
+
+	// 修改信息
+	JsonInfo update(CarType carType);
+
+	// 批量删除
+	JsonInfo del(Integer[] typeId);
+
+	// 获取车类型列表
+	List<CarType> get();
+
+}

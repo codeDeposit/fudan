@@ -1,0 +1,132 @@
+package com.jy.entity.app;
+
+public class AppOrderGoods {
+	
+	private int rec_id;
+	private int order_id;
+	private int goods_id;
+	private String goods_name;
+	private double goods_price;
+	private int goods_num;
+	private String goods_image;
+	private double goods_pay_price;
+	private int buyer_id;
+	private int goods_type;
+	private int promotions_id;
+	private double goods_fenxiao_price;
+	
+	//商品id字符串
+	private String goodsList;
+	//用户名
+	private String buyer_name;
+	//用户邮箱
+	private String buyer_email;
+	//商品总价
+	private Double goods_amount;
+	//订单编号
+	private String order_sn;
+	
+	public int getRec_id() {
+		return rec_id;
+	}
+	public void setRec_id(int rec_id) {
+		this.rec_id = rec_id;
+	}
+	public int getOrder_id() {
+		return order_id;
+	}
+	public void setOrder_id(int order_id) {
+		this.order_id = order_id;
+	}
+	public int getGoods_id() {
+		return goods_id;
+	}
+	public void setGoods_id(int goods_id) {
+		this.goods_id = goods_id;
+	}
+	public double getGoods_price() {
+		return goods_price;
+	}
+	public void setGoods_price(double goods_price) {
+		this.goods_price = goods_price;
+	}
+	public int getGoods_num() {
+		return goods_num;
+	}
+	public void setGoods_num(int goods_num) {
+		this.goods_num = goods_num;
+	}
+	public String getGoods_image() {
+		return goods_image;
+	}
+	public void setGoods_image(String goods_image) {
+		this.goods_image = goods_image;
+	}
+	public double getGoods_pay_price() {
+		return goods_pay_price;
+	}
+	public void setGoods_pay_price(double goods_pay_price) {
+		this.goods_pay_price = goods_pay_price;
+	}
+	public int getBuyer_id() {
+		return buyer_id;
+	}
+	public void setBuyer_id(int buyer_id) {
+		this.buyer_id = buyer_id;
+	}
+	public int getGoods_type() {
+		return goods_type;
+	}
+	public void setGoods_type(int goods_type) {
+		this.goods_type = goods_type;
+	}
+	public int getPromotions_id() {
+		return promotions_id;
+	}
+	public void setPromotions_id(int promotions_id) {
+		this.promotions_id = promotions_id;
+	}
+	public double getGoods_fenxiao_price() {
+		return goods_fenxiao_price;
+	}
+	public void setGoods_fenxiao_price(double goods_fenxiao_price) {
+		this.goods_fenxiao_price = goods_fenxiao_price;
+	}
+	public String getGoodsList() {
+		return goodsList;
+	}
+	public void setGoodsList(String goodsList) {
+		this.goodsList = goodsList;
+	}
+	public String getGoods_name() {
+		return goods_name;
+	}
+	public void setGoods_name(String goods_name) {
+		this.goods_name = goods_name;
+	}
+	public String getBuyer_name() {
+		return buyer_name;
+	}
+	public void setBuyer_name(String buyer_name) {
+		this.buyer_name = buyer_name;
+	}
+	public String getBuyer_email() {
+		return buyer_email;
+	}
+	public void setBuyer_email(String buyer_email) {
+		this.buyer_email = buyer_email;
+	}
+	public Double getGoods_amount() {
+		return goods_amount;
+	}
+	public void setGoods_amount(Double goods_amount) {
+		this.goods_amount = goods_amount;
+	}
+	public String getOrder_sn() {
+		return order_sn;
+	}
+	public void setOrder_sn(String order_sn) {
+		this.order_sn = order_sn;
+	}
+	
+}

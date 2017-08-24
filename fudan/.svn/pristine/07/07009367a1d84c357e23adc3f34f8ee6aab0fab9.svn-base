@@ -1,0 +1,110 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE HTML>
+<html>
+<head>
+	<%@ include file="../../common/styleUrl.jsp" %>
+	<base href="<%=basePath%>">
+ 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  	<link rel="stylesheet" href="pc/css/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="pc/css/font/font-awesome.css">
+	<link rel="stylesheet" href="pc/css/common/style.min.css">
+	<link rel="stylesheet" href="pc/css/oa/modal.css">
+	<script src="pc/js/jquery/jquery-2.1.1.min.js"></script>
+	<script src="pc/js/bootstrap/bootstrap.min.js"></script>
+</head>
+<body>
+	<div>
+		<button type="button" class="btn btn-info btn-sm" onclick="history.go(-1);"><i class="glyphicon glyphicon-menu-left"></i>&nbsp;返回</button>
+	</div>
+	<div class="navBox">
+		<form id="addform">
+		<table class="">
+			<tbody>
+				<tr>
+					<td class="text-right col-first">收件人:</td>
+					<td class="text-left">
+						<input type="text" class="td-put" placeholder="请选择收件人" readonly="readonly" name="recipientNames" id="recipientName" value="${mailBox.mail.recipientNames}">
+					</td>
+				</tr>
+				<tr id="chaosongren" hidden="true">
+					<td class="text-right col-first">抄送人:</td>
+					<td class="text-left">
+						<input type="text" class="td-put" placeholder="请选择抄送人" name="copyToNames" id="copyToName" value="${mailBox.mail.copyToNames}">
+					</td>
+				</tr>
+				<tr>
+					<td class="text-right td col-first">主题:</td>
+					<td class="text-left"><input type="text" class="td-put" name="subject" value="${mailBox.mail.subject}"></td>
+				</tr>
+				<tr>
+					<td class="text-right td col-first">优先级:</td>
+					<td class="text-left"><select name="importantFlag" class="text-right td-put">
+						<c:if test="${mailBox.mail.importantFlag == 1}">
+							<option value=""></option>
+							<option value="1" selected>一般</option>
+							<option value="2">重要</option>
+							<option value="3">非常重要</option>
+						</c:if>
+						<c:if test="${mailBox.mail.importantFlag == 2}">
+							<option value=""></option>
+							<option value="1">一般</option>
+							<option value="2" selected>重要</option>
+							<option value="3">非常重要</option>
+						</c:if>
+						<c:if test="${mailBox.mail.importantFlag == 3}">
+							<option value=""></option>
+							<option value="1">一般</option>
+							<option value="2">重要</option>
+							<option value="3" selected>非常重要</option>
+						</c:if>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="text-right col-first">附件:</td>
+					<td class="text-left">
+						<div type="text" id="fileattach" class="td-put">
+							<c:choose>
+								<c:when test="${mailBox.mail.mailAttachs != null and fn:length(mailBox.mail.mailAttachs) != 0}">
+								<c:forEach var="mailattach" items="${mailBox.mail.mailAttachs}">
+									<a href="${mailattach.filePath}"><i class="glyphicon glyphicon-paperclip"></i>${mailattach.fileName}</a>
+								</c:forEach>
+								</c:when>
+								<c:otherwise>
+									无附件
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="" class="text-right col-first" style="vertical-align:top;">内容:</td>
+					<td rowspan="5" colspan="3">
+						<div id="emailcontent" class="td-content" style="height:150px;">
+							<%@ include file="../common/editor2.jsp" %>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function() {
+		setEditorContent();
+	});
+	//设置编辑器内容
+	function setEditorContent() {
+		var content = '${mailBox.mail.content}';
+		//实例化编辑器
+		var umform = UM.getEditor("containerform2");
+		//编辑器加载完成后，设置内容
+		umform.ready(function() {
+			umform.setContent(content);
+		});
+	}
+</script>
+
+</html>

@@ -1,0 +1,109 @@
+package com.jy.entity.oa.archive;
+
+import java.util.Date;
+
+import com.jy.entity.oa.publics.Department;
+
+public class ArchivesDep {
+
+	private Long archDepId;
+	private String signNo;
+	private String subject;
+	private Short status;
+	private Date signTime;
+	private String signFullname;
+	private String handleFeedback;
+	private Short isMain;
+	private ArchRecType archRecType;
+	private Archives archives;
+	private Department department;
+
+	public Long getArchDepId() {
+		return archDepId;
+	}
+
+	public void setArchDepId(Long archDepId) {
+		this.archDepId = archDepId;
+	}
+
+	public String getSignNo() {
+		return signNo;
+	}
+
+	public void setSignNo(String signNo) {
+		this.signNo = signNo;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public Date getSignTime() {
+		return signTime;
+	}
+
+	public void setSignTime(Date signTime) {
+		this.signTime = signTime;
+	}
+
+	public String getSignFullname() {
+		return signFullname;
+	}
+
+	public void setSignFullname(String signFullname) {
+		this.signFullname = signFullname;
+	}
+
+	public String getHandleFeedback() {
+		return handleFeedback;
+	}
+
+	public void setHandleFeedback(String handleFeedback) {
+		this.handleFeedback = handleFeedback;
+	}
+
+	public Short getIsMain() {
+		return isMain;
+	}
+
+	public void setIsMain(Short isMain) {
+		this.isMain = isMain;
+	}
+
+	public ArchRecType getArchRecType() {
+		return archRecType;
+	}
+
+	public void setArchRecType(ArchRecType archRecType) {
+		this.archRecType = archRecType;
+	}
+
+	public Archives getArchives() {
+		return archives;
+	}
+
+	public void setArchives(Archives archives) {
+		this.archives = archives;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+}

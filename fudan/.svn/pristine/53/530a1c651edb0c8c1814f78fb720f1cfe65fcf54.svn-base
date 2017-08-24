@@ -1,0 +1,63 @@
+function add() {
+	$.ajax({
+		type : "post",
+		url : jypath + "/oa/phonegroup/add",
+		data : $("#addform").serialize(),
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+	return false;
+}
+// 查看详细信息或修改
+function openForm(id, operation) {
+	fuLoading();
+	var url = "/oa/phonegroup/getdetails";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?groupId=" + id + "&operation=" + operation,
+		success : function(data) {
+			fuCloseLayer();
+			$("#getInfoOrUpdate").html(data);
+		}
+	});
+}
+// 删除公文模板
+function fDelete(typeId) {
+	var url = "/oa/phonegroup/del";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?groupId=" + typeId,
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+// 查询
+$("#phonegroupsearchbtn").click(function() {
+	fuLoading();
+	var id = "phonegrouptable";
+	var url = jypath + "/oa/phonegroup/list";
+	var type = "post";
+	var data = $("#phoneGroupSearchform").serialize();
+	partRefresh(id, url, type, data);
+});
+// pageNos: 第几页
+function pageturn(pageNos) {
+	fuLoading();
+	if (pageNos == 0) {
+		pageNos = $("#zhuandao").val();
+	}
+	var id = "phonegrouptable";
+	var url = jypath + "/oa/phonegroup/list";
+	var type = "get";
+	var data = $("#phoneGroupSearchform").serialize() + "&pageNos=" + pageNos;
+	pageturning(id, url, type, data);
+}
+function fuSure(param) {
+	fuLoading();
+	fuClose();
+	setTimeout('fDelete(\'' + param + '\')', 200);
+}

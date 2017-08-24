@@ -1,0 +1,31 @@
+package com.jy.service.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import com.jy.entity.oa.personal.HolidayRecord;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface HolidayRecordService {
+
+	// 添加假期设置
+	JsonInfo save(HolidayRecord holidayRecord);
+
+	// 修改假期设置
+	JsonInfo update(HolidayRecord holidayRecord);
+
+	// 获取假期详细信息
+	HolidayRecord getInfoBy(Long recordId);
+
+	// 批量删除假期
+	JsonInfo delete(Long[] recordId);
+
+	// 获取假期信息列表
+	List<HolidayRecord> get(Date startTime, Date endTime, HolidayRecord holidayRecord);
+	
+	//假期设置分页列表
+	List<HolidayRecord> getPageList(PageBean pb, Date startTime, Date endTime, HolidayRecord holidayRecord);
+
+}

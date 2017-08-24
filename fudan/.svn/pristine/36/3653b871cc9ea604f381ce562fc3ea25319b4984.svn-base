@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.FixedAssetsMapper">
+
+	<!-- baseMap start -->
+	<resultMap id="baseMap" type="com.jy.entity.oa.admin.FixedAssetsVO">
+		<id property="assetsId" column="assetsId" />
+		<result property="assetsNo" column="assetsNo"></result>
+		<result property="assetsName" column="assetsName"></result>
+		<result property="model" column="model"></result>
+		<result property="manufacturer" column="manufacturer"></result>
+		<result property="manuDate" column="manuDate"></result>
+		<result property="buyDate" column="buyDate"></result>
+		<result property="beDep" column="beDep"></result>
+		<result property="custodian" column="custodian"></result>
+		<result property="notes" column="notes"></result>
+		<result property="remainValRate" column="remainValRate"></result>
+		<result property="startDepre" column="startDepre"></result>
+		<result property="intendTerm" column="intendTerm"></result>
+		<result property="intendWorkGross" column="intendWorkGross"></result>
+		<result property="workGrossUnit" column="workGrossUnit"></result>
+		<result property="assetValue" column="assetValue"></result>
+		<result property="assetCurValue" column="assetCurValue"></result>
+		<result property="depreRate" column="depreRate"></result>
+		<result property="defPerWorkGross" column="defPerWorkGross"></result>
+		
+		<association property="assetsType" column="assetsTypeId" select="selectAssetsType"></association>
+		<association property="depreType" column="depreTypeId" select="selectDepreType"></association>
+		
+	</resultMap>
+	
+	<select id="selectAssetsType" parameterType="Long" resultType="com.jy.entity.oa.admin.AssetsType">
+		select * from fudan_oa_assets_type where assetsTypeId = #{assetsTypeId}
+	</select>
+	
+	<select id="selectDepreType" parameterType="Long" resultType="com.jy.entity.oa.admin.DepreType">
+		select * from fudan_oa_depre_type where depreTypeId = #{depreTypeId}
+	</select>
+	<!-- baseMap end -->
+
+	<!-- 添加固定资产 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.FixedAssets">
+		insert fudan_oa_fixed_assets <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="assetsNo != null and assetsNo != '' ">
+				assetsNo = #{assetsNo},
+			</if>
+			<if test="assetsName != null and assetsName != '' ">
+				assetsName = #{assetsName},
+			</if>
+			<if test="model != null and model != '' ">
+				model = #{model},
+			</if>
+			<if test="assetsTypeId != null ">
+				assetsTypeId = #{assetsTypeId},
+			</if>
+			<if test="manufacturer != null and manufacturer != '' ">
+				manufacturer = #{manufacturer},
+			</if>
+			<if test="manuDate != null ">
+				manuDate = #{manuDate},
+			</if>
+			<if test="buyDate != null ">
+				buyDate = #{buyDate},
+			</if>
+			<if test="beDep != null and beDep != '' ">
+				beDep = #{beDep},
+			</if>
+			<if test="custodian != null and custodian != '' ">
+				custodian = #{custodian},
+			</if>
+			<if test="notes != null and notes != '' ">
+				notes = #{notes},
+			</if>
+			<if test="remainValRate != null ">
+				remainValRate = #{remainValRate},
+			</if>
+			<if test="depreTypeId != null ">
+				depreTypeId = #{depreTypeId},
+			</if>
+			<if test="startDepre != null ">
+				startDepre = #{startDepre},
+			</if>
+			<if test="intendTerm != null ">
+				intendTerm = #{intendTerm},
+			</if>
+			<if test="intendWorkGross != null ">
+				intendWorkGross = #{intendWorkGross},
+			</if>
+			<if test="workGrossUnit != null and workGrossUnit != '' ">
+				workGrossUnit = #{workGrossUnit},
+			</if>
+			<if test="assetValue != null ">
+				assetValue = #{assetValue},
+			</if>
+			<if test="assetCurValue != null ">
+				assetCurValue = #{assetCurValue},
+			</if>
+			<if test="depreRate != null ">
+				depreRate = #{depreRate},
+			</if>
+			<if test="defPerWorkGross != null ">
+				defPerWorkGross = #{defPerWorkGross},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加固定资产 end -->
+	
+	
+	<!-- 修改固定资产 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.FixedAssets">
+		update fudan_oa_fixed_assets <include refid="insertSQL"></include>
+		where assetsId = #{assetsId}
+	</update>
+	<!-- 修改固定资产 end -->
+	
+	
+	<!-- 删除固定资产 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_fixed_assets where assetsId = #{assetsId}
+	</delete>
+	<!-- 删除固定资产 end -->
+	
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_fixed_assets where assetsId = #{assetsId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 获取固定资产列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.admin.FixedAssets">
+		select * from fudan_oa_fixed_assets where 1=1
+		<if test="assetsName != null and assetsName != '' ">
+			and assetsName like concat("%", #{assetsName} ,"%")
+		</if>
+		<if test="beDep != null and beDep != '' ">
+			and beDep like concat("%", #{beDep} ,"%")
+		</if>
+		<if test="assetsTypeId != null ">
+			and assetsTypeId = #{assetsTypeId}
+		</if>
+	</select>
+	<!-- 获取固定资产列表 end -->
+	
+	
+	<!-- 分页获取固定资产列表 start -->
+	<select id="selectPageList" resultMap="baseMap">
+		select * from fudan_oa_fixed_assets where 1=1
+		<if test="assetsName != null and assetsName != '' ">
+			and assetsName like concat("%", #{assetsName} ,"%")
+		</if>
+		<if test="beDep != null and beDep != '' ">
+			and beDep like concat("%", #{beDep} ,"%")
+		</if>
+		<if test="assetsTypeId != null ">
+			and assetsTypeId = #{assetsTypeId}
+		</if>
+		order by assetsId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取固定资产列表 end -->
+
+</mapper>

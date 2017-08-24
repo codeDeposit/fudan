@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.AppAddressDao">
+	
+	<resultMap type="com.jy.entity.app.AppAddress" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_address where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_address where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="address_id != 0">  
+		    AND address_id = #{address_id}
+		</if>  
+		<if test="member_id != 0">  
+		    AND member_id = #{member_id}
+		</if>  
+		<if test="true_name != null and true_name != ''">  
+		    AND true_name = #{true_name}
+		</if>
+		<if test="area_id != 0">  
+		    AND area_id = #{area_id}
+		</if> 
+		<if test="city_id != 0">  
+		    AND city_id = #{city_id}
+		</if> 
+		<if test="area_info != null and area_info != ''">  
+		    AND area_info = #{area_info}
+		</if> 
+		<if test="address != null and address != ''">  
+		    AND address = #{address}
+		</if> 
+		<if test="mob_phone != null and mob_phone != ''">  
+		    AND mob_phone = #{mob_phone}
+		</if> 
+		<if test="is_default != 0">  
+		    AND is_default = #{is_default}
+		</if>  
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="address_id != 0">  
+		    AND address_id = #{address_id}
+		</if>  
+		<if test="member_id != 0">  
+		    AND member_id = #{member_id}
+		</if>  
+		<if test="true_name != null and true_name != ''">  
+		    AND true_name = #{true_name}
+		</if>
+		<if test="area_id != 0">  
+		    AND area_id = #{area_id}
+		</if> 
+		<if test="city_id != 0">  
+		    AND city_id = #{city_id}
+		</if> 
+		<if test="area_info != null and area_info != ''">  
+		    AND area_info = #{area_info}
+		</if> 
+		<if test="address != null and address != ''">  
+		    AND address = #{address}
+		</if> 
+		<if test="mob_phone != null and mob_phone != ''">  
+		    AND mob_phone = #{mob_phone}
+		</if> 
+		<if test="is_default != 0">  
+		    AND is_default = #{is_default}
+		</if> 
+	</sql>
+	
+	<insert id="insert">
+		insert into app_address (address_id,member_id,true_name,area_id,city_id,area_info,address,mob_phone,is_default) 
+			values 
+		(#{address_id},#{member_id},#{true_name},#{area_id},#{city_id},#{area_info},#{address},#{mob_phone},#{is_default})
+	</insert>
+	
+	<update id="update">
+		update app_address <include refid="updateSql"></include> where 
+		<if test="address_id != 0">
+			address_id = #{address_id}
+		</if>
+		<if test="member_id != 0">
+			member_id = #{member_id}
+		</if>
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="true_name != null and true_name != ''">  
+			    true_name = #{true_name},
+			</if>
+			<if test="area_id != 0">  
+			    area_id = #{area_id},
+			</if> 
+			<if test="city_id != 0">  
+			    city_id = #{city_id},
+			</if> 
+			<if test="area_info != null and area_info != ''">  
+			    area_info = #{area_info},
+			</if> 
+			<if test="address != null and address != ''">  
+			    address = #{address},
+			</if> 
+			<if test="mob_phone != null and mob_phone != ''">  
+			    mob_phone = #{mob_phone},
+			</if> 
+		    is_default = #{is_default},
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_address where 
+		<if test="address_id != 0">
+			address_id = #{address_id}
+		</if>
+	</delete>
+</mapper>

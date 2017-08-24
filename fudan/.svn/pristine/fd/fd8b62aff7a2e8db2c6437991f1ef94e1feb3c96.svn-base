@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.MailMapper">
+
+	<!-- 添加邮件 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.Mail">
+		insert fudan_oa_mail <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="sender != null and sender !='' ">
+				sender = #{sender},
+			</if>
+			<if test="senderId != null and senderId !='' ">
+				senderId = #{senderId},
+			</if>
+			<if test="importantFlag != null ">
+				importantFlag = #{importantFlag},
+			</if>
+			<if test="sendTime != null ">
+				sendTime = #{sendTime},
+			</if>
+			<if test="content != null and content !='' ">
+				content = #{content},
+			</if>
+			<if test="subject != null and subject !='' ">
+				subject = #{subject},
+			</if>
+			<if test="copyToNames != null and copyToNames !='' ">
+				copyToNames = #{copyToNames},
+			</if>
+			<if test="copyToIDs != null and copyToIDs !='' ">
+				copyToIDs = #{copyToIDs},
+			</if>
+			<if test="recipientNames != null and recipientNames !='' ">
+				recipientNames = #{recipientNames},
+			</if>
+			<if test="recipientIDs != null and recipientIDs !='' ">
+				recipientIDs = #{recipientIDs},
+			</if>
+			<if test="mailStatus != null ">
+				mailStatus = #{mailStatus},
+			</if>
+			<if test="fileIds != null and fileIds !='' ">
+				fileIds = #{fileIds},
+			</if>
+			<if test="filenames != null and filenames !='' ">
+				filenames = #{filenames},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加邮件 end -->
+
+
+	<!-- 获取刚添加的邮件Id号 start -->
+	<select id="selectMaxId" resultType="Long">
+		select max(mailId) from fudan_oa_mail
+	</select>
+	<!-- 获取刚添加的邮件Id号 end -->
+
+
+	<!-- 修改邮件信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.communicate.Mail">
+		update fudan_oa_mail
+		<include refid="insertSQL"></include>
+		where mailId = #{mailId}
+	</update>
+	<!-- 修改邮件信息 end -->
+
+
+	<!-- 获取邮件详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long"
+		resultType="com.jy.entity.oa.communicate.Mail">
+		select * from fudan_oa_mail where mailId = #{mailId}
+	</select>
+	<!-- 获取邮件详细信息 end -->
+
+
+	<!-- 删除邮件信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_mail
+		where mailId = #{mailId}
+	</delete>
+	<!-- 删除邮件信息 end -->
+
+</mapper>

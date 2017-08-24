@@ -1,0 +1,67 @@
+package com.jy.entity.app.admin;
+
+import java.sql.Timestamp;
+
+public class Admin {
+	
+	private int admin_id;
+	private String admin_name;
+	private String admin_password;
+	private Timestamp admin_login_time;
+	private int admin_login_num;
+	private int admin_is_super;
+	private String admin_gid;
+	
+	//角色名称
+	private String role_name;
+	
+	public int getAdmin_id() {
+		return admin_id;
+	}
+	public void setAdmin_id(int admin_id) {
+		this.admin_id = admin_id;
+	}
+	public String getAdmin_name() {
+		return admin_name;
+	}
+	public void setAdmin_name(String admin_name) {
+		this.admin_name = admin_name;
+	}
+	public String getAdmin_password() {
+		return admin_password;
+	}
+	public void setAdmin_password(String admin_password) {
+		this.admin_password = admin_password;
+	}
+	public Timestamp getAdmin_login_time() {
+		return admin_login_time;
+	}
+	public void setAdmin_login_time(Timestamp timestamp) {
+		this.admin_login_time = timestamp;
+	}
+	public int getAdmin_login_num() {
+		return admin_login_num;
+	}
+	public void setAdmin_login_num(int admin_login_num) {
+		this.admin_login_num = admin_login_num;
+	}
+	public int getAdmin_is_super() {
+		return admin_is_super;
+	}
+	public void setAdmin_is_super(int admin_is_super) {
+		this.admin_is_super = admin_is_super;
+	}
+	public String getAdmin_gid() {
+		return admin_gid;
+	}
+	public void setAdmin_gid(String admin_gid) {
+		this.admin_gid = admin_gid;
+	}
+	public String getRole_name() {
+		return role_name;
+	}
+	public void setRole_name(String role_name) {
+		this.role_name = role_name;
+	}
+	
+}

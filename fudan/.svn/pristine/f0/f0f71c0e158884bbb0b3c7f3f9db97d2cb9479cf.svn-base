@@ -1,0 +1,50 @@
+package com.jy.repository.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.personal.SignIn;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface SignInMapper {
+	// 定位签到
+	int insert(SignIn signIn);
+
+	// 查询今天的签到次数
+	int select(@Param("accountId")String accountId, @Param("date")Date date);
+
+	List<SignIn> selectBy(@Param("date")Date date);
+
+	List<SignIn> selectPageDate(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex, @Param("date")Date date);
+
+	//今天上班是否打卡
+	SignIn selectSignInToday(@Param("accountId")String id, @Param("date")Date date);
+	//今天下班是否打卡
+	SignIn selectSignOutToday(@Param("accountId")String accountId, @Param("date")Date date);
+
+	// 获取今天的上班打卡记录
+	SignIn selectTodaySignIn(@Param("accountId")String id, @Param("date")Date date);
+	// 打卡记录：默认是今天的打卡记录
+	List<SignIn> selectDailySign(@Param("startDate")Date startDate, @Param("endDate")Date endDate,
+			@Param("accountId")String accountId, @Param("orgId")String orgId);
+	// 打卡记录：默认是今天的打卡记录 
+	List<SignIn> selectDailySignPageList(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex,
+			@Param("startDate")Date startDate, @Param("endDate")Date endDate,
+			@Param("accountId")String accountId, @Param("orgId")String orgId);
+	//签退打卡
+	int update(SignIn signIn);
+	//查询自己的打卡记录，时间降序排序
+	List<SignIn> selectSelfSign(@Param("accountId")String accountId);
+	//查询自己的打卡记录，时间降序排序，分页
+	List<SignIn> selectPageSelfSign(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex,
+			@Param("accountId")String accountId);
+	//查询账号的定位签到,时间降序排序
+	List<SignIn> selectSelfSignLocation(@Param("accountId")String accountId);
+	//查询账号的定位签到,时间降序排序,分页
+	List<SignIn> selectPageSelfSignLocation(@Param("firstIndex")int firstIndex, @Param("toIndex")int toIndex,
+			@Param("accountId")String accountId);
+	List<SignIn> search(SignIn signIn);
+}

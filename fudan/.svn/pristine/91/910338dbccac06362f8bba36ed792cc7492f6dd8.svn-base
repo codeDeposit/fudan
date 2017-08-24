@@ -1,0 +1,68 @@
+package com.jy.repository.oa.workflow;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.workflow.Apply;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ApplyMapper {
+
+	/**
+	 * 添加流程申请
+	 * 
+	 * @param apply
+	 * @return
+	 */
+	int insert(Apply apply);
+
+	/**
+	 * 个人申请分页列表
+	 * 
+	 * @param toIndex
+	 * @param firstIndex
+	 * @param processName
+	 * @param status
+	 * @param userId
+	 * @return
+	 */
+	List<Apply> selectPageData(@Param("firstIndex") int firstIndex,
+			@Param("toIndex") int toIndex,
+			@Param("processName") String processName,
+			@Param("status") Short status, @Param("userId") String userId);
+
+	/**
+	 * 个人申请列表
+	 * 
+	 * @param processName
+	 * @param status
+	 * @param userId
+	 * @return
+	 */
+	List<Apply> select(@Param("processName") String processName,
+			@Param("status") Short status, @Param("userId") String userId);
+
+	/**
+	 * 根据流程实例id获取申请信息
+	 * @param processInstanceId
+	 * @return
+	 */
+	Apply selectBy(@Param("pId") String processInstanceId);
+
+	/**
+	 * 更新申请状态
+	 * @param applyId
+	 * @param status
+	 */
+	void update(@Param("applyId") String applyId, @Param("status") Short status);
+
+	/**
+	 * 已结束申请列表
+	 * @param applierId
+	 * @return
+	 */
+	List<Apply> selectCompletedPageList(@Param("applierId") String applierId);
+
+}

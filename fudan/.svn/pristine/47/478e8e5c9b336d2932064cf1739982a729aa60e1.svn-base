@@ -1,0 +1,225 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.entity.oa.communicate.MailAttach;
+import com.jy.entity.oa.communicate.MailBox;
+import com.jy.entity.oa.communicate.MailFolder;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.communicate.MailAttachMapper;
+import com.jy.repository.oa.communicate.MailBoxMapper;
+import com.jy.repository.oa.communicate.MailMapper;
+import com.jy.service.oa.communicate.MailService;
+import com.jy.task.utils.JsonInfo;
+
+@Service("mailService")
+public class MailServiceImpl implements MailService {
+
+	private MailMapper mailMapper;
+	private MailAttachMapper mailAttacheMapper;
+	private MailBoxMapper mailBoxMapper;
+
+	public MailBoxMapper getMailBoxMapper() {
+		return mailBoxMapper;
+	}
+
+	@Autowired
+	public void setMailBoxMapper(MailBoxMapper mailBoxMapper) {
+		this.mailBoxMapper = mailBoxMapper;
+	}
+
+	public MailAttachMapper getMailAttacheMapper() {
+		return mailAttacheMapper;
+	}
+
+	@Autowired
+	public void setMailAttacheMapper(MailAttachMapper mailAttacheMapper) {
+		this.mailAttacheMapper = mailAttacheMapper;
+	}
+
+	public MailMapper getMailMapper() {
+		return mailMapper;
+	}
+
+	@Autowired
+	public void setMailMapper(MailMapper mailMapper) {
+		this.mailMapper = mailMapper;
+	}
+
+	// 创建的新邮件保存为：草稿 或 直接发送
+	@Override
+	public JsonInfo save(Mail mail) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		mail.setSender(account.getName());
+		mail.setSenderId(account.getAccountId());
+		mail.setSendTime(new Date());
+		// 添加邮件
+		int result = mailMapper.insert(mail);
+		// 获取刚添加邮件的Id号
+		Long mailId = mailMapper.selectMaxId();
+
+		MailAttach mailAttach = new MailAttach();
+		mailAttach.setMailId(mailId);
+		
+		// 附件信息与文件相关联
+		if(mail.getFileIds() != null && mail.getFileIds() != "") {
+			String[] fileIdStrs = mail.getFileIds().split(",");
+			Long[] fileIds = new Long[fileIdStrs.length];
+			for(int i=0; i<fileIdStrs.length; i++) {
+				fileIds[i] = Long.valueOf(fileIdStrs[i]);
+			}
+			for (Long fileId : fileIds) {
+				mailAttach.setFileId(fileId);
+				result = mailAttacheMapper.insert(mailAttach);
+			}
+		}
+		
+		String recipientIDStr = mail.getRecipientIDs();
+		String[] recipientIDStrs = recipientIDStr.split(",");
+		
+		// 邮件与邮箱相关联
+		if (mail.getMailStatus() == 1) {
+			// 与自己的发件箱关联
+			MailBox mailBoxSelf = new MailBox();
+			mailBoxSelf.setMailId(mailId);
+			mailBoxSelf.setFolderId(MailFolder.getFajianXiang());
+			mailBoxSelf.setUserId(account.getAccountId());
+			mailBoxSelf.setSendTime(mail.getSendTime());
+			mailBoxSelf.setDelFlag(MailBox.getUndelFalg());
+			mailBoxSelf.setReadFlag(MailBox.getUnreadFlag());
+			mailBoxSelf.setReplyFlag(MailBox.getUnreplyFlag());
+			mailBoxSelf.setNote("已发送的邮件");
+			result = mailBoxMapper.insert(mailBoxSelf);
+			// 与收件人的收件箱关联
+			for (String rId : recipientIDStrs) {
+				MailBox mailBoxOther = new MailBox();
+				mailBoxOther.setMailId(mailId);
+				mailBoxOther.setFolderId(MailFolder.getShoujianXiang());
+				mailBoxOther.setUserId(rId);
+				mailBoxOther.setSendTime(mail.getSendTime());
+				mailBoxOther.setDelFlag(MailBox.getUndelFalg());
+				mailBoxOther.setReadFlag(MailBox.getUnreadFlag());
+				mailBoxOther.setReplyFlag(MailBox.getUnreplyFlag());
+				mailBoxOther.setNote("已接收的邮件");
+				result = mailBoxMapper.insert(mailBoxOther);
+			}
+		} else if(mail.getMailStatus() == 0) {
+			// 与自己的草稿箱关联
+			MailBox mailBox = new MailBox();
+			mailBox.setMailId(mailId);
+			mailBox.setFolderId(MailFolder.getCaogaoXiang());
+			mailBox.setSendTime(new Date());
+			mailBox.setUserId(account.getAccountId());
+			mailBox.setDelFlag(MailBox.getUndelFalg());
+			mailBox.setReadFlag(MailBox.getUnreadFlag());
+			mailBox.setReplyFlag(MailBox.getUnreplyFlag());
+			mailBox.setNote("存为草稿的邮件");
+			result = mailBoxMapper.insert(mailBox);
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改邮件信息
+	@Override
+	public JsonInfo update(Mail mail) {/*
+		// 更新邮件
+		int result = mailMapper.update(mail);
+		Long mailId = mail.getMailId();
+
+		MailAttach mailAttach = new MailAttach();
+		mailAttach.setMailId(mailId);
+		// 附件信息与文件相关联
+		for (Long fileId : mail.getFileId()) {
+			mailAttach.setFileId(fileId);
+			result = mailAttacheMapper.insert(mailAttach);
+		}
+
+		// 邮件与邮箱相关联
+		if (mail.getMailStatus() == 1) {
+			// 与自己的发件箱关联
+			MailBox mailBoxSelf = new MailBox();
+			mailBoxSelf.setMailId(mailId);
+			mailBoxSelf.setFolderId(MailFolder.getFajianXiang());
+			mailBoxSelf.setUserId(AccountShiroUtil.getCurrentUser().getAccountId());
+			mailBoxSelf.setSendTime(mail.getSendTime());
+			mailBoxSelf.setDelFlag(MailBox.getUndelFalg());
+			mailBoxSelf.setReadFlag(MailBox.getUnreadFlag());
+			mailBoxSelf.setReplyId(MailBox.getUnreplyFlag());
+			mailBoxSelf.setNote("已发送的邮件");
+			result = mailBoxMapper.insert(mailBoxSelf);
+			// 与收件人的收件箱关联
+			for (Long rId : recipientID) {
+				MailBox mailBoxOther = new MailBox();
+				mailBoxOther.setMailId(mailId);
+				mailBoxOther.setFolderId(MailFolder.getShoujianXiang());
+				mailBoxOther.setUserId(rId);
+				mailBoxOther.setSendTime(mail.getSendTime());
+				mailBoxOther.setDelFlag(MailBox.getUndelFalg());
+				mailBoxOther.setReadFlag(MailBox.getUnreadFlag());
+				mailBoxOther.setReplyId(MailBox.getUnreplyFlag());
+				mailBoxOther.setNote("已接收的邮件");
+				result = mailBoxMapper.insert(mailBoxSelf);
+			}
+		} else {
+			// 与自己的草稿箱关联
+			MailBox mailBox = new MailBox();
+			mailBox.setMailId(mailId);
+			mailBox.setFolderId(MailFolder.getCaogaoXiang());
+//			mailBox.setUserId(AccountUtil.getCurrentUser().getEmployee().getUserId());
+			mailBox.setNote("存为草稿的邮件");
+			result = mailBoxMapper.insert(mailBox);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;*/
+		return null;
+	}
+
+	// 获取邮件详细信息
+	@Override
+	public Mail getInfoBy(Long mailId) {
+		//根据boxId获取mailId
+		Mail mail = mailMapper.selectInfoBy(mailId);
+		return mail;
+	}
+	
+	// 批量删除邮件
+	@Override
+	public JsonInfo delete(Long[] boxId) {
+		int result = 0;
+		for (Long bId : boxId) {
+			// 与垃圾箱关联
+			// 获取boxId对应的mailbox, 修改其中的内容，使其被删除，关联垃圾箱
+			MailBox mailBox = mailBoxMapper.selectInfoBy(bId);
+			mailBox.setFolderId(MailFolder.getLajiXiang());
+			mailBox.setDelFlag(MailBox.getDelFalg());
+			mailBox.setNote("已删除的邮件");
+			result = mailBoxMapper.delete(mailBox);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+}

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.GoodsDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Goods" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_goods where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_goods where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="goods_id != 0">
+		 	AND goods_id = #{goods_id}
+		</if>
+		<if test="goods_name != null and goods_name != ''">  
+		    AND name like goods_name('%', #{goods_name}, '%') 
+		</if>  
+		<if test="goods_number != null and goods_number != ''">  
+		    AND goods_number = #{goods_number}
+		</if> 
+		<if test="gc_id != 0">  
+		    AND gc_id = #{gc_id}
+		</if> 
+		<if test="goods_price != 0">  
+		    AND goods_price = #{goods_price}
+		</if> 
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="goods_id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="goods_name != null and goods_name != ''">  
+		    AND name like goods_name('%', #{goods_name}, '%') 
+		</if>  
+		<if test="goods_number != null and goods_number != ''">  
+		    AND goods_number = #{goods_number}
+		</if> 
+		<if test="gc_id != 0">  
+		    AND gc_id = #{gc_id}
+		</if> 
+		<if test="goods_price != 0">  
+		    AND goods_price = #{goods_price}
+		</if>         
+	</sql>
+	<insert id="insert" >
+		<selectKey keyProperty="goods_id" resultType="int" order="AFTER" >
+        	SELECT LAST_INSERT_ID() as goods_id
+        </selectKey>
+		insert into app_goods (goods_id,goods_name,goods_number,gc_id,gc_id_1,gc_id_2,gc_id_3,goods_address,brand_id,goods_desc,goods_price,goods_promotion_price,goods_promotion_begin,goods_promotion_end,goods_promotion_desc,goods_jifen,service_desc,goods_norms,goods_weight,goods_image,goods_salenum,goods_collect,goods_storage_alarm,goods_state,goods_storage,goods_click,goods_image1,goods_image2,goods_image3,goods_image4,goods_image5,approve,goods_addtime,goods_edittime,transport_id,goods_freight,goods_vat,goods_commend,evaluation_good_star,evaluation_count,goods_maiprice,goods_hour) 
+			values 
+		(#{goods_id},#{goods_name},#{goods_number},#{gc_id},#{gc_id_1},#{gc_id_2},#{gc_id_3},#{goods_address},#{brand_id},#{goods_desc},#{goods_price},#{goods_promotion_price},#{goods_promotion_begin},#{goods_promotion_end},#{goods_promotion_desc},#{goods_jifen},#{service_desc},#{goods_norms},#{goods_weight},#{goods_image},#{goods_salenum},#{goods_collect},#{goods_storage_alarm},#{goods_state},#{goods_storage},#{goods_click},#{goods_image1},#{goods_image2},#{goods_image3},#{goods_image4},#{goods_image5},#{approve},curdate(),#{goods_edittime},#{transport_id},#{goods_freight},#{goods_vat},#{goods_commend},#{evaluation_good_star},#{evaluation_count},#{goods_maiprice},#{goods_hour})
+	</insert>
+	
+	<update id="update">
+		update app_goods <include refid="updateSql"></include> where goods_id = #{goods_id} 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="goods_name != null and goods_name != ''">  
+				goods_name = #{goods_name},
+			</if>
+			<if test="goods_number != null and goods_number != ''">  
+				goods_number = #{goods_number},
+			</if>
+			<if test="gc_id != 0">  
+				gc_id = #{gc_id},
+			</if>
+			<if test="gc_id_1 != 0">  
+				gc_id_1 = #{gc_id_1},
+			</if>
+			<if test="gc_id_2 != 0">  
+				gc_id_2 = #{gc_id_2},
+			</if>
+			<if test="gc_id_3 != 0">  
+				gc_id_3 = #{gc_id_3},
+			</if>
+			<if test="goods_address != null and goods_address != ''">  
+				goods_address = #{goods_address},
+			</if>
+			<if test="brand_id != 0">  
+				brand_id = #{brand_id},
+			</if>
+			<if test="goods_desc != null and goods_desc != ''">  
+				goods_desc = #{goods_desc},
+			</if>
+			<if test="goods_price != 0">  
+				goods_price = #{goods_price},
+			</if>
+				goods_promotion_price = #{goods_promotion_price},
+			<if test="goods_promotion_begin != null and goods_promotion_begin != ''">  
+				goods_promotion_begin = #{goods_promotion_begin},
+			</if>
+			<if test="goods_promotion_end != null and goods_promotion_end != ''">  
+				goods_promotion_end = #{goods_promotion_end},
+			</if>
+			<if test="goods_promotion_desc != null and goods_promotion_desc != ''">  
+				goods_promotion_desc = #{goods_promotion_desc},
+			</if>
+				goods_jifen = #{goods_jifen},
+			<if test="service_desc != null and service_desc != ''">  
+				service_desc = #{service_desc},
+			</if>
+			<if test="goods_norms != null and goods_norms != ''">  
+				goods_norms = #{goods_norms},
+			</if>
+			<if test="goods_weight != null and goods_weight != ''">  
+				goods_weight = #{goods_weight},
+			</if>
+			<if test="goods_image != null and goods_image != ''">  
+				goods_image = #{goods_image},
+			</if>
+			<if test="goods_image1 != null and goods_image1 != ''">  
+				goods_image1 = #{goods_image1},
+			</if>
+			<if test="goods_image2 != null and goods_image2 != ''">  
+				goods_image2 = #{goods_image2},
+			</if>
+			<if test="goods_image3 != null and goods_image3 != ''">  
+				goods_image3 = #{goods_image3},
+			</if>
+			<if test="goods_image4 != null and goods_image4 != ''">  
+				goods_image4 = #{goods_image4},
+			</if>
+			<if test="goods_image5 != null and goods_image5 != ''">  
+				goods_image5 = #{goods_image5},
+			</if>
+			<if test="approve != null and approve != ''">  
+				approve = #{approve},
+			</if>
+			<if test="goods_storage != 0">  
+				goods_storage = #{goods_storage},
+			</if>
+			<if test="goods_storage_alarm != 0">  
+				goods_storage_alarm = #{goods_storage_alarm},
+			</if>
+				goods_state = #{goods_state},
+				goods_click = #{goods_click},
+			<if test="goods_salenum != 0">  
+				goods_salenum = #{goods_salenum},
+			</if>
+			<if test="goods_collect != 0">  
+				goods_collect = #{goods_collect},
+			</if>
+			<if test="goods_addtime != null and goods_addtime != ''">  
+				goods_addtime = #{goods_addtime},
+			</if>
+			<if test="goods_edittime != null and goods_edittime != ''">  
+				goods_edittime = #{goods_edittime},
+			</if>
+			<if test="transport_id != 0">  
+				transport_id = #{transport_id},
+			</if>
+			<if test="goods_freight != 0">  
+				goods_freight = #{goods_freight},
+			</if>
+				goods_commend = #{goods_commend},
+			<if test="evaluation_good_star != 0">  
+				evaluation_good_star = #{evaluation_good_star},
+			</if>
+			<if test="evaluation_count != 0">  
+				evaluation_count = #{evaluation_count},
+			</if>
+			<if test="goods_maiprice != 0">  
+				goods_maiprice = #{goods_maiprice},
+			</if>
+			<if test="goods_vat != 0">  
+				goods_vat = #{goods_vat},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_goods where 
+		<if test="goods_id != 0">
+			goods_id = #{goods_id}
+		</if>
+	</delete>
+</mapper>

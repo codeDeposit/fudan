@@ -1,0 +1,724 @@
+package com.jy.controller.wzcg;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.ObjectExcelView;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.area.Area;
+import com.jy.entity.setting.WebSite;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgSupplier;
+import com.jy.entity.wzcg.WzcgExtract;
+import com.jy.service.area.AreaService;
+import com.jy.service.setting.WebSiteService;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.wzcg.WzcgExtractService;
+import com.jy.service.wzcg.WzcgSupplierService;
+import com.jy.service.wzcg.WzcgKindService;
+
+@Controller("wzcgSupplierController")
+@RequestMapping(value = "/backstage/wzcg/supplier")
+public class WzcgSupplierController extends BaseController<WzcgSupplier> {
+
+	@Resource(name = "wzcgSupplierService")
+	private WzcgSupplierService wzcgSupplierService;
+	@Resource(name = "wzcgKindService")
+	private WzcgKindService wzcgKindService;
+	@Resource(name = "areaService")
+	private AreaService areaService;
+	@Resource(name = "wzcgExtractService")
+	private WzcgExtractService wzcgExtractService;
+	@Autowired
+	private AccountService service;
+	@Autowired
+	private WebSiteService webSiteService;
+	@Autowired
+	public RoleService roleService;
+	
+	/*
+	 * pc 端供应商注册协议
+	 */
+	@RequestMapping("/supplier_notice")
+	public String supplierNotice(Model model) {
+		WebSite webSite = webSiteService.find().get(0);
+		model.addAttribute("webSite",webSite);
+		return "system/wzcg/supplier/supplier_notice";
+	}
+
+	/*
+	 * mobile 端供应商注册协议
+	 */
+	@RequestMapping("/mobile_supplier_notice")
+	public String mobileSupplierNotice() {
+		return "mobile/wzcg/supplier/mobile_supplier_notice";
+	}
+
+	/*
+	 * pc 端供应商注册页面
+	 */
+	@RequestMapping("/supplier_reg")
+	public ModelAndView supplierReg() {
+		ModelAndView mv = this.getModelAndView();
+		Area area = new Area();
+		area.setpId("0");
+		List<Area> areaList = this.areaService.selectListBy(area);
+		mv.addObject("msg", "success");
+		mv.addObject("arealist", areaList);
+		mv.setViewName("system/wzcg/supplier/supplier_reg");
+		return mv;
+	}
+
+	/*
+	 * mobile 端供应商注册页面
+	 */
+	@RequestMapping("/mobile_supplier_reg")
+	public ModelAndView mobileSupplierReg() {
+		ModelAndView mv = this.getModelAndView();
+		Area area = new Area();
+		area.setpId("0");
+		List<Area> areaList = this.areaService.selectListBy(area);
+		mv.addObject("msg", "success");
+		mv.addObject("arealist", areaList);
+		mv.setViewName("mobile/wzcg/supplier/mobile_supplier_reg");
+		return mv;
+	}
+	
+	/*
+	 * 首页
+	 */
+	@RequestMapping("/index")
+	public String index(HttpServletRequest request, Model model) throws Exception {
+		boolean mark = false;//按钮显示判断
+		Account account = AccountShiroUtil.getCurrentUser();
+		//判断用户是否为管理员组织
+		if(roleService.getOrg(account.getRoleId()).getId().equals("9")){//管理员登录
+			mark = true;
+		}
+		model.addAttribute("mark",mark);
+		return "system/wzcg/supplier/supplier_index";
+	}
+	
+	/*
+	 * 添加
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request, Model model,@ModelAttribute WzcgSupplier supplier) throws Exception {
+		AjaxRes ar = getAjaxRes();
+		Account account = new Account();
+		String uuid = get32UUID();
+		account.setAccountId(uuid);	
+		account.setRoleId("b206367b2dba4176830983d1e40dc1e6");
+		account.setIsValid(1);
+		account.setCreateTime(new Timestamp(System.currentTimeMillis()));
+		account.setLoginName(request.getParameter("loginName"));
+		account.setPassword(request.getParameter("password"));
+		account.setEmail(supplier.getEmail());
+		account.setName("供应商");
+		try{
+			service.insertAccount(account);
+		}catch (Exception e) {
+			logger.error(e.toString(),e);
+		}
+		supplier.setUserId(uuid);
+		supplier.setState("1");
+		supplier.setCreatedate(new Timestamp(System.currentTimeMillis()));
+		supplier.setCompany_address(request.getParameter("company_address1") + "," + request.getParameter("company_address2"));
+		supplier.setBusiness_scope(request.getParameter("business_scope1") + "," + request.getParameter("business_scope2"));
+		this.wzcgSupplierService.insert(supplier);
+		ar.setSucceedMsg("注册成功！");
+		return ar;
+	}
+	
+	/*
+	 * 列表	
+	 */
+	@RequestMapping("/list")
+	public String list(HttpServletRequest request, Model model,WzcgSupplier supplier) throws Exception {
+		boolean mark = false;
+		Map<Boolean,List<WzcgSupplier>> map = this.wzcgSupplierService.list();
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		for (Map.Entry<Boolean,List<WzcgSupplier>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			supplierList = entry.getValue();
+		}  
+		supplierList = this.wzcgSupplierService.listFull(supplierList);
+		model.addAttribute("mark",mark);
+		model.addAttribute("supplierList",supplierList);
+		model.addAttribute("count",supplierList.size());
+		return "system/wzcg/supplier/supplier_list";
+	}
+	
+	/**
+	 * 详细信息 
+	 */
+	@RequestMapping("/detail")
+	public String detail(HttpServletRequest request, Model model,WzcgSupplier supplier)throws Exception {
+		String mark = request.getParameter("mark");
+		supplier = this.wzcgSupplierService.find(supplier).get(0);
+		model.addAttribute("supplier",supplier);
+		model.addAttribute("pd",mark);
+		return "system/wzcg/supplier/supplier_detail";
+	}
+	
+	/*
+	 * 删除
+	 */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,WzcgSupplier supplier) throws Exception {
+		AjaxRes ar = getAjaxRes();
+		wzcgSupplierService.delete(supplier.getUserId());
+		Account account = new Account();
+		account.setAccountId(supplier.getUserId());
+		service.deleteAccount(account);
+		ar.setSucceedMsg("删除成功！");
+		return ar;
+	}
+	
+	/**
+	 * 更新
+	 */
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request, Model model,@ModelAttribute WzcgSupplier supplier){
+		AjaxRes ar = getAjaxRes();
+		this.wzcgSupplierService.update(supplier);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 状态修改 
+	 */
+	@RequestMapping("/updateStatus")
+	@ResponseBody
+	public AjaxRes updateStatus(HttpServletRequest request,WzcgSupplier supplier) throws Exception {
+		String mark = request.getParameter("mark");
+		AjaxRes ar = getAjaxRes();
+		if(supplier.getState().equals("1") || supplier.getState().equals("4")){//提交
+			supplier.setState("2");
+		}else if(supplier.getState().equals("2")){
+			if(mark.equals("yes")){//通过
+				supplier.setState("3");
+			}else{//拒绝
+				supplier.setState("4");
+			}
+		}else if(supplier.getState().equals("3")){//入库
+			supplier.setState("6");
+		}else if(supplier.getState().equals("5")){//解冻
+			supplier.setState("6");
+		}else if(supplier.getState().equals("6")){//冻结
+			supplier.setState("5");
+		}
+		wzcgSupplierService.update(supplier);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 搜索
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgSupplier supplier)throws Exception{		
+		String company_address1 = request.getParameter("company_address1");
+		String company_address2 = request.getParameter("company_address2");
+		String bankrollMiStr = request.getParameter("bankrollMi");
+		String bankrollMaStr = request.getParameter("bankrollMa");
+		int bankrollMin = 0;
+		int bankrollMax = 0;
+		if(!company_address1.equals("") || !company_address2.equals("")){
+			supplier.setCompany_address(company_address1 + "," + company_address2);
+		}
+		if(bankrollMiStr != null && !bankrollMiStr.equals("")){
+			bankrollMin = Integer.parseInt(bankrollMiStr);
+		}
+		if(bankrollMaStr != null && !bankrollMaStr.equals("")){
+			bankrollMax = Integer.parseInt(bankrollMaStr);
+		}
+		supplier.setBankrollMin(bankrollMin);
+		supplier.setBankrollMax(bankrollMax);
+		boolean mark = false;
+		Map<Boolean,List<WzcgSupplier>> map = this.wzcgSupplierService.searchList(supplier);
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		for (Map.Entry<Boolean,List<WzcgSupplier>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			supplierList = entry.getValue();
+		}  
+		supplierList = this.wzcgSupplierService.listFull(supplierList);
+		model.addAttribute("mark",mark);
+		model.addAttribute("supplierList",supplierList);
+		model.addAttribute("count",supplierList.size());
+		return "system/wzcg/supplier/supplier_list";
+	}
+	
+	/**
+	 * Excel导出
+	 */
+	@RequestMapping(value="/excel")
+	public ModelAndView Excel(HttpServletRequest request,Model model,@ModelAttribute WzcgSupplier supplier){
+		ModelAndView mv = null;
+		try{
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();//表格标题
+			titles.add("企业名称");  		
+			titles.add("法定代表人");			
+			titles.add("企业注册地址");	
+			titles.add("邮政编码");
+			titles.add("法人身份证号码");			
+			titles.add("注册资金万元");			
+			titles.add("营业注册号执照");
+			titles.add("营业执照编号");	
+			titles.add("国税登记号");
+			titles.add("地税登记号");	
+			titles.add("组织机构代码");	
+			titles.add("企业类型");	
+			titles.add("行业分类");	
+			titles.add("主管部门");	
+			titles.add("行政管理资质号");
+			titles.add("发证机关");
+			titles.add("生产许可证");
+			titles.add("发证机关");
+			titles.add("成立时间");
+			titles.add("申请时间");
+			titles.add("经营范围");
+			titles.add("开户银行");
+			titles.add("谦营产品");
+			titles.add("参加投标经历");
+			titles.add("企业简介");
+			titles.add("开户账号");
+			titles.add("联系人");
+			titles.add("联系电话");
+			titles.add("传真电话");
+			titles.add("注册手机号码");
+			titles.add("电子邮件");
+			titles.add("企业网址");
+			titles.add("主营生产");
+			titles.add("供应商承诺");
+			titles.add("注册时间");
+			titles.add("状态");
+			dataMap.put("titles", titles);
+			List<PageData> varList = new ArrayList<PageData>();
+			Map<Boolean,List<WzcgSupplier>> map = wzcgSupplierService.searchList(supplier);
+			List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+			for (Map.Entry<Boolean,List<WzcgSupplier>> entry : map.entrySet()) { 
+				supplierList = entry.getValue();
+			}  
+			supplierList = this.wzcgSupplierService.listFull(supplierList);
+			for(int i=0;i<supplierList.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", supplierList.get(i).getCompany());		
+				vpd.put("var2", supplierList.get(i).getRepresent());		
+				vpd.put("var3", supplierList.get(i).getCompany_address());			
+				vpd.put("var4", supplierList.get(i).getZip_code());	
+				vpd.put("var5", supplierList.get(i).getID_card());		
+				vpd.put("var6", supplierList.get(i).getBankroll());
+				vpd.put("var7", supplierList.get(i).getCompany_register_number());
+				vpd.put("var8", supplierList.get(i).getLicense());
+				vpd.put("var9", supplierList.get(i).getNational_tax());
+				vpd.put("var10", supplierList.get(i).getLand_tax());
+				vpd.put("var11", supplierList.get(i).getOrganization());
+				vpd.put("var12", supplierList.get(i).getCompany_type());
+				vpd.put("var13", supplierList.get(i).getProfession_class());
+				vpd.put("var14", supplierList.get(i).getCharge());
+				vpd.put("var15", supplierList.get(i).getAdmin_number());
+				vpd.put("var16", supplierList.get(i).getOffice1());
+				vpd.put("var17", supplierList.get(i).getProduce_card()); 
+				vpd.put("var18", supplierList.get(i).getOffice2());
+				vpd.put("var19", supplierList.get(i).getFound_time());
+				vpd.put("var20", supplierList.get(i).getApply_time());
+				vpd.put("var21", supplierList.get(i).getBusiness_scope());
+				vpd.put("var22", supplierList.get(i).getBank()); 
+				vpd.put("var23", supplierList.get(i).getPart_time_product());
+				vpd.put("var24", supplierList.get(i).getExperience());
+				vpd.put("var25", supplierList.get(i).getBrief_introduction());
+				vpd.put("var26", supplierList.get(i).getAccount()); 
+				vpd.put("var27", supplierList.get(i).getContacts());
+				vpd.put("var28", supplierList.get(i).getContacts_phone());
+				vpd.put("var29", supplierList.get(i).getFax_phone());
+				vpd.put("var30", supplierList.get(i).getMobile_number()); 
+				vpd.put("var31", supplierList.get(i).getEmail());
+				vpd.put("var32", supplierList.get(i).getWebsite());
+				vpd.put("var33", supplierList.get(i).getMain_product());
+				vpd.put("var34", supplierList.get(i).getPromise()); 
+				vpd.put("var35", supplierList.get(i).getCreatedate());
+				if(supplierList.get(i).getState().equals("1")){
+					vpd.put("var36","已注册");
+				}else if(supplierList.get(i).getState().equals("2")){
+					vpd.put("var36","初审中");	
+				}else if(supplierList.get(i).getState().equals("3")){
+					vpd.put("var36","初审通过");	
+				}else if(supplierList.get(i).getState().equals("4")){
+					vpd.put("var36","初审未通过");	
+				}else if(supplierList.get(i).getState().equals("5")){
+					vpd.put("var36","已冻结");	
+				}else{
+					vpd.put("var36","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			dataMap.put("varList",varList);
+			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+			mv = new ModelAndView(erv,dataMap);
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	/**
+	 * 抽取方法
+	 */
+	
+	/*
+	 * 抽取首页
+	 */
+	@RequestMapping("/extractIndex")
+	public String extractIndex(HttpServletRequest request, Model model) throws Exception {
+		return "system/wzcg/supplier/extract/extract_index";
+	}
+	
+	/*
+	 * 抽取结果首页
+	 */
+	@RequestMapping("/extractResult")
+	public String extractResult(HttpServletRequest request, Model model,WzcgExtract extract) throws Exception {
+		List<WzcgExtract> extractList = new ArrayList<WzcgExtract>();
+		extract.setMark("supplier");
+		extractList = wzcgExtractService.find(extract);
+		model.addAttribute("extractList",extractList);
+		model.addAttribute("count",extractList.size());
+		return "system/wzcg/supplier/extract/extract_result";
+	}
+	
+	/*
+	 * 抽取列表	
+	 */
+	@RequestMapping("/extractList")
+	public String extractList(HttpServletRequest request, Model model,WzcgSupplier supplier) throws Exception {
+		model.addAttribute("count1",0);
+		model.addAttribute("count2",0);
+		return "system/wzcg/supplier/extract/extract_list";
+	}
+
+	/*
+	 * 抽取删除
+	 */
+	@RequestMapping("/extractDelete")
+	@ResponseBody
+	public AjaxRes extractDelete(HttpServletRequest request,WzcgExtract extract) throws Exception {
+		AjaxRes ar = getAjaxRes();
+		wzcgExtractService.delete(extract.getId());
+		ar.setSucceedMsg("删除成功！");
+		return ar;
+	}
+	
+	/*
+	 * 抽取保存	
+	 */
+	@RequestMapping("/extractAdd")
+	public String extractAdd(HttpServletRequest request, Model model,WzcgExtract extract) throws Exception {
+		extract.setMark("supplier");
+		wzcgExtractService.insert(extract);
+		return "system/wzcg/supplier/extract/extract_index";
+	}
+	
+	/**
+	 * 抽取详细信息 
+	 */
+	@RequestMapping("/extractDetail")
+	public String extractDetail(HttpServletRequest request, Model model,WzcgExtract extract)throws Exception {
+		List<WzcgSupplier> supplier1List = new ArrayList<WzcgSupplier>();
+		List<WzcgSupplier> supplier2List = new ArrayList<WzcgSupplier>();
+		Map<List<WzcgSupplier>,List<WzcgSupplier>> map = this.wzcgSupplierService.extractDetail(extract);
+		for (Map.Entry<List<WzcgSupplier>,List<WzcgSupplier>> entry : map.entrySet()) { 
+			supplier1List = entry.getKey();
+			supplier2List = entry.getValue();
+		}   
+		model.addAttribute("supplier1List",supplier1List);
+		model.addAttribute("supplier2List",supplier2List);
+		return "system/wzcg/supplier/extract/extract_detail";
+	}
+	
+	/**
+	 * 抽取数据列表搜索
+	 */
+	@RequestMapping("/extractSearchList")  
+	@ResponseBody
+	public AjaxRes extractSearchList(HttpServletRequest request,Model model,@ModelAttribute WzcgExtract extract)throws Exception{		
+		List<WzcgExtract> extractList = new ArrayList<WzcgExtract>();
+		AjaxRes ar = getAjaxRes();
+		extract.setMark("supplier");
+		extractList = wzcgExtractService.search(extract);
+		ar.setSucceed(extractList);
+		return ar;
+	}
+	
+	/**
+	 * 抽取搜索
+	 */
+	@RequestMapping("/extractSearch")  
+	public String extractSearch(HttpServletRequest request,Model model,@ModelAttribute WzcgSupplier supplier)throws Exception{		
+		String company_address1 = request.getParameter("company_address1");
+		String company_address2 = request.getParameter("company_address2");
+		String bankrollMiStr = request.getParameter("bankrollMi");
+		String bankrollMaStr = request.getParameter("bankrollMa");
+		String extractCount1 = request.getParameter("extractCount1");
+		String extractCount2 = request.getParameter("extractCount2");
+		int bankrollMin = 0;
+		int bankrollMax = 0;
+		int count = 0;
+		int count1 = 0;
+		int count2 = 0;
+		if(!company_address1.equals("") || !company_address2.equals("")){
+			supplier.setCompany_address(company_address1 + "," + company_address2);
+		}
+		if(bankrollMiStr != null && !bankrollMiStr.equals("")){
+			bankrollMin = Integer.parseInt(bankrollMiStr);
+		}
+		if(bankrollMaStr != null && !bankrollMaStr.equals("")){
+			bankrollMax = Integer.parseInt(bankrollMaStr);
+		}
+		if(extractCount1 != null && !extractCount1.equals("")){
+			count1 = Integer.parseInt(extractCount1);
+		}
+		if(extractCount2 != null && !extractCount2.equals("")){
+			count2 = Integer.parseInt(extractCount2);
+		}
+		if(count1 !=0 || count2 != 0){
+			count = count1 + count2;
+			supplier.setCount(count);
+		}
+		supplier.setBankrollMin(bankrollMin);
+		supplier.setBankrollMax(bankrollMax);
+		boolean mark = false;
+		Map<Boolean,List<WzcgSupplier>> map = this.wzcgSupplierService.extractSearchList(supplier);
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		for (Map.Entry<Boolean,List<WzcgSupplier>> entry : map.entrySet()) { 
+			mark = entry.getKey();
+			supplierList = entry.getValue();
+		}  
+		supplierList = this.wzcgSupplierService.listFull(supplierList);
+		List<WzcgSupplier> supplierList1 = new ArrayList<WzcgSupplier>();
+		List<WzcgSupplier> supplierList2 = new ArrayList<WzcgSupplier>();
+		if(count1 >= supplierList.size()){
+			supplierList1.addAll(supplierList);
+		}else{
+			for(int i=0;i<supplierList.size();i++){
+				if((count1-1)>=i){
+					supplierList1.add(supplierList.get(i));
+				}else{
+					supplierList2.add(supplierList.get(i));
+				}
+			}
+		}
+		model.addAttribute("mark",mark);
+		model.addAttribute("supplierList1",supplierList1);
+		model.addAttribute("count1",supplierList1.size());
+		model.addAttribute("supplierList2",supplierList2);
+		model.addAttribute("count2",supplierList2.size());
+		return "system/wzcg/supplier/extract/extract_list";
+	}
+	
+	/**
+	 * 抽取Excel导出
+	 */
+	@RequestMapping(value="/extractExcel")
+	public ModelAndView extractExcel(HttpServletRequest request,Model model,@ModelAttribute WzcgExtract extract){
+		ModelAndView mv = null;
+		try{
+			Map<String,Object> dataMap = new HashMap<String,Object>();
+			List<String> titles = new ArrayList<String>();//表格标题
+			titles.add("");  
+			titles.add("企业名称");  		
+			titles.add("法定代表人");			
+			titles.add("企业注册地址");	
+			titles.add("邮政编码");
+			titles.add("法人身份证号码");			
+			titles.add("注册资金万元");			
+			titles.add("营业注册号执照");
+			titles.add("营业执照编号");	
+			titles.add("国税登记号");
+			titles.add("地税登记号");	
+			titles.add("组织机构代码");	
+			titles.add("企业类型");	
+			titles.add("行业分类");	
+			titles.add("主管部门");	
+			titles.add("行政管理资质号");
+			titles.add("发证机关");
+			titles.add("生产许可证");
+			titles.add("发证机关");
+			titles.add("成立时间");
+			titles.add("申请时间");
+			titles.add("经营范围");
+			titles.add("开户银行");
+			titles.add("谦营产品");
+			titles.add("参加投标经历");
+			titles.add("企业简介");
+			titles.add("开户账号");
+			titles.add("联系人");
+			titles.add("联系电话");
+			titles.add("传真电话");
+			titles.add("注册手机号码");
+			titles.add("电子邮件");
+			titles.add("企业网址");
+			titles.add("主营生产");
+			titles.add("供应商承诺");
+			titles.add("注册时间");
+			titles.add("状态");
+			dataMap.put("titles", titles);
+			List<PageData> varList = new ArrayList<PageData>();
+			List<WzcgSupplier> supplier1List = new ArrayList<WzcgSupplier>();
+			List<WzcgSupplier> supplier2List = new ArrayList<WzcgSupplier>();
+			Map<List<WzcgSupplier>,List<WzcgSupplier>> map = this.wzcgSupplierService.extractDetail(extract);
+			for(Map.Entry<List<WzcgSupplier>,List<WzcgSupplier>> entry : map.entrySet()) { 
+				supplier1List = entry.getKey();
+				supplier2List = entry.getValue();
+			}   
+			supplier1List = wzcgSupplierService.listFull(supplier1List);
+			for(int i=0;i<supplier1List.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", "抽取名单");		
+				vpd.put("var2", supplier1List.get(i).getCompany());		
+				vpd.put("var3", supplier1List.get(i).getRepresent());		
+				vpd.put("var4", supplier1List.get(i).getCompany_address());			
+				vpd.put("var5", supplier1List.get(i).getZip_code());	
+				vpd.put("var6", supplier1List.get(i).getID_card());		
+				vpd.put("var7", supplier1List.get(i).getBankroll());
+				vpd.put("var8", supplier1List.get(i).getCompany_register_number());
+				vpd.put("var9", supplier1List.get(i).getLicense());
+				vpd.put("var10",supplier1List.get(i).getNational_tax());
+				vpd.put("var11",supplier1List.get(i).getLand_tax());
+				vpd.put("var12",supplier1List.get(i).getOrganization());
+				vpd.put("var13",supplier1List.get(i).getCompany_type());
+				vpd.put("var14",supplier1List.get(i).getProfession_class());
+				vpd.put("var15",supplier1List.get(i).getCharge());
+				vpd.put("var16",supplier1List.get(i).getAdmin_number());
+				vpd.put("var17",supplier1List.get(i).getOffice1());
+				vpd.put("var18",supplier1List.get(i).getProduce_card()); 
+				vpd.put("var19",supplier1List.get(i).getOffice2());
+				vpd.put("var20",supplier1List.get(i).getFound_time());
+				vpd.put("var21",supplier1List.get(i).getApply_time());
+				vpd.put("var22",supplier1List.get(i).getBusiness_scope());
+				vpd.put("var23",supplier1List.get(i).getBank()); 
+				vpd.put("var24",supplier1List.get(i).getPart_time_product());
+				vpd.put("var25",supplier1List.get(i).getExperience());
+				vpd.put("var26",supplier1List.get(i).getBrief_introduction());
+				vpd.put("var27",supplier1List.get(i).getAccount()); 
+				vpd.put("var28",supplier1List.get(i).getContacts());
+				vpd.put("var29",supplier1List.get(i).getContacts_phone());
+				vpd.put("var30",supplier1List.get(i).getFax_phone());
+				vpd.put("var31",supplier1List.get(i).getMobile_number()); 
+				vpd.put("var32",supplier1List.get(i).getEmail());
+				vpd.put("var33",supplier1List.get(i).getWebsite());
+				vpd.put("var34",supplier1List.get(i).getMain_product());
+				vpd.put("var35",supplier1List.get(i).getPromise()); 
+				vpd.put("var36",supplier1List.get(i).getCreatedate());
+				if(supplier1List.get(i).getState().equals("1")){
+					vpd.put("var37","已注册");
+				}else if(supplier1List.get(i).getState().equals("2")){
+					vpd.put("var37","初审中");	
+				}else if(supplier1List.get(i).getState().equals("3")){
+					vpd.put("var37","初审通过");	
+				}else if(supplier1List.get(i).getState().equals("4")){
+					vpd.put("var37","初审未通过");	
+				}else if(supplier1List.get(i).getState().equals("5")){
+					vpd.put("var37","已冻结");	
+				}else{
+					vpd.put("var37","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			supplier2List = wzcgSupplierService.listFull(supplier2List);
+			for(int i=0;i<supplier2List.size();i++){
+				PageData vpd = new PageData();
+				vpd.put("var1", "备选名单");	
+				vpd.put("var2", supplier2List.get(i).getCompany());		
+				vpd.put("var3", supplier2List.get(i).getRepresent());		
+				vpd.put("var4", supplier2List.get(i).getCompany_address());			
+				vpd.put("var5", supplier2List.get(i).getZip_code());	
+				vpd.put("var6", supplier2List.get(i).getID_card());		
+				vpd.put("var7", supplier2List.get(i).getBankroll());
+				vpd.put("var8", supplier2List.get(i).getCompany_register_number());
+				vpd.put("var9", supplier2List.get(i).getLicense());
+				vpd.put("var10",supplier2List.get(i).getNational_tax());
+				vpd.put("var11",supplier2List.get(i).getLand_tax());
+				vpd.put("var12",supplier2List.get(i).getOrganization());
+				vpd.put("var13",supplier2List.get(i).getCompany_type());
+				vpd.put("var14",supplier2List.get(i).getProfession_class());
+				vpd.put("var15",supplier2List.get(i).getCharge());
+				vpd.put("var16",supplier2List.get(i).getAdmin_number());
+				vpd.put("var17",supplier2List.get(i).getOffice1());
+				vpd.put("var18",supplier2List.get(i).getProduce_card()); 
+				vpd.put("var19",supplier2List.get(i).getOffice2());
+				vpd.put("var20",supplier2List.get(i).getFound_time());
+				vpd.put("var21",supplier2List.get(i).getApply_time());
+				vpd.put("var22",supplier2List.get(i).getBusiness_scope());
+				vpd.put("var23",supplier2List.get(i).getBank()); 
+				vpd.put("var24",supplier2List.get(i).getPart_time_product());
+				vpd.put("var25",supplier2List.get(i).getExperience());
+				vpd.put("var26",supplier2List.get(i).getBrief_introduction());
+				vpd.put("var27",supplier2List.get(i).getAccount()); 
+				vpd.put("var28",supplier2List.get(i).getContacts());
+				vpd.put("var29",supplier2List.get(i).getContacts_phone());
+				vpd.put("var30",supplier2List.get(i).getFax_phone());
+				vpd.put("var31",supplier2List.get(i).getMobile_number()); 
+				vpd.put("var32",supplier2List.get(i).getEmail());
+				vpd.put("var33",supplier2List.get(i).getWebsite());
+				vpd.put("var34",supplier2List.get(i).getMain_product());
+				vpd.put("var35",supplier2List.get(i).getPromise()); 
+				vpd.put("var36",supplier2List.get(i).getCreatedate());
+				if(supplier2List.get(i).getState().equals("1")){
+					vpd.put("var37","已注册");
+				}else if(supplier2List.get(i).getState().equals("2")){
+					vpd.put("var37","初审中");	
+				}else if(supplier2List.get(i).getState().equals("3")){
+					vpd.put("var37","初审通过");	
+				}else if(supplier2List.get(i).getState().equals("4")){
+					vpd.put("var37","初审未通过");	
+				}else if(supplier2List.get(i).getState().equals("5")){
+					vpd.put("var37","已冻结");	
+				}else{
+					vpd.put("var37","完成入库");	
+				}
+				varList.add(vpd);
+			}
+			dataMap.put("varList",varList);
+			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+			mv = new ModelAndView(erv,dataMap);
+		}catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
+	/**
+	 * 打印
+	 */
+	@RequestMapping("/dataPrint")
+	public String toPrint(HttpServletRequest request, Model model,WzcgSupplier supplier) throws Exception {
+		supplier = wzcgSupplierService.find(supplier).get(0);
+		model.addAttribute("supplier", supplier);
+		return "system/wzcg/supplier/supplier_print";
+	}
+	  
+}

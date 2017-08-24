@@ -1,0 +1,20 @@
+package com.jy.controller.app;
+
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.jy.controller.base.BaseController;
+
+@Controller("appMemberController")
+@RequestMapping(value="/appMember")
+public class AppAccountController extends BaseController<Object> {
+	
+//	@Resource(name="appMemberService")
+//	private AppMemberService appMemberService;
+	
+	@RequestMapping("/list")  
+	public String list(HttpServletRequest request,Model model)throws Exception{	
+		return "system/area/city";
+	}
+}

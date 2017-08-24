@@ -1,0 +1,32 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.DepreType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface DepreTypeService {
+
+	// 添加折旧类型
+	JsonInfo save(DepreType depreType);
+
+	// 获取详细信息
+	DepreType getInfoBy(Long depreTypeId);
+
+	// 修改折旧类型信息
+	JsonInfo update(DepreType depreType);
+
+	// 批量删除
+	JsonInfo del(Long[] depreTypeId);
+
+	// 获取折旧类型列表
+	List<DepreType> get(String typeName, Short calMethod);
+
+	// 分页折旧类型列表
+	List<DepreType> getPageList(PageBean pb, String typeName, Short calMethod);
+
+	// 获取所有折旧类别
+	List<DepreType> getAll();
+
+}

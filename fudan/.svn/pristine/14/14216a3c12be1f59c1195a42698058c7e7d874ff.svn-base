@@ -1,0 +1,154 @@
+package com.jy.service.wzcg;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.entity.system.org.Position;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+import com.jy.entity.wzcg.WzcgXqyt;
+import com.jy.repository.wzcg.WzcgXqytDao;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.PositionService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.workflow.online.apply.ApproveTaskService;
+import com.jy.service.workflow.online.apply.ApproverSettingService;
+
+@Service(value = "wzcgXqytService")
+public class WzcgXqytService extends BaseServiceImp<WzcgXqyt> {
+	
+	@Resource
+	private WzcgXqytDao wzcgXqytDao;
+	@Resource(name="approveTaskService")
+	private ApproveTaskService approveTaskService;
+	@Resource(name="approverSettingService")
+	private ApproverSettingService approverSettingService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	public AccountService accountService;
+	@Autowired
+	private PositionService positionService;
+	
+	/**
+	 * 判断是否为审批者
+	 */
+	public boolean isApprove(){
+		return approverSettingService.isApprover();
+	}
+	
+	/**
+	 * 流程判断是否为最后一步
+	 * @return
+	 */
+	public boolean isOver(){
+		boolean isEndEvent = approveTaskService.isEndEvent();
+		return isEndEvent;
+	}
+	
+	/**
+	 * 得到流程调用数据
+	 * @return
+	 */
+	public ApproverSetting getFlowData(){
+		ApproverSetting approverSetting = approverSettingService.get();
+		return approverSetting;
+	}
+	
+	/**
+	 * 需求预填数据
+	 * @return
+	 */
+	public List<WzcgXqyt> getXqytList(){
+		Account account = AccountShiroUtil.getCurrentUser();
+		Org org = roleService.getAccountOrg(account.getAccountId());
+		List<WzcgXqyt> xqytList = new ArrayList<WzcgXqyt>();
+		WzcgXqyt xqyt = new WzcgXqyt();
+		if(org.getId().equals("9")){
+			xqytList = this.find(xqyt);
+		}else{
+			boolean mark = this.isApprove();//判断是否为审批者
+			if(!mark){//非审批者需求预填数据
+				xqyt.setCreator(account.getAccountId());
+				xqytList = this.find(xqyt);
+			}else{//审批者需求预填数据
+				Map<String, String> map = approveTaskService.list("xqyt");
+				for (Map.Entry<String, String> entry : map.entrySet()) { 
+					xqyt.setXqytId(entry.getKey());
+					WzcgXqyt xqyt2 = this.find(xqyt).get(0); 
+					xqytList.add(xqyt2);
+				}  
+			}
+		}
+		return xqytList;
+	}
+	
+	/**
+	 * 数组数据完善（得到填报人员，得到审批人，得到职务名称）
+	 * @return
+	 */
+	public List<WzcgXqyt> getXqytListFull(List<WzcgXqyt> xqytList){
+		for(int i=0;i<xqytList.size();i++){
+			xqytList.get(i).setBm(roleService.getAccountOrg(xqytList.get(i).getCreator()).getName());//得到需求部门
+			Account o = new Account();
+			o.setAccountId(xqytList.get(i).getCreator());
+			xqytList.get(i).setCreator(accountService.find(o).get(0).getName());//得到填报人员
+			o.setAccountId(xqytList.get(i).getApproveId());
+			xqytList.get(i).setApproveId((accountService.find(o).get(0).getName()));//得到审批人
+			Position position = new Position();
+			position.setId(xqytList.get(i).getPositionId());
+			xqytList.get(i).setPositionId(positionService.find(position).get(0).getName());//得到职务名称
+		}
+		return xqytList;
+	}
+	
+	/**
+	 * 查询结果数组比对返回
+	 * 
+	 */
+	public List<WzcgXqyt> SearchList(List<WzcgXqyt> wzcgXqytList)throws Exception{		
+		List<WzcgXqyt> xqytListAll = new ArrayList<WzcgXqyt>();
+		List<WzcgXqyt> xqytList = new ArrayList<WzcgXqyt>();
+		xqytList = this.getXqytList();//非审批者需求数据
+		for(int i=0;i<wzcgXqytList.size();i++){//查询数据结果
+			for(int j=0;j<xqytList.size();j++){
+				if(xqytList.get(j).getXqytId().equals(wzcgXqytList.get(i).getXqytId())){
+					xqytListAll.add(wzcgXqytList.get(i));
+				}
+			}
+		}
+		xqytListAll = this.getXqytListFull(xqytListAll);//数组数据完善（得到填报人员，得到审批人，得到职务名称）
+		return xqytListAll;
+	}
+	
+	public int count(WzcgXqyt wzcgXqyt){
+		return wzcgXqytDao.count(wzcgXqyt);
+	}
+	
+	public List<WzcgXqyt> find(WzcgXqyt wzcgXqyt) {
+		return wzcgXqytDao.find(wzcgXqyt);
+	}
+	
+	public List<WzcgXqyt> search(WzcgXqyt wzcgXqyt){
+		return wzcgXqytDao.search(wzcgXqyt);
+	}
+	
+	public void insert(WzcgXqyt wzcgXqyt){
+		wzcgXqytDao.insert(wzcgXqyt);
+	}
+	
+	public void delete(WzcgXqyt wzcgXqyt){
+		wzcgXqytDao.delete(wzcgXqyt);
+	}
+	
+	public void update(WzcgXqyt wzcgXqyt){
+		wzcgXqytDao.update(wzcgXqyt);
+	}
+	
+}

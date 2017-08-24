@@ -1,0 +1,429 @@
+package com.jy.controller.wzcg;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.DateUtil;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgCgjh;
+import com.jy.entity.wzcg.WzcgCgjhSet;
+import com.jy.entity.wzcg.WzcgItem;
+import com.jy.entity.wzcg.WzcgXqyt;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.wzcg.WzcgCgjhService;
+import com.jy.service.wzcg.WzcgCgjhSetService;
+import com.jy.service.wzcg.WzcgItemService;
+import com.jy.service.wzcg.WzcgXqtbService;
+
+@Controller("wzcgCgjhController")
+@RequestMapping(value="/backstage/wzcg/cgjh")
+public class WzcgCgjhController extends BaseController<Object> {
+	
+	@Resource(name="wzcgCgjhService")
+	private WzcgCgjhService wzcgCgjhService;
+	@Resource(name="wzcgCgjhSetService")
+	private WzcgCgjhSetService wzcgCgjhSetService;
+	@Resource(name="wzcgItemService")
+	private WzcgItemService wzcgItemService;
+	@Resource(name="wzcgXqtbService")
+	private WzcgXqtbService wzcgXqtbService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	public AccountService accountService;
+	
+	/**
+	 * 首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model,@ModelAttribute WzcgXqyt wzcgXqyt)throws Exception{		
+		return "system/wzcg/cgjh/cgjh_index";
+	}
+	
+	/**
+	 * 已执行
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/chjhYzx")  
+	public String chjhYzx(HttpServletRequest request,Model model,@ModelAttribute WzcgXqyt wzcgXqyt)throws Exception{		
+		return "system/wzcg/cgjh/jhzx/cgjh_yzx";
+	}
+	
+	/**
+	 * 未执行
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/chjhWzx")  
+	public String chjhWzx(HttpServletRequest request,Model model,@ModelAttribute WzcgXqyt wzcgXqyt)throws Exception{		
+		return "system/wzcg/cgjh/jhzx/cgjh_wzx";
+	}
+	
+	/**
+	 * 计划列表
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/list")  
+	public String list(HttpServletRequest request,Model model)throws Exception{		
+		List<WzcgCgjh> wzcgCgjhList = new ArrayList<WzcgCgjh>();
+		boolean mark = false;//判断是否为计划下达者
+		Map<List<WzcgCgjh>,Boolean> map = wzcgCgjhService.list();
+		for (Map.Entry<List<WzcgCgjh>,Boolean> entry : map.entrySet()) { 
+			mark = entry.getValue();
+			wzcgCgjhList = entry.getKey();	
+		}  
+		wzcgCgjhList = wzcgCgjhService.listFull(wzcgCgjhList);
+		model.addAttribute("mark",mark);
+		model.addAttribute("wzcgCgjhList",wzcgCgjhList);
+		model.addAttribute("count",wzcgCgjhList.size());//数据数量
+		return "system/wzcg/cgjh/cgjh_list";
+	}
+	
+	/**
+	 * 增加
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/add")  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		AjaxRes ar = getAjaxRes();
+		wzcgCgjh.setCgjhId("CGJH" + DateUtil.getDateString());
+		wzcgCgjh.setState("1");
+		wzcgCgjh.setCreator(currentAccount.getAccountId());
+		wzcgCgjh.setZxjg(wzcgCgjh.getZxjg());
+		wzcgCgjhService.insert(wzcgCgjh);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 删除
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgCgjhService.delete(wzcgCgjh);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+
+	/**
+	 * 详细
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/detail")  
+	public String detail(HttpServletRequest request,Model model,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		wzcgCgjh = wzcgCgjhService.find(wzcgCgjh).get(0);
+		model.addAttribute("wzcgCgjh",wzcgCgjh);
+		model.addAttribute("mark",mark);
+		return "system/wzcg/cgjh/cgjh_detail";
+	}
+	
+	/**
+	 * 搜索
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		List<WzcgCgjh> wzcgCgjhList = new ArrayList<WzcgCgjh>();
+		wzcgCgjhList = wzcgCgjhService.search(wzcgCgjh);
+		wzcgCgjhList = wzcgCgjhService.listFull(wzcgCgjhList);
+		model.addAttribute("wzcgCgjhList",wzcgCgjhList);
+		model.addAttribute("count",wzcgCgjhList.size());
+		return "system/wzcg/cgjh/cgjh_list";
+	}
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/update")  
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgCgjhService.update(wzcgCgjh);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 状态更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateState")  
+	@ResponseBody
+	public AjaxRes updateState(HttpServletRequest request,Model model,@ModelAttribute WzcgCgjh wzcgCgjh)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		if(!wzcgCgjh.getState().equals("3")){
+			wzcgCgjh.setState(String.valueOf(Integer.parseInt(wzcgCgjh.getState()) + 1));
+		}
+		wzcgCgjhService.update(wzcgCgjh);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 计划项目列表
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/itemList")  
+	public String itemList(HttpServletRequest request,Model model,WzcgCgjh cgjh)throws Exception{		
+		WzcgItem wzcgItem = new WzcgItem();
+		wzcgItem.setCgjhId(cgjh.getCgjhId());
+		List<WzcgItem> itemList = new ArrayList<WzcgItem>();
+		itemList = wzcgItemService.find(wzcgItem);
+		itemList = wzcgItemService.getItemListFull(itemList);
+		model.addAttribute("itemList",itemList);
+		return "system/wzcg/cgjh/jhItem/cgjh_item_list";
+	}
+	
+	/**
+	 * 计划项目添加
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/itemAdd")  
+	public String itemAdd(HttpServletRequest request,Model model,WzcgItem wzcgItem)throws Exception{		
+		String ids = request.getParameter("items");
+		String cgjhId = request.getParameter("cgjhId");
+		String idList[] = ids.split(",");
+		for(int i=0;i<idList.length;i++){
+			String id = idList[i];
+			wzcgItem.setId(Integer.parseInt(id));
+			wzcgItem.setCgjhId(cgjhId);
+			wzcgItemService.update(wzcgItem);
+		}
+		return "system/wzcg/cgjh/jhItem/cgjh_item_list";
+	}
+	
+	/**
+	 * 计划项目删除
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/itemDelete")  
+	@ResponseBody
+	public AjaxRes itemDelete(HttpServletRequest request,Model model,WzcgItem wzcgItem)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgItem.setId(wzcgItem.getId());
+		wzcgItem.setCgjhId("");
+		wzcgItemService.update(wzcgItem);
+		ar.setSucceedMsg("success");  
+		return ar;
+	}
+	
+	/**
+	 * 需求填报项目列表
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/item")  
+	public String item(HttpServletRequest request,Model model,WzcgItem wzcgItem)throws Exception{		
+		List<WzcgItem> itemList = new ArrayList<WzcgItem>();
+		List<WzcgItem> itemList2 = new ArrayList<WzcgItem>();
+		wzcgItem.setState("4");
+		itemList = wzcgItemService.find(wzcgItem);
+		for(int i=0;i<itemList.size();i++){
+			if(itemList.get(i).getCgjhId() == null || itemList.get(i).getCgjhId().equals("")){
+				itemList2.add(itemList.get(i));
+			}
+		}
+		itemList2 = wzcgItemService.getItemListFull(itemList2);
+		model.addAttribute("itemList",itemList2);
+		return "system/wzcg/cgjh/item_list";
+	}
+	
+	/**
+	 * 需求填报查找
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/itemSearch")  
+	public String itemSearch(HttpServletRequest request,Model model,WzcgItem wzcgItem)throws Exception{		
+		List<WzcgItem> itemList = new ArrayList<WzcgItem>();
+		List<WzcgItem> itemList2 = new ArrayList<WzcgItem>();
+		wzcgItem.setCategory(wzcgItem.getCategory1() + "," + wzcgItem.getCategory2());
+		wzcgItem.setState("4");
+		itemList = wzcgItemService.search(wzcgItem);
+		for(int i=0;i<itemList.size();i++){
+			if(itemList.get(i).getCgjhId() == null || itemList.get(i).getCgjhId().equals("")){
+				itemList2.add(itemList.get(i));
+			}
+		}
+		itemList2 = wzcgItemService.getItemListFull(itemList2);
+		model.addAttribute("itemList",itemList2);
+		return "system/wzcg/cgjh/item_list";
+	}
+	
+	/**
+	 * 明细首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/itemIndex")  
+	public String itemIndex(HttpServletRequest request,Model model)throws Exception{		
+		List<WzcgCgjh> wzcgCgjhList = new ArrayList<WzcgCgjh>();
+		Map<List<WzcgCgjh>,Boolean> map = wzcgCgjhService.list();
+		for (Map.Entry<List<WzcgCgjh>,Boolean> entry : map.entrySet()) { 
+			wzcgCgjhList = entry.getKey();//得到采购计划
+		}  
+		List<WzcgItem> wzcgItemList = new ArrayList<WzcgItem>();
+		List<WzcgItem> wzcgItemList2 = new ArrayList<WzcgItem>();
+		wzcgItemList = wzcgItemService.getXqtbItemList();//得到对应项目
+		if(wzcgItemList.size() != 0){
+			for(int i=0;i<wzcgItemList.size();i++){
+				if(!wzcgItemList.get(i).getCgjhId().equals("") && wzcgItemList.get(i).getCgjhId() != null){
+					for(int j=0;j<wzcgCgjhList.size();j++){//得到对应采购计划下的项目
+						if(wzcgCgjhList.get(j).getCgjhId().equals(wzcgItemList.get(i).getCgjhId())){
+							wzcgItemList2.add(wzcgItemList.get(i));
+						}
+					}
+				}
+			}
+		}
+		wzcgItemList2 = wzcgItemService.getItemListFull(wzcgItemList2);
+		model.addAttribute("itemList",wzcgItemList2);
+		return "system/wzcg/cgjh/jhItem/cgjh_item_index";
+	}
+	
+	/**
+	 * 采购计划设置
+	 * @param request
+	 * @param model
+	 * @param wzcgXqyt
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cgjhSet")  
+	public String cgjhSet(HttpServletRequest request,Model model)throws Exception{		
+		return "system/wzcg/cgjh/jhSetting/cgjh_set";
+	}
+	
+	/**
+	 * 设置保存 
+	 * @param request
+	 * @param model
+	 * @param wzcgXqyt
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/cgjhSetSave")  
+	@ResponseBody
+	public AjaxRes cgjhSetSave(HttpServletRequest request,Model model,@ModelAttribute WzcgCgjhSet wzcgCgjhSet)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		Account account = AccountShiroUtil.getCurrentUser();
+		wzcgCgjhSet.setUserId(account.getAccountId());
+		wzcgCgjhSetService.insert(wzcgCgjhSet);
+		ar.setSucceedMsg("success");  
+		return ar;
+	}
+ 
+//	
+//	/**
+//	 * Excel导出
+//	 */
+//	@RequestMapping(value="/excel")
+//	public ModelAndView Excel(HttpServletRequest request,Model model,@ModelAttribute WzcgXqyt wzcgXqyt){
+//		String priceMinStr = request.getParameter("priceMi");
+//		String priceMaxStr = request.getParameter("priceMa");
+//		int priceMin = 0;
+//		int priceMax = 0;
+//		if(priceMinStr != null && !priceMinStr.equals("")){
+//			priceMin = Integer.parseInt(priceMinStr);
+//		}
+//		if(priceMaxStr != null && !priceMaxStr.equals("")){
+//			priceMax = Integer.parseInt(priceMaxStr);
+//		}
+//		wzcgXqyt.setPriceMin(priceMin);
+//		wzcgXqyt.setPriceMax(priceMax);
+//		ModelAndView mv = null;
+//		try{
+//			Map<String,Object> dataMap = new HashMap<String,Object>();
+//			List<String> titles = new ArrayList<String>();//表格标题
+//			titles.add("需求预填编号");  		
+//			titles.add("需求名称");			
+//			titles.add("需求部门");	
+//			titles.add("填报人");
+//			titles.add("金额");			
+//			titles.add("填报日期");			
+//			titles.add("状态");
+//			titles.add("审批人");	
+//			titles.add("职务");	
+//			dataMap.put("titles", titles);
+//			List<PageData> varList = new ArrayList<PageData>();
+//			List<WzcgXqyt> WzcgXqytList = WzcgXqytService.search(wzcgXqyt);
+//			List<WzcgXqyt> WzcgXqytListResult = WzcgXqytService.SearchList(WzcgXqytList);
+//			for(int i=0;i<WzcgXqytListResult.size();i++){
+//				PageData vpd = new PageData();
+//				vpd.put("var1", WzcgXqytListResult.get(i).getXqytId());		
+//				vpd.put("var2", WzcgXqytListResult.get(i).getName());		
+//				vpd.put("var3", WzcgXqytListResult.get(i).getBm());			
+//				vpd.put("var4", WzcgXqytListResult.get(i).getCreator());	
+//				vpd.put("var5", WzcgXqytListResult.get(i).getPrice());		
+//				vpd.put("var6", WzcgXqytListResult.get(i).getCreatedate());
+//				if(WzcgXqytListResult.get(i).getState().equals("1")){
+//					vpd.put("var7","未提交");
+//				}else if(WzcgXqytListResult.get(i).getState().equals("2")){
+//					vpd.put("var7","已提交");	
+//				}else if(WzcgXqytListResult.get(i).getState().equals("3")){
+//					vpd.put("var7","已拒绝");	
+//				}else{
+//					vpd.put("var7","已完成");	
+//				}
+//				vpd.put("var8", WzcgXqytListResult.get(i).getApproveId());
+//				vpd.put("var9", WzcgXqytListResult.get(i).getPositionId());
+//				varList.add(vpd);
+//			}
+//			dataMap.put("varList",varList);
+//			ObjectExcelView erv = new ObjectExcelView();//执行excel操作
+//			mv = new ModelAndView(erv,dataMap);
+//		} catch(Exception e){
+//			logger.error(e.toString(), e);
+//		}
+//		return mv;
+//	}
+	
+}

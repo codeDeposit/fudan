@@ -1,0 +1,100 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="Modal_saleProject_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">新增销售项目</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" role="form" id="Form_saleProject_add" onsubmit="return fSaleProjectAdd()">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">所属客户</label>
+						<input type="hidden" id="saleProject_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="saleProject_company" name="company" maxlength="255" placeholder="所属客户" readonly required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">负&nbsp;&nbsp;责&nbsp;&nbsp;人</label>
+						<input type="hidden" id="saleActivity_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="responsible" name="responsible" maxlength="255" placeholder="负责人"  required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">项目名称</label>
+						<input type="hidden" id="saleActivity_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" name="name" maxlength="255" placeholder="项目名称"  required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">项目来源</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="quarry" name="quarry"  required>
+								<option value="">--请选择--</option>
+								<option value="1">广告</option>
+								<option value="2">来店</option>
+								<option value="2">搜索引擎</option>
+								<option value="3">客户介绍</option>
+								<option value="3">其他</option>
+							</select>
+						</div>
+					</div> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label">项目阶段</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="stage" name="stage"  required>
+								<option value="">--请选择--</option>
+								<option value="1">初步接洽</option>
+								<option value="2">需求确定</option>
+								<option value="3">利润评估</option>
+								<option value="4">决策报备</option>
+								<option value="5">方案/报价</option>
+								<option value="6">谈判审核</option>
+								<option value="7">赢单</option>
+								<option value="8">输单</option>
+							</select>
+						</div>
+					</div> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计金额</label>
+						<input type="hidden" id="saleActivity_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="amount" name="amount" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" maxlength="9" placeholder="预计金额（元）"  required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计时间</label>
+						<div class="col-sm-10">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="date" name="date" type="text" placeholder="预计时间"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述</label>
+						<div class="col-sm-10">
+				            <textarea class="form-control" id="depict" name="depict" maxlength="1000" placeholder="描述"  required></textarea>
+				       </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<button type="submit" class="btn btn-success">
+							保存
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

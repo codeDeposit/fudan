@@ -1,0 +1,35 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.DepreType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DepreTypeMapper {
+
+	// 添加折旧类型
+	int insert(DepreType depreType);
+
+	// 获取详细信息
+	DepreType selectInfoBy(Long depreTypeId);
+
+	// 修改折旧类型信息
+	int update(DepreType depreType);
+
+	// 删除
+	int delete(Long depreTypeId);
+
+	// 获取折旧类型列表
+	List<DepreType> select(@Param("typeName") String typeName, @Param("calMethod") Short calMethod);
+
+	// 分页折旧类型列表
+	List<DepreType> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("typeName") String typeName, @Param("calMethod") Short calMethod);
+
+	// 所有折旧类别列表
+	List<DepreType> selectAll();
+
+}

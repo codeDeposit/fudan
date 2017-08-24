@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.StandSalaryItemMapper">
+
+	<!-- 添加薪酬标准和薪酬项目的关联 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.StandSalaryItem">
+		insert fudan_oa_stand_salary_item <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="standardId != null and standardId !='' ">
+				standardId = #{standardId},
+			</if>
+			<if test="itemName != null and itemName !='' ">
+				itemName = #{itemName},
+			</if>
+			<if test="amount != null ">
+				amount = #{amount},
+			</if>
+			<if test="salaryItemId != null ">
+				salaryItemId = #{salaryItemId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加薪酬标准和薪酬项目的关联 end -->
+	
+	
+	<!-- 获取StandSalaryItem信息 start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.StandSalaryItem">
+		select * from fudan_oa_stand_salary_item where standardId = #{standardId}
+	</select>
+	<!-- 获取StandSalaryItem信息 end -->
+	
+	
+	<!-- 删除薪酬标准和薪酬项目的关联 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_stand_salary_item where standardId = #{standardId}
+	</delete>
+	<!-- 删除薪酬标准和薪酬项目的关联 end -->
+	
+</mapper>

@@ -1,0 +1,53 @@
+package com.jy.entity.oa.task;
+
+import java.util.Date;
+
+public class DiaryVo {
+
+	private String content;
+	private Integer diaryId;
+	private Date dayTime;
+	private short diaryType;
+	private String fullname;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Integer getDiaryId() {
+		return diaryId;
+	}
+
+	public void setDiaryId(Integer diaryId) {
+		this.diaryId = diaryId;
+	}
+
+	public Date getDayTime() {
+		return dayTime;
+	}
+
+	public void setDayTime(Date dayTime) {
+		this.dayTime = dayTime;
+	}
+
+	public short getDiaryType() {
+		return diaryType;
+	}
+
+	public void setDiaryType(short diaryType) {
+		this.diaryType = diaryType;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+}

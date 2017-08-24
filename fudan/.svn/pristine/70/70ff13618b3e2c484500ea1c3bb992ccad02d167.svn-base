@@ -1,0 +1,51 @@
+package com.jy.repository.oa.hrm;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.hrm.EmpProfile;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface EmpProfileMapper {
+
+	// 添加档案信息
+	int insert(EmpProfile empProfile);
+
+	// 修改档案信息
+	int update(EmpProfile empProfile);
+
+	// 获取档案详细信息
+	EmpProfile selectInfoBy(Long profileId);
+
+	// 审核档案信息
+	int updateReview(EmpProfile empProfile);
+
+	// 删除档案信息
+	int delete(Long profileId);
+
+	// 获取未删除档案列表
+	List<EmpProfile> select(@Param("profileNo") String profileNo,
+			@Param("fullname") String fullname, @Param("idCard") String idCard,
+			@Param("approvalStatus") Short approvalStatus);
+
+	// 获取已删除档案列表
+	List<EmpProfile> selectDel(@Param("profileNo") String profileNo,
+			@Param("fullname") String fullname, @Param("idCard") String idCard,
+			@Param("approvalStatus") Short approvalStatus);
+
+	// 恢复档案信息
+	int updateDelFlag(Long profileId);
+
+	// 获取未删除档案信息列表
+	List<EmpProfile> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("profileNo") String profileNo, @Param("fullname") String fullname, 
+			@Param("idCard") String idCard, @Param("approvalStatus") Short approvalStatus);
+
+	//删除档案分页列表
+	List<EmpProfile> selectDelPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("profileNo") String profileNo, @Param("fullname") String fullname, @Param("idCard") String idCard,
+			@Param("approvalStatus") Short approvalStatus);
+
+}

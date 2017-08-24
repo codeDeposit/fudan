@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.DutyMapper">
+
+	<!-- baseMap start -->
+	<resultMap type="com.jy.entity.oa.personal.DutyVO" id="baseMap">
+		<id column="dutyId" property="dutyId"/>
+		<result column="fullname" property="fullname"/>
+		<result column="startTime" property="startTime"/>
+		<result column="endTime" property="endTime"/>
+		<result column="userId" property="userId"/>
+		<association column="systemId" property="system" select="selectDutySystem"></association>
+	</resultMap>
+	
+	<select id="selectDutySystem" resultType="com.jy.entity.oa.personal.DutySystem">
+		select * from fudan_oa_duty_system where systemId=#{systemId}
+	</select>
+	<!-- baseMap end -->
+
+	<!-- 添加排班 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.personal.Duty">
+		insert fudan_oa_duty <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="fullname !=null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="startTime !=null ">
+				startTime = #{startTime},
+			</if>
+			<if test="endTime !=null ">
+				endTime = #{endTime},
+			</if>
+			<if test="userId !=null and userId != '' ">
+				userId = #{userId},
+			</if>
+			<if test="systemId !=null ">
+				systemId = #{systemId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加排班 end -->
+	
+	
+	<!-- 修改排班信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.personal.Duty">
+		update fudan_oa_duty <include refid="insertSQL"></include>
+		where dutyId = #{dutyId}
+	</update>
+	<!-- 修改排班信息 end -->
+	
+	
+	<!-- 批量删除排班信息 start -->
+	<delete id="delete" parameterType="com.jy.entity.oa.personal.Duty">
+		delete from fudan_oa_duty where dutyId = #{dutyId}
+	</delete>
+	<!-- 批量删除排班信息 end -->
+	
+	
+	<!-- 获取排班详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.personal.Duty">
+		select * from fudan_oa_duty where dutyId = #{dutyId}
+	</select>
+	<!-- 获取排班详细信息 end -->
+	
+	
+	<!-- 获取排班信息列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.personal.Duty">
+		select duty.* from fudan_oa_duty duty, fudan_oa_duty_system dutysystem where duty.systemId = dutysystem.systemId
+		<if test="fullname !=null and fullname !='' ">
+			and duty.fullname like concat("%", #{fullname},"%")
+		</if>
+		<if test="systemName !=null and systemName !='' ">
+			and dutysystem.systemName like concat("%", #{systemName},"%")
+		</if>
+		<if test="startTime !=null ">
+			and duty.startTime &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null ">
+			and duty.endTime &lt;= #{endTime}
+		</if>
+	</select>
+	<!-- 获取排班信息列表 end -->
+	
+	
+	<!-- 排班信息分页列表 start -->	
+	<select id="selectPageDate" resultMap="baseMap">
+		select duty.* from fudan_oa_duty duty, fudan_oa_duty_system dutysystem where duty.systemId = dutysystem.systemId
+		<if test="fullname !=null and fullname !='' ">
+			and fullname like concat("%", #{fullname},"%")
+		</if>
+		<if test="systemName !=null and systemName !='' ">
+			and systemName like concat("%", #{systemName},"%")
+		</if>
+		<if test="startTime !=null ">
+			and startTime &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null ">
+			and endTime &lt;= #{endTime}
+		</if>
+		order by dutyId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 排班信息分页列表 end -->
+
+</mapper>

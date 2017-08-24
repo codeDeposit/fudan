@@ -1,0 +1,545 @@
+package com.jy.controller.oa.personal;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.personal.DutySection;
+import com.jy.entity.oa.personal.DutySystem;
+import com.jy.entity.oa.personal.SignIn;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.service.oa.personal.DutySectionService;
+import com.jy.service.oa.personal.DutySystemService;
+import com.jy.service.oa.personal.SignInService;
+import com.jy.service.system.org.OrgService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("oa/sign")
+public class SignInController extends BaseController<Object>{
+	
+	@Resource(name="dutySystemService")
+	private DutySystemService dutySystemService;
+	@Resource(name="dutySectionService")
+	private DutySectionService dutySectionService;
+	@Resource(name="signInService")
+	private SignInService signInService;
+	@Resource(name="OrgService")
+	private OrgService orgService;
+	
+	@RequestMapping({"/index"})
+	public String index(HttpServletRequest request, Model model) throws Exception {
+	   return "system/oa/personal/signin/signin_index";
+	}
+	
+	/**
+	 * 上下班打卡页面
+	 * @return
+	 * @throws ParseException 
+	 */
+	@RequestMapping("/list")
+	public String list(Model model,HttpServletRequest request) throws ParseException {
+		//获取今天星期几
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if(w < 0) w = 6;
+		DutySystem dutySystem = new DutySystem();
+		Short aa = 1;
+		dutySystem.setIsDefault(aa);
+		DutySystem dutySystem2 = dutySystemService.search(dutySystem).get(0);  
+		String str = dutySystem2.getSystemSetting();
+		String str2[] = str.split("\\|");
+		DutySection dutySection = new DutySection();
+		Long dd = new Long(2);
+		dd = Long.parseLong(str2[w]);
+		dutySection.setSectionId(dd);
+		dutySection = dutySectionService.find(dutySection).get(0);
+		//打卡判断
+		Date date = new Date();
+		Account account = AccountShiroUtil.getCurrentUser();
+	    boolean isSignIn = signInService.getIsSignToday(account.getAccountId(), date);
+	    boolean isSignOut = signInService.getIsSignOutToday(account.getAccountId(), date);
+	    model.addAttribute("isSignIn",isSignIn);
+		model.addAttribute("isSignOut",isSignOut);
+		model.addAttribute("dutySection",dutySection);
+		//打卡记录
+		SignIn signIn = new SignIn();
+		signIn.setAccountId(account.getAccountId());
+		List<SignIn> signInList = signInService.search(signIn);
+		//工时计算
+//		for(int i=0;i<signInList.size();i++){
+//			 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");  
+//			 long timeOutStr = sdf.parse(sdf.format(signInList.get(i).getSignOutTime())).getTime();
+//			 long timeInStr = sdf.parse(sdf.format(signInList.get(i).getSignInTime())).getTime();
+//			 long workTime = (timeOutStr - timeInStr) / (1000 * 60 *60);
+//			 signInList.get(i).setWorkTime(workTime);
+//		}
+		model.addAttribute("signs",signInList);
+		return "system/oa/personal/signin/signin_list";
+	}
+	
+	/**
+	 * 上下班打卡页面
+	 * @return
+	 * @throws ParseException 
+	 */
+	@RequestMapping("/search")
+	public String search(Model model,HttpServletRequest request,SignIn signIn) throws ParseException { 
+		 Account account = AccountShiroUtil.getCurrentUser();
+	     DutySection dutySection = getTodayDutySection();
+	     dutySection.setDutyStartTime1(dutySection.getDutyStartTime());
+	     Date date = new Date();
+	     boolean isSignIn = signInService.getIsSignToday(account.getAccountId(), date);
+	     boolean isSignOut = signInService.getIsSignOutToday(account.getAccountId(), date);
+	     //查询账号的打卡记录，按照时间降序排序
+		 String pageNoStr = request.getParameter("pageNos");
+	     int pageNos = 1;
+		 if(pageNoStr != null) {
+			 pageNos = Integer.valueOf(pageNoStr);
+		 }
+	     List<SignIn> signs = signInService.getSelfSign(account.getAccountId());
+	     PageBean pb = new PageBean(signs.size());
+		 pb.setCurrentPage(pageNos);
+		 int pageCount = pb.getPageCount();
+		 List<SignIn> pagesignIns = signInService.getPageSelfSign(pb,account.getAccountId());
+		 //工时计算
+		 for(int i=0;i<pagesignIns.size();i++){
+			 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");  
+			 long timeOutStr = sdf.parse(sdf.format(pagesignIns.get(i).getSignOutTime())).getTime();
+			 long timeInStr = sdf.parse(sdf.format(pagesignIns.get(i).getSignInTime())).getTime();
+			 long workTime = (timeOutStr - timeInStr) / (1000 * 60 *60);
+			 pagesignIns.get(i).setWorkTime(workTime);
+		 }
+	     String orgId = orgService.findBy(account.getAccountId());
+	     List<Org> orgs = orgService.getBy(orgId);
+	     String orgName = "";
+	     for (Org org : orgs) {
+			if(org.getId().equals(orgId)) {
+				orgName = org.getName();
+				break;
+			}
+		 }
+		 model.addAttribute("isSignIn",isSignIn);
+		 model.addAttribute("isSignOut",isSignOut); 
+		 model.addAttribute("orgName",orgName);
+		 model.addAttribute("pageNos",pageNos);
+		 model.addAttribute("pageCount",pageCount);
+		 model.addAttribute("dutySection",dutySection);
+		 model.addAttribute("dutySection",dutySection);
+		 signIn.setAccountId(account.getAccountId());
+		 List<SignIn> signInList = signInService.search(signIn);
+		 model.addAttribute("signs",signInList);
+		 return "system/oa/personal/signin/signin_list";
+	}
+	
+	/**
+	 * 上下班打卡
+	 * @return
+	 */
+	@RequestMapping("/register")
+	@ResponseBody
+	public AjaxRes register(int type,String lng,String lat,String address) {
+		AjaxRes ar = getAjaxRes();
+		Account account = AccountShiroUtil.getCurrentUser();
+		DutySection dutySection = getTodayDutySection();
+		Date date = new Date();
+		if(type == 1) {//签到
+			String dutyStartTime = dutySection.getDutyStartTime();
+			if(dutySection.getIsLate() == 1) {
+				//加上允许迟到的分钟数
+				Integer lateMinute = dutySection.getLateMinute();
+				dutyStartTime = "21";
+//				dutyStartTime = DateStringUtil.calculate(dutyStartTime, lateMinute);
+			}
+//			int result = DateStringUtil.compare(date, dutyStartTime);
+			int result = 0;
+			if(result <= 0) {
+				//正常签到
+				SignIn signIn = new SignIn();
+				signIn.setAccountId(account.getAccountId());
+				signIn.setFullname(account.getName());
+				signIn.setType(1);
+				signIn.setTime(date);
+				signIn.setSignInNote("正常签到");
+				signIn.setSectionName(dutySection.getSectionName());
+				signIn.setIsLate((short)0);
+				signIn.setSignInTime(date);
+				
+				signIn.setAddress(address);
+				signIn.setLatitude(lat);
+				signIn.setLongitude(lng);
+				signInService.signIn(signIn);
+			}else {
+				//迟到
+				SignIn signIn = new SignIn();
+				signIn.setAccountId(account.getAccountId());
+				signIn.setFullname(account.getName());
+				signIn.setType(1);
+				signIn.setTime(date);
+				signIn.setSectionName(dutySection.getSectionName());
+				signIn.setSignInTime(date);
+				signIn.setIsLate((short)1);
+//				int minutes = DateStringUtil.calculateMinutes(date, dutyStartTime);
+				int minutes = 21;
+				minutes += dutySection.getLateMinute();
+				signIn.setLateMinutes(minutes);
+				if(dutySection.getIsSeriousLate() == 1) {
+					if(minutes >= dutySection.getSeriousLateMinute()) {
+						if(dutySection.getIsAbsenteeism() == 1) {
+							if(minutes >= dutySection.getAbsenteeismMinute()) {
+								signIn.setSignInNote("旷工");
+							}else {
+								signIn.setSignInNote("严重迟到");
+							}
+						}
+					}else {
+						signIn.setSignInNote("迟到");
+					}
+				}
+				signIn.setAddress(address);
+				signIn.setLatitude(lat);
+				signIn.setLongitude(lng);
+				signInService.signIn(signIn);
+			}
+		}else if(type == 2) {//前退
+			String dutyEndTime = dutySection.getDutyEndTime();
+//			int result = DateStringUtil.compare(date, dutyEndTime);
+			int result = 0;
+			//获取账户今天的上班打卡记录
+			SignIn signIn = signInService.getSignInRecord(account.getAccountId(),date);
+			if(result < 0) {
+				//早退
+				signIn.setSignOutTime(date);
+				signIn.setIsLeaveEarly((short)1);
+				signIn.setSectionName(dutySection.getSectionName());
+//				int minutes = DateStringUtil.calculateMinutes(dutyEndTime, date);
+				int minutes = 21;
+				signIn.setLeaveEarlyMinutes(minutes);
+				signIn.setSignOutNote("早退");
+				signIn.setAddress(address);
+				signIn.setLatitude(lat);
+				signIn.setLongitude(lng);
+				signInService.update(signIn);
+			}else {
+				//正常签退
+				signIn.setSignOutTime(date);
+				signIn.setSignOutNote("正常签退");
+				signIn.setSectionName(dutySection.getSectionName());
+				signIn.setIsLeaveEarly((short)0);
+				signIn.setAddress(address);
+				signIn.setLatitude(lat);
+				signIn.setLongitude(lng);
+				signInService.update(signIn);
+			}
+		}
+		ar.setSucceed("success");
+		return ar;
+	}
+	
+	/**
+	 * 班制信息获取
+	 * @return
+	 */
+	private DutySection getTodayDutySection() {
+		DutySystem dutySystem = new DutySystem();
+		Short aa = 1;
+		dutySystem.setIsDefault(aa);
+		DutySystem dutySystem2 = dutySystemService.search(dutySystem).get(0);  
+		String str = dutySystem2.getSystemSetting();
+		String str2[] = str.split("||");
+		DutySection dutySection = new DutySection();
+		Long dd = new Long(2);
+		dd = (long) 46;
+		dutySection.setSectionId(dd);
+		dutySection = dutySectionService.find(dutySection).get(0);
+		return dutySection;
+//		//获取默认的班制信息
+//		DutySystem dutySystem = dutySystemService.getDefault();
+//		//获取今天星期几
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(new Date());
+//		int w = cal.get(Calendar.DAY_OF_WEEK) - 2;
+//		if(w < 0) w = 6;
+//		String systemSetting = dutySystem.getSystemSetting();
+//		String[] strings = systemSetting.split(",");
+//	    String dutySectionStr = strings[w];	
+//	    String[] strings2 = dutySectionStr.split("\\|");
+//	    String dutySectionIdStr = strings2[0];
+//	    long dutySectionId = Long.valueOf(dutySectionIdStr);
+//	    DutySection dutySection = new DutySection();
+//	    dutySection.setSectionId(dutySectionId);
+//	    DutySection dutySection2 = dutySectionService.find(dutySection).get(0);
+//	    return dutySection2;
+	}
+	
+	/**
+	 * 考勤月度汇总
+	 */
+	@RequestMapping("/listpermonth")
+	public ModelAndView listPerMonth(HttpServletRequest request,@RequestParam(required=false)String startTimeStr, 
+			@RequestParam(required=false)String endTimeStr, @RequestParam(required=false)String orgId) {
+		Date date = null;
+		if(startTimeStr != null)
+			date = DateStringUtil.stringToDate3(startTimeStr);
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<SignIn> signIns = signInService.get(date);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(signIns.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<SignIn> pagesignIns = signInService.getPageList(pb, date);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/personal/signpermonth_table");
+		}else {
+			mv.setViewName("system/oa/personal/signpermonth_list");
+		}
+		mv.addObject("signIns", pagesignIns);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 每日统计 
+	 * @return
+	 */
+	@RequestMapping("/dailystatistics")
+	public ModelAndView dailyStatistics(HttpServletRequest request, @RequestParam(required=false)String startDateStr, 
+			@RequestParam(required=false)String endDateStr, @RequestParam(required=false)String accountId, 
+			@RequestParam(required=false)String orgId) {
+		Date startDate = null;
+		Date endDate = null;
+		if(startDateStr != null && startDateStr.length() > 0)
+			startDate = DateStringUtil.stringToDate3(startDateStr);
+		if(endDateStr != null && endDateStr.length() > 0)
+			endDate = DateStringUtil.stringToDate3(endDateStr);
+		String operation = request.getParameter("operation");
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<SignIn> signIns = signInService.getDailySign(startDate,endDate,accountId,orgId);
+		PageBean pb = new PageBean(signIns.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<SignIn> pagesignIns = signInService.getDailySignPageList(pb,startDate,endDate,accountId,orgId);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/personal/signdailysign_table");
+		}else {
+			mv.setViewName("system/oa/personal/signdailysign_list");
+		}
+		mv.addObject("signIns", pagesignIns);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+//	@RequestMapping("/export")
+//	public void excelExport(HttpServletRequest request, HttpServletResponse response, @RequestParam(required=false)String startDateStr, 
+//			@RequestParam(required=false)String endDateStr, @RequestParam(required=false)String accountId, @RequestParam(required=false)String orgId ) {
+//		response.setContentType("application/vnd.ms-excel;charset=utf-8");
+//		response.setHeader("contentDisposition", "attachment;filename="+DateStringUtil.dateToString4(new Date())+"每日统计.xls");
+//		//获取所有数据
+//		Date startDate = null;
+//		Date endDate = null;
+//		if(startDateStr != null && startDateStr.length() > 0) {
+//			startDate = DateStringUtil.stringToDate3(startDateStr);
+//		}
+//		if(endDateStr != null && endDateStr.length() > 0)
+//			endDate = DateStringUtil.stringToDate3(endDateStr);
+//		List<SignIn> signIns = signInService.getDailySign(startDate,endDate,accountId,orgId);
+//		
+//		//创建Excel表格
+//		HSSFWorkbook wb = new HSSFWorkbook();
+//		HSSFSheet sheet = wb.createSheet("sheet1");
+//		sheet.setDefaultColumnWidth(400*256);
+//		sheet.setDefaultRowHeightInPoints(20);
+//		HSSFRow row1 = sheet.createRow(0);
+//		//设置样式
+//		HSSFCellStyle style = wb.createCellStyle();
+//		//背景色
+//		style.setFillForegroundColor(HSSFColor.ROYAL_BLUE.index);
+//		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//		//边框设置
+//		style.setBottomBorderColor(HSSFColor.BLACK.index);
+//		style.setLeftBorderColor(HSSFColor.BLACK.index);
+//		style.setRightBorderColor(HSSFColor.BLACK.index);
+//		style.setTopBorderColor(HSSFColor.BLACK.index);
+//		//设置字体
+//		HSSFFont font = wb.createFont();
+//		font.setBold(true);
+//		font.setFontHeightInPoints((short)24);
+//		font.setFontName("宋体");
+//		//加载字体
+//		style.setFont(font);
+//		HSSFCell cell = row1.createCell(0);
+//		String celVal = "每日统计表  统计日期：";
+//		if(startDateStr == null && endDateStr == null)
+//			celVal = celVal + DateStringUtil.dateToString3(new Date());
+//		else if(endDateStr == null && startDateStr != null && startDateStr.length() > 0)
+//			celVal = celVal + startDateStr + "之后";
+//		else if(startDateStr == null && endDateStr != null && endDateStr.length() > 0)
+//			celVal = celVal + endDateStr + "之前";
+//		else
+//			celVal = celVal + startDateStr + " 至 " + endDateStr;
+//		//设置样式
+//		cell.setCellValue(celVal);
+//		cell.setCellStyle(style);
+//		row1.setRowStyle(style);
+//		
+//		HSSFRow row2 = sheet.createRow(1);
+//		HSSFCell cell2 = row2.createCell(0);
+//		style = wb.createCellStyle();
+//		style.setFillForegroundColor(HSSFColor.ROYAL_BLUE.index);
+//		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//		style.setBorderBottom(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderLeft(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderRight(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderTop(HSSFCellStyle.BORDER_DASH_DOT);
+//		font = wb.createFont();
+//		font.setBold(false);
+//		font.setFontHeightInPoints((short)14);
+//		font.setFontName("宋体");
+//		//加载字体
+//		style.setFont(font);
+//		cell2.setCellValue("报表生成时间： "+DateStringUtil.dateToString4(new Date()));
+//		cell2.setCellStyle(style);
+//		row2.setRowStyle(style);
+//		
+//		//表头信息
+//		String[] titles = {"姓名","部门","日期","班次","上班:打卡时间,打卡结果","下班:打卡时间,打卡结果"};
+//		HSSFRow row3 = sheet.createRow(2);
+//		HSSFRow row4 = sheet.createRow(3);
+//		style = wb.createCellStyle();
+//		style.setBorderBottom(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderLeft(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderRight(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setBorderTop(HSSFCellStyle.BORDER_DASH_DOT);
+//		style.setFillForegroundColor(HSSFColor.GOLD.index);
+//		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+//		font = wb.createFont();
+//		font.setFontHeightInPoints((short)12);
+//		font.setBold(true);
+//		font.setFontName("宋体");
+//		style.setFont(font);
+//		int count = 0;
+//		for (int i=0; i<titles.length; i++) {
+//			String value = titles[i];
+//			if(value.contains(":")) {
+//				String[] values = value.split(":");
+//				for (int j = 0; j < values.length; j++) {
+//					String value1 = values[j];
+//					if(!(value1.contains(","))) {
+//						sheet.addMergedRegion(new CellRangeAddress(2,2,i+count,i+count+1));
+//						HSSFCell cell3 = row3.createCell(i+count);
+//						cell3.setCellValue(value1);
+//						cell3.setCellStyle(style);
+//					}else {
+//						String[] valuess = value1.split(",");
+//						for (int k = 0; k < valuess.length; k++) {
+//							String valuess1 = valuess[k];
+//							sheet.addMergedRegion(new CellRangeAddress(3,3,i+count+k,i+count+k));
+//							HSSFCell cell4 = row4.createCell(i+count+k);
+//							cell4.setCellValue(valuess1);
+//							cell4.setCellStyle(style);
+//						}
+//						count += 1;
+//					}
+//				}
+//			}else {
+//				sheet.addMergedRegion(new CellRangeAddress(2,3,i,i));
+//				HSSFCell cell3 = row3.createCell(i);
+//				cell3.setCellValue(value);
+//				cell3.setCellStyle(style);
+//			}
+//		}
+//		row3.setRowStyle(style);
+//		row4.setRowStyle(style);
+//		//存取数据，从第5行开始
+//		for (int i = 0; i < signIns.size(); i++) {
+//			SignIn signIn = signIns.get(i);
+//			
+//			style = wb.createCellStyle();
+//			style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//			style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+//			font = wb.createFont();
+//			font.setFontHeightInPoints((short)12);
+//			font.setBold(true);
+//			font.setFontName("宋体");
+//			style.setFont(font);
+//			
+//			HSSFRow row = sheet.createRow(i+4);
+//			HSSFCell cell5 = row.createCell(0);
+//			cell5.setCellValue(signIn.getFullname());
+//			cell5.setCellStyle(style);
+//			cell5 = row.createCell(1);
+//			cell5.setCellValue(signIn.getOrgName());
+//			cell5.setCellStyle(style);
+//			cell5 = row.createCell(2);
+//			cell5.setCellValue(DateStringUtil.dateToString3(signIn.getTime()));
+//			cell5.setCellStyle(style);
+//			cell5 = row.createCell(3);
+//			cell5.setCellValue(signIn.getSectionName());
+//			cell5.setCellStyle(style);
+//			cell5 = row.createCell(4);
+//			if(signIn.getSignInTime() != null) {
+//				cell5.setCellValue(DateStringUtil.dateToString5(signIn.getSignInTime()));
+//				cell5.setCellStyle(style);
+//			}else {
+//				cell5.setCellValue("");
+//			}
+//			cell5 = row.createCell(5);
+//			cell5.setCellValue(signIn.getSignInNote());
+//			cell5.setCellStyle(style);
+//			cell5 = row.createCell(6);
+//			if(signIn.getSignOutTime() != null) {
+//				cell5.setCellValue(DateStringUtil.dateToString5(signIn.getSignOutTime()));
+//				cell5.setCellStyle(style);
+//			}else {
+//				cell5.setCellValue("");
+//			}
+//			cell5 = row.createCell(7);
+//			cell5.setCellValue(signIn.getSignOutNote());
+//			cell5.setCellStyle(style);
+//		}
+//		try {
+//			ServletOutputStream outputStream = response.getOutputStream();
+//			wb.write(outputStream);
+//			outputStream.flush();
+//			outputStream.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+}

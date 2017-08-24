@@ -1,0 +1,5 @@
+package com.jy.service.oa.hrm;
+
+public interface StandSalaryItemService {
+
+}

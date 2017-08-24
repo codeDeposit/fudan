@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.ClassDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Class" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_goods_class where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_goods_class where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="gc_id != 0">  
+		    AND gc_id = #{gc_id}
+		</if>  
+		<if test="gc_name != null and gc_name != ''">  
+		    AND gc_name like concat(concat('%',#{gc_name}),'%')
+		</if>  
+		<if test="type_name != null and type_name != ''">  
+		    AND type_name = #{type_name}
+		</if> 
+		<if test="gc_parent_id != -1">  
+		    AND gc_parent_id = #{gc_parent_id}
+		</if>
+		<if test="gc_keywords != null and gc_keywords != ''">  
+		    AND gc_keywords = #{gc_keywords}
+		</if> 
+		<if test="gc_description != null and gc_description != ''">  
+		    AND gc_description = #{gc_description}
+		</if> 
+		<if test="gc_show != 0">  
+		    AND gc_show = #{gc_show}
+		</if> 
+		<if test="createDate != null and createDate != ''">  
+		    AND createDate = #{createDate}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="gc_id != 0">  
+		    AND gc_id = #{gc_id}
+		</if>  
+		<if test="gc_name != null and gc_name != ''">  
+		    AND gc_name like concat(concat('%',#{gc_name}),'%')
+		</if>  
+		<if test="type_name != null and type_name != ''">  
+		    AND type_name = #{type_name}
+		</if> 
+		<if test="gc_parent_id != -1">  
+		    AND gc_parent_id = #{gc_parent_id}
+		</if>
+		<if test="gc_keywords != null and gc_keywords != ''">  
+		    AND gc_keywords = #{gc_keywords}
+		</if> 
+		<if test="gc_description != null and gc_description != ''">  
+		    AND gc_description = #{gc_description}
+		</if> 
+		<if test="gc_show != 0">  
+		    AND gc_show = #{gc_show}
+		</if> 
+		<if test="createDate != null and createDate != ''">  
+		    AND createDate = #{createDate}
+		</if>      
+	</sql>
+	
+	<insert id="insert">
+		insert into app_goods_class (gc_name,type_name,gc_parent_id,gc_keywords,gc_description,gc_show,createDate) 
+			values 
+		(#{gc_name},#{type_name},#{gc_parent_id},#{gc_keywords},#{gc_description},#{gc_show},curdate())
+	</insert>
+	
+	<update id="update">
+		update app_goods_class <include refid="updateSql"></include> where gc_id = #{gc_id}
+	</update>
+	
+	<update id="update2">
+		update app_goods_class <include refid="updateSql"></include> where gc_parent_id = #{gc_parent_id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="gc_name != null and gc_name != ''">  
+				gc_name = #{gc_name},
+			</if>
+			<if test="type_name != null and type_name != ''">  
+				type_name = #{type_name},
+			</if>
+			<if test="gc_keywords != null and gc_keywords != ''">  
+				gc_keywords = #{gc_keywords},
+			</if>
+			<if test="gc_description != null and gc_description != ''">  
+				gc_description = #{gc_description},
+			</if>
+			<if test="gc_show != 0">  
+				gc_show = #{gc_show},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_goods_class where 
+		<if test="gc_id != 0">
+			gc_id = #{gc_id}
+		</if>
+		<if test="gc_parent_id != 0">
+			gc_parent_id = #{gc_parent_id}
+		</if>
+	</delete>
+</mapper>

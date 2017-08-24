@@ -1,0 +1,107 @@
+var _lat;
+var _lng;
+var _address;
+$(document).ready(function() {
+	fuLoading();
+	setTimeout("fList()",200);
+	amapCurrentPosition();
+});
+/**
+ * 高德地图定位插件
+ */
+function amapCurrentPosition() {
+    var geolocation = new AMap.Geolocation({
+        timeout: 5000 /*定位超时*/
+    });
+    geolocation.getCurrentPosition(function(status, result) {
+        if (status == 'complete') {
+           /*  onLocateSuccess(result) */
+          	_lat = result.position.lat;
+	  		_lng = result.position.lng;
+	  		_address = result.formattedAddress;
+        } else if (status == 'error') {
+            if (result.message.indexOf('Geolocation permission denied.') !== -1) {
+                createAlert('请打开定位权限', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+            } else {
+                createAlert('无法获取精确位置,将定位城市', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+            }
+            createAlert('定位失败 ！', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+        }
+    })
+}
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/sign/list",
+		success : function(data) {
+			 $('#signin_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function register(type) {
+	$.ajax({
+		type:"post",
+		data: {
+			"type":type,
+			"lng":_lng,
+			"lat":_lat,
+			"address":_address
+		},
+		url: jypath+"/oa/sign/register",
+		success:function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+			}else{
+				fuShowSuccess();
+				setTimeout("fList()",1000);
+			}
+		}
+	});
+}
+function aMapInit(latlng) {
+       if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+           document.getElementById('mapContent').style.height = document.documentElement.clientHeight - 175 + "px";
+       };
+       var map = new AMap.Map('mapContent', {
+           resizeEnable: true,
+           center: [latlng.lng, latlng.lat],
+           zoom: 18
+       });
+       map.plugin(["AMap.ToolBar"], function() {
+           map.addControl(new AMap.ToolBar());
+       });
+     	 var content = jypath + "/pc/image/oa/signlocation/marker_red.png";
+       var marker = new AMap.Marker({
+           map: map,
+           position: [latlng.lng, latlng.lat],
+           offset: new AMap.Pixel(0, 0), //偏移位置
+           draggable: false, //是否可拖动
+           content: '<div> <img src='+content+'></div>'
+       });
+ }
+function displayMap(longitude,latitude) {
+	var longitudeNumber = parseFloat(longitude);
+	var latitudeNumber = parseFloat(latitude);
+	var latlng = {
+		lat: latitudeNumber,
+    	lng: longitudeNumber
+	};
+	aMapInit(latlng);
+	$("#addModal").modal("show");
+}
+function fSearch(){
+	$.ajax({
+		type:"post",
+		url: jypath+"/oa/sign/search",
+		data:$('#Form_signin_search').serialize(),
+		success:function(data) {
+			$('#signin_list').html(data);
+		 	fuCloseLayer();
+		}
+	});
+	return false;
+}

@@ -1,0 +1,64 @@
+    document.getElementsByClassName('conPassW')[0].addEventListener('input', function() {
+        var val = document.getElementById('password').value;
+        var _this = this;
+        if (this.value == val) {
+            document.getElementsByClassName('aui-icon-correct')[0].style.display = "block";
+        } else {
+            document.getElementsByClassName('aui-icon-correct')[0].style.display = "none";
+        }
+        _this.addEventListener('blur', function() {
+            checkVal(_this, val);
+        })
+
+    })
+    var dialog = new auiDialog();
+    function successAlert(msg) {
+	    dialog.alert({
+	        title: "提示：",
+	        msg: msg,
+	        buttons: ['确定']
+	    }, function(ret) {
+	        if (ret) {
+	            window.location.href = jypath + "/mobileLogin";
+	        }
+	    })
+	
+	}
+
+    function checkVal(obj, val) {
+        if (obj.value != val) {
+            obj.setAttribute("placeholder", "密码不一致");
+            obj.value = "";
+        }
+    }
+    function subFun3() {
+        var aid = document.getElementById('aid').value;
+        var password = document.getElementById('password').value;
+        var data = 'accountId='+aid+'&password=' + password;
+
+        var xhr = null;
+        try {
+            xhr = new XMLHttpRequest();
+        } catch (e) {
+            xhr = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var responseText = xhr.responseText;
+                    var obj = JSON.parse(responseText);
+                    if (obj.res == 1) {
+                        successAlert("修改成功");
+                    }
+                }
+            }
+        }
+
+        xhr.open('post', jypath + '/mobile/account/resertPwd', false);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+        xhr.send(data);
+        return false
+    }
+
+

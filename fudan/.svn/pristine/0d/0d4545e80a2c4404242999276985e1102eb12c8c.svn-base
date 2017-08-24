@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.customer.ContractDao">
+	
+	<resultMap type="com.jy.entity.customer.Contract" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="number" property="number"/>
+		<result column="amount" property="amount"/>
+		<result column="salesJson" property="salesJson"/>
+		<result column="percentage" property="percentage"/>
+		<result column="createDate" property="createDate"/>
+		<result column="attachment" property="attachment"/>
+		<result column="time1" property="time1"/>
+		<result column="time1End" property="time1End"/>
+		<result column="price1" property="price1"/>
+		<result column="price1End" property="price1End"/>
+		<result column="time2" property="time2"/>
+		<result column="time2End" property="time2End"/>
+		<result column="price2" property="price2"/>
+		<result column="price2End" property="price2End"/>
+		<result column="time3" property="time3"/>
+		<result column="time3End" property="time3End"/>
+		<result column="price3" property="price3"/>
+		<result column="price3End" property="price3End"/>
+		<result column="customerId" property="customerId"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from cus_contract where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from cus_contract where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="name != null and name != ''">  
+		    AND name like concat('%', #{name}, '%') 
+		</if>  
+		<if test="number != null and number != ''">  
+		    AND number = #{number}
+		</if> 
+		<if test="amount != 0">  
+		    AND amount = #{amount}
+		</if> 
+		<if test="salesJson != null and salesJson != ''">  
+		    AND salesJson = #{salesJson}
+		</if> 
+		<if test="percentage != 0">  
+		    AND percentage = #{percentage}
+		</if> 
+		<if test="createDate != null and createDate != ''">  
+		    AND createDate = #{createDate}
+		</if>  
+		<if test="attachment != null and attachment != ''">  
+		    AND attachment = #{attachment}
+		</if>    
+		<if test="time1 != null and time1 != ''">  
+		    AND time1 = #{time1}
+		</if>  
+		<if test="time1End != null and time1End != ''">  
+		    AND time1End = #{time1End}
+		</if>  
+		<if test="price1 != 0">  
+		    AND price1 = #{price1}
+		</if>
+		<if test="price1End != 0">  
+		    AND price1End = #{price1End}
+		</if>
+		<if test="time2 != null and time2 != ''">  
+		    AND time2 = #{time2}
+		</if>  
+		<if test="time2End != null and time2End != ''">  
+		    AND time2End = #{time2End}
+		</if>  
+		<if test="price2 != 0">  
+		    AND price2 = #{price2}
+		</if>
+		<if test="price2End != 0">  
+		    AND price2End = #{price2End}
+		</if> 
+		<if test="time3 != null and time3 != ''">  
+		    AND time3 = #{time3}
+		</if>  
+		<if test="time3End != null and time3End != ''">  
+		    AND time3End = #{time3End}
+		</if>  
+		<if test="price3 != 0">  
+		    AND price3 = #{price3}
+		</if>
+		<if test="price3End != 0">  
+		    AND price3End = #{price3End}
+		</if>     
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>        
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="name != null and name != ''">  
+		    AND name like concat('%', #{name}, '%') 
+		</if>  
+		<if test="number != null and number != ''">  
+		    AND number = #{number}
+		</if> 
+		<if test="amount != 0">  
+		    AND amount = #{amount}
+		</if> 
+		<if test="salesJson != null and salesJson != ''">  
+		    AND salesJson = #{salesJson}
+		</if> 
+		<if test="percentage != 0">  
+		    AND percentage = #{percentage}
+		</if> 
+		<if test="createDate != null and createDate != ''">  
+		    AND createDate = #{createDate}
+		</if>  
+		<if test="attachment != null and attachment != ''">  
+		    AND attachment = #{attachment}
+		</if>    
+		<if test="time1 != null and time1 != ''">  
+		    AND time1 = #{time1}
+		</if>  
+		<if test="time1End != null and time1End != ''">  
+		    AND time1End = #{time1End}
+		</if>  
+		<if test="price1 != 0">  
+		    AND price1 = #{price1}
+		</if>
+		<if test="price1End != 0">  
+		    AND price1End = #{price1End}
+		</if>
+		<if test="time2 != null and time2 != ''">  
+		    AND time2 = #{time2}
+		</if>  
+		<if test="time2End != null and time2End != ''">  
+		    AND time2End = #{time2End}
+		</if>  
+		<if test="price2 != 0">  
+		    AND price2 = #{price2}
+		</if>
+		<if test="price2End != 0">  
+		    AND price2End = #{price2End}
+		</if> 
+		<if test="time3 != null and time3 != ''">  
+		    AND time3 = #{time3}
+		</if>  
+		<if test="time3End != null and time3End != ''">  
+		    AND time3End = #{time3End}
+		</if>  
+		<if test="price3 != 0">  
+		    AND price3 = #{price3}
+		</if>
+		<if test="price3End != 0">  
+		    AND price3End = #{price3End}
+		</if>     
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>         
+	</sql>
+	
+	<insert id="insert">
+		insert into cus_contract (name,number,amount,salesJson,percentage,createDate,attachment,time1,time1End,price1,price1End,time2,time2End,price2,price2End,time3,time3End,price3,price3End,customerId) 
+			values 
+		(#{name},#{number},#{amount},#{salesJson},#{percentage},curdate(),#{attachment},#{time1},#{time1End},#{price1},#{price1End},#{time2},#{time2End},#{price2},#{price2End},#{time3},#{time3End},#{price3},#{price3End},#{customerId})
+	</insert>
+	
+	<update id="update">
+		update cus_contract <include refid="updateSql"></include> where id = #{id} 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != null and name != ''">  
+		    	name = #{name}, 
+			</if>  
+			<if test="number != null and number != ''">  
+			    number = #{number},
+			</if> 
+			<if test="amount != 0">  
+			    amount = #{amount},
+			</if> 
+			<if test="salesJson != null and salesJson != ''">  
+			    salesJson = #{salesJson},
+			</if> 
+			<if test="percentage != 0">  
+			    percentage = #{percentage},
+			</if> 
+			<if test="createDate != null and createDate != ''">  
+			    createDate = #{createDate},
+			</if>  
+			<if test="attachment != null and attachment != ''">  
+			    attachment = #{attachment},
+			</if>    
+			<if test="time1 != null and time1 != ''">  
+			    time1 = #{time1},
+			</if>  
+			<if test="time1End != null and time1End != ''">  
+			    time1End = #{time1End},
+			</if>  
+			<if test="price1 != 0">  
+			    price1 = #{price1},
+			</if>
+			<if test="price1End != 0">  
+			    price1End = #{price1End},
+			</if>
+			<if test="time2 != null and time2 != ''">  
+			    time2 = #{time2},
+			</if>  
+			<if test="time2End != null and time2End != ''">  
+			    time2End = #{time2End},
+			</if>  
+			<if test="price2 != 0">  
+			    price2 = #{price2},
+			</if>
+			<if test="price2End != 0">  
+			    price2End = #{price2End},
+			</if> 
+			<if test="time3 != null and time3 != ''">  
+			    time3 = #{time3},
+			</if>  
+			<if test="time3End != null and time3End != ''">  
+			    time3End = #{time3End},
+			</if>  
+			<if test="price3 != 0">  
+			    price3 = #{price3},
+			</if>
+			<if test="price3End != 0">  
+			    price3End = #{price3End},
+			</if>     
+			<if test="customerId != 0">  
+			    customerId = #{customerId},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from cus_contract where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+		<if test="customerId != 0">
+			customerId = #{customerId}
+		</if>
+	</delete>
+	
+</mapper>

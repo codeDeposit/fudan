@@ -1,0 +1,280 @@
+package com.jy.entity.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class JobChange {
+
+	private Long changeId;
+	private Long profileId;
+	private String profileNo;
+	private String userName;
+	private Long orgJobId;
+	private String orgJobName;
+	private Long newJobId;
+	private String newJobName;
+	private Long orgStandardId;
+	private Long newStandardId;
+	private String orgStandardNo;
+	private String orgStandardName;
+	private Long orgDepId;
+	private String orgDepName;
+	private BigDecimal orgTotalMoney;
+	private String newStandardNo;
+	private String newStandardName;
+	private Long newDepId;
+	private String newDepName;
+	private BigDecimal newTotalMoney;
+	private String changeReason;
+	private String regName;
+	private Date regTime;
+	private String checkName;
+	private Date checkTime;
+	private String checkOpinion;
+	private Short status;
+	private String memo;
+	
+	private String regTime1;
+	private String checkTime1;
+
+	public String getRegTime1() {
+		return regTime1;
+	}
+
+	public void setRegTime1(String regTime1) {
+		this.regTime1 = regTime1;
+	}
+
+	public String getCheckTime1() {
+		return checkTime1;
+	}
+
+	public void setCheckTime1(String checkTime1) {
+		this.checkTime1 = checkTime1;
+	}
+
+	public Long getChangeId() {
+		return changeId;
+	}
+
+	public void setChangeId(Long changeId) {
+		this.changeId = changeId;
+	}
+
+	public Long getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
+	}
+
+	public String getProfileNo() {
+		return profileNo;
+	}
+
+	public void setProfileNo(String profileNo) {
+		this.profileNo = profileNo;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Long getOrgJobId() {
+		return orgJobId;
+	}
+
+	public void setOrgJobId(Long orgJobId) {
+		this.orgJobId = orgJobId;
+	}
+
+	public String getOrgJobName() {
+		return orgJobName;
+	}
+
+	public void setOrgJobName(String orgJobName) {
+		this.orgJobName = orgJobName;
+	}
+
+	public Long getNewJobId() {
+		return newJobId;
+	}
+
+	public void setNewJobId(Long newJobId) {
+		this.newJobId = newJobId;
+	}
+
+	public String getNewJobName() {
+		return newJobName;
+	}
+
+	public void setNewJobName(String newJobName) {
+		this.newJobName = newJobName;
+	}
+
+	public Long getOrgStandardId() {
+		return orgStandardId;
+	}
+
+	public void setOrgStandardId(Long orgStandardId) {
+		this.orgStandardId = orgStandardId;
+	}
+
+	public Long getNewStandardId() {
+		return newStandardId;
+	}
+
+	public void setNewStandardId(Long newStandardId) {
+		this.newStandardId = newStandardId;
+	}
+
+	public String getOrgStandardNo() {
+		return orgStandardNo;
+	}
+
+	public void setOrgStandardNo(String orgStandardNo) {
+		this.orgStandardNo = orgStandardNo;
+	}
+
+	public String getOrgStandardName() {
+		return orgStandardName;
+	}
+
+	public void setOrgStandardName(String orgStandardName) {
+		this.orgStandardName = orgStandardName;
+	}
+
+	public Long getOrgDepId() {
+		return orgDepId;
+	}
+
+	public void setOrgDepId(Long orgDepId) {
+		this.orgDepId = orgDepId;
+	}
+
+	public String getOrgDepName() {
+		return orgDepName;
+	}
+
+	public void setOrgDepName(String orgDepName) {
+		this.orgDepName = orgDepName;
+	}
+
+	public BigDecimal getOrgTotalMoney() {
+		return orgTotalMoney;
+	}
+
+	public void setOrgTotalMoney(BigDecimal orgTotalMoney) {
+		this.orgTotalMoney = orgTotalMoney;
+	}
+
+	public String getNewStandardNo() {
+		return newStandardNo;
+	}
+
+	public void setNewStandardNo(String newStandardNo) {
+		this.newStandardNo = newStandardNo;
+	}
+
+	public String getNewStandardName() {
+		return newStandardName;
+	}
+
+	public void setNewStandardName(String newStandardName) {
+		this.newStandardName = newStandardName;
+	}
+
+	public Long getNewDepId() {
+		return newDepId;
+	}
+
+	public void setNewDepId(Long newDepId) {
+		this.newDepId = newDepId;
+	}
+
+	public String getNewDepName() {
+		return newDepName;
+	}
+
+	public void setNewDepName(String newDepName) {
+		this.newDepName = newDepName;
+	}
+
+	public BigDecimal getNewTotalMoney() {
+		return newTotalMoney;
+	}
+
+	public void setNewTotalMoney(BigDecimal newTotalMoney) {
+		this.newTotalMoney = newTotalMoney;
+	}
+
+	public String getChangeReason() {
+		return changeReason;
+	}
+
+	public void setChangeReason(String changeReason) {
+		this.changeReason = changeReason;
+	}
+
+	public String getRegName() {
+		return regName;
+	}
+
+	public void setRegName(String regName) {
+		this.regName = regName;
+	}
+
+	public Date getRegTime() {
+		return regTime;
+	}
+
+	public void setRegTime(Date regTime) {
+		this.regTime = regTime;
+	}
+
+	public String getCheckName() {
+		return checkName;
+	}
+
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
+
+	public Date getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(Date checkTime) {
+		this.checkTime = checkTime;
+	}
+
+	public String getCheckOpinion() {
+		return checkOpinion;
+	}
+
+	public void setCheckOpinion(String checkOpinion) {
+		this.checkOpinion = checkOpinion;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+}

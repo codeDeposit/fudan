@@ -1,0 +1,29 @@
+package com.jy.service.oa.info;
+
+import java.util.Date;
+import java.util.List;
+
+import com.jy.entity.oa.info.NewsComment;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface NewsCommentService {
+
+	// 根据 subject、startTime、endTime、fullname 模糊查询
+	List<NewsComment> getBy(String subject, Date startTime, Date endTime, String fullName);
+
+	// 根据 commentId 获取详细信息
+	NewsComment getDetailsBy(Long commentId);
+
+	// 修改 newsComment 信息
+	JsonInfo update(NewsComment newsComment);
+
+	// 批量删除 
+	JsonInfo del(Long[] commentId);
+
+	// 分页显示评论列表
+	List<NewsComment> getPageList(PageBean pb, String subject, Date startTime,
+			Date endTime, String fullname);
+
+}

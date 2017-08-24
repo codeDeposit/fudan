@@ -1,0 +1,583 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<%@ include file="../../common/toast.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<style>
+			.SearchForm .forinBlo{display: inline-block;width: 66.66%;}
+			.labelPad{padding-top: 7px;}
+		    
+		    .havHead{background: #efefef;}
+	    	.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			
+			a{text-decoration: none;}
+		    a:hover{text-decoration: none;}
+		    a:focus{text-decoration: none;}
+		    li{list-style: none;}
+		    ul{padding:0;margin:0;}
+		    .leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+		    .firstLevel li{cursor: pointer;}
+		    .secondLevel{display: none;}
+		    .thirdLevel{display: none;}
+		    .fIndent{padding-left: 8px;}
+		    .sIndent{padding-left: 24px;}
+		    .tIndent{padding-left: 40px;}
+		    .rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+		
+		    .rightContent .table{margin-bottom: 5px;height: 234px;}
+		    .tBody{display: block;height:196px;overflow: auto;}
+		    .rightContent thead tr{display: block;}
+		    .wiD{width: 36px;}
+		    .seQuence{width: 45px;}
+		    .wiDl{width: 280px;}
+		
+		    .close{margin:5px;}
+		    .aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+		    .aHover:hover{background-color: #ccc;}
+		    .aHover.active{background-color:#999;color: #fff;}
+		    .pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+		    #pageNum{width: 335px;margin:0 auto;}
+		    .modal-content{border-radius: 6px;overflow: hidden;}
+		    .pagination{margin:5px 0;}
+		    .headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+		<!-- 局部刷新 js -->
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<script src="${jypath}/pc/js/oa/partrefresh.js"></script>
+		<script src="${jypath}/pc/js/oa/pageturning.js"></script>
+	</head>
+	<body>
+		<!-- padding盒子 start-->
+    	<div>
+    	<!-- 查询 start-->
+    	<form id="officegoodstypesearchform" class="SearchForm">
+		    <div class="form-group col-md-3 col-sm-3">
+		    	<label class="control-label col-sm-4 labelPad">标准编号:</label>
+		        <input type="text" class="form-control col-sm-8 forinBlo" name="standardNo">
+		    </div>
+		    <div class="form-group col-md-3 col-sm-3">
+		    	<label class="control-label col-sm-4 labelPad">标准名称:</label>
+		        <input type="text" class="form-control col-sm-8 forinBlo" name="standardName">
+		    </div>
+		    <div class="form-group col-md-3 col-sm-3">
+		    	<label class="control-label col-sm-4 labelPad">状态:</label>
+		    	<select class="form-control col-sm-8 forinBlo" name="status">
+		    		<option value="">---请选择---</option>
+		    		<option value="0">未审核</option>
+		    		<option value="1">审核通过</option>
+		    		<option value="2">审核未通过</option>
+		    	</select>
+		    </div>
+		    <input type="hidden" name="operation" value="partrefresh">
+		    <button id="officegoodstypesearchbtn" class="btn btn-success btn-sm" type="button"><i class="glyphicon glyphicon-search"></i></button>
+		</form>
+		<!-- 查询 end-->
+    	
+        <!-- 添加 start-->
+        <button id="modaladdbtn" type="button" class="btn btn-success pull-right" onclick="linkChange();">
+            <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+        </button>
+        <!-- 添加 end -->
+        
+		<div id="officegoodstypetable">
+		<table class="table table-striped table-bordered table-hover dataTables-example">
+	        <thead>
+	           <tr>
+	               <th>序号</th>
+	               <th>标准编号</th>
+	               <th>标准名称</th>
+	               <th>总金额</th>
+	               <th>制定日期</th>
+	               <th>状态</th>
+	               <th>操作</th>
+	           </tr>
+	       </thead>
+	       <tbody>
+	       		<c:choose>
+				<c:when test="${standSalarys != null and fn:length(standSalarys) != 0}">
+	       		<c:forEach var="standSalary" items="${standSalarys}" varStatus="index">
+	           	<tr class="gradX">
+	              	<td>${index.count}</td>
+	              	<td>${standSalary.standardNo}</td>
+	              	<td>${standSalary.standardName}</td>
+	              	<td>${standSalary.totalMoney }</td>
+	              	<td>${standSalary.setdownTime1}</td>
+	              	<c:if test="${standSalary.status == 0}">
+						<td><font color="blue">未审核</font></td>
+	              	</c:if>
+	              	<c:if test="${standSalary.status == 1}">
+						<td><font color="green">审核通过</font></td>	              	
+	              	</c:if>
+	              	<c:if test="${standSalary.status == 2}">
+						<td><font color="red">审核未通过</font></td>	              	
+	              	</c:if>
+	              	
+					<td class="center">
+						<c:if test="${standSalary.status == 0 }">
+						<button type="button" class="btn btn-warning btn-xs" onclick="openForm('${standSalary.standardId}', 'update')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;修改
+						</button>
+						</c:if>
+						<c:if test="${standSalary.status == 0 }">
+						<button type="button" class="btn btn-success btn-xs" onclick="review('${standSalary.standardId}')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;审核
+						</button>
+						</c:if>
+						<button type="button" class="btn btn-info btn-xs" onclick="operateinfo('${standSalary.standardId}')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;操作记录
+						</button>
+						<button class="btn btn-danger btn-xs" onclick="fuConfirm('${standSalary.standardId}')"><i class="glyphicon glyphicon-trash"></i> 删除</button>
+					</td>
+	           	</tr>
+	           	</c:forEach>
+	           	</c:when>
+	           	<c:otherwise>
+					<tr class="gradX"><td colspan="7">没有数据</td></tr>
+				</c:otherwise>
+	           	</c:choose>
+	       </tbody>
+       	   <tfoot></tfoot>
+		</table>
+        <!-- table end -->
+        
+        <!-- 分页 start -->
+		<div align="right">
+			<a href="#" onclick="pageturn(1)">首页</a>
+			<c:if test="${pageNos > 1}">
+				<a href="#" onclick="pageturn(${pageNos - 1})">上一页</a>
+			</c:if>
+			<c:if test="${pageNos < pageCount}">
+				<a href="#" onclick="pageturn(${pageNos + 1})">下一页</a>
+			</c:if>
+			<a href="#" onclick="pageturn(${pageCount})">末页</a>
+		</div>
+		<div align="right">
+			<form>
+				<h4>
+					<span> 共${pageCount}页 <input id="zhuandao" type="text" value="${pageNos}" name="pageNos" size="1">页 <input onclick="pageturn(0)" type="button" value="转到">
+					</span>
+				</h4>
+			</form>
+		</div>
+		<!-- 分页 end -->
+		</div>
+    </div>
+    <!-- padding盒子 end -->
+    
+    <!-- 审核模态框 -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">标准审核</h4>
+	      </div>
+	      <div class="modal-body">
+	      
+	      	<div class="form-group col-md-6">
+			      <label for="standardNo" class="col-sm-4 control-label">标准编号</label>
+			      <div class="col-sm-8">
+			        <input type="text" class="form-control" id="standardNo" readonly="readonly">
+			      </div>
+		    </div>
+		    <div class="form-group col-md-6">
+			      <label for="standardName" class="col-sm-4 control-label">标准名称</label>
+			      <div class="col-sm-8">
+			        <input type="text" class="form-control" id="standardName" readonly="readonly">
+			      </div>
+		    </div>
+		    <div class="form-group col-md-6">
+			      <label for="totalMoney" class="col-sm-4 control-label">薪资总额</label>
+			      <div class="col-sm-8">
+			        <input type="text" class="form-control" id="totalMoney" readonly="readonly">
+			      </div>
+		    </div>
+		    <div class="form-group col-md-6">
+			      <label for="framer" class="col-sm-4 control-label">标准制定人</label>
+			      <div class="col-sm-8">
+			        <input type="text" class="form-control" id="framer" readonly="readonly">
+			      </div>
+		    </div>
+		    <div class="form-group col-md-12">
+			      <label for="memo" class="col-sm-2 control-label">备注</label>
+			      <div class="col-sm-10">
+			        <textarea id="memo" readonly="readonly" rows="3" class="form-control"></textarea>
+			      </div>
+		    </div>
+		    <form id="reviewform">
+		    <input id="standardId" type="hidden" name="standardId" value="">
+		    <div class="form-group col-md-12">
+			      <label for="inputEmail3" class="col-sm-2 control-label">审核意见</label>
+			      <div class="col-sm-10">
+			        <textarea rows="3" name="checkOpinion" class="form-control"></textarea>
+			      </div>
+		    </div>
+		    </form>
+		    <div class="form-group">
+		    	<table class="table table-striped table-bordered table-hover">
+		    		<thead>
+			    		<th>序号</th>
+			    		<th>项目名称</th>
+			    		<th>金额</th>
+		    		</thead>
+		    		<tbody id="data">
+		    			<%--<td></td>--%>
+		    		</tbody>
+		    	</table>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	        <button type="button" class="btn btn-danger" onclick="reviewPost(2);">不通过</button>
+	        <button type="button" class="btn btn-success" onclick="reviewPost(1);">通过</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- 操作记录模态框 -->
+	<div class="modal fade" id="operateinfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">标准审核</h4>
+	      </div>
+	      <div class="modal-body">
+		    <div class="form-group">
+		    	<table class="table table-striped table-bordered table-hover">
+		    		<tr>
+		    			<td>标准名称</td>
+		    			<td colspan="3" id="sname"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>标准编号</td>
+		    			<td colspan="3" id="sno"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>制定人</td>
+		    			<td id="sframer"></td>
+		    			<td>制定时间</td>
+		    			<td id="ssettime"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>修改人</td>
+		    			<td id="modifypeople"></td>
+		    			<td>修改时间</td>
+		    			<td id="modifytime"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>审核人</td>
+		    			<td id="reviewer"></td>
+		    			<td>审核时间</td>
+		    			<td id="reviewtime"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>审核意见</td>
+		    			<td colspan="3" id="reviewoption"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>备注</td>
+		    			<td colspan="3" id="notes"></td>
+		    		</tr>
+		    	</table>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+    
+   		<!-- 恢复职位弹窗 start -->
+        <div class="modal fade" id="selectgoods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;恢复职位
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="upside">
+	                    	<form id="carsearchform" role="form" class="SearchForm">
+	                    		<div class="form-group col-md-6 col-sm-6">
+		                        	<input type="text" id="carNoSearch" class="form-control col-md-6 col-sm-6 forinBlo" placeholder="职位名称" name="jobName">
+	                        	</div>
+	                        	<div class="form-group col-md-5 col-sm-5">
+		                        	<input type="text" id="carNoSearch" class="form-control col-md-5 col-sm-5 forinBlo" placeholder="所属部门" name="orgName">
+	                        	</div>
+		                        	<button id="tccarsearchbtn" class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+	                        </form>
+	                    </div>
+	                    <div class="middleside">
+	                    	<table class="table table-striped table-hover">
+								<thead style="display:block;width:520px;">
+									<tr>
+									<th style="width:50px;" >
+										<input type="checkbox" class="checkAll" onclick="chooseAll()">
+									</th>
+									<th style="width:50px;" >序号</th>
+									<th style="width:140px;">职位名称</th>
+									<th style="width:140px;">所属部门</th>
+									<th style="width:140px;">操作</th>
+									</tr>
+								</thead>
+								<tbody id="goodstable" class="tBody" style="display:block;width:520px;height:178px;overflow:auto;">
+									<!-- 删除职位列表打印到此处 -->
+									<!-- <tr>
+										<td class="text-center wiD"><input type="checkbox"></td>
+										<td class="text-center seQuence">${index.count}</td>
+										<td id="${org.id}" class="wiDl">${org.name}</td>
+									</tr> -->
+								</tbody>
+							</table>
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <%--<button type="button" class="btn btn-primary aYes" id="surebtn">确定</button>
+	                    --%><button type="button" class="btn btn-danger" data-dismiss="modal" onclick="refresh()">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 恢复职位弹窗 end -->
+</body>
+<script type="text/javascript">
+	function linkChange() {
+		window.location.href= jypath+"/oa/standsalary/returnadd";
+	}
+   	//加载数据..
+   	$(document).ready(function() {
+   		fuLoading();
+   		//初始化数据..加载所有部门
+		getAllDep();
+   		//初始化数据...加载所有已删除的职位
+   		getDeleteJobs();
+   	});
+   	//加载所有部门
+  	function getAllDep() {
+    	var url = "/oa/org/listall";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var objs = eval("("+data+")");
+    			var html = "<option value=''>---请选择---</option>";
+    			for(var index in objs) {
+    				var obj = objs[index];
+    				html += "<option value='"+ obj.id +"'>"+ obj.name +"</option>";
+    			}
+    			$("#orgselect").html(html);
+    		}
+    	});
+    }
+   	//加载删除的职位
+   	function getDeleteJobs() {
+   		var url = "/oa/job/listdel";
+   		$.ajax({
+   			type: "get",
+   			url : jypath + url,
+   			success: function(data) {
+   				parseJson(data);
+   				fuCloseLayer();
+   			}
+   		});
+   	}
+   	//解析json字符串
+   	function parseJson(data) {
+   		var objs = eval("("+ data +")");
+		var html = "";
+		var count = 1;
+		for(var index in objs) {
+			var obj = objs[index];
+			html += "<tr>";
+			html += "<td class='text-center wiD'><input type='checkbox'></td>";
+			html += "<td class='text-center seQuence'>"+ count +"</td>";
+			html += "<td class='wiDl' id='"+obj.jobId+"'>"+obj.jobName+"</td>";
+			html += "<td class='wiDl'>"+obj.org.name+"</td>";
+			html += "<td class='wiDl'><button class='btn btn-primary' onclick='reuse("+obj.jobId+")'>恢复</button></td>";
+			html += "</tr>";
+			count ++;
+		}
+		$("#goodstable").html(html);
+   	}
+  	//全选
+    function chooseAll(){
+        if($('.checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+           $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		window.location.href= jypath+"/oa/standsalary/getdetails?"+"standardId="+id+"&operation="+operation;
+   	}
+	// 查询
+	$("#officegoodstypesearchbtn").click(function() {
+		fuLoading();
+		var id = "officegoodstypetable";
+		var url = jypath + "/oa/standsalary/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		fuLoading();
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "officegoodstypetable";
+		var url= jypath+"/oa/standsalary/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	//删除职位列表
+	function getReuse() {
+		var url = "/oa/job/listdel";
+		$.ajax({
+			type: "get",
+			url : jypath + url,
+			success: function(data) {
+				$("#officegoodstypetable").html(data);
+			}
+		});
+	}
+	//恢复职位
+	function reuse(jobId) {
+		var url = "/oa/job/recovery";
+		var data = "jobId="+jobId;
+		$.ajax({
+			type: "get",
+			url : jypath + url,
+			data: data,
+			success: function(data) {
+				getDeleteJobs();
+			}
+		});
+	}
+	//查询已删除职位
+	$("#tccarsearchbtn").click(function() {
+		fuLoading();
+		var url = "/oa/job/listdel";
+		var data = $("#carsearchform").serialize();
+		$.ajax({
+			type: "post",
+			url : jypath + url,
+			data: data,
+			success: function(data) {
+				fuCloseLayer();
+				parseJson(data);
+			}
+		});
+	});
+	function review(standardId) {
+		var url = jypath+"/oa/standsalary/getinfo";
+		$.ajax({
+			type: "get",
+			url : url,
+			data: "standardId="+standardId,
+			success: function(data) {
+				var obj = eval("("+data+")");
+				setData(obj);
+				$("#myModal").modal("show");
+			}
+		});
+	}
+	function setData(jsonObject) {
+		$("#standardNo").val(jsonObject.standardNo);
+		$("#standardName").val(jsonObject.standardName);
+		$("#totalMoney").val(jsonObject.totalMoney);
+		$("#framer").val(jsonObject.framer);
+		$("#memo").html(jsonObject.memo);
+		$("#standardId").val(jsonObject.standardId);
+		var salaryItems = jsonObject.standSalaryItems;
+		var html = "";
+		var count = 1;
+		for(var index in salaryItems) {
+			html += "<tr>";
+			html += "<td>"+count+"</td>";
+			html += "<td>"+salaryItems[index].itemName+"</td>";
+			html += "<td>"+salaryItems[index].amount+"</td>";
+			html += "</tr>";
+			count ++;
+		}
+		$("#data").html(html);
+	}
+	function reviewPost(status) {
+		var url = jypath+"/oa/standsalary/review";
+		var data = $("#reviewform").serialize()+"&status="+status;
+		$.ajax({
+			type: "post",
+			url : url,
+			data: data,
+			success: function(data) {
+				refresh();
+			}
+		});
+	}
+	function operateinfo(sid) {
+		var url = jypath+"/oa/standsalary/getinfo";
+		$.ajax({
+			type: "get",
+			url : url,
+			data: "standardId="+sid,
+			success: function(data) {
+				var obj = eval("("+data+")");
+				setTableData(obj);
+				$("#operateinfoModal").modal("show");
+			}
+		});
+	}
+	function setTableData(jsonObject) {
+		$("#sno").html(jsonObject.standardNo);
+		$("#sname").html(jsonObject.standardName);
+		$("#ssettime").html(jsonObject.setdownTime1);
+		$("#sframer").html(jsonObject.framer);
+		$("#modifytime").html(jsonObject.modifyTime1);
+		$("#modifypeople").html(jsonObject.modifyName);
+		$("#reviewer").html(jsonObject.checkName);
+		$("#reviewtime").html(jsonObject.checkTime1);
+		$("#reviewoption").html(jsonObject.checkOpinion);
+		$("#notes").html(jsonObject.memo);
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}
+	function fDelete(typeId) {
+		var url = "/oa/standsalary/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?standardId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+</script>
+</html>

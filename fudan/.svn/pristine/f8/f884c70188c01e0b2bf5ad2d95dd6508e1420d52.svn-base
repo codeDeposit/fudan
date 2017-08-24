@@ -1,0 +1,25 @@
+package com.jy.repository.oa;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.OAOrg;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface OAOrgMapper {
+
+	// 获取本公司的所有部门
+	List<OAOrg> selectAll();
+
+	// 获取部门详细信息（自身及下属部门）
+	List<OAOrg> selectInfoBy(@Param("orgId") String orgId);
+	
+	//根据用户Id获取部门
+	OAOrg selectInfo(@Param("orgId") String orgId);
+
+	// 根据员工姓名获取部门ID
+	OAOrg selectInfoByEmpId(@Param("userId") String userId);
+
+}

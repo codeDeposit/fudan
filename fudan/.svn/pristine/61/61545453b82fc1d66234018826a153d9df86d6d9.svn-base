@@ -1,0 +1,39 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.admin.Brand;
+import com.jy.repository.app.admin.BrandDao;
+
+@Service(value = "brandService")
+public class BrandService{
+	
+	@Resource
+	private BrandDao goodsBrandDao;
+	
+	public int insert(Brand goodsBrand) {
+		return this.goodsBrandDao.insert(goodsBrand);
+	}
+	
+	public List<Brand> find(Brand goodsBrand) {
+		return this.goodsBrandDao.find(goodsBrand);
+	}
+
+	public List<Brand> search(Brand goodsBrand) {
+		return this.goodsBrandDao.search(goodsBrand);
+	}
+
+	public int update(Brand goodsBrand) {
+		return this.goodsBrandDao.update(goodsBrand);
+	}
+
+	public int update2(Brand goodsBrand) {
+		return this.goodsBrandDao.update2(goodsBrand);
+	}
+	
+	public int delete(Brand goodsBrand) {
+		return this.goodsBrandDao.delete(goodsBrand);
+	}
+	
+}

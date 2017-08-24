@@ -1,0 +1,31 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.admin.Order;
+import com.jy.repository.app.admin.OrderDao;
+
+@Service(value = "orderService")
+public class OrderService{
+	
+	@Resource
+	private OrderDao orderDao;
+	
+	public List<Order> find(Order order) {
+		return this.orderDao.find(order);
+	}
+
+	public List<Order> search(Order order) {
+		return this.orderDao.search(order);
+	}
+
+	public int insert(Order order) {
+		return this.orderDao.insert(order);
+	}
+	
+	public int delete(Order order) {
+		return this.orderDao.delete(order);
+	}
+	
+}

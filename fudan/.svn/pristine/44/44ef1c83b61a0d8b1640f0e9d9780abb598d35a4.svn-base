@@ -1,0 +1,40 @@
+package com.jy.repository.oa.task;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.task.Diary;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DiaryMapper {
+
+	// 获取列表
+	public List<Diary> selectAll(@Param("startTime") Date startTime, @Param("endTime") Date endTime, 
+									@Param("diaryType") Short diaryType, @Param("userId") String userId);
+
+	/*public void delete(Integer diaryId);
+
+	public List<DiaryVo> selectDetails(Integer diaryId);
+
+	public void insert(Diary diary);*/
+
+	// 分页获取列表
+	public List<Diary> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("startTime") Date startTime1, 
+										@Param("endTime") Date endTime1, @Param("diaryType") Short diaryType, @Param("userId") String userId);
+
+	// 添加日志
+	public int insert(Diary diary);
+
+	// 详细信息
+	public Diary selectInfoBy(Long diaryId);
+
+	// 日志修改
+	public int update(Diary diary);
+
+	// 删除日志
+	public int delete(Long diaryId);
+
+}

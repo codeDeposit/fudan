@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.EmployeeMapper">
+	<!-- com.jy.entity.oa.leave.Leave -->
+
+	<select id="selectAll" resultType="com.jy.entity.oa.Employee">
+		SELECT * FROM
+		oa_base_employee WHERE `status` = 1
+		<if test="roleId !=null and roleId !='' ">
+			and roleId = #{roleId}
+		</if>
+		<if test="orgId !=null and orgId !='' ">
+			and orgId = #{orgId}
+		</if>
+		<if test="positionId !=null and positionId !='' ">
+			and positionId = #{positionId}
+		</if>
+	</select>
+
+	<select id="selectItSelf" parameterType="java.lang.String" resultType="com.jy.entity.oa.Employee">
+		SELECT * FROM oa_base_employee where userId = #{userId}
+	</select>
+
+	<update id="updateInfo" parameterType="java.lang.String">
+		UPDATE oa_base_employee
+		<set>
+			<if test="telphone != null and telphone != '' ">
+				telphone = #{telphone}
+			</if>
+			<if test="fax != null and fax != '' ">
+				fax = #{fax}
+			</if>
+			<if test="address != null and address != '' ">
+				address = #{address}
+			</if>
+			<if test="zip != null and zip != '' ">
+				zip = #{zip}
+			</if>
+			<if test="fullname != null and fullname != '' ">
+				fullname = #{fullname}
+			</if>
+			<if test="email != null and email != '' ">
+				email = #{email}
+			</if>
+		</set>
+		WHERE userId = (SELECT eId FROM
+		jy_base_account WHERE id = #{id})
+	</update>
+
+	<update id="updatePass">
+		UPDATE jy_base_account SET `password` = #{1} WHERE id
+		= #{0}
+	</update>
+	
+	<!-- 根据部门ID号获取所有的员工 start -->
+	<select id="selectByDepId" resultType="com.jy.entity.oa.Employee">
+		select userId, fullname from oa_base_employee where orgId = #{orgId}
+	</select>
+	<!-- 根据部门ID号获取所有的员工 end -->
+	
+	
+	<select id="selectByRoleId" resultType="com.jy.entity.oa.Employee">
+		select userId, fullname from oa_base_employee where roleId = #{roleId}
+	</select>
+
+</mapper>

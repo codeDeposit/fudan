@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.MallImgDao">
+	
+	<resultMap type="com.jy.entity.app.admin.MallImg" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_mall_img where 1=1 <include refid="findSql"></include> order by sort asc
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_mall_img where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="mall_id !=  0">  
+		    AND mall_id = #{mall_id}
+		</if>  
+		<if test="sort != 0">  
+		    AND sort = #{sort}
+		</if> 
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="mall_id !=  0">  
+		    AND mall_id = #{mall_id}
+		</if>  
+		<if test="sort != 0">  
+		    AND sort = #{sort}
+		</if> 
+	</sql>
+	
+	<insert id="insert">
+		insert into app_mall_img (id,mall_id,sort,img,state,links) 
+			values 
+		(#{id},#{mall_id},#{sort},#{img},#{state},#{links})
+	</insert>
+	
+	<update id="upOrDown">
+		update app_mall_img set sort = #{sortM} where sort = #{sort} and mall_id = #{mall_id}
+	</update>
+	
+	<update id="update">
+		update app_mall_img <include refid="updateSql"></include> where 1=1
+		<if test="id != 0">
+			AND id = #{id}
+		</if>
+		<if test="mall_id != 0">
+			AND mall_id = #{mall_id}
+		</if>
+		<if test="sort != 0">
+			AND sort = #{sort}
+		</if>
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="img != '' and img != null">  
+		    	img = #{img},
+			</if> 
+			<if test="links != '' and links != null">  
+		    	links = #{links},
+			</if>   
+			<if test="state != 0">  
+		    	state = #{state},
+			</if>   
+			<if test="sort != 0">  
+		    	sort = #{sort},
+			</if>    
+		</set>
+	</sql>
+	
+	<update id="update2">
+		update app_mall_img <include refid="updateSql2"></include> where 1=1
+		<if test="id != 0">
+			AND id = #{id}
+		</if>
+		<if test="mall_id != 0">
+			AND mall_id = #{mall_id}
+		</if>
+	</update>
+	
+	<sql id="updateSql2">
+		<set>
+			<if test="img != '' and img != null">  
+		    	img = #{img},
+			</if> 
+			<if test="links != '' and links != null">  
+		    	links = #{links},
+			</if>   
+			<if test="state != 0">  
+		    	state = #{state},
+			</if>   
+			<if test="sort != 0">  
+		    	sort = #{sort},
+			</if>    
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_mall_img where 
+		<if test="mall_id != 0">
+			mall_id = #{mall_id}
+		</if>
+	</delete>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.workflow.ProcessTemplateMapper">
+
+	<!-- 添加流程与模板之间的关联 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.workflow.ProcessTemplate">
+		insert fudan_workflow_process_template <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="id != null and id != '' ">
+				id = #{id},
+			</if>
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="processKey != null and processKey != '' ">
+				processKey = #{processKey},
+			</if>
+			<if test="docPath != null and docPath != '' ">
+				docPath = #{docPath},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加流程与模板之间的关联 end -->
+	
+	
+	<!-- 根据pId选择流程模板 start -->
+	<select id="selectBy" parameterType="String" resultType="com.jy.entity.oa.workflow.ProcessTemplate">
+		select * from fudan_workflow_process_template where processKey = #{processKey}
+	</select>
+	<!-- 根据pId选择流程模板 end -->
+	
+	
+	<!-- 更新processTemplate start -->
+	<update id="update" parameterType="com.jy.entity.oa.workflow.ProcessTemplate">
+		update fudan_workflow_process_template <include refid="updateSQL"></include>
+		where id=#{id}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="docPath != null and docPath != '' ">
+				docPath = #{docPath},
+			</if>
+		</set>
+	</sql>
+	<!-- 更新processTemplate start -->
+
+</mapper>

@@ -1,0 +1,146 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.DepreType;
+import com.jy.service.oa.admin.DepreTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/depretype")
+public class DepreTypeController {
+
+	private DepreTypeService depreTypeService;
+
+	public DepreTypeService getDepreTypeService() {
+		return depreTypeService;
+	}
+
+	@Resource(name="depreTypeService")
+	public void setDepreTypeService(DepreTypeService depreTypeService) {
+		this.depreTypeService = depreTypeService;
+	}
+
+	/**
+	 * 添加折旧类型
+	 * 
+	 * @param depreType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(DepreType depreType) {
+		JsonInfo info = depreTypeService.save(depreType);
+		return info;
+	}
+
+	/**
+	 * 获取详细信息
+	 * 
+	 * @param depreTypeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long depreTypeId, String operation) {
+		DepreType depreType = depreTypeService.getInfoBy(depreTypeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("depreType", depreType);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/admin/depretype_form");
+		
+		return mv;
+	}
+
+	/**
+	 * 修改折旧类型信息
+	 * 
+	 * @param depreType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(DepreType depreType) {
+		JsonInfo info = depreTypeService.update(depreType);
+		return info;
+	}
+
+	/**
+	 * 批量删除
+	 * 
+	 * @param depreTypeId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] depreTypeId) {
+		JsonInfo info = depreTypeService.del(depreTypeId);
+		return info;
+	}
+
+	/**
+	 * 获取折旧类型列表
+	 * @param typeName
+	 * @param typeDesc
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request,
+			@RequestParam(required = false) String typeName,
+			@RequestParam(required = false) Short calMethod) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<DepreType> depreTypes = depreTypeService.get(typeName, calMethod);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(depreTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后列表
+		List<DepreType> pageDepreTypes = depreTypeService.getPageList(pb, typeName, calMethod);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/depretype_table");
+		}else {
+			mv.setViewName("system/oa/admin/depretype_list");
+		}
+		
+		mv.addObject("depreTypes", pageDepreTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 获取所有折旧类别
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<DepreType> listAll() {
+		List<DepreType> depreTypes = depreTypeService.getAll();
+		return depreTypes;
+	}
+
+}

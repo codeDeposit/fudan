@@ -1,0 +1,168 @@
+package com.jy.controller.oa.communicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.communicate.MailFolder;
+import com.jy.entity.oa.communicate.MailFolderVo;
+import com.jy.entity.oa.document.Node;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.communicate.MailFolderService;
+import com.jy.service.oa.communicate.MailService;
+import com.jy.task.utils.JsonInfo;
+
+
+@Controller
+@RequestMapping("/oa/mailfolder")
+public class MailFolderController {
+	
+	private MailFolderService mailFolderService;
+	private MailService mailService;
+	
+	public MailService getMailService() {
+		return mailService;
+	}
+
+	@Resource(name="mailService")
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
+	}
+
+	public MailFolderService getMailFolderService() {
+		return mailFolderService;
+	}
+
+	@Resource(name="mailFolderService")
+	public void setMailFolderService(MailFolderService mailFolderService) {
+		this.mailFolderService = mailFolderService;
+	}
+	
+	/**
+	 * 获取邮箱目录
+	 * @return
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public String list() {
+		//获取邮箱目录结构树
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<MailFolderVo> mailFolders = mailFolderService.getAll(account.getAccountId());
+		String tree = treeMailFolder(mailFolders);
+		return tree;
+	}
+	
+	/**
+	 * 添加邮箱目录
+	 * @param mailFolder
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(MailFolder mailFolder) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		mailFolder.setUserId(account.getAccountId());
+		JsonInfo info = mailFolderService.save(mailFolder);
+		return info;
+	}
+	
+	/**
+	 * 修改邮箱目录名称
+	 * @param folderId
+	 * @param folderName
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(MailFolder mailFolder) {
+		JsonInfo info = mailFolderService.update(mailFolder);
+		return info;
+	}
+	
+	/**
+	 * 获取邮箱目录详细信息
+	 * @param folderId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	@ResponseBody
+	public MailFolder getDetails(Long folderId) {
+		MailFolder mailFolder = mailFolderService.getBy(folderId);
+		return mailFolder;
+	}
+	
+	/**
+	 * 删除邮箱目录
+	 * @param folderId
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo del(Long folderId) {
+		JsonInfo info = mailFolderService.delete(folderId);
+		return info;
+	}
+	
+	/**
+	 * 将邮件目录组成树，打印到页面
+	 * @return
+	 */
+	private String treeMailFolder(List<MailFolderVo> mailFolders) {
+		StringBuilder sbd = new StringBuilder();
+		for(MailFolderVo mfv: mailFolders) {
+			sbd.append("<li>");
+			sbd.append("<a id='"+ mfv.getFatherFolder().getFolderId() +"' onclick='getMail("+ mfv.getFatherFolder().getFolderId() +")' class='list-c rightKey'><i class='glyphicon glyphicon-comment'></i>&nbsp;"+ mfv.getFatherFolder().getFolderName() +"</a>");
+			List<MailFolderVo> childs = mfv.getChildFolders();
+			if(null != childs && childs.size() != 0) {
+				sbd.append("<ul class='second-level'>");
+				for(MailFolderVo childmfv: childs) {
+					sbd.append("<li class='second-level-list'>");
+					sbd.append("<a id='"+ childmfv.getFatherFolder().getFolderId() +"' onclick='getMail("+ childmfv.getFatherFolder().getFolderId() +")' class='list-c rightKey'><i class='glyphicon glyphicon-comment'></i>&nbsp;"+ childmfv.getFatherFolder().getFolderName() +"</a>");
+					sbd.append("</li>");
+				}
+				sbd.append("</ul>");
+			}
+			sbd.append("</li>");
+		}
+		
+		return sbd.toString();
+	}
+	
+	/**
+	 * 查询文件夹树形菜单
+	 * @return
+	 */
+	@RequestMapping("/listtree")
+	@ResponseBody
+	public List<Node> listTree() {
+		//获取邮箱目录结构树
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<MailFolderVo> mailFolders = mailFolderService.getAll(account.getAccountId());
+		List<Node> nodess = toNode(mailFolders);
+		Node node = new Node((long)0,"全部文件夹");
+		node.setNodes(nodess);
+		List<Node> nodes = new ArrayList<Node>();
+		nodes.add(node);
+		return nodes;
+	}
+	
+	private List<Node> toNode(List<MailFolderVo> docFolders) {
+		List<Node> nodes = new ArrayList<Node>();
+		for (MailFolderVo docFolderVO : docFolders) {
+			MailFolder fatherFolder = docFolderVO.getFatherFolder();
+			Node node = new Node(fatherFolder.getFolderId(), fatherFolder.getFolderName());
+			if(docFolderVO.getChildFolders() != null && docFolderVO.getChildFolders().size() > 0) {
+				node.setNodes(toNode(docFolderVO.getChildFolders()));
+			}
+			nodes.add(node);
+		}
+		return nodes;
+	}
+	
+}

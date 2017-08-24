@@ -1,0 +1,57 @@
+package com.jy.service.oa.impl.workflow;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.repository.oa.workflow.ProcessTemplateMapper;
+import com.jy.service.oa.workflow.ProcessTemplateService;
+import com.jy.task.utils.JsonInfo;
+
+@Service("processTemplateService")
+public class ProcessTemplateServiceImpl implements ProcessTemplateService {
+	
+	private ProcessTemplateMapper processTemplateMapper;
+
+	public ProcessTemplateMapper getProcessTemplateMapper() {
+		return processTemplateMapper;
+	}
+
+	@Autowired
+	public void setProcessTemplateMapper(ProcessTemplateMapper processTemplateMapper) {
+		this.processTemplateMapper = processTemplateMapper;
+	}
+
+	/**
+	 * 添加流程与模板之间的关联
+	 */
+	@Override
+	public JsonInfo save(ProcessTemplate processTemplate) {
+		JsonInfo info = new JsonInfo();
+		int result = processTemplateMapper.insert(processTemplate);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/**
+	 * 根据processKey获取流程模板
+	 */
+	@Override
+	public ProcessTemplate getBy(String processKey) {
+		ProcessTemplate processTemplate = processTemplateMapper.selectBy(processKey);
+		return processTemplate;
+	}
+
+	/**
+	 * 更新processTemplate
+	 */
+	@Override
+	public void update(ProcessTemplate processTemplate) {
+		processTemplateMapper.update(processTemplate);
+	}
+
+}

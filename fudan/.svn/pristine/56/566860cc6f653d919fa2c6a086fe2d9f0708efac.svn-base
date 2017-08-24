@@ -1,0 +1,48 @@
+package com.jy.repository.oa.task;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.task.CalendarPlan;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface CalendarPlanMapper {
+
+	// 添加日程
+	int insert(CalendarPlan calendarPlan);
+
+	// 获取日程详细信息
+	CalendarPlan selectInfoBy(Long planId);
+
+	// 修改日程信息
+	int update(CalendarPlan calendarPlan);
+
+	// 批量删除日程
+	int delete(Long planId);
+
+	// 完成任务
+	int updateComplete(@Param("planId") Long planId, @Param("feedback") String feedback);
+
+	// 获取要执行的任务列表
+	List<CalendarPlan> selectZX(CalendarPlan calendarPlan);
+
+	// 获取我分配的任务列表
+	List<CalendarPlan> selectFP(CalendarPlan calendarPlan);
+
+	// 执行任务分页列表
+	List<CalendarPlan> selectZXPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("urgent") Short urgent, 
+			@Param("content") String content, @Param("assignerName") String assignerName, @Param("status") Short status, @Param("userId") String userId);
+
+	// 分配任务分页列表
+	List<CalendarPlan> selectFPPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("urgent") Short urgent, 
+			@Param("content") String content, @Param("assignerName") String assignerName, @Param("status") Short status, @Param("userId") String userId);
+
+	//限期任务列表
+	List<CalendarPlan> selectXQ();
+
+}

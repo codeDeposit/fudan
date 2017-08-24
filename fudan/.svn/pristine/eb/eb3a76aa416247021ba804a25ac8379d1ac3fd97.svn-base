@@ -1,0 +1,35 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.admin.Version;
+import com.jy.repository.app.admin.VersionDao;
+
+@Service(value = "versionService")
+public class VersionService{
+	
+	@Resource
+	private VersionDao versionDao;
+	
+	public int insert(Version version) {
+		return this.versionDao.insert(version);
+	}
+	
+	public List<Version> find(Version version) {
+		return this.versionDao.find(version);
+	}
+
+	public List<Version> search(Version version) {
+		return this.versionDao.search(version);
+	}
+
+	public int update(Version version) {
+		return this.versionDao.update(version);
+	}
+	
+	public int delete(Version version) {
+		return this.versionDao.delete(version);
+	}
+	
+}

@@ -1,0 +1,44 @@
+// 添加新闻类型
+   	$("#submitbtn").click(function() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/newstype/add",
+   			data: $("#addform").serialize(),
+   			success : function(html) {
+   				refresh();
+   			}
+   		});
+   	});
+   	// 查看新闻类型详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/newstype/getdetails";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?typeId="+id+"&operation="+operation,
+   			success: function(data){
+		    	$("#getInfoOrUpdate").html(data);
+		    	fuCloseLayer();
+		    }
+   		});
+   	}
+	// 删除新闻类型
+	function fDelete(typeId) {
+		var url = "/oa/newstype/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url,
+			data: {
+				"typeId" : typeId
+			},
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}

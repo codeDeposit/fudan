@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.AppOrdersDao">
+	
+	<resultMap type="com.jy.entity.app.AppOrders" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_order where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_order where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="order_id != 0">  
+		    AND order_id = #{order_id}
+		</if>  
+		<if test="order_sn != 0">  
+		    AND order_sn = #{order_sn}
+		</if>  
+		<if test="buyer_id != 0">
+		    AND buyer_id = #{buyer_id}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="order_id != 0">  
+		    AND order_id = #{order_id}
+		</if>  
+		<if test="order_sn != 0">  
+		    AND order_sn = #{order_sn}
+		</if>  
+		<if test="buyer_id != 0">
+		    AND buyer_id = #{buyer_id}
+		</if>
+	</sql>
+	
+	<insert id="insert">
+		<selectKey keyProperty="order_id" resultType="int" order="AFTER" >
+        	SELECT LAST_INSERT_ID() as order_id
+        </selectKey>
+		insert into app_order (order_sn,pay_sn,buyer_id,buyer_name,buyer_email,add_time,payment_code,payment_time,finnshed_time,goods_amount,order_amount,shipping_fee,evaluation_state,order_state,delete_state,refund_amount,shipping_code) 
+			values 
+		(#{order_sn},#{pay_sn},#{buyer_id},#{buyer_name},#{buyer_email},curdate(),#{payment_code},#{payment_time},#{finnshed_time},#{goods_amount},#{order_amount},#{shipping_fee},#{evaluation_state},#{order_state},#{delete_state},#{refund_amount},#{shipping_code})
+	</insert>
+	
+	<update id="update">
+		update app_order <include refid="updateSql"></include> where 
+		<if test="order_id != 0">
+			order_id = #{order_id}
+		</if>
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="order_state != 0">  
+			    order_state = #{order_state},
+			</if> 
+			<if test="evaluation_state != 0">  
+			    evaluation_state = #{evaluation_state},
+			</if> 
+			<if test="delete_state != 0">  
+			    delete_state = #{delete_state},
+			</if> 
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_order where 
+		<if test="order_id != 0">
+			order_id = #{order_id}
+		</if>
+	</delete>
+</mapper>

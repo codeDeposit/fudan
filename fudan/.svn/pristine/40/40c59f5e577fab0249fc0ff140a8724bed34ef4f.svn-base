@@ -1,0 +1,14 @@
+i{
+	font-style: normal;
+	text-align: center;
+}
+body {
+	padding: 0 5%;
+}
+.xinghao {
+	color: red;
+}
+#headLayer{width:94%;border-bottom:1px solid #F4F4F4;height:66px;text-align:center;font-size:24px;color:#3498db;margin:0 auto;margin-top:15px;margin-bottom:26px;}
+#headLayer #title{height:40px;line-height:40px;font-size:32px;}
+#headLayer #subhead{font-size:10px;color:#ff6364;height:20px;line-height:20px;}
+#hint{width:100%;height:10px;letter-spacing:2px;line-height:10px;font-size:10px;color:#ff6364;text-align:center;}

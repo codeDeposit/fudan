@@ -1,0 +1,53 @@
+package com.jy.entity.oa.hrm;
+
+import java.math.BigDecimal;
+
+public class StandSalaryItem {
+
+	private Long itemId;
+	private Long standardId;
+	private String itemName;
+	private BigDecimal amount;
+	private Long salaryItemId;
+
+	public Long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(Long itemId) {
+		this.itemId = itemId;
+	}
+
+	public Long getStandardId() {
+		return standardId;
+	}
+
+	public void setStandardId(Long standardId) {
+		this.standardId = standardId;
+	}
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public Long getSalaryItemId() {
+		return salaryItemId;
+	}
+
+	public void setSalaryItemId(Long salaryItemId) {
+		this.salaryItemId = salaryItemId;
+	}
+
+}

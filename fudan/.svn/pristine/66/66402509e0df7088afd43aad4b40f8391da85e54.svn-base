@@ -1,0 +1,130 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.FixedAssets;
+import com.jy.entity.oa.admin.FixedAssetsVO;
+import com.jy.service.oa.admin.FixedAssetsService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/fixedassets")
+public class FixedAssetsController {
+
+	private FixedAssetsService fixedAssetsService;
+
+	public FixedAssetsService getFixedAssetsService() {
+		return fixedAssetsService;
+	}
+
+	@Resource(name="fixedAssetsService")
+	public void setFixedAssetsService(FixedAssetsService fixedAssetsService) {
+		this.fixedAssetsService = fixedAssetsService;
+	}
+
+	/**
+	 * 添加固定资产
+	 * @param fixedAssets
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(FixedAssets fixedAssets) {
+		JsonInfo info = fixedAssetsService.save(fixedAssets);
+		return info;
+	}
+	
+	/**
+	 * 修改固定资产
+	 * @param fixedAssets
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(FixedAssets fixedAssets) {
+		JsonInfo info = fixedAssetsService.update(fixedAssets);
+		return info;
+	}
+	
+	/**
+	 * 删除固定资产
+	 * @param assetsId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] assetsId) {
+		JsonInfo info = fixedAssetsService.delete(assetsId);
+		return info;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param assetsId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long assetsId, String operation) {
+		FixedAssetsVO fixedAssets = fixedAssetsService.getInfoBy(assetsId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("fixedAssets", fixedAssets);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/admin/fixedassets_form");
+		
+		return mv;
+	}
+	
+	/**
+	 * 获取固定资产列表
+	 * @param assetsName
+	 * @param beDep
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required = false) String assetsName,
+			@RequestParam(required = false) String beDep, @RequestParam(required = false) Long assetsTypeId) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<FixedAssets> fixedAssets = fixedAssetsService.get(assetsName, beDep, assetsTypeId);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(fixedAssets.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后列表
+		List<FixedAssetsVO> pageFixedAssets = fixedAssetsService.selectPageList(pb, assetsName, beDep, assetsTypeId);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/fixedassets_table");
+		}else {
+			mv.setViewName("system/oa/admin/fixedassets_list");
+		}
+		mv.addObject("fixedAssets", pageFixedAssets);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+}

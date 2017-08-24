@@ -1,0 +1,147 @@
+package com.jy.controller.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.personal.Duty;
+import com.jy.entity.oa.personal.DutySystem;
+import com.jy.entity.oa.personal.DutyVO;
+import com.jy.service.oa.personal.DutyService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/duty")
+public class DutyController {
+
+	private DutyService dutyService;
+
+	public DutyService getDutyService() {
+		return dutyService;
+	}
+
+	@Autowired
+	public void setDutyService(DutyService dutyService) {
+		this.dutyService = dutyService;
+	}
+
+	/**
+	 * 添加排班
+	 * 
+	 * @param duty
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Duty duty) {
+		JsonInfo info = dutyService.save(duty);
+		return info;
+	}
+
+	/**
+	 * 修改排班信息
+	 * 
+	 * @param duty
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Duty duty) {
+		JsonInfo info = dutyService.update(duty);
+		return info;
+	}
+
+	/**
+	 * 批量删除排班信息
+	 * 
+	 * @param dutyId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] dutyId) {
+		JsonInfo info = dutyService.delete(dutyId);
+		return info;
+	}
+
+	/**
+	 * 获取排班详细信息
+	 * 
+	 * @param dutyId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long dutyId, String operation) {
+		Duty duty = dutyService.getInfoBy(dutyId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/personal/duty_form");
+		mv.addObject("duty", duty);
+		mv.addObject("operation", operation);
+		
+		return mv;
+	}
+
+	/**
+	 * 获取排班信息列表
+	 * @param fullname
+	 * @param systemName
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, DutyVO dvo) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		String fullname = dvo.getFullname();
+		DutySystem dutySystem = dvo.getSystem();
+		String systemName = null;
+		if(dutySystem != null) {
+			systemName = dutySystem.getSystemName();
+		}
+		Date startTime = dvo.getStartTime();
+		Date endTime = dvo.getEndTime();
+		
+		List<Duty> dutys = dutyService.get(fullname, systemName, startTime, endTime);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(dutys.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<DutyVO> pagedutys = dutyService.getPageList(pb, fullname, systemName, startTime, endTime);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/personal/duty_table");
+		}else {
+			mv.setViewName("system/oa/personal/duty_list");
+		}
+		
+		mv.addObject("dutys", pagedutys);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+}

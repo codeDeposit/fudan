@@ -1,0 +1,77 @@
+$(function() {
+	fuLoading();
+	chooseTime('tRequir');
+});
+// 添加约会
+$("#submitbtn").click(function() {
+	var url = "/oa/appointment/add";
+	var data = $("#appointmentaddform").serialize();
+	$.ajax({
+		type : "post",
+		url : jypath + url,
+		data : data,
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+});
+// 查看详细信息或修改
+function openForm(id, operation) {
+	fuLoading();
+	var url = "/oa/appointment/getdetails";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?appointId=" + id + "&operation=" + operation,
+		success : function(data) {
+			fuCloseLayer();
+			$("#getInfoOrUpdate").html(data);
+		}
+	});
+}
+// 删除公文模板
+function fDelete(typeId) {
+	var url = "/oa/appointment/multidel";
+	$.ajax({
+		type : "get",
+		url : jypath + url + "?appointId=" + typeId,
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+// 查询
+$("#appointmentsearchbtn").click(function() {
+	fuLoading();
+	var id = "appointmenttable";
+	var url = jypath + "/oa/appointment/list";
+	var type = "post";
+	var data = $("#appointmentsearchform").serialize();
+	partRefresh(id, url, type, data);
+});
+// pageNos: 第几页
+function pageturn(pageNos) {
+	fuLoading();
+	if (pageNos == 0) {
+		pageNos = $("#zhuandao").val();
+	}
+	var id = "appointmenttable";
+	var url = jypath + "/oa/appointment/list";
+	var type = "post";
+	var data = $("#appointmentsearchform").serialize() + "&pageNos=" + pageNos;
+	pageturning(id, url, type, data);
+}
+function chooseTime(tid) {
+	$('.' + tid).datetimepicker({
+		step : 1,
+		lang : 'ch',
+		format : 'Y-m-d H:i',
+	});
+	fuCloseLayer();
+}
+function fuSure(param) {
+	fuLoading();
+	fuClose();
+	setTimeout('fDelete(\'' + param + '\')', 200);
+}

@@ -1,0 +1,156 @@
+var _id;//类别id
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	fGetProduct();
+});
+function fGetProduct(){
+	$.ajax({//类别调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/unit/printList",
+		success:function(data){	
+			$('#unit_add_id').html(data);
+		}
+	}); 
+}	
+function fDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fuSure(param1,param2){
+	if(param2 == 'unit'){
+		fDelete2(param1);
+	}
+}
+function fDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList(); 
+			}
+		}
+	});
+}
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/list",
+		success : function(data) {
+			 $('#unit_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fAdd() {
+	fuLoading();
+	setTimeout("fAdd2()",200);
+	return false;
+}
+function fAdd2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/add",
+		data : $("#Form_unit_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				$('#Modal_unit_add').modal('hide');
+				$('#unit_add_name').val('');
+				$("input[name='unit_add_id'][value='0']").attr("checked",true); 
+			  	fList();
+			  	fuClose();
+			}
+		}
+	});
+}
+function fDetail(param,param2){
+	fuLoading(); 	
+	setTimeout('fDetail2(\''+param+'\','+param2+');',500);
+	return false;
+}
+function fDetail2(param,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/detail",
+		data:{id:param,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#unit_detail').html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/update",
+		data : $("#Form_unit_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_unit_detail').modal('hide');
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fUpdateState(param,param2){
+	fuLoading(); 	
+	setTimeout("fUpdateState2("+ param +","+ param2 +");",500);
+	return false;
+}
+function fUpdateState2(param,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/updateState",
+		data : {id:param,isValid:param2},
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/unit/search",
+		data : $("#Form_unit_search").serialize(),
+		success : function(data) {
+			$('#unit_list').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}

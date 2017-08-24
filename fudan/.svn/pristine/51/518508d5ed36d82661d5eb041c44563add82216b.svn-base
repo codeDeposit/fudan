@@ -1,0 +1,36 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.BookBorRet;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface BookBorRetService {
+
+	// 新增借阅记录
+	JsonInfo save(BookBorRet bookBorRet);
+
+	// 获取记录详细信息
+	BookBorRet getInfoBy(Long recordId);
+
+	// 修改记录信息
+	JsonInfo update(BookBorRet bookBorRet);
+
+	// 获取借阅记录列表
+	List<BookBorRet> get(String bookName, String borrowIsbn);
+
+	// 归还图书
+	JsonInfo updateLastReturnTime(BookBorRet bookBorRet);
+
+	// 归还图书列表
+	List<BookBorRet> getRet(String bookName, String borrowIsbn);
+
+	// 分页借阅列表
+	List<BookBorRet> getPageList(PageBean pb, String bookName, String borrowIsbn);
+
+	// 分页归还列表
+	List<BookBorRet> getPageRetList(PageBean pb, String bookName,
+			String borrowIsbn);
+	
+}

@@ -1,0 +1,20 @@
+package com.jy.repository.app.admin;
+
+import java.util.List;
+import com.jy.entity.app.admin.Goods;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface GoodsDao{
+	
+	public List<Goods> find(Goods goods);
+
+	public List<Goods> search(Goods goods);
+
+	public void insert(Goods goods);
+
+	public int update(Goods goods);
+
+	public int delete(Goods goods);
+	
+}

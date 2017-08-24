@@ -1,0 +1,89 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.entity.oa.admin.CarType;
+import com.jy.service.oa.admin.CarTypeService;
+import com.jy.task.utils.JsonInfo;
+
+
+@Controller
+@RequestMapping("/oa/cartype")
+public class CarTypeController {
+
+	private CarTypeService carTypeService;
+
+	public CarTypeService getCarTypeService() {
+		return carTypeService;
+	}
+
+	@Autowired
+	public void setCarTypeService(CarTypeService carTypeService) {
+		this.carTypeService = carTypeService;
+	}
+	
+	/**
+	 * 添加车类型
+	 * @param carType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(CarType carType) {
+		JsonInfo info = carTypeService.save(carType);
+		return info;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	@ResponseBody
+	public CarType getDetails(Integer typeId) {
+		CarType carType = carTypeService.getInfoBy(typeId);
+		return carType;
+	}
+	
+	/**
+	 * 修改信息
+	 * @param carType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(CarType carType) {
+		JsonInfo info = carTypeService.update(carType);
+		return info;
+	}
+	
+	/**
+	 * 批量删除
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Integer[] typeId) {
+		JsonInfo info = carTypeService.del(typeId);
+		return info;
+	}
+	
+	/**
+	 * 获取车类型列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public List<CarType> list() {
+		List<CarType> carTypes = carTypeService.get();
+		return carTypes;
+	}
+
+}

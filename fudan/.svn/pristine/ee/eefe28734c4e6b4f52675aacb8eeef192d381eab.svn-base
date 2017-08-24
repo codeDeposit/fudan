@@ -1,0 +1,166 @@
+package com.jy.service.oa.impl.task;
+
+import java.util.Date;
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.task.Diary;
+import com.jy.repository.oa.task.DiaryMapper;
+import com.jy.service.oa.task.DiaryService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("diaryService")
+public class DiaryServiceImpl implements DiaryService {
+
+	private DiaryMapper diaryMapper;
+
+	public DiaryMapper getDiaryMapper() {
+		return diaryMapper;
+	}
+
+	@Autowired
+	public void setDiaryMapper(DiaryMapper diaryMapper) {
+		this.diaryMapper = diaryMapper;
+	}
+
+	@Override
+	public List<Diary> getDiary(String startTime, String endTime, Short diaryType) {
+		
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		Date startTime1 = null;
+		Date endTime1 = null;
+		if(startTime != null && startTime.length()>0) {
+			startTime1 = DateStringUtil.stringToDate3(startTime);
+		}
+		if(endTime != null && endTime.length()>0) {
+			endTime1 = DateStringUtil.stringToDate3(endTime);
+		}
+		
+		List<Diary> diarys = diaryMapper.selectAll(startTime1, endTime1, diaryType, userId);
+		return diarys;
+	}
+
+	/*@Override
+	public List<Diary> searchDiary() {
+		return null;
+	}*/
+
+	/*@Override
+	public ResponseInfoVo delDiary(Integer[] diaryIds) {
+		ResponseInfoVo responseInfoVo = ResponseInfoVo.getInstance();
+		for (Integer diaryId : diaryIds) {
+			diaryMapper.delete(diaryId);
+		}
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	@Override
+	public ResponseInfoVo<Diary> saveDiary(Diary diary, Account account) {
+		ResponseInfoVo<Diary> responseInfoVo = ResponseInfoVo.getInstance();
+		Integer eId = accountMapper.getEId(account.getAccountId());
+		diary.seteId(eId);
+		diary.setDayTime(DateUtil.fomatDate(new SimpleDateFormat("yyyy-MM-DD").format(diary.getDayTime())));
+		diaryMapper.insert(diary);
+		responseInfoVo.setSuccess(true);
+		return responseInfoVo;
+	}
+
+	@Override
+	public ResponseInfoVo<DiaryVo> getDiaryDetails(Integer diaryId) {
+		ResponseInfoVo<DiaryVo> responseInfoVo = ResponseInfoVo.getInstance();
+		List<DiaryVo> diarys = diaryMapper.selectDetails(diaryId);
+		responseInfoVo.setSuccess(true);
+		responseInfoVo.setTotalCount(diarys.size());
+		responseInfoVo.setList(diarys);
+		return responseInfoVo;
+	}*/
+
+	@Override
+	public List<Diary> getPageList(PageBean pb, String startTime,
+			String endTime, Short diaryType) {
+		
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		
+		Date startTime1 = null;
+		Date endTime1 = null;
+		if(startTime != null && startTime.length()>0) {
+			startTime1 = DateStringUtil.stringToDate3(startTime);
+		}
+		if(endTime != null && endTime.length()>0) {
+			endTime1 = DateStringUtil.stringToDate3(endTime);
+		}
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<Diary> diarys = diaryMapper.selectPageData(firstIndex, toIndex, startTime1, endTime1, diaryType, userId);
+		
+		for(Diary d: diarys) {
+			d.setDayTime1(DateStringUtil.dateToString3(d.getDayTime()));
+		}
+		
+		return diarys;
+	}
+
+	// 添加日志
+	@Override
+	public JsonInfo save(Diary diary) {
+		JsonInfo info = new JsonInfo();
+		int result = diaryMapper.insert(diary);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public Diary getInfoBy(Long diaryId) {
+		Diary diary = diaryMapper.selectInfoBy(diaryId);
+		
+		diary.setDayTime1(DateStringUtil.dateToString3(diary.getDayTime()));
+		
+		return diary;
+	}
+
+	// 日志修改
+	@Override
+	public JsonInfo update(Diary diary) {
+		int result = diaryMapper.update(diary);
+		
+		JsonInfo info = new JsonInfo();
+		if(result>0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除日志
+	@Override
+	public JsonInfo delete(Long[] diaryId) {
+		for(Long dId: diaryId) {
+			diaryMapper.delete(dId);
+		}
+		JsonInfo info = new JsonInfo();
+		info.setSuccess(true);
+		return info;
+	}
+
+}

@@ -1,0 +1,109 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>客户管理</title>
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<script type="text/javascript" src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-tab.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/customer/customer.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-btn aui-pull-left" tapmode href="index"><span class="aui-iconfont aui-icon-left">返回</span> </a>
+			<div class="aui-title" >
+				客户管理
+			</div>
+			<a href="javascript:;" class="aui-btn aui-pull-right" onclick="fTab()">
+				<span class="aui-iconfont aui-icon-roundadd" style="font-size:28px;"></span>
+			</a>
+		</header>
+		<div class="aui-tab" id="tab" style="margin-top:45px;">
+		    <div class="aui-tab-item aui-active">基本信息</div>
+		    <div class="aui-tab-item">联系人</div>
+		    <div class="aui-tab-item">销售行动</div>
+		    <div class="aui-tab-item">销售项目</div>
+		    <div class="aui-tab-item">合同信息</div>
+		</div>
+		<section class="aui-refresh-content" style="margin-top:-40px;">
+			<div class="aui-content">
+				<ul class="aui-list aui-media-list" id="DList">
+				
+					<!-- <li class="aui-list-item aui-list-item-middle">
+						<div class="aui-media-list-item-inner">
+							<a href="pBasic">
+							<div class="aui-list-item-media" style="width: 3.5rem;">
+								<img src="+ basePath mobile/image/customer/customer.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text aui-margin-t-10">
+									<div class="aui-list-item-title aui-font-size-14">
+										<div class="aui-label">
+											<span class="aui-iconfont aui-icon-punch"></span>姓名
+										</div>
+										&nbsp;公司
+									</div>
+									<div class="aui-list-item-right">
+										2015-10-10
+									</div>
+								</div>
+								<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">
+									<div class="aui-label ">
+										<span class="aui-iconfont aui-icon-myfill"></span>性别
+									</div>
+									负责人
+								</div>
+							</a>
+							<div class="aui-list-item-text aui-pull-left aui-margin-t-10">
+								<div class="aui-text-pink">
+									应付账款 <span class="aui-iconfont aui-icon-recharge"></span> 21
+								</div>
+							</div>
+							<div class="aui-list-item-text aui-pull-right">
+								<div class="aui-btn aui-list-item-right aui-btn-info">
+									<a href="pDetail?id=+ obj[i][id] "><span class="aui-iconfont aui-icon-edit"></span>修改</a>
+								</div>
+								<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure(+ obj[i][id] )">
+									<span class="aui-iconfont aui-icon-delete"></span>删除
+								</div>
+							</div>
+						</div>
+					</li> -->
+					
+				</ul>
+			</div>
+		</section>
+	</body>
+	<script>
+		window.onload = function(){
+			toast = new auiToast();
+			dialog = new auiDialog();	
+			_customerId = ${customer.id};
+			fBasic(${customer.id});
+			var tab = new auiTab({
+	        element:document.getElementById("tab"),
+		    },function(ret){
+		    	_tab = ret.index;
+		        if(ret.index == 1){
+		        	fBasic(${customer.id});
+		        }else if(ret.index == 2){
+		        	fContactsList(${customer.id});
+		        }else if(ret.index == 3){
+		        	fSaleActivityList(${customer.id});
+		        }else if(ret.index == 4){
+		        	fSaleProjectList(${customer.id});
+		        }else if(ret.index == 5){
+		        	fContractList(${customer.id});
+		        }
+		    });
+		}
+	</script>
+</html>

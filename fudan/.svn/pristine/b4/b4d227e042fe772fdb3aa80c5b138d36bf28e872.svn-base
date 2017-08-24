@@ -1,0 +1,150 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.communicate.MailFolder;
+import com.jy.entity.oa.communicate.MailFolderVo;
+import com.jy.repository.oa.communicate.MailFolderMapper;
+import com.jy.service.oa.communicate.MailFolderService;
+import com.jy.task.utils.JsonInfo;
+
+@Service("mailFolderService")
+public class MailFolderServiceImpl implements MailFolderService {
+
+	private MailFolderMapper mailFolderMapper;
+
+	public MailFolderMapper getMailFolderMapper() {
+		return mailFolderMapper;
+	}
+
+	@Autowired
+	public void setMailFolderMapper(MailFolderMapper mailFolderMapper) {
+		this.mailFolderMapper = mailFolderMapper;
+	}
+
+	// 获取邮箱目录列表
+	@Override
+	public List<MailFolderVo> getAll(String userId) {
+		List<MailFolderVo> mailFolders = new ArrayList<MailFolderVo>();
+		//获取第一层共有的目录
+		List<MailFolder> publicFolders = mailFolderMapper.selectPublic();
+		//获取第一层私有的目录
+		List<MailFolder> fatherFolders = mailFolderMapper.selectFirst(userId);
+		//根据目录的ID号获取下一层目录
+		for(MailFolder mf : fatherFolders) {
+			MailFolderVo mfv = new MailFolderVo();
+			mfv.setFatherFolder(mf);
+			List<MailFolderVo> childFolders = getFoldersBy(mf, userId);
+			mfv.setChildFolders(childFolders);
+			mailFolders.add(mfv);
+		}
+		
+		for(MailFolder mf : publicFolders) {
+			MailFolderVo mfv = new MailFolderVo();
+			mfv.setFatherFolder(mf);
+			List<MailFolderVo> childFolders = getFoldersBy(mf, userId);
+			mfv.setChildFolders(childFolders);
+			mailFolders.add(mfv);
+		}
+		
+		return mailFolders;
+	}
+	
+	//递归获取下一层目录
+	private List<MailFolderVo> getFoldersBy(MailFolder mf, String userId) {
+		List<MailFolderVo> fatherFolders = new ArrayList<MailFolderVo>();
+		//获取第一层目录下的所有子目录
+		List<MailFolder> childFolders = mailFolderMapper.selectSubFolderBy(mf.getFolderId(), userId);
+		
+		for(MailFolder mfd : childFolders) {
+			MailFolderVo mfv = new MailFolderVo();
+			mfv.setFatherFolder(mfd);
+			List<MailFolderVo> childchildvos = getFoldersBy(mfd, userId);
+			mfv.setChildFolders(childchildvos);
+			fatherFolders.add(mfv);
+		}
+		return fatherFolders;
+	}
+
+	// 添加邮箱目录
+	@Override
+	public JsonInfo save(MailFolder mailFolder) {
+		Long folderId = mailFolder.getFolderId();
+		mailFolder.setFolderId(null);
+		MailFolder mf = null;
+		
+		if(folderId == 0) {
+			mailFolder.setDepLevel(1);
+		}else {
+			// 获取parentId对应的depLevel
+			mf = mailFolderMapper.selectDepLevelAndPathBy(folderId);
+			mailFolder.setDepLevel((mf.getDepLevel()+1));
+		}
+		mailFolder.setIsPublic((short)0);
+		mailFolder.setFolderType((short)10);
+		
+		mailFolder.setParentId(folderId);
+		int result = mailFolderMapper.insert(mailFolder);
+		
+		// 获取最大folderId值
+		Long maxFolderId = mailFolderMapper.selectMaxBy(folderId);
+		
+		if(folderId == 0) {
+			mailFolder.setPath("0."+ maxFolderId +".");
+		}else {
+			String path = mf.getPath() + maxFolderId + ".";
+			mailFolder.setPath(path);
+		}
+		
+		mailFolder.setFolderId(maxFolderId);
+		result = mailFolderMapper.updatePath(mailFolder);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改邮箱目录名称
+	@Override
+	public JsonInfo update(MailFolder mailFolder) {
+		int result = mailFolderMapper.update(mailFolder);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除邮箱目录
+	@Override
+	public JsonInfo delete(Long folderId) {
+		
+		// 此邮箱下的获取所有邮件
+		
+		int result = mailFolderMapper.delete(folderId);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取邮箱目录详细信息
+	@Override
+	public MailFolder getBy(Long folderId) {
+		MailFolder mailFolder = mailFolderMapper.selectBy(folderId);
+		return mailFolder;
+	}
+
+}

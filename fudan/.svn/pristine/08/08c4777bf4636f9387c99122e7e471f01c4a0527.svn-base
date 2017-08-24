@@ -1,0 +1,49 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.InMessage;
+import com.jy.entity.oa.communicate.InMessageVO;
+import com.jy.entity.oa.communicate.SendVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface InMessageMapper {
+
+	// 发送消息
+	int insert(InMessage inMessage);
+
+	// 获取自己发送消息的列表
+	List<InMessageVO> selectSend(@Param("userFullname") String userFullname, @Param("msgType") Short msgType,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime,
+			@Param("senderId") String userId);
+
+	// 获取已接收消息列表
+	List<InMessageVO> selectAccept(@Param("msgType") Short msgType,
+			@Param("sender") String sender, @Param("startTime") Date startTime,
+			@Param("endTime") Date endTime, @Param("userId") String userId);
+
+	// 删除消息
+	int delete(Long receiveId);
+
+	// 分页显示已收消息列表
+	List<InMessageVO> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("msgType") Short msgType,
+			@Param("sender") String sender, @Param("startTime") Date startTime,
+			@Param("endTime") Date endTime, @Param("userId") String userId);
+
+	// 分页显示已发消息列表
+	List<SendVO> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("userFullname") String userFullname, @Param("msgType") Short msgType, @Param("startTime") Date startTime, 
+			@Param("endTime") Date endTime, @Param("senderId") String userId);
+
+	// 获取收信人信息
+	List<InMessage> selectInfoBy(@Param("messageId") Long messageId);
+
+	// 更新消息已读
+	void updateReadFlag(Long receiveId);
+
+}

@@ -1,0 +1,43 @@
+package com.jy.entity.oa.admin;
+
+public class BookSn {
+
+	private Long bookSnId;
+	private Long bookId;
+	private String bookSN;
+	// status为：0,表示未借出；1表示借出
+	private Short status;
+
+	public Long getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Long bookId) {
+		this.bookId = bookId;
+	}
+
+	public Long getBookSnId() {
+		return bookSnId;
+	}
+
+	public void setBookSnId(Long bookSnId) {
+		this.bookSnId = bookSnId;
+	}
+
+	public String getBookSN() {
+		return bookSN;
+	}
+
+	public void setBookSN(String bookSN) {
+		this.bookSN = bookSN;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+}

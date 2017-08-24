@@ -1,0 +1,33 @@
+package com.jy.service.oa.info;
+
+import java.util.List;
+
+import com.jy.entity.oa.info.News;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface NewsService {
+
+	// 模糊查询 获取列表信息
+	List<News> getBy(Long typeId, String subject, String author);
+
+	// 添加新闻
+	JsonInfo save(News news);
+
+	// 根据newsId获取详细信息
+	News getDetailsBy(Long newsId);
+
+	// 根据newsId 修改信息
+	JsonInfo update(News news);
+
+	// 批量删除
+	JsonInfo del(Long[] newsId);
+
+	// 分页模糊查询
+	List<News> getPageList(PageBean pb, Long typeId, String subject,
+			String author);
+
+	// 发布新闻
+	JsonInfo release(Long newsId, Integer status);
+
+}

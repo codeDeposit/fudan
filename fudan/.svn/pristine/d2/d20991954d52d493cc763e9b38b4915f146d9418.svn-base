@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.OAOrgMapper">
+
+	<!-- 获取本公司所有部门 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.OAOrg">
+		select * from jy_base_org where pId = 1
+	</select>
+	<!-- 获取本公司所有部门 end -->
+	
+	
+	<!-- 获取自身及下属部门 start -->
+	<select id="selectInfoBy" resultType="com.jy.entity.oa.OAOrg">
+		select * from jy_base_org where pId = #{orgId} or id = #{orgId}
+	</select>
+	<!-- 获取自身及下属部门 end -->
+	
+	
+	<!-- 获取部门信息 start -->
+	<select id="selectInfo" resultType="com.jy.entity.oa.OAOrg">
+		select * from jy_base_org where id = #{orgId}
+	</select>
+	<!-- 获取部门信息 end -->
+	
+	
+	<!-- 根据员工ID获取部门信息 start -->
+	<select id="selectInfoByEmpId" resultType="com.jy.entity.oa.OAOrg">
+		select * from jy_base_org where id = (select orgId from fudan_oa_employee where userId = #{userId})
+	</select>
+	<!-- 根据员工ID获取部门信息 end -->
+
+</mapper>

@@ -1,0 +1,31 @@
+package com.jy.repository.oa.task;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.task.PlanType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface PlanTypeMapper {
+
+	// 添加计划类型
+	int insert(PlanType planType);
+
+	// 获取计划类型的详细信息
+	PlanType selectInfoBy(Long typeId);
+
+	// 修改计划类型信息
+	int update(PlanType planType);
+
+	// 批量删除计划类型
+	int delete(Long tId);
+
+	// 获取所有计划类型列表
+	List<PlanType> selectAll();
+
+	// 分页获取列表
+	List<PlanType> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex);
+
+}

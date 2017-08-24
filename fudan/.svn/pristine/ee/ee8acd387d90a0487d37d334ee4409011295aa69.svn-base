@@ -1,0 +1,90 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+
+public class ShortMessage {
+
+	private Long messageId;
+	private String content;
+	private String senderId;
+	private String sender;
+	private Short msgType;
+	private Date sendTime;
+	/**
+	 * 1=个人信息  2=日程安排  3=计划任务  4=代办任务提醒  5=系统提醒
+	 */
+	final Short MSG_TYPE_PERSONAL = 1;
+	final Short MSG_TYPE_CALENDAR = 2;
+	final Short MSG_TYPE_PLAN = 3;
+	final Short MSG_TYPE_TASK = 4;
+	final Short MSG_TYPE_SYS = 5;
+
+	public Long getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(Long messageId) {
+		this.messageId = messageId;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getSenderId() {
+		return senderId;
+	}
+
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public Short getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(Short msgType) {
+		this.msgType = msgType;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public Short getMSG_TYPE_PERSONAL() {
+		return MSG_TYPE_PERSONAL;
+	}
+
+	public Short getMSG_TYPE_CALENDAR() {
+		return MSG_TYPE_CALENDAR;
+	}
+
+	public Short getMSG_TYPE_PLAN() {
+		return MSG_TYPE_PLAN;
+	}
+
+	public Short getMSG_TYPE_TASK() {
+		return MSG_TYPE_TASK;
+	}
+
+	public Short getMSG_TYPE_SYS() {
+		return MSG_TYPE_SYS;
+	}
+
+}

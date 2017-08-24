@@ -1,0 +1,110 @@
+	$(function() {
+		fuLoading();
+		setTimeout("init()",200);
+	});
+	//初始化数据...
+	function init() {
+		getNewsType();
+	}
+	//获取新闻类型
+	function getNewsType() {
+		var url = "/oa/newstype/listall";
+		$.ajax({
+			type: "get",
+			url: jypath + url,
+			success: function(data) {
+				var archiveTypes = $.parseJSON(data); 
+				for(var archiveType in archiveTypes) {
+					var archiveTypeObj = archiveTypes[archiveType];
+					$("#newsTypeSelect").append("<option value='"+ archiveTypeObj.typeId +"'>"+ archiveTypeObj.typeName +"</option>");
+					$("#newstypeAddSelect").append("<option value='"+ archiveTypeObj.typeId +"'>"+ archiveTypeObj.typeName +"</option>");
+				}
+				fuCloseLayer();
+			}
+		});
+	}
+   	// 添加新闻
+   	$("#newsaddbtn").click(function() {
+   		var content = getContent();
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/news/add",
+   			data: $("#newsaddform").serialize()+"&content="+content,
+   			success : function(html) {
+   				$("#editsubmitbtn").attr("data-dismiss", "modal");
+   				$("#newsContent").html();
+   				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   	});
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/news/getdetails";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?newsId="+id+"&operation="+operation,
+   			success: function(data){
+		    	fuCloseLayer();
+		    	$("#newsInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+	// 删除新闻
+	function fDelete(typeId) {
+		var url = "/oa/news/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?newsId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	// 获取富文本编辑器的内容
+	function getContent() {
+	    var content = UM.getEditor("containerform").getContent();
+	    return content;
+	}
+	// 查询
+	$("#newssearchbtn").click(function() {
+		var id = "newstable";
+		var url = jypath + "/oa/news/list";
+		var type = "post";
+		var data = $("#newssearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "newstable";
+		var url= jypath+"/oa/news/list";
+		var type = "get";
+		var data = $("#newssearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}
+	//发布新闻
+	function release(newId, status) {
+		var url = "/oa/news/release";
+		$.ajax({
+			type: "post",
+			url : jypath+url,
+			data: {
+				"newsId" : newId,
+				"status": status
+			},
+			success: function(data) {
+				fuShowSuccess();
+				refresh();
+			}
+		});
+	}

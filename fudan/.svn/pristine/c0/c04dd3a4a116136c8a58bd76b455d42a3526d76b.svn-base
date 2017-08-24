@@ -1,0 +1,33 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.Book;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface BookService {
+
+	// 添加图书
+	JsonInfo save(Book book);
+
+	// 修改图书信息
+	JsonInfo update(Book book, Long[] bookSnId);
+
+	// 获取图书详细信息
+	Book getInfoBy(Long bookId);
+
+	// 修改图书数量
+	JsonInfo updateAmount(Long bookId, Integer addAmount);
+
+	// 删除图书
+	JsonInfo delete(Long[] bookId);
+
+	// 获取图书列表
+	List<Book> get(Long typeId, String author, String bookName);
+
+	// 分页获取图书列表
+	List<Book> getPageList(PageBean pb, Long typeId, String author,
+			String bookName);
+
+}

@@ -1,0 +1,167 @@
+package com.jy.controller.wzcg;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.wzcg.WzcgKind;
+import com.jy.service.wzcg.WzcgKindService;
+
+@Controller("wzcgKindController")
+@RequestMapping(value="/backstage/wzcg/kind")
+public class WzcgKindController extends BaseController<WzcgKind> {
+	
+	@Resource(name="wzcgKindService")
+	private WzcgKindService wzcgKindService;
+	
+	/**
+	 * 类别首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		return "/system/wzcg/kind/kind_index";
+	}
+	
+	@RequestMapping("/list")
+	public String list(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		wzcgKind.setPid(-1);
+		List<WzcgKind> list = wzcgKindService.find(wzcgKind);
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getPid() != 0){
+				list.get(i).setItemName(list.get(i).getName());
+				list.get(i).setName("");
+			}
+		}
+		model.addAttribute("list",list);
+		model.addAttribute("count",list.size());
+		return "/system/wzcg/kind/kind_list";
+	}
+	
+	@RequestMapping("/list2")
+	@ResponseBody
+	public AjaxRes list2(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		wzcgKind.setPid(wzcgKind.getPid());
+		List<WzcgKind> list = wzcgKindService.find(wzcgKind);
+		ar.setSucceed(list);
+		return ar;
+	}
+	
+	/**
+	 * 添加
+	 * @param request
+	 * @param model
+	 * @param wzcgKind
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		wzcgKind.setPid(Integer.parseInt(request.getParameter("kind_add_id")));
+		wzcgKindService.insert(wzcgKind);
+		ar.setSucceedMsg("success"); 
+		return ar;
+	}
+	
+	/**
+	 * 详细
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/detail")  
+	public String detail(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		wzcgKind.setPid(-1);
+		wzcgKind = wzcgKindService.find(wzcgKind).get(0);
+		model.addAttribute("kind",wzcgKind);
+		model.addAttribute("mark",mark);
+		return "/system/wzcg/kind/kind_detail";
+	}
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/update")  
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgKindService.update(wzcgKind);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 搜索
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{		
+		wzcgKind.setPid(-1);
+		List<WzcgKind> list = wzcgKindService.search(wzcgKind);
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getPid() != 0){
+				list.get(i).setItemName(list.get(i).getName());
+				list.get(i).setName("");
+			}
+		}
+		model.addAttribute("list",list);
+		model.addAttribute("count",list.size());
+		return "/system/wzcg/kind/kind_list";
+	}
+	
+	/**
+	 * 删除
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,@ModelAttribute WzcgKind wzcgKind)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgKindService.delete(wzcgKind);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 显示列表1
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/printList")  
+	public String printList(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		List<WzcgKind> list = this.wzcgKindService.find(wzcgKind);
+		model.addAttribute("list", list);
+		return "/system/wzcg/kind/print/kind_class1";
+	}
+	
+	/**
+	 * 显示列表2
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/printList2")  
+	public String printList2(HttpServletRequest request,Model model,@ModelAttribute WzcgKind wzcgKind)throws Exception{	
+		wzcgKind.setPid(wzcgKind.getId());
+		wzcgKind.setId(0);
+		List<WzcgKind> list = this.wzcgKindService.find(wzcgKind);
+		model.addAttribute("list", list);
+		return "/system/wzcg/kind/print/kind_class2";
+	}
+	
+}

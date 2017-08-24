@@ -1,0 +1,81 @@
+.aui-bar-btn {
+    margin-top: .5rem;
+    margin-bottom: 1rem;
+}
+
+.subBtn {
+    margin-top: 1.5rem;
+    padding: 0 1rem;
+}
+
+#box {
+    position: relative;
+    height: 100%;
+}
+
+.notActive {
+    opacity: 0;
+    transition: opacity 0.3s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1%;
+    overflow: hidden;
+}
+
+.tBox {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.active {
+    opacity: 1;
+    transition: opacity 0.5s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+}
+
+.picBox {
+    width: 100px;
+    height: 120px;
+    margin: .5rem auto .5rem;
+    border: 1px dotted #ccc;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.picBox span {
+    font-size: 1.5rem;
+    display: block;
+    color: #ccc;
+}
+
+.picBox img {
+    width: 100%;
+    display: block;
+}
+
+.aui-icon-correct {
+    color: #009688;
+    display: none;
+}
+
+#userPho {
+    display: none;
+}
+
+#aTab {
+    width: 80%;
+}
+
+.fontColor {
+    color: #ccc;
+}

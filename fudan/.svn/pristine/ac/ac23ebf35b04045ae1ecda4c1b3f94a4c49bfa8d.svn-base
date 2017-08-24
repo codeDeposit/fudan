@@ -1,0 +1,12 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="mItemList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+             <div id="itemList"><!-- 数据列表 --></div>
+        </div>
+    </div>
+</div>
+<div id="popupItemAdd"><%@ include file="xq_item_add.jsp" %><!-- 项目添加 --></div>
+<div id="popupItemEdit"><!--  项目编辑 --></div>

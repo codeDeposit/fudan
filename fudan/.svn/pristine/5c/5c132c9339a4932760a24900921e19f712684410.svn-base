@@ -1,0 +1,41 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<html>
+<head>
+<title>协议政策</title>
+<meta charset="utf-8">
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<link rel="stylesheet" type="text/css" href="css/aui.css" />
+<style>
+	*{margin:0;padding:0;}
+	html,body{width:100%;background-color:#fff;}
+	#wrap{width:100%;color:#FF8040;}
+	#wrap #box{height:auto;width:90%;line-height:36px;margin-left:20px;}
+	h3{margin-top:12px;color:#FF8040;text-align: center;}
+	h4,p{text-indent: 2em;}
+	p{font-size:12px;color:#C6A300;}
+	#wrap #box .item{width:100%;margin-top:6px;float:left;text-align:center;height:20px;margin-bottom:70px;border-top:1px solid #d0d0d0;}
+	#wrap #box .item span{float:left;width:34%;font-size:12px;line-height34px;color:#fff;border-radius:15px;margin:22px;background-color:#2ecc71;}
+	#wrap #box .item span:hover{color:#000000;}
+	a{color:#fff;text-decoration:none;}
+	table{width:100%;text-align:center;font-size:12px;}
+	.oright{text-align: right;}
+</style>
+</head>
+<body>
+<div id="wrap">
+	${list.content }
+</div>
+</body>
+<script>	
+	function showx(){
+		document.getElementById('tableshow').style.display="block";
+	}
+	function closex(){
+		document.getElementById('tableshow').style.display="none";
+	}
+</script>
+</html>

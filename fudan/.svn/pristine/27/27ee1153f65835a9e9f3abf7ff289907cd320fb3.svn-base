@@ -1,0 +1,436 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>setting</title>
+		<link href="${jypath}/pc/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="${jypath}/pc/css/switch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+		<link href="${jypath}/pc/css/switch/switch-highlight.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="${jypath}/pc/js/switch/bootstrap-switch.min.js"></script>
+		<script src="${jypath}/pc/js/switch/switch-highlight.js"></script>
+		<script src="${jypath}/pc/js/switch/switch-main.js"></script>
+	</head>
+	<body>
+		<%@ include file="../common/toast.jsp" %>
+		<div class="settingBox">
+			<div class="t-item">
+				<div class="item-title col-sm-3">
+					LOGO
+				</div>
+				<div class="item-details col-sm-8">
+					<div class="iconBox">
+						<c:if test="${webSite.webTitleImg == null || webSite.webTitleImg == ''}">
+							<img src="${jypath}/pc/image/setting/logo.png" alt="">
+						</c:if>
+						<c:if test="${webSite.webTitleImg != null || webSite.webTitleImg != ''}">
+							<img src="<%=imgUrl %>image/webSite/${webSite.logo}" alt="" >
+						</c:if>
+					</div>
+				</div>
+				<div class="item-edit">
+					编辑
+				</div>
+				<div class="t-content" style="height:122px;;">
+					<div class="form-group">
+						<div class="c_ico_box col-sm-4">
+							<c:if test="${webSite.webTitleImg == null || webSite.webTitleImg == ''}">
+								<img src="${jypath}/pc/image/setting/logo.png" alt="" onclick="linkClick('icon',$(this))">
+							</c:if>
+							<c:if test="${webSite.webTitleImg != null || webSite.webTitleImg != ''}">
+								<img src="<%=imgUrl %>image/webSite/${webSite.logo}" alt="" onclick="linkClick('icon',$(this))">
+							</c:if>
+						</div>
+						<div class="col-sm-4" style="margin-top: 16px;">
+							<button type="button" class="btn btn-default" onclick="fWebSiteName()">
+								点击上传
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="t-item">
+				<div class="item-title col-sm-3">
+					网站名
+				</div>
+				<div class="item-details col-sm-8">
+					可显示文字或图片<span style="margin-left:48%;">开启状态：</span>
+					<c:if test="${webSite.webTitleMark == 1}">
+						<span class="label label-info fu-margin-left">文字显示</span>
+					</c:if>
+					<c:if test="${webSite.webTitleMark == 2}">
+					    <span class="label label-info fu-margin-left">图片显示</span>
+					</c:if>
+				</div>
+				<div class="item-edit">
+					编辑
+				</div>
+				<div class="t-content">
+					<div class="col-sm-offset-9 col-md-6" style="padding:0;margin-left:56px;">
+						<p class="texOlog">
+							选择是否显示图片或文字
+							<c:if test="${webSite.webTitleMark == 1}">
+								<input id="switch-offColor" type="checkbox"  data-off-color="info" onchange="listenChange(this)" >
+							</c:if>
+							<c:if test="${webSite.webTitleMark == 2}">
+							    <input id="switch-offColor" type="checkbox" checked data-off-color="info" onchange="listenChange(this)" >
+							</c:if>
+						</p>
+					</div>
+					<form class="form-horizontal" role="form" id="webSiteNameForm" style="margin-top: 40px;" onsubmit="return fWebSiteName()">
+						<div class="form-group logo-B">
+							<div class="c_log_box col-sm-8">
+								<c:if test="${webSite.webTitleImg == null || webSite.webTitleImg == ''}">
+									<img src="${jypath}/pc/image/setting/add.png" alt=""  onclick="linkClick('logBg',$(this))">
+								</c:if>
+								<c:if test="${webSite.webTitleImg != null || webSite.webTitleImg != ''}">
+									<img src="<%=imgUrl %>image/webSite/${webSite.webTitleImg}" alt=""  onclick="linkClick('logBg',$(this))">
+								</c:if>
+							</div>
+							<div class="col-sm-4">
+								<p style="line-height: 34px;">
+									请选择尺寸为366*100，格式为.jeg、.jepg、.png,大小小于600Kb的背景图。
+								</p>
+								<button type="button" onclick="fWebSiteName()" class="btn btn-default" style="margin-left:70px;    margin-top: -29px;">
+									点击上传
+								</button>
+							</div>
+						</div>
+						<div class="form-group title-B">
+							<label class="col-sm-1 control-label">名称</label>
+							<div class="col-sm-6">
+								<input type="text" name="webTitleWord" class="form-control" placeholder="请输入网站名" maxlength="30"  value="${webSite.webTitleWord }" required>
+							</div>
+						</div>
+						<div class="form-group title-B">
+							<div class="col-sm-offset-1 col-md-6">
+								<button type="submit" class="btn btn-success pull-right">
+									保存
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="t-item">
+				<div class="item-title col-sm-3">
+					登录背景图
+				</div>
+				<div class="item-details col-sm-8">
+					<div class="loginBox">
+						<c:if test="${webSite.loginBg == null || webSite.loginBg == ''}">
+							<img src="${jypath}/pc/image/setting/add.png" alt="">
+						</c:if>
+						<c:if test="${webSite.loginBg != null || webSite.loginBg != ''}">
+							<img src="<%=imgUrl %>image/webSite/${webSite.loginBg}" alt="" >
+						</c:if>
+					</div>
+				</div>
+				<div class="item-edit">
+					编辑
+				</div>
+				<div class="t-content">
+					<form class="form-horizontal" role="form" style="margin-top: 40px;">
+						<div class="form-group">
+							<div class="c_bg_box col-sm-8">
+								<c:if test="${webSite.loginBg == null || webSite.loginBg == ''}">
+									<img src="${jypath}/pc/image/setting/add.png" alt=""  onclick="linkClick('bgpic',$(this))">
+								</c:if>
+								<c:if test="${webSite.loginBg != null || webSite.loginBg != ''}">
+									<img src="<%=imgUrl %>image/webSite/${webSite.loginBg}" alt=""  onclick="linkClick('bgpic',$(this))">
+								</c:if>
+								</div>
+							<div class="col-sm-4">
+								<p style="line-height: 34px;">
+									请选择尺寸为1366*400，格式为.jeg、.jepg、.png,大小小于600Kb的背景图。
+								</p>
+								<button type="button" class="btn btn-default" style="margin-left:70px;" onclick="fWebSiteName()">
+									点击上传 
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="t-item">
+				<div class="item-title col-sm-3">
+					版权信息
+				</div>
+				<div class="item-details col-sm-8">
+					${webSite.copyright }
+				</div>
+				<div class="item-edit">
+					编辑
+				</div>
+				<div class="t-content">
+					<form class="form-horizontal" role="form" id="webSitecopyright" onsubmit="return fWebSiteName()" style="margin-top: 40px;">
+						<div class="form-group">
+							<label class="col-sm-1 control-label">版权</label>
+							<div class="col-sm-6">
+								<input type="text" name="copyright" class="form-control" value="${webSite.copyright }" maxlength="255" placeholder="网站版权信息" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-1 col-md-6">
+								<button type="submit" class="btn btn-success pull-right">
+									保存
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="t-item">
+				<div class="item-title col-sm-3">
+					登录入口
+				</div>
+				<div class="item-details col-sm-8">
+					显示专家与供应商注册入口
+					<span style="margin-left:45%;">状态：</span>
+					<c:if test="${webSite.wzcgLogin == 1}">
+						<span class="label label-info fu-margin-left">已开启</span>
+					</c:if>
+					<c:if test="${webSite.wzcgLogin != 1}">
+					    <span class="label label-info fu-margin-left">已关闭</span>
+					</c:if>
+				</div>
+				<div class="item-edit">
+					编辑
+				</div>
+				<div class="t-content">
+					<p style="width:auto;padding-bottom: 20px;height: 50px;">
+						<span>是否显示：</span>&nbsp;
+						<c:if test="${webSite.wzcgLogin == 1}">
+							<input id="switch-onColor" name="regShow" type="checkbox" checked data-on-color="info" onchange="swiBtn(this)">
+						</c:if>
+						<c:if test="${webSite.wzcgLogin != 1}">
+							<input id="switch-onColor" name="regShow" type="checkbox" data-on-color="info" onchange="swiBtn(this)">
+						</c:if>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-success"  onclick="fWebSiteName()">保存</button>
+					</p>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script src="${jypath}/pc/js/file/ajaxfileupload.js"></script>
+	<script>
+		var wzcgLogin = "";
+		var webTitleMark = "";
+		$(function() {
+			$('.texOlog .bootstrap-switch-handle-off').html('文字');
+			$('.texOlog .bootstrap-switch-handle-on').html('图片');
+			$('.item-edit').on('click', function() {
+				var tContent = $(this).parent().find('.t-content');
+				$(this).parent().css('backgroundColor', '#fff');
+				$('.t-content').slideUp('200');
+				$('.item-details').css('opacity', '1');
+				$('.item-edit').html('编辑');
+				$('.item-edit').css('backgroundPosition', '895px -35px');
+				if (tContent.css('display') == 'none') {
+					tContent.slideToggle('200');
+					$(this).html('收起');
+					$('.item-edit').css('backgroundPosition', '895px 25px');
+					$(this).parent().find('.item-details').css('opacity', '0');
+				} else {
+					$(this).html('编辑');
+					$('.item-edit').css('backgroundPosition', '895px -35px');
+					$(this).parent().hover(function() {
+						this.style.backgroundColor = "#fafafa";
+					}, function() {
+						this.style.backgroundColor = "#fff";
+					})
+					$(this).parent().find('.item-details').css('opacity', '1');
+				}
+			})
+			listenChange();
+		})
+		//是否显示专家和供应商注册
+		function swiBtn(obj) {
+			if (!obj.checked) {
+				wzcgLogin = 2;
+			}else{
+				wzcgLogin = 1;
+			}
+		}
+
+		function listenChange(obj) {
+			if ($('#switch-offColor').is(':checked')) {
+				$('.title-B').css('height', '0');
+				$('.logo-B').css('height', '205px');
+			} else {
+				$('.title-B').css('height', '34px');
+				$('.logo-B').css('height', '0');
+			}
+			if (!obj.checked) {
+				webTitleMark = 1;
+			}else{
+				webTitleMark = 2;
+			}
+			fwebTitleMark();
+		}
+		
+		function fwebTitleMark(){
+			var formSerialize = "";
+			formSerialize = $("#webSitecopyright").serialize() + "&" + $("#webSiteNameForm").serialize() + "&wzcgLogin=" + wzcgLogin + "&webTitleMark=" + webTitleMark;
+			var l1 = document.getElementsByName('logBg');
+			var l2 = document.getElementsByName('bgpic');
+			var ids = ['logBg','bgpic','icon'];
+			$.ajaxFileUpload({
+				type:"post",
+				async:false,
+				url:"${jypath}/backstage/setting/webSite/webSiteName?" + formSerialize,
+				ecureuri:false,
+		    	fileElementId:ids,
+				dataType:"JSON",
+				success:function(data){
+					var obj = eval('('+ data +')');
+					if(obj.res == 0){
+						fuCloseLayer();
+						fuShowError();
+					}else{
+					}
+				}
+			});
+		}
+		
+		function linkClick(inp, obj) {
+			if ($('#' + inp).length == 0) {
+				var newInp = '<input type="file" name="' + inp + '" id="' + inp + '" style="display: none;">';
+				obj.parent().append(newInp);
+			}
+			$('#' + inp).click();
+		}
+
+		//标题logo
+		$('.t-content').on('change', '#logBg', function() {
+			var fileObj = $(this);
+			judgeTypeSize(fileObj, '600', /^jpg|jpeg|png|ico$/i, sitImg, 'c_log_box', 'pathUrl');
+		});
+		//title的icon图标
+		$('.t-content').on('change', '#icon', function() {
+			var fileObj = $(this);
+			judgeTypeSize(fileObj, '600', /^jpg|jpeg|png|ico$/i, sitImg, 'c_ico_box', 'pathUrl');
+		});
+		//登陆的背景大图
+		$('.t-content').on('change', '#bgpic', function() {
+			var fileObj = $(this);
+			judgeTypeSize(fileObj, '600', /^jpg|jpeg|png|ico$/i, sitImg, 'c_bg_box', 'pathUrl');
+		})
+		function judgeTypeSize(fileObj, maxSize, exp, callback, picBox, turl) {
+			var value = fileObj.val();
+			var index = value.lastIndexOf('.');
+			value = value.substring(index + 1, value.length);
+			if (!value.match(exp)) {
+				fileObj.remove();
+				forSuccess('alert-warning', '错误：', '格式不正确！');
+				$('.' + picBox).find('img').remove();
+			} else {
+				var size = fileObj[0].files[0].size;
+				var trueSize = Math.ceil(size / 1024);
+				if (trueSize > maxSize) {
+					fileObj.remove();
+					forSuccess('alert-warning', '错误：', '文件过大！');
+					$('.' + picBox).find('img').remove();
+				} else {
+					if (callback) {
+						callback(fileObj, picBox, turl);
+					}
+				}
+			}
+		}
+		//input=file获得值后通过验证上传
+		function sitImg(fileObj, picBox, turl) {
+			var url = getImgUrl(fileObj[0]);
+			//do ajax/////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//成功回掉，执行线下面的if，将图片展示，同时调用提示：   forSuccess('alert-success', '成功！', '图片上传完成！');
+			if ($('.' + picBox).find('img').length != 0) {
+				$('.' + picBox).find('img').attr('src', url);
+			} else {
+				var Img = '<img src="' + url + '" alt="picture missing!">';
+				$('.' + picBox).append(Img);
+			}
+			//失败提示：  forSuccess('alert-warning', '错误：', '图片上传失败！');
+			//三个图片用的是同一验证代码，如果存储的路径不同可在   361行   开始的 pathUrl 传递地址；以下完整
+			/*$.ajax({
+			 url: turl,
+			 type: POST,
+			 dataType: 'json',
+			 data: data
+			 })
+			 .done(function() {
+			 if ($('.' + picBox).find('img').length != 0) {
+			 $('.' + picBox).find('img').attr('src', url);
+			 } else {
+			 var Img = '<img src="' + url + '" alt="picture missing!">';
+			 $('.' + picBox).append(Img);
+			 }
+			 forSuccess('alert-success', '成功！', '图片上传完成！');
+			 })
+			 .fail(function() {
+			 forSuccess('alert-warning', '错误：', '图片上传失败！');
+			 })
+			 .always(function() {
+			 console.log(" 已执行ajax");
+			 });*/
+		}
+
+		function getImgUrl(fileObj) {
+			var url;
+			if (fileObj.files && fileObj.files[0]) {
+				url = window.URL.createObjectURL(fileObj.files[0]);
+			} else {//FUCK IE
+				fileObj.select();
+				url = fileObj.selection.createRange().text;
+				document.selection.empty();
+			}
+			return url;
+		}
+
+		function forSuccess(stat, tip, content) {
+			var aDom = '<div id="alerTip" class="alert ' + stat + '">' + '<a href="#" class="close" data-dismiss="alert">&times;</a>' + '<strong>' + tip + '</strong>' + content + '</div>';
+			$(document.body).append(aDom);
+			$('#alerTip').css({
+				'marginLeft' : -$('#alerTip').width() / 2,
+				'top' : '53px'
+			})
+		}
+		
+		function fWebSiteName(){
+			fuLoading();
+			var formSerialize = "";
+			formSerialize = $("#webSitecopyright").serialize() + "&" + $("#webSiteNameForm").serialize() + "&wzcgLogin=" + wzcgLogin + "&webTitleMark=" + webTitleMark;
+			var l1 = document.getElementsByName('logBg');
+			var l2 = document.getElementsByName('bgpic');
+			var ids = ['logBg','bgpic','icon'];
+			$.ajaxFileUpload({
+				type:"post",
+				async:false,
+				url:"${jypath}/backstage/setting/webSite/webSiteName?" + formSerialize,
+				ecureuri:false,
+		    	fileElementId:ids,
+				dataType:"JSON",
+				success:function(data){
+					var obj = eval('('+ data +')');
+					if(obj.res == 0){
+						fuCloseLayer();
+						fuShowError();
+					}else{
+						fuShowSuccess();
+						fuCloseLayer();
+						setTimeout('document.location.reload();',500);
+					}
+				}
+			});
+			return false;
+		}
+	</script>
+</html>

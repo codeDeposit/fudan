@@ -1,0 +1,101 @@
+package com.jy.controller.oa.communicate;
+
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.service.oa.communicate.MailService;
+import com.jy.task.utils.JsonInfo;
+
+@Controller
+@RequestMapping("/oa/mail")
+public class MailController {
+
+	private MailService mailService;
+
+	public MailService getMailService() {
+		return mailService;
+	}
+
+	@Resource(name="mailService")
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
+	}
+
+	/**
+	 * 创建的新邮件保存为：草稿 或 直接发送
+	 * 
+	 * @param mail
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Mail mail) {
+		JsonInfo info = mailService.save(mail);
+		return info;
+	}
+
+	/**
+	 * 修改邮件信息
+	 * 
+	 * @param mail
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Mail mail) {
+		JsonInfo info = mailService.update(mail);
+		return info;
+	}
+
+	/**
+	 * 获取邮件详细信息
+	 * 
+	 * @param mailId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	@ResponseBody
+	public Mail getDetails(Long mailId) {
+		Mail mail = mailService.getInfoBy(mailId);
+		return mail;
+	}
+	
+	/**
+	 * 批量删除
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] boxId) {
+		JsonInfo info = mailService.delete(boxId);
+		return info;
+	}
+	
+	/**
+	 * 获取邮件列表
+	 * @param subject
+	 * @param sender
+	 * @param recipientNames
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public String list() {
+		return "system/oa/communicate/mail_box";
+	}
+
+	/**
+	 * 跳转发送邮件页面
+	 * @return
+	 */
+	@RequestMapping("/send")
+	public String send() {
+		return "system/oa/communicate/email";
+	}
+
+}

@@ -1,0 +1,47 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.Book;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface BookMapper {
+
+	// 添加图书
+	int insert(Book book);
+	
+	// 获取新增图书Id号
+	Long selectMax();
+
+	// 修改图书信息
+	int update(Book book);
+
+	// 获取isbn号
+	String selectISBNBy(Long bookId);
+
+	// 更新图书数量
+	int updateAmount(Book book);
+
+	// 获取图书信息
+	Book selectBy(Long bookId);
+
+	// 删除图书
+	int delete(Long bookId);
+
+	// 剩下的数量-1
+	int updateLeftAmount(Long bookId);
+
+	// 剩下的数量+1
+	int updateLeftAmountJia(Long bookId);
+
+	// 获取图书列表
+	List<Book> select(@Param("typeId") Long typeId, @Param("author") String author, @Param("bookName") String bookName);
+
+	// 分页获取图书列表
+	List<Book> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("typeId") Long typeId,
+			@Param("author") String author, @Param("bookName") String bookName);
+
+}

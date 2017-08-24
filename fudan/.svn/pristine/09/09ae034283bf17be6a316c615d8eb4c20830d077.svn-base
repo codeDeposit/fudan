@@ -1,0 +1,39 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.BookBorRet;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface BookBorRetMapper {
+
+	// 新增借书记录
+	int insert(BookBorRet bookBorRet);
+
+	// 获取记录详细信息
+	BookBorRet selectInfoBy(Long recordId);
+
+	// 修改记录信息
+	int update(BookBorRet bookBorRet);
+
+	// 获取借阅记录列表
+	List<BookBorRet> select(@Param("bookName") String bookName, @Param("borrowIsbn") String borrowIsbn);
+
+	// 归还图书
+	int updateLastReturnTime(BookBorRet bookBorRet);
+
+	// 归还图书列表
+	List<BookBorRet> selectRet(@Param("bookName") String bookName, @Param("borrowIsbn") String borrowIsbn);
+
+	// 分页借阅列表
+	List<BookBorRet> selectBorPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, 
+			@Param("bookName") String bookName, @Param("borrowIsbn") String borrowIsbn);
+
+	// 分页归还列表
+	List<BookBorRet> selectRetPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("bookName") String bookName, @Param("borrowIsbn") String borrowIsbn);
+
+}

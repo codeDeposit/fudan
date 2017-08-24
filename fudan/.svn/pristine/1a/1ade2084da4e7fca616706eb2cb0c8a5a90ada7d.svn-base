@@ -1,0 +1,71 @@
+package com.jy.entity.oa.archive;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public class ArchTemplate {
+
+	private Long templateId;
+	private String tempName;
+	private String tempPath;
+	private FileAttach fileAttach;
+	private ArchivesType archivesType;
+	private Long fileId;
+	private Long typeId;
+
+	public Long getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long fileId) {
+		this.fileId = fileId;
+	}
+
+	public Long getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Long typeId) {
+		this.typeId = typeId;
+	}
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getTempName() {
+		return tempName;
+	}
+
+	public void setTempName(String tempName) {
+		this.tempName = tempName;
+	}
+
+	public String getTempPath() {
+		return tempPath;
+	}
+
+	public void setTempPath(String tempPath) {
+		this.tempPath = tempPath;
+	}
+
+	public FileAttach getFileAttach() {
+		return fileAttach;
+	}
+
+	public void setFileAttach(FileAttach fileAttach) {
+		this.fileAttach = fileAttach;
+	}
+
+	public ArchivesType getArchivesType() {
+		return archivesType;
+	}
+
+	public void setArchivesType(ArchivesType archivesType) {
+		this.archivesType = archivesType;
+	}
+
+}

@@ -1,0 +1,73 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="pc/css/oa/modal.css">
+</head>
+<body>
+	<!-- 部门选择弹窗 start -->
+	<div class="modal fade" id="rolemodal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- <div class="modal-header"> -->
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title headBg">
+					<i class="glyphicon glyphicon-user"
+						style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i> &nbsp;角色选择
+				</h4>
+				<!-- </div> -->
+				<div class="modal-body" style="height:300px;">
+					<div class="leftList pull-left">
+						<ul class="firstLevel">
+							<li><span class="secondT aHover fIndent"> <i
+									class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有角色 </span>
+								<ul id="role_roles" class="secondLevel">
+									<!-- 所有角色打印在此处 -->
+								</ul></li>
+						</ul>
+					</div>
+					<div id="roletable" class="rightContent pull-right"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-success roleYes">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 收信人选择弹窗 end -->
+</body>
+<script type="text/javascript">
+	$(function(){
+		//初始化数据..加载所有角色
+		//getAllRole();
+    });
+    //判断是否选中
+    $('.roleYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('#roletable .tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#recipientName").val(arrayName);
+	        	$("#recipientID").val(arrayId);
+	        	$(".roleYes").attr("data-dismiss", "modal");
+	        }
+	    });
+    });
+	//全选
+    function chooseAll(){
+        if($('#checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+            $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+</script>
+</html>

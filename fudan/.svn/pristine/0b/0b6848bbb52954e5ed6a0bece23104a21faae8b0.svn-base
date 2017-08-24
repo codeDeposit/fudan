@@ -1,0 +1,21 @@
+package com.jy.repository.customer;
+
+import java.util.List;
+
+import com.jy.entity.customer.Contract;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface ContractDao{
+	
+	public List<Contract> find(Contract contract);
+
+	public List<Contract> search(Contract contract);
+
+	public int insert(Contract contract);
+
+	public int update(Contract contract);
+
+	public int delete(Contract contract);
+	
+}

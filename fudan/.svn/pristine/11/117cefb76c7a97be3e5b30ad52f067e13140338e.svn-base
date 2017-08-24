@@ -1,0 +1,34 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.AssetsType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AssetsTypeMapper {
+
+	// 添加资产类型
+	int insert(AssetsType assetsType);
+
+	// 修改资产类型
+	int update(AssetsType assetsType);
+
+	// 获取详细信息
+	AssetsType selectInfoBy(Long assetsTypeId);
+
+	// 获取列表 
+	List<AssetsType> select(@Param("typeName") String typeName);
+
+	// 删除资产类型
+	int delete(Long assetsTypeId);
+
+	// 分页获取列表
+	List<AssetsType> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("typeName") String typeName);
+
+	// 获取所有资产类型
+	List<AssetsType> selectAll();
+
+}

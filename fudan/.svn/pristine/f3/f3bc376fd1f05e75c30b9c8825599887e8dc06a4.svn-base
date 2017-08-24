@@ -1,0 +1,63 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ include file="../common/styleUrl.jsp" %>
+        <!DOCTYPE HTML>
+        <html>
+
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+            <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui.2.0.css" />
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/login/findpassword.css">
+            <script src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+            <title>找回密码</title>
+        </head>
+
+        <body>
+            <header class="aui-bar aui-bar-nav">重置密码</header>
+            <div class="aui-content aui-margin-t-15">
+                <form action="" onsubmit="return subFun3()">
+                	<input id="aid" type="hidden" value="${accountId}">
+                    <ul class="aui-list aui-form-list">
+                        <li class="aui-list-item proStep">
+                            <span>1.邮箱验证</span>
+                            <span><i class="aui-iconfont aui-icon-right"></i></span>
+                            <span>2.输入验证码</span>
+                            <span><i class="aui-iconfont aui-icon-right"></i></span>
+                            <span style="color:#03a9f4;">3.重置密码</span>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-lock"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="password" name="password" id="password" placeholder="(6到20个字符)" maxlength="20" minlength="6" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-lock"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="password" class="conPassW" placeholder="(6到20个字符)" maxlength="20" minlength="6" required>
+                                </div>
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-correct"></i>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item subBtn">
+                            <button type="submit" class="aui-btn aui-btn-info aui-btn-block aui-btn-sm">  提 交 </button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+
+        </body>
+        <script src="${jypath}/mobile/js/login/findpassword3.js"></script>
+
+        </html>

@@ -1,0 +1,18 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.BookSn;
+
+public interface BookSnService {
+
+	// 获取为借阅图书的booksn列表
+	List<BookSn> get(Long bookId);
+
+	// 获取图书对应的booksn列表
+	List<BookSn> getBy(Long bookId);
+
+	// 获取以借阅的booksn列表
+	List<BookSn> getBorsn(Long bookId);
+
+}

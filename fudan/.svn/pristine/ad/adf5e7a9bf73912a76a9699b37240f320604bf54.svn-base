@@ -1,0 +1,173 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.hrm.SalaryPayoff;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.hrm.SalaryPayoffMapper;
+import com.jy.service.oa.hrm.SalaryPayoffService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("salaryPayoffService")
+public class SalaryPayoffServiceImpl implements SalaryPayoffService {
+
+	private SalaryPayoffMapper salaryPayoffMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public SalaryPayoffMapper getSalaryPayoffMapper() {
+		return salaryPayoffMapper;
+	}
+
+	@Autowired
+	public void setSalaryPayoffMapper(SalaryPayoffMapper salaryPayoffMapper) {
+		this.salaryPayoffMapper = salaryPayoffMapper;
+	}
+
+	// 添加发放登记
+	@Override
+	public JsonInfo save(SalaryPayoff salaryPayoff) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		
+		salaryPayoff.setCheckStatus(salaryPayoff.getCHECK_FLAG_NONE());
+		salaryPayoff.setRegTime(new Date());
+		salaryPayoff.setRegister(employee.getFullname());
+		BigDecimal acutalAmount = salaryPayoff.getStandAmount().add(salaryPayoff.getEncourageAmount())
+															   .subtract(salaryPayoff.getDeductAmount());
+		if(salaryPayoff.getAchieveAmount() != null){
+			acutalAmount = acutalAmount.add(salaryPayoff.getAchieveAmount());
+		}
+		salaryPayoff.setAcutalAmount(acutalAmount);
+		
+		int result = salaryPayoffMapper.insert(salaryPayoff);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改发放登记信息
+	@Override
+	public JsonInfo update(SalaryPayoff salaryPayoff) {
+		BigDecimal acutalAmount = salaryPayoff.getStandAmount().add(salaryPayoff.getEncourageAmount())
+															   .subtract(salaryPayoff.getDeductAmount());
+		if(salaryPayoff.getAchieveAmount() != null){
+			acutalAmount = acutalAmount.add(salaryPayoff.getAchieveAmount());
+		}
+		salaryPayoff.setAcutalAmount(acutalAmount);
+		
+		int result = salaryPayoffMapper.update(salaryPayoff);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取发放登记详细信息
+	@Override
+	public SalaryPayoff getInfoBy(Long recordId) {
+		SalaryPayoff salaryPayoff = salaryPayoffMapper.selectInfoBy(recordId);
+		
+		salaryPayoff.setRegTime1(DateStringUtil.dateToString3(salaryPayoff.getRegTime()));
+		salaryPayoff.setStartTime1(DateStringUtil.dateToString3(salaryPayoff.getStartTime()));
+		salaryPayoff.setEndTime1(DateStringUtil.dateToString3(salaryPayoff.getEndTime()));
+		
+		if(salaryPayoff.getCheckTime() != null) {
+			salaryPayoff.setCheckTime1(DateStringUtil.dateToString3(salaryPayoff.getCheckTime()));
+		}
+		
+		return salaryPayoff;
+	}
+
+	// 审核发放登记信息
+	@Override
+	public JsonInfo review(SalaryPayoff salaryPayoff) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		salaryPayoff.setCheckName(employee.getFullname());
+		salaryPayoff.setCheckTime(new Date());
+		
+		int result = salaryPayoffMapper.updateReview(salaryPayoff);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除发放登记信息
+	@Override
+	public JsonInfo delete(Long[] recordId) {
+		int result = 0;
+		for(Long rId : recordId) {
+			result = salaryPayoffMapper.delete(rId);
+		}
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取发放登记列表
+	@Override
+	public List<SalaryPayoff> get(String fullName, Short checkStatus) {
+		List<SalaryPayoff> salaryPayoffs = salaryPayoffMapper.select(fullName, checkStatus);
+		return salaryPayoffs;
+	}
+
+	// 发放登记分页列表
+	@Override
+	public List<SalaryPayoff> getPageList(PageBean pb, String fullname,
+			Short checkStatus) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<SalaryPayoff> salaryPayoffs = salaryPayoffMapper.selectPageData(firstIndex, toIndex, fullname, checkStatus);
+		
+		for(SalaryPayoff sp: salaryPayoffs) {
+			sp.setRegTime1(DateStringUtil.dateToString3(sp.getRegTime()));
+		}
+		
+		return salaryPayoffs;
+	}
+	
+
+}

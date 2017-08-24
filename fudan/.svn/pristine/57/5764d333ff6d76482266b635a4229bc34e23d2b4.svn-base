@@ -1,0 +1,47 @@
+package com.jy.service.oa.task;
+
+import java.util.List;
+
+import com.jy.entity.oa.task.WorkPlan;
+import com.jy.entity.oa.task.WorkPlanVO;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface WorkPlanService {
+
+	// 添加工作计划
+	JsonInfo save(WorkPlan workPlan);
+
+	// 获取工作计划详细信息
+	WorkPlan getInfoBy(Long planId);
+
+	// 修改工作计划信息
+	JsonInfo update(WorkPlan workPlan);
+
+	// 批量删除工作计划
+	JsonInfo del(Long[] planId);
+
+	// 工作计划列表
+	List<WorkPlan> get(String planName, Short isPersonal);
+
+	// 我的计划列表
+	List<WorkPlan> getMy(String planName, Long typeId);
+
+	// 部门计划列表
+	List<WorkPlan> getOrg(String planName, Long typeId, String principal);
+
+	// 分页列表
+	List<WorkPlanVO> getPageList(PageBean pb, String planName, Short isPersonal);
+
+	// 我的计划分页列表
+	List<WorkPlanVO> getMyPageList(PageBean pb, String planName, Long typeId);
+
+	// 部门分页列表
+	List<WorkPlanVO> getOrgPageList(PageBean pb, String planName, Long typeId,
+			String principal);
+
+	//激活或禁用
+	JsonInfo updates(Long planId, Short status);
+
+}

@@ -1,0 +1,138 @@
+package com.jy.controller.oa.task;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.task.Diary;
+import com.jy.service.oa.task.DiaryService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+import com.jy.task.utils.ResponseInfoVo;
+
+@Controller
+@RequestMapping("/oa/diary")
+public class DiaryController {
+
+	private DiaryService diaryService;
+
+	public DiaryService getDiaryService() {
+		return diaryService;
+	}
+
+	@Resource(name="diaryService")
+	public void setDiaryService(DiaryService diaryService) {
+		this.diaryService = diaryService;
+	}
+
+	/**
+	 * 显示工作日志列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String startTime, @RequestParam(required=false) String endTime,
+							 @RequestParam(required=false) Short diaryType ) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<Diary> diarys = diaryService.getDiary(startTime, endTime, diaryType);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(diarys.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后列表
+		List<Diary> pageDiarys = diaryService.getPageList(pb, startTime, endTime, diaryType);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/diary_table");
+		}else {
+			mv.setViewName("system/oa/task/diary_list");
+		}
+		mv.addObject("diarys", pageDiarys);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+	/**
+	 * 查询工作日志列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/search")
+	@ResponseBody
+	public ResponseInfoVo<Diary> search() {
+		// ResponseInfoVo<Diary> diarys = diaryService.searchDiary();
+		// return diarys;
+		return null;
+	}
+
+	/**
+	 * 批量删除工作日志
+	 * 
+	 * @param diaryId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDelDiary(Long[] diaryId) {
+		JsonInfo info = diaryService.delete(diaryId);
+		return info;
+	}
+	
+	/**
+	 * 修改信息
+	 * @param diary
+	 * @return
+	 */
+	@RequestMapping("edit")
+	@ResponseBody
+	public JsonInfo edit(Diary diary) {
+		JsonInfo info = diaryService.update(diary);
+		return info;
+	}
+
+	/**
+	 * 显示详细信息
+	 * 
+	 * @param diaryId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long diaryId, String operation) {
+		Diary diary = diaryService.getInfoBy(diaryId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("diary", diary);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/task/diary_form");
+		return mv;
+	}
+
+	/**
+	 * 添加日志
+	 *
+	 * @param diary
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Diary diary) {
+		diary.setUserId(AccountShiroUtil.getCurrentUser().getAccountId());
+		JsonInfo info = diaryService.save(diary);
+		return info;
+	}
+
+}

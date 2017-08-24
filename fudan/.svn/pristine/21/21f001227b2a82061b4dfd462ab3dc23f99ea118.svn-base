@@ -1,0 +1,71 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<html>
+<head>
+<%@include file="../common/includeBaseSet.jsp" %>
+<title>注册须知</title>
+<meta charset="utf-8">
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<link rel="stylesheet" type="text/css" href="css/aui.css" />
+<style>
+	*{margin:0;padding:0;}
+	html,body{width:100%;background-color:#fff;}
+	#wrap{width:100%;color:#FF8040;}
+	#wrap #box{height:auto;width:90%;line-height:36px;margin-left:20px;}
+	h3{margin-top:12px;color:#FF8040;text-align: center;}
+	h4,p{text-indent: 2em;}
+	p{font-size:12px;color:#C6A300;}
+	#wrap #box .item{width:100%;margin-top:6px;float:left;text-align:center;height:20px;margin-bottom:70px;border-top:1px solid #d0d0d0;}
+	#wrap #box .item span{float:left;width:34%;font-size:12px;line-height34px;color:#fff;border-radius:15px;margin:22px;background-color:#2ecc71;}
+	#wrap #box .item span:hover{color:#000000;}
+	a{color:#fff;text-decoration:none;}
+	table{width:100%;text-align:center;font-size:12px;}
+	.oright{text-align: right;}
+</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="box">
+		<h3>注册须知</h3>
+		<p>尊敬的专家教授：</p>
+		<p>您好！我校现面向全社会征集物资采购评审专家，欢迎各位专家教授踊跃注册报名，真诚的感谢您对我校物资采购工作的支持和参与！</p>
+		<h4>一、申请条件</h4>
+		<p>申请评审专家应具备以下条件：</p>
+		<p>（一）熟悉国家和军队物资采购的政策法规，以及学校的相关管理规定；</p>
+		<p>（二）具有良好的业务素质，从事相关领域工作满八年，具有本科以上文化程度、高级专业技术职务或者同等专业技术水平，在本专业领域享有一定声誉；</p>
+		<p>（三）具有良好的职业道德，在物资采购评审中能够做到客观公正、廉洁自律、遵纪守法；</p>
+		<p>（四）本人身体健康，自愿以独立身份参加学校物资采购评审工作，并接受学校采购办等部门的监督管理；</p>
+		<p>（五）无违法违纪和不良记录；</p>
+		<p>（六）法律法规规定的其他条件。</p>
+		<p>不符合第二项规定条件，但在相关领域专业特长突出，熟悉市场行情，并符合前款其他条件的，也可以作为物资采购评审专家申请推荐。</p>
+		<p>申请进入学校物资采购评审专家库的专家，为便于参与评审，工作所在地必须在上海市辖内。已纳入军队或上海市物资采购评审专家库的评审专家，学校在审核入库时实行免检。</p>
+		<p>申请进入学校物资采购评审专家库的专家，需至少具备对办公设备类、信息产品类、军训文体类、军需营房类、科研仪器类、卫生医疗类等物资项目之一采购活动的评审能力，具体项目内容参见本年度《第二军医大学物资集中采购目录》。</p>
+		<h4>二、申请程序</h4>
+		<p>学校物资采购评审专家资格认证按照下列程序进行：</p>
+		<p>(一)本人提出申请，登陆第二军医大学物资采购管理系统完成评审专家线上注册，填写《第二军医大学物资采购评审专家资格申请表》，并附个人工作简历，学历证明、专业资格证书原件及复印件，个人研究成果和工作业绩简况，本人身份有效证明；</p>
+		<p>(二)学校物资采购中心初审、公示，上报采购办审核认定；</p>
+		<p>(三)经审核认定的物资采购评审专家，统一颁发《第二军医大学物资采购评审专家资格证书》。</p>
+		<p>我们将按照《第二军医大学物资采购评审专家管理办法》（详见附件1）对评审专家库进行管理。</p>
+		<p>如有疑问请与物资采购中心熊助理联系，</p>
+		<div style="height:35px"></div>
+		<p class="oright" > 物资采购中心 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+		<p class="oright" >电话：021-81870740&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+		<p class="oright" >二〇一六年五月十二日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+		<div class="item">
+			<span  style="background-color:#F86B4F;"><a href="<%=basePath%>mobile_login">拒	绝</a></span><span><a href="<%=basePath%>backstage/expert/mobile_expert_reg">同	意</a></span>
+		</div>
+	</div>
+</div>
+</body>
+<script>	
+	function showx(){
+		document.getElementById('tableshow').style.display="block";
+	}
+	function closex(){
+		document.getElementById('tableshow').style.display="none";
+	}
+</script>
+</html>

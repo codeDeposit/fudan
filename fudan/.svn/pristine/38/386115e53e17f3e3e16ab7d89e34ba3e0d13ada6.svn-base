@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.info.NewsCommentMapper">
+
+	<!-- baseMap start -->
+	<resultMap type="com.jy.entity.oa.info.NewsComment" id="baseMap">
+		<id property="commentId" column="commentId"/>
+		<result property="content" column="content"/>
+		<result property="createtime" column="createtime"/>
+		<result property="fullname" column="fullname"/>
+		<association property="news" column="newsId" select="selectNews"></association>
+	</resultMap>
+	
+	<select id="selectNews" parameterType="Long" resultType="com.jy.entity.oa.info.News">
+		select * from fudan_oa_news where newsId = #{newsId}
+	</select>
+	<!-- baseMap end -->
+	
+
+	<!-- 根据 subject、startTime、endTime、fullname 模糊查询  start -->
+	<select id="selectBy" resultType="com.jy.entity.oa.info.NewsComment">
+		select comment.commentId, news.subject, comment.createtime, comment.fullname from
+		fudan_oa_news_comment comment, fudan_oa_news news where comment.newsId
+		= news.newsId
+		<if test="subject != null and subject != '' ">
+			and subject like concat(concat("%",#{subject}),"%")
+		</if>
+		<if test="startTime != null">
+			and comment.createtime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null">
+			and comment.createtime &lt;= #{endTime}
+		</if>
+		<if test="fullName != null and fullName != '' ">
+			and fullName like concat("%", #{fullName}, "%")
+		</if>
+	</select>
+	<!-- 根据 subject、startTime、endTime、fullname 模糊查询  end -->
+	
+	
+	<!-- 根据 commentId 获取详细信息  start -->
+	<select id="selectDetails" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_news_comment where commentId = #{commentId}
+	</select>
+	<!-- 根据 commentId 获取详细信息  end -->
+	
+
+	<!-- 修改信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.info.NewsComment">
+		update fudan_oa_news_comment <include refid="updateSQL"></include>
+		where commentId = #{commentId}
+	</update>
+
+	<sql id="updateSQL">
+		<set>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改信息  end -->
+	
+	
+	<!-- 删除评论 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_news_comment where commentId = #{commentId}
+	</delete>
+	<!-- 删除评论 end -->
+	
+	<!-- 分页显示列表 start -->
+	<select id="selectPageDate" resultType="com.jy.entity.oa.info.NewsComment">
+		select comment.commentId, news.subject, comment.createtime, comment.fullname, comment.content from
+		fudan_oa_news_comment comment, fudan_oa_news news where comment.newsId
+		= news.newsId
+		<if test="subject != null and subject != '' ">
+			and subject like concat("%", #{subject}, "%")
+		</if>
+		<if test="startTime != null">
+			and comment.createtime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null">
+			and comment.createtime &lt;= #{endTime}
+		</if>
+		<if test="fullName != null and fullName != '' ">
+			and fullName like concat("%", #{fullName}, "%")
+		</if>
+		order by comment.commentId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页显示列表 end -->
+
+</mapper>

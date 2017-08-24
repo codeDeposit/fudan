@@ -1,0 +1,358 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <!-- 模拟态窗口 start-->
+    <div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title text-center" id="newseditModalLabel">图书信息<c:if test="${operation == 'update' }">修改</c:if></h4>
+                </div>
+                <div class="modal-body">
+        			<form id="bookeditform" role="form" class="form-horizontal">
+        				<input id="bookId" type="hidden" name="bookId" value="${book.bookId}">
+        				<div class="form-group">
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">书名</label>
+				                <div class="col-md-10">
+	                          		<input type="text" class="form-control" name="bookName" value="${book.bookName}" />
+	                          	</div>
+				            </div>
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">作者</label>
+				                <div class="col-md-10">
+				                	<input type="text" class="form-control" name="author" value="${book.author}" />
+				                </div>
+				            </div>
+			            </div>
+			            <div class="form-group">
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">图书类别</label>
+				                <div class="col-md-10">
+	                          		<select id="booktypeeditSelect" class="form-control" name="typeId"  datatype="select" errormsg="请选择！">
+								     	<option value="">--请选择--</option>
+								     </select>
+	                          	</div>
+				            </div>
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">ISBN号</label>
+				                <div class="col-md-10">
+				                	<input type="text" class="form-control" name="isbn" value="${book.isbn}" />
+				                </div>
+				            </div>
+			            </div>
+			            <div class="form-group">
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">出版社</label>
+				                <div class="col-md-10">
+	                          		<input type="text" class="form-control" name="publisher" value="${book.publisher}" />
+	                          	</div>
+				            </div>
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">价格</label>
+				                <div class="col-md-10">
+				                	<input type="text" class="form-control" name="price" value="${book.price}" />
+				                </div>
+				            </div>
+			            </div>
+			            <div class="form-group">
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">存放地点</label>
+				                <div class="col-md-10">
+	                          		<input type="text" class="form-control" name="location" value="${book.location}" />
+	                          	</div>
+				            </div>
+				            <div class="col-md-6">
+				                <label class="control-label col-md-2">数量</label>
+				                <div class="col-md-8">
+				                	<input type="text" class="form-control" readonly="readonly" name="amount" value="${book.amount}" />
+				                </div>
+				                <c:if test="${operation == 'update' }">
+						    	 <div class="col-md-1">
+					                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addcount">
+					                    <i class="glyphicon glyphicon-plus"></i>&nbsp;增加
+					                </button>
+					             </div>
+					            </c:if>
+				            </div>
+			            </div>
+			            <div class="form-group">
+			                <label class="control-label col-md-1">所属部门</label>
+			                <div class="col-md-9">
+                          		<input id="orgNamesedit" name="orgNames" readonly="readonly" type="text" class="form-control" aria-required="true" value="${book.orgNames}">
+				                <input id="orgIdsedit" name="orgIds" type="hidden" class="form-control" aria-required="true" value="${book.orgIds}">
+                          	</div>
+                          	<c:if test="${operation == 'update' }">
+					    	 <div class="col-md-2">
+				                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editMod">
+				                    <i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+				                </button>
+				            </div>
+				            </c:if>
+			            </div>
+			            <div class="form-group">
+			                <label class="control-label col-md-1">图书标签</label>
+			                <div class="col-md-11">
+			                	<div id="booksn" data-spy="scroll" data-offset="0" class="scrollspy-example"></div>
+			                </div>
+			            </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="closebtn" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+               		<c:if test="${operation == 'update' }">
+                      	<button id="bookeditbtn" type="button" class="btn btn-success">保存</button>
+                    </c:if>
+                </div>
+            </div>
+        	</div>
+        	</div>
+        <!-- 模拟态窗口 end -->
+        
+        <!-- 选择部门弹窗 start -->
+	    <div class="modal fade" id="editMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <!-- <div class="modal-header"> -->
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                        &times;
+	                    </button>
+	                    <h4 class="modal-title headBg">
+	                        <i class="glyphicon glyphicon-user" style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i>
+	                        &nbsp;部门选择
+	                    </h4>
+	                <!-- </div> -->
+	                <div class="modal-body" style="height:300px;">
+	                    <div class="leftList pull-left">
+	                        <ul class="firstLevel">
+	                            <li>
+	                                <span class="secondT aHover fIndent">
+	                                    <i class="glyphicon ftof glyphicon-plus"></i>&nbsp;所有部门
+	                                </span>
+	                                <ul id="orgkindedit" class="secondLevel">
+	                                	<!-- 所有部门打印在此处 -->
+	                                </ul>
+	                            </li>
+	                        </ul>
+	                    </div>
+	                    <div id="orgtableedit" class="rightContent pull-right">
+	                        <!-- 部门列表打印在此处 -->
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" onclick='$("#editMod").modal("hide");'>关闭</button>
+	                    <button type="button" class="btn btn-success aYes" id="surebtnedit">确定</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        <!-- 选择部门弹窗 end -->
+        
+        <!-- 添加数量弹窗 start -->
+        <div class="modal fade" id="addcount" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">数量增加</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="booktypeaddform" class="form-horizontal aForm" role="form" >
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">增加数量</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="count">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" onclick="$('#addcount').modal('hide');">关闭</button>
+                                <button id="bookamountaddbtn" type="button" class="btn btn-success">保存</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 添加数量弹窗 end -->
+<script type="text/javascript">
+
+	$("#bookeditbtn").click(function() {
+		var url = "/oa/book/edit";
+		$.ajax({
+			type: "post",
+			url: jypath + url,
+			data: $("#bookeditform").serialize(),
+			success: function(data) {
+				// 移除之前添加的模态
+				$("#bookeditbtn").attr("data-dismiss","modal");
+				refresh();
+			}
+		});
+	});
+	
+	$("#bookamountaddbtn").click(function() {
+		var url = "/oa/book/updateamount";
+		var data = "bookId="+ $("#bookId").val()+"&addAmount="+$("#count").val();
+		console.log(data);
+		$.ajax({
+			type: "post",
+			url: jypath + url,
+			data: data,
+			success: function(data) {
+				// 移除之前添加的模态
+				$("#bookamountaddbtn").attr("data-dismiss","modal");
+				refresh();
+			}
+		});
+	});
+	
+	$(document).ready(function() {
+		// 文档加载完成后，动态获取图书类别
+		editGetBookType();
+		getAllOrg();
+		getOrgDetails();
+		getBooksn();
+		$("#infoorupdate").modal("show");
+	});
+	
+	// 加载booksn
+	function getBooksn() {
+		var count = "${book.amount}";
+		var objstr = '${json}';
+		console.log(objstr);
+		var obj = $.parseJSON(objstr);
+		//alert(obj);
+		console.log(obj);
+		var booksn = $("#booksn");
+		for(var x in obj) {
+			var booksnObj = obj[x];
+			booksn.append("<div>");
+			booksn.append(booksnObj.bookSN+"&nbsp;");
+			booksn.append("</div>");
+		}
+	}
+	
+	// 获取所有部门
+    function getAllOrg() {
+    	var url = "/oa/org/listhtml";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		success: function(data) {
+    			var obj = eval("("+data+")");
+    			$("#orgkindedit").html(obj);
+    		}
+    	});
+    }
+    
+    // 获取部门信息
+    function getOrgDetails() {
+    	var url = "/oa/org/getdetails";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId=1",
+    		success: function(data) {
+    			$("#orgtableedit").html(data);
+    		}
+    	});
+    }
+    
+ 	// 获取某一个角色下的员工
+    function getEmpByOrg(id) {
+    	var url = "/oa/org/getdetails";
+    	id= id+"";
+    	$.ajax({
+    		type: "get",
+    		url : jypath + url,
+    		data: "orgId="+id,
+    		success: function(data) {
+    			$("#orgtableedit").html(data);
+    		}
+    	});
+    }
+	
+	function editGetBookType() {
+		var url = "/oa/booktype/listall";
+		// 获取要查看的新闻类型
+		var bookTypeId = ${book.typeId};
+		$.ajax({
+			type: "get",
+			url: jypath + url,
+			success: function(data) {
+				// 将json字符串解析为json对象数组
+				var bookTypes = $.parseJSON(data);
+				for(var bookType in bookTypes) {
+					// 获取json对象数组的每个对象
+					var bookTypeObj = bookTypes[bookType];
+					if(bookTypeId == bookTypeObj.typeId) {
+						// 设置新闻类型
+						$("#booktypeeditSelect").append("<option selected value='"+ bookTypeObj.typeId +"'>"+ bookTypeObj.typeName +"</option>");
+					}else {
+						$("#booktypeeditSelect").append("<option value='"+ bookTypeObj.typeId +"'>"+ bookTypeObj.typeName +"</option>");
+					}
+				}
+			}
+		});
+	}
+	
+	//判断是否选中
+    $('.aYes').on('click',function(){
+    	var arrayName = [];
+    	var arrayId = [];
+	    $('.tBody').find('input[type="checkbox"]').each(function(index, el) {
+	        if($(this).is(':checked')){
+	        	//var abc=$(this).parent().parent().children('td').eq(2).html();
+	        	var obj = $(this).parent().parent().children('td').eq(2);
+	        	var objName=obj.html();
+	        	var objId=obj.attr("id");
+	        	arrayName.push(objName);
+	        	arrayId.push(objId);
+	        	$("#orgNamesedit").val(arrayName);
+	        	$("#orgIdsedit").val(arrayId);
+	        	$("#editMod").modal("hide");
+	        }
+	    });
+    });
+	
+  	//全选
+    function chooseAll(){
+        if($('#checkAll').is(":checked")){
+           $('.tBody').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+           $('.tBody').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+	
+    $(function(){
+        $('.secondT').on('click', function(event) {
+            var theLev=$(this).parent().find('.secondLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.secondLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.ftof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.thirdT').on('click', function(event) {
+            var theLev=$(this).parent().find('.thirdLevel');
+            if(theLev.css('display')=='block'){
+                theLev.slideUp('fast');
+                 $(this).find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+            }else{
+                $('.thirdLevel').slideUp('fast');
+                theLev.slideToggle('fast');
+                $('.tof').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                $(this).find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+            }
+        });
+        $('.aHover').on('click',function(event) {
+            event.preventDefault();
+            $('.aHover').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>

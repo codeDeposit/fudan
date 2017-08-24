@@ -1,0 +1,117 @@
+package com.jy.entity.oa;
+
+import java.util.List;
+
+public class OAResource {
+
+	private String id;
+	private String name;
+	private String parentId;
+	private Integer type;
+	private String resUrl;
+	private String btnId;
+	private String btnFun;
+	private String icon;
+	private Integer sort;
+	private Integer isValid;
+	private String description;
+	
+	private List<OAResource> subResource;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getResUrl() {
+		return resUrl;
+	}
+
+	public void setResUrl(String resUrl) {
+		this.resUrl = resUrl;
+	}
+
+	public String getBtnId() {
+		return btnId;
+	}
+
+	public void setBtnId(String btnId) {
+		this.btnId = btnId;
+	}
+
+	public String getBtnFun() {
+		return btnFun;
+	}
+
+	public void setBtnFun(String btnFun) {
+		this.btnFun = btnFun;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+
+	public Integer getIsValid() {
+		return isValid;
+	}
+
+	public void setIsValid(Integer isValid) {
+		this.isValid = isValid;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<OAResource> getSubResource() {
+		return subResource;
+	}
+
+	public void setSubResource(List<OAResource> subResource) {
+		this.subResource = subResource;
+	}
+
+}

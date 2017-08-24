@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.MallDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Mall" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_mall where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_mall where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="class_id != 0">  
+		    AND class_id = #{class_id}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="class_id != 0">  
+		    AND class_id = #{class_id}
+		</if>
+	</sql>
+	
+	<insert id="insert">
+		<selectKey keyProperty="id" resultType="int" order="AFTER" >
+        	SELECT LAST_INSERT_ID() as id
+        </selectKey>
+		insert into app_mall (class_id,indexs,state,click) 
+			values 
+		(#{class_id},#{indexs},#{state},#{click})
+	</insert>
+	
+	<update id="update">
+		update app_mall <include refid="updateSql"></include> where id = #{id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="state != 0">  
+		    	state = #{state},
+			</if>  
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_mall where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+	</delete>
+</mapper>

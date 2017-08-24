@@ -1,0 +1,38 @@
+.havHead{background: #efefef;}
+.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+td{padding: 8px;}
+.col-first{width: 70px;}
+.col-aft{width: 130px;}
+.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+
+a{text-decoration: none;color:#333;}
+a:hover{text-decoration: none;color: #333;}
+a:focus{text-decoration: none;}
+li{list-style: none;}
+ul{padding:0;margin:0;}
+.leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+.firstLevel li{cursor: pointer;}
+.secondLevel{display: none;}
+.thirdLevel{display: none;}
+.fIndent{padding-left: 8px;}
+.sIndent{padding-left: 24px;}
+.tIndent{padding-left: 40px;}
+.rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+
+.rightContent .table{margin-bottom: 5px;height: 234px;}
+.tBody{display: block;height:196px;overflow: auto;}
+.rightContent thead tr{display: block;}
+.wiD{width: 36px;}
+.seQuence{width: 45px;}
+.wiDl{width: 280px;}
+
+.close{margin:5px;}
+.aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+.aHover:hover{background-color: #ccc;}
+.aHover.active{background-color:#999;color: #fff;}
+.pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+#pageNum{width: 335px;margin:0 auto;}
+.modal-content{border-radius: 6px;overflow: hidden;}
+.pagination{margin:5px 0;}
+.headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}

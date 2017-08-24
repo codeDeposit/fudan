@@ -1,0 +1,75 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+
+<!-- 添加 start-->
+<button id="modaladdbtn" type="button"
+	class="btn btn-success pull-right" data-toggle="modal"
+	data-target="#addModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content modal-lg">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">新闻添加</h4>
+			</div>
+			<div class="modal-body">
+				<form id="newsaddform" class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-lable col-sm-1">标题</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control" name="subject"
+								required="required" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-lable col-sm-1">作者</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control" name="author"
+								required="required" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-lable col-sm-1">类型</label>
+						<div class="col-sm-11">
+							<select id="newstypeAddSelect" class="form-control"
+								name="newsType.typeId" required="required" datatype="select"
+								errormsg="请选择！">
+								<option value="">--请选择--</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-lable col-sm-1">状态</label>
+						<div class="col-sm-11">
+							<select class="form-control" name="status" required="required">
+								<option value="">--请选择--</option>
+								<option value="0">禁用</option>
+								<option value="1" selected>生效</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-lable col-sm-1">内容</label>
+						<div id="newsContent" class="col-md-11">
+							<%@ include file="../common/editor.jsp" %>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button id="closebtn" type="button" class="btn btn-default"
+					data-dismiss="modal">关闭</button>
+				<button id="newsaddbtn" type="button" class="btn btn-success">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->

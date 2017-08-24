@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.MailAttachMapper">
+
+	<!-- 添加邮件与附件的关联 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.Mail">
+		insert fudan_oa_mail_attach <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="mailId != null">
+				mailId = #{mailId},
+			</if>
+			<if test="fileId != null">
+				fileId = #{fileId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加邮件与附件的关联 end -->
+	
+	<!-- 获取邮件的附件Id start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.MailAttach">
+		select * from fudan_oa_mail_attach where mailId = #{mailId}
+	</select>
+	<!-- 获取邮件的附件Id end -->
+	
+</mapper>

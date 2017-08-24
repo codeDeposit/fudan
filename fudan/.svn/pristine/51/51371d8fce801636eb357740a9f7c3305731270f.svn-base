@@ -1,0 +1,27 @@
+package com.jy.repository.oa.personal;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.personal.DutyRegister;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DutyRegisterMapper {
+
+	// 考勤补签
+	int insert(DutyRegister dutyRegister);
+
+	// 删除补签信息
+	int delete(Long registerId);
+
+	// 获取补签信息列表
+	List<DutyRegister> select(@Param("inOffFlag") Short inOffFlag,
+			@Param("userId") String userId, @Param("regMins") Long regMins);
+
+	// 补签信息分页列表
+	List<DutyRegister> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("inOffFlag") Short inOffFlag, @Param("userId") String userId, @Param("regMins") Long regMins);
+
+}

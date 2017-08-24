@@ -1,0 +1,86 @@
+package com.jy.service.workflow.online.apply;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.service.oa.workflow.ApproveService;
+import com.jy.service.system.org.RoleService;
+
+@Service("processApplyService")
+public class ProcessApplyServiceImpl implements ProcessApplyService {
+	
+	@Autowired
+	private RuntimeService runtimeService;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private TaskService taskService;
+
+	private ApproveService approveService;
+
+	public ApproveService getApproveService() {
+		return approveService;
+	}
+
+	@Resource(name = "approveService")
+	public void setApproveService(ApproveService approveService) {
+		this.approveService = approveService;
+	}
+
+	public RoleService getRoleService() {
+		return roleService;
+	}
+
+	public void setRoleService(RoleService roleService) {
+		this.roleService = roleService;
+	}
+
+	/**
+	 * 提交申请
+	 * 
+	 * @param processDefinitionKey
+	 *            流程定义key值
+	 * @param positionId
+	 *            职务id
+	 * @param xqytId
+	 *            需求预填id, 或 需求填报id
+	 * @return
+	 */
+	public Map<String, String> apply(String processDefinitionKey, String positionId,
+			String xqId, String biaozhi) {
+		// 开始启动流程
+		String currentUserId = AccountShiroUtil.getCurrentUser().getAccountId();
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("positionId", positionId);
+		variables.put(biaozhi+"Id", xqId);
+		variables.put("biaozhi", biaozhi);
+		ProcessInstance processInstance = runtimeService
+				.startProcessInstanceByKey(processDefinitionKey);
+		// 获取正在运行的任务节点
+		TaskQuery query = taskService.createTaskQuery();
+		query.processInstanceId(processInstance.getId());
+		Task task = query.singleResult();
+		task.setAssignee(currentUserId);
+		/* 在流程监听器中设置职务下的所有人为审批人，谁审批都可以 ... */
+		taskService.complete(task.getId(), variables);
+		
+		String processDefinitionId = processInstance.getProcessDefinitionId();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("processInstanceId", processInstance.getId());
+		map.put("processDefinitionId", processDefinitionId);
+		return map;
+	}
+	
+}

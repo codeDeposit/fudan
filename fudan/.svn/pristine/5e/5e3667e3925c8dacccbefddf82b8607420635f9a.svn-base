@@ -1,0 +1,142 @@
+package com.jy.controller.oa.communicate;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.entity.oa.communicate.MailBox;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.service.oa.communicate.MailAttachService;
+import com.jy.service.oa.communicate.MailBoxService;
+import com.jy.service.oa.communicate.MailService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/mailbox")
+public class MailBoxController {
+
+	private MailBoxService mailBoxService;
+	private MailService mailService;
+	private MailAttachService mailAttachService;
+
+	public MailAttachService getMailAttachService() {
+		return mailAttachService;
+	}
+
+	@Resource(name = "mailAttachService")
+	public void setMailAttachService(MailAttachService mailAttachService) {
+		this.mailAttachService = mailAttachService;
+	}
+
+	public MailService getMailService() {
+		return mailService;
+	}
+
+	@Resource(name = "mailService")
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
+	}
+
+	public MailBoxService getMailBoxService() {
+		return mailBoxService;
+	}
+
+	@Resource(name = "mailBoxService")
+	public void setMailBoxService(MailBoxService mailBoxService) {
+		this.mailBoxService = mailBoxService;
+	}
+
+	/**
+	 * 删除邮件
+	 * 
+	 * @param boxId
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo delete(Long boxId) {
+		JsonInfo info = mailBoxService.delete(boxId);
+		return info;
+	}
+
+	/**
+	 * 查找邮箱下的邮件
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getmails")
+	public ModelAndView getMails(HttpServletRequest request,
+			@RequestParam(required = false) Long folderId,
+			@RequestParam(required = false) String subject,
+			@RequestParam(required = false) String sender,
+			@RequestParam(required = false) String recipientNames) {
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<MailBox> mails = mailBoxService.get(subject, sender, recipientNames, folderId);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(mails.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		List<MailBox> pageMails = mailBoxService.getPageList(pb, subject, sender, recipientNames, folderId);
+		ModelAndView mv = new ModelAndView();
+		if (null != pageMails && !(pageMails.isEmpty())) {
+			mv.addObject("mailboxs", pageMails);
+			mv.addObject("count", pageMails.size());
+		} else {
+			mv.addObject("count", 0);
+		}
+		mv.addObject("parm", folderId);
+		mv.setViewName("system/oa/communicate/mail_table");
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+	/**
+	 * 查看邮件详细信息
+	 * 
+	 * @param boxId
+	 * @return
+	 */
+	@RequestMapping("/seedetails")
+	public ModelAndView seeMailDetails(Long boxId) {
+		ModelAndView mv = new ModelAndView();
+		MailBox mailBox = mailBoxService.getBy(boxId);
+		Long mailId = mailBox.getMailId();
+		Mail mail = mailService.getInfoBy(mailId);
+		List<FileAttach> fileAttachs = mailAttachService.getBy(mailId);
+		mail.setMailAttachs(fileAttachs);
+		mailBox.setMail(mail);
+		mv.addObject("mailBox", mailBox);
+		mv.setViewName("system/oa/communicate/mail_details");
+		return mv;
+	}
+
+	/**
+	 * 邮件移至
+	 * 
+	 * @param boxId
+	 * @param folderId
+	 * @return
+	 */
+	@RequestMapping("/transfer")
+	@ResponseBody
+	public JsonInfo transfer(Long boxId, Long folderId) {
+		JsonInfo info = mailBoxService.transfer(boxId, folderId);
+		return info;
+	}
+
+}

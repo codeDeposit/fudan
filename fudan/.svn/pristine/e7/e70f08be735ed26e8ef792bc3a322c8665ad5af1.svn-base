@@ -1,0 +1,34 @@
+package com.jy.repository.oa.task;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.task.Appointment;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AppointmentMapper {
+
+	// 添加约会
+	int insert(Appointment appointment);
+
+	// 获取约会详细信息
+	Appointment selectInfoBy(Long appointId);
+
+	// 修改约会信息
+	int update(Appointment appointment);
+
+	// 批量删除约会
+	int delete(Long aid);
+
+	// 获取约会列表
+	List<Appointment> select(Appointment appointment);
+
+	//　分页获取列表
+	List<Appointment> selectPageList(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("subject") String subject, @Param("startTime") Date startTime, 
+			@Param("endTime") Date endTime, @Param("content") String content, @Param("userId") String userId);
+
+}

@@ -1,0 +1,36 @@
+package com.jy.service.customer;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.customer.Contract;
+import com.jy.repository.customer.ContractDao;
+
+@Service("contractService")
+public class ContractService{
+	
+	@Resource
+	private ContractDao contractDao;	
+	
+	public List<Contract> find(Contract contract) {
+		return this.contractDao.find(contract);
+	}
+
+	public List<Contract> search(Contract contract) {
+		return this.contractDao.search(contract);
+	}
+
+	public int insert(Contract contract) {
+		return this.contractDao.insert(contract);
+	}
+
+	public int update(Contract contract) {
+		return this.contractDao.update(contract);
+	}
+
+	public int delete(Contract contract) {
+		return this.contractDao.delete(contract);
+	}
+	
+}
+  

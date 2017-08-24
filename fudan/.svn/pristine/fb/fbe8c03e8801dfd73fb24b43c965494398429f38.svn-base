@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.HireInssueMapper">
+
+	<!-- 添加招聘信息 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.HireIssue">
+		insert fudan_oa_hire_issue <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="title != null and title !='' ">
+				title = #{title},
+			</if>
+			<if test="startDate != null ">
+				startDate = #{startDate},
+			</if>
+			<if test="endDate != null ">
+				endDate = #{endDate},
+			</if>
+			<if test="hireCount != null ">
+				hireCount = #{hireCount},
+			</if>
+			<if test="jobName != null and jobName !='' ">
+				jobName = #{jobName},
+			</if>
+			<if test="jobCondition != null and jobCondition !='' ">
+				jobCondition = #{jobCondition},
+			</if>
+			<if test="regFullname != null and regFullname !='' ">
+				regFullname = #{regFullname},
+			</if>
+			<if test="regDate != null ">
+				regDate = #{regDate},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加招聘信息 end -->
+	
+	
+	<!-- 修改招聘信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.HireIssue">
+		update fudan_oa_hire_issue <include refid="updateSQL"></include>
+		where hireId = #{hireId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="title != null and title !='' ">
+				title = #{title},
+			</if>
+			<if test="startDate != null ">
+				startDate = #{startDate},
+			</if>
+			<if test="endDate != null ">
+				endDate = #{endDate},
+			</if>
+			<if test="hireCount != null ">
+				hireCount = #{hireCount},
+			</if>
+			<if test="jobName != null and jobName !='' ">
+				jobName = #{jobName},
+			</if>
+			<if test="jobCondition != null and jobCondition !='' ">
+				jobCondition = #{jobCondition},
+			</if>
+			<if test="regFullname != null and regFullname !='' ">
+				regFullname = #{regFullname},
+			</if>
+			<if test="regDate != null ">
+				regDate = #{regDate},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="modifyDate != null ">
+				modifyDate = #{modifyDate},
+			</if>
+			<if test="modifyFullname != null and modifyFullname !='' ">
+				modifyFullname = #{modifyFullname},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改招聘信息 end -->
+	
+	
+	<!-- 招聘详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.HireIssue">
+		select * from fudan_oa_hire_issue where hireId = #{hireId}
+	</select>
+	<!-- 招聘详细信息 end -->
+	
+	
+	<!-- 审核招聘信息 start -->
+	<update id="reviewUpdate" parameterType="com.jy.entity.oa.hrm.HireIssue">
+		update fudan_oa_hire_issue <include refid="reviewUpdateSQL"></include>
+		where hireId = #{hireId}
+	</update>
+	
+	<sql id="reviewUpdateSQL">
+		<set>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="checkFullname != null and checkFullname !='' ">
+				checkFullname = #{checkFullname},
+			</if>
+			<if test="checkDate != null ">
+				checkDate = #{checkDate},
+			</if>
+			<if test="checkOpinion != null and checkOpinion !='' ">
+				checkOpinion = #{checkOpinion},
+			</if>
+		</set>
+	</sql>
+	<!-- 审核招聘信息 end -->
+	
+	
+	<!-- 批量删除招聘信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_hire_issue where hireId = #{hireId}
+	</delete>
+	<!-- 批量删除招聘信息 end -->
+	
+	
+	<!-- 获取招聘信息列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.HireIssue">
+		select * from fudan_oa_hire_issue
+		<where>
+			<if test="jobName != null and jobName !='' ">
+				and jobName like concat("%",#{jobName},"%") 
+			</if>
+			<if test="regFullname != null and regFullname !='' ">
+				and regFullname like concat("%",#{regFullname},"%")
+			</if>
+		</where>
+	</select>
+	<!-- 获取招聘信息列表 end -->
+	
+	
+	<!-- 招聘信息分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.HireIssue">
+		select * from fudan_oa_hire_issue
+		<where>
+			<if test="jobName != null and jobName !='' ">
+				and jobName like concat("%",#{jobName},"%") 
+			</if>
+			<if test="regFullname != null and regFullname !='' ">
+				and regFullname like concat("%",#{regFullname},"%")
+			</if>
+		</where>
+		order by hireId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 招聘信息分页列表 end -->
+	
+</mapper>

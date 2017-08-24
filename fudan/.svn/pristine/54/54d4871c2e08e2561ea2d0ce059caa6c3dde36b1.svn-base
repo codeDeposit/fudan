@@ -1,0 +1,43 @@
+package com.jy.controller.area;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.jy.controller.base.BaseController;
+import com.jy.entity.area.Area;
+import com.jy.service.area.AreaService;
+
+@Controller("areaController")
+@RequestMapping(value="/backstage/area")
+public class AreaController extends BaseController<Area> {
+	
+	@Resource(name="areaService")
+	private AreaService areaService;
+	
+	/*
+	 * 省份地址
+	 */
+	@RequestMapping("/province")  
+	public String province(HttpServletRequest request,Model model,@ModelAttribute Area area) throws Exception{	
+		List<Area> arealist = this.areaService.selectListBy(area);
+		model.addAttribute("province",arealist);
+		return "system/area/province";
+	}
+	
+	/*
+	 * 城市地址
+	 */
+	@RequestMapping("/city")  
+	public String city(HttpServletRequest request,Model model,@ModelAttribute Area area)throws Exception{	
+		List<Area> arealist = this.areaService.selectListBy(area);
+		model.addAttribute("city",arealist);
+		return "system/area/city";
+	}
+}

@@ -1,0 +1,32 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.AssetsType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface AssetsTypeService {
+
+	// 添加资产类型
+	JsonInfo save(AssetsType assetsType);
+
+	// 修改资产类型
+	JsonInfo update(AssetsType assetsType);
+
+	// 获取详细信息
+	AssetsType getInfoBy(Long assetsTypeId);
+
+	// 获取列表 
+	List<AssetsType> get(String typeName);
+
+	// 删除资产类型
+	JsonInfo del(Long assetsTypeId);
+
+	// 分页获取列表
+	List<AssetsType> getPageList(PageBean pb, String typeName);
+
+	// 获取所有资产类型
+	List<AssetsType> getAll();
+	
+}

@@ -1,0 +1,121 @@
+package com.jy.service.oa.impl.task;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.task.Appointment;
+import com.jy.repository.oa.task.AppointmentMapper;
+import com.jy.service.oa.task.AppointmentService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("appointmentService")
+public class AppointmentServiceImpl implements AppointmentService {
+
+	private AppointmentMapper appointmentMapper;
+
+	public AppointmentMapper getAppointmentMapper() {
+		return appointmentMapper;
+	}
+
+	@Autowired
+	public void setAppointmentMapper(AppointmentMapper appointmentMapper) {
+		this.appointmentMapper = appointmentMapper;
+	}
+
+	// 添加约会
+	@Override
+	public JsonInfo save(Appointment appointment) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		appointment.setUserId(userId);
+		int result = appointmentMapper.insert(appointment);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取约会详细信息
+	@Override
+	public Appointment getInfoBy(Long appointId) {
+		Appointment appointment = appointmentMapper.selectInfoBy(appointId);
+		
+		appointment.setStartTime1(DateStringUtil.dateToString4(appointment.getStartTime()));
+		appointment.setEndTime1(DateStringUtil.dateToString4(appointment.getEndTime()));
+		
+		return appointment;
+	}
+
+	// 修改约会信息
+	@Override
+	public JsonInfo update(Appointment appointment) {
+		int result = appointmentMapper.update(appointment);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除约会
+	@Override
+	public JsonInfo del(Long[] appointId) {
+		int result = 0;
+		for(Long aid : appointId) {
+			result = appointmentMapper.delete(aid);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取约会列表
+	@Override
+	public List<Appointment> get(Appointment appointment) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		appointment.setUserId(userId);
+		List<Appointment> appointments = appointmentMapper.select(appointment);
+		return appointments;
+	}
+	
+	// 分页获取列表
+	@Override
+	public List<Appointment> getPageList(PageBean pb, Appointment appointment) {
+		
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<Appointment> appointments = appointmentMapper.selectPageList(firstIndex, toIndex, appointment.getSubject(), appointment.getStartTime(), 
+				                                                          appointment.getEndTime(), appointment.getContent(), userId);
+		
+		for(Appointment appoint: appointments) {
+			appoint.setStartTime1(DateStringUtil.dateToString4(appoint.getStartTime()));
+			appoint.setEndTime1(DateStringUtil.dateToString4(appoint.getEndTime()));
+		}
+		
+		return appointments;
+	}
+
+}

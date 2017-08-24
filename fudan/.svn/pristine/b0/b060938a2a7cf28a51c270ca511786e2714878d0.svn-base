@@ -1,0 +1,280 @@
+$(function() {
+	fuLoading();
+	var addListIndNUm;
+	$('.email-content-box').width(
+			$('.email-content-box').parent().width() - 200);
+	$('.myEmailList').height($('.myEmailList').parent().height() - 90)
+	// 右键
+	$('.myEmailList').on('contextmenu', '.rightKey', function(evt) {
+		var ide = $(this).attr('id');
+		evt.preventDefault();
+		addListIndNUm = $(this).index();
+		var posT = evt.pageY - $('#email-menu-box').offset().top + 6;
+		var posL = evt.pageX - $('#email-menu-box').offset().left - 12;
+		$('.poPerver').css({
+			'top' : posT,
+			'left' : posL,
+			'display' : 'block'
+		});
+		$('#add').on('click', function() {
+			$('#addList').modal('show');
+			$('#addhid').val(ide);
+		})
+		$('#edit').on('click', function() {
+			// 请求邮箱目录的详细信息
+			getdetails(ide);
+			$('#editList').modal('show');
+			$('#edithid').val(ide);
+		})
+		$('#delete').on('click', function() {
+			fDelete2(ide);
+		})
+		return addListIndNUm;
+	});
+	// 二级下拉
+	$('.myEmailList').on('click', '.list-c', function(event) {
+		if ($(this).parent().has('.second-level')) {
+			$(this).parent().find('.second-level').stop().slideToggle();
+		}
+	});
+	// 右键弹框消失
+	$(document).on('click', function(event) {
+		$('.poPerver').css('display', 'none');
+	});
+	// 一、二级菜单活动项
+	$('.left-side-menu').on('click', '.list-c', function(event) {
+		$('.list-c').removeClass('active');
+		$(this).addClass('active');
+	});
+	// 收缩
+	$('.close-menu').on('click', function(event) {
+		event.preventDefault();
+		var rWidth = $('.email-content-box').parent().width() - 30;
+		$('.email-content-box').stop().animate({
+			'width' : rWidth,
+		}, 300);
+		$('.left-side-menu').stop().animate({
+			'width' : 0,
+		}, 300, function() {
+			$(this).css('display', 'none');
+			$('.left-side-bar').stop().animate({
+				'left' : 0,
+			}, 300);
+		});
+	});
+	// 反收缩
+	$('.left-side-bar').on('click', function(event) {
+		event.preventDefault();
+		var rWidth = $('.email-content-box').parent().width() - 200;
+		$(this).stop().animate({
+			'left' : -20,
+		}, 300, function() {
+			$('.left-side-menu').css('display', 'block');
+			$('.email-content-box').stop().animate({
+				'width' : rWidth,
+			}, 300);
+			$('.left-side-menu').stop().animate({
+				'width' : 180,
+			}, 300);
+		});
+	});
+	// input监控
+	$('input[name="addName"]').on('input propertychange', function(event) {
+		event.preventDefault();
+		if ($(this).val() != '') {
+			$(this).css('borderColor', 'green');
+		}
+	});
+	// 表单验证
+	$('.aYes').click(
+			function() {
+				var inputVal = $('input[name="addName"]');
+				var aName = inputVal.val();
+				var firstLevel = '<li class="rightKey">'
+						+ '<a href="javascript:;" class="list-c">'
+						+ '<i class="glyphicon glyphicon-edit"></i>&nbsp;'
+						+ aName + '</a>' + '<ul class="second-level"></ul>'
+						+ '</li>';
+				var secondLevel = '<li class="second-level-list">'
+						+ '<a href="javascript:;" class="list-c">'
+						+ '<i class="glyphicon glyphicon-comment"></i>&nbsp;'
+						+ aName + '</a>' + '</li>';
+				if (aName == '') {
+					inputVal.css('borderColor', 'red');
+				} else {
+					// do ajax do ajax do ajax do ajax do ajax
+					if (addListIndNUm == 0) {
+						$('.myEmailList').append(firstLevel);
+						return;
+					} else {
+						$('.second-level').eq(addListIndNUm - 1).append(
+								secondLevel);
+					}
+					inputVal.val('');
+					$('#addList').modal('hide');
+				}
+			});
+	getMailList();
+	selectFolder("boxselect", "moveName", "moveId");
+	getMail("");
+})
+function getMailList() {
+	var url = "/oa/mailfolder/list";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		success : function(data) {
+			var text = eval("(" + data + ")");
+			$("#mailfoldertree").append(text);
+		}
+	});
+}
+// 获取邮箱目录下的邮件
+function getMail(folderId) {
+	fuLoading();
+	var dataStr = $("#searchform").serialize();
+	if (folderId > 0) {
+		dataStr = dataStr + "&folderId=" + folderId;
+	}
+	var url = "/oa/mailbox/getmails";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : dataStr,
+		success : function(data) {
+			fuCloseLayer();
+			$(".theContent").html(data);
+		}
+	});
+}
+// 邮箱目录增加操作
+$("#addbtn").click(function() {
+	var url = "/oa/mailfolder/add";
+	var data = $("#addform").serialize();
+	$.ajax({
+		type : "post",
+		url : jypath + url,
+		data : data,
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+});
+// 邮箱目录修改操作
+$("#editbtn").click(function() {
+	var url = "/oa/mailfolder/edit";
+	var data = $("#editform").serialize();
+	$.ajax({
+		type : "post",
+		url : jypath + url,
+		data : data,
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+});
+// 获取邮箱目录信息
+function getdetails(id) {
+	fuLoading();
+	var url = "/oa/mailfolder/getdetails";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "folderId=" + id,
+		success : function(data) {
+			var obj = eval("(" + data + ")");
+			fuCloseLayer();
+			$("#editname").val(obj.folderName);
+		}
+	});
+}
+// 删除邮箱目录
+function fDelete2(folderId) {
+	var url = "/oa/mailfolder/del";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : "folderId=" + folderId,
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		},
+		error : function() {
+			fuShowError("邮箱目录下有邮件，请先删除邮件!");
+		}
+	});
+}
+function seeMail(boxId) {
+	window.location.href = jypath + "/oa/mailbox/seedetails?boxId=" + boxId;
+}
+function fuSure(param) {
+	fuLoading();
+	fuClose();
+	setTimeout('fDelete(\'' + param + '\')', 200);
+}
+// 删除邮件
+function fDelete(boxId) {
+	var url = "/oa/mailbox/del";
+	$.ajax({
+		type : "get",
+		url : jypath + url,
+		data : {
+			"boxId" : boxId
+		},
+		success : function(html) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}
+function move(boxId) {
+	$("#moveIds").val(boxId);
+	$("#move").modal("show");
+}
+
+function selectFolder(divid, inputName, inputId) {
+	$.ajax({
+		type : "get",
+		url : jypath + "/oa/mailfolder/listtree",
+		dataType : "json",
+		success : function(result) {
+			$("#" + divid).treeview({
+				data : result, // 数据源
+				highlightSelected : true, // 是否高亮选中
+				nodeIcon : 'glyphicon glyphicon-folder-close',
+				selectedIcon : 'glyphicon glyphicon-folder-open',
+				emptyIcon : '', // 没有子节点的节点图标
+				multiSelect : false, // 多选
+				backColor : "#EFEFEF",
+				levels : 1,
+				onNodeChecked : function(event, data) {
+					$("#" + inputName).val(data.text);
+					$("#" + inputId).val(data.folderId);
+					$("#" + divid).hide();
+				},
+				onNodeSelected : function(event, data) {
+					$("#" + inputName).val(data.text);
+					$("#" + inputId).val(data.folderId);
+					$("#" + divid).hide();
+				}
+			});
+		},
+		error : function() {
+			alert("树形结构加载失败！")
+		}
+	});
+}
+function transfer() {
+	var url = "/oa/mailbox/transfer";
+	$.ajax({
+		type : "post",
+		url : jypath + url,
+		data : $("#transferform").serialize(),
+		success : function(data) {
+			fuShowSuccess();
+			refresh();
+		}
+	});
+}

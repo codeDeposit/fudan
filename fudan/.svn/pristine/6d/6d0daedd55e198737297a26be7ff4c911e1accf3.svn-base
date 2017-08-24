@@ -1,0 +1,100 @@
+package com.jy.service.oa.impl.archive;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.archive.ArchivesType;
+import com.jy.repository.oa.archive.ArchivesTypeMapper;
+import com.jy.service.oa.archive.ArchivesTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("archivesTypeService")
+public class ArchivesTypeServiceImpl implements ArchivesTypeService {
+
+	private ArchivesTypeMapper archivesTypeMapper;
+
+	public ArchivesTypeMapper getArchivesTypeMapper() {
+		return archivesTypeMapper;
+	}
+	
+	@Autowired
+	public void setArchivesTypeMapper(ArchivesTypeMapper archivesTypeMapper) {
+		this.archivesTypeMapper = archivesTypeMapper;
+	}
+
+	// 添加分类
+	@Override
+	public JsonInfo save(ArchivesType archivesType) {
+		JsonInfo info = new JsonInfo();
+		int result = archivesTypeMapper.insert(archivesType);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改分类信息
+	@Override
+	public JsonInfo update(ArchivesType archivesType) {
+		JsonInfo info = new JsonInfo();
+		int result = archivesTypeMapper.update(archivesType);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除分类
+	@Override
+	public JsonInfo delete(long typeId) {
+		JsonInfo info = new JsonInfo();
+		int result = archivesTypeMapper.delete(typeId);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 根据Id号获取分类详细信息
+	@Override
+	public ArchivesType getBy(long typeId) {
+		ArchivesType archivesType = archivesTypeMapper.selectInfo(typeId);
+		return archivesType;
+	}
+
+	// 获取所有公文类别
+	@Override
+	public List<ArchivesType> getAll() {
+		List<ArchivesType> archivesTypes = archivesTypeMapper.selectAll();
+		return archivesTypes;
+	}
+
+	@Override
+	public List<ArchivesType> getPageList(PageBean pb) {
+		
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<ArchivesType> pageArchivesTypes = archivesTypeMapper.selectPageDate(firstIndex, toIndex);
+		
+		return pageArchivesTypes;
+	}
+
+}

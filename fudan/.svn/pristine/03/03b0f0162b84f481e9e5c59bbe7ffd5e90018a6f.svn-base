@@ -1,0 +1,102 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 大模态 -->
+<div class="modal fade" id="inforoupdate" tabindex="-1" role="dialog"
+	aria-labelledby="newsAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="newsAddModalLabel">日程详细信息</h4>
+			</div>
+			<div class="modal-body">
+				<form id="diaryeditform" class="form-horizontal" role="form">
+					<input type="hidden" name="diaryId" value="${diary.diaryId }" />
+					<div class="form-group">
+						<label class="col-md-1">日期</label>
+						<div class="col-md-11">
+							<div class="input-group date form_date" data-date=""
+								data-date-format="yyyy-MM-dd" data-link-field="dtp_input1"
+								data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" name="dayTime" type="text"
+									value="${diary.dayTime1 }" readonly required
+									aria-required="true" placeholder="开始时间"> <span
+									class="input-group-addon"><span
+									class="glyphicon glyphicon-remove"></span> </span> <span
+									class="input-group-addon"><span
+									class="glyphicon glyphicon-calendar"></span> </span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-1">类型</label>
+						<div class="col-md-11">
+							<select class="form-control" name="diaryType">
+								<c:if test="${diary.diaryType == 0 }">
+									<option value="">--请选择--</option>
+									<option selected value="0">个人日志</option>
+									<option value="1">工作日志</option>
+								</c:if>
+								<c:if test="${diary.diaryType == 1 }">
+									<option value="">--请选择--</option>
+									<option value="0">个人日志</option>
+									<option selected value="1">工作日志</option>
+								</c:if>
+
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-1">内容</label>
+						<div class="col-md-11"><%@ include
+								file="../common/editor2.jsp"%></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<c:if test="${operation == 'update' }">
+							<button id="diaryeditbtn" type="button" class="btn btn-success">保存</button>
+						</c:if>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 大模态 -->
+
+<script type="text/javascript">
+	$(function() {
+		$("#inforoupdate").modal("show");
+		setEditorContent();
+	});
+	$("#diaryeditbtn").click(function() {
+		var content = getContent();
+		var url = "/oa/diary/edit";
+		$.ajax({
+			type : "post",
+			url : jypath + url,
+			data : $("#diaryeditform").serialize() + "&content=" + content,
+			success : function(data) {
+				$("#diaryeditbtn").attr("data-dismiss", "modal");
+				refresh();
+			}
+		});
+	});
+	// 获取富文本编辑器的内容
+	function getContent() {
+		var content = UM.getEditor("containerform2").getContent();
+		return content;
+	}
+	//设置编辑器内容
+	function setEditorContent() {
+		var content = '${diary.content}';
+		//实例化编辑器
+		var umform = UM.getEditor("containerform2");
+		//编辑器加载完成后，设置内容
+		umform.ready(function() {
+			umform.setContent(content);
+		});
+	}
+</script>

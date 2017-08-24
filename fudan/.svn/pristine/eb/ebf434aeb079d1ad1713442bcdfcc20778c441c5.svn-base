@@ -1,0 +1,15 @@
+/*function getData(id, url) {
+	String url = 
+	if(url != '') {
+		$.ajax({
+			type:"post",
+			async:false,
+			url:jypath+url,
+			data:"id="+id,
+			success:function(data){
+				document.getElementById('datatable').innerHTML+=data;
+			}
+		});
+	}
+	
+}*/

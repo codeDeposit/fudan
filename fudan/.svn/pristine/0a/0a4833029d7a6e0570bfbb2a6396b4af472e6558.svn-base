@@ -1,0 +1,33 @@
+package com.jy.repository.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.personal.HolidayRecord;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface HolidayRecordMapper {
+
+	// 添加假期设置
+	int insert(HolidayRecord holidayRecord);
+
+	// 修改假期设置
+	int update(HolidayRecord holidayRecord);
+
+	// 获取假期详细信息
+	HolidayRecord selectInfoBy(Long recordId);
+
+	// 删除假期
+	int delete(Long recordId);
+
+	// 获取假期列表
+	List<HolidayRecord> select(@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("holidayRecord") HolidayRecord holidayRecord);
+	
+	//假期设置分页列表
+	List<HolidayRecord> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("holidayRecord") HolidayRecord holidayRecord);
+
+}

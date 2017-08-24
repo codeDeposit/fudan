@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.jy.repository.wzcg.WzcgExpertDao">
+	<resultMap type="com.jy.entity.wzcg.WzcgExpert" id="ResultMap">
+		<result column="userId" property="userId" />
+		<result column="state" property="state" />
+		<result column="name" property="name" />
+		<result column="picture" property="picture" />
+		<result column="ID_image" property="ID_image" />
+		<result column="sex" property="sex" />
+		<result column="birthday" property="birthday" />
+		<result column="ID_card" property="ID_card" />
+		<result column="knowledge" property="knowledge" />
+		<result column="school" property="school" />
+		<result column="specialty" property="specialty" />
+		<result column="begin_work_time" property="begin_work_time" />
+		<result column="work_time" property="work_time" />
+		<result column="work_unit" property="work_unit" />
+		<result column="responsible_person" property="responsible_person" />
+		<result column="job_function" property="job_function" />
+		<result column="job_name" property="job_name" />
+		<result column="work_address" property="work_address" />
+		<result column="work_zip_code" property="work_zip_code" />
+		<result column="address" property="address" />
+		<result column="zip_code" property="zip_code" />
+		<result column="work_phone" property="work_phone" />
+		<result column="phone" property="phone" />
+		<result column="mobile_phone" property="mobile_phone" />
+		<result column="profession" property="profession" />
+		<result column="email" property="email" />
+		<result column="resume" property="resume" />
+		<result column="experience_a" property="experience_a" />
+		<result column="experience_b" property="experience_b" />
+		<result column="promise" property="promise" />
+		<result column="cgzx_suggestion" property="cgzx_suggestion" />
+		<result column="cgb_suggestion" property="cgb_suggestion" />
+		<result column="createdate" property="createdate" />
+		<result column="reason" property="reason" />
+	</resultMap>
+	<!-- 新增 -->
+	<insert id="insert">
+		insert into wzcg_expert
+		(userId,state,name,picture,ID_image,sex,birthday,ID_card,knowledge,school,
+		specialty,begin_work_time,work_time,work_unit,responsible_person,job_function,job_name,work_address,work_zip_code,address,
+		zip_code,work_phone,phone,mobile_phone,profession,email,resume,experience_a,experience_b,promise,cgzx_suggestion,cgb_suggestion,createdate,reason)
+		values
+		(#{userId},#{state},#{name},#{picture},#{ID_image},#{sex},#{birthday},#{ID_card},#{knowledge},#{school},
+		#{specialty},#{begin_work_time},#{work_time},#{work_unit},#{responsible_person},#{job_function},#{job_name},#{work_address},#{work_zip_code},#{address},
+		#{zip_code},#{work_phone},#{phone},#{mobile_phone},#{profession},#{email},#{resume},#{experience_a},#{experience_b},#{promise},#{cgzx_suggestion},#{cgb_suggestion},
+		#{createdate},#{reason})
+	</insert>
+	<!-- 查询专家 -->
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_expert where 1 = 1 <include refid="search"></include>
+	</select>
+	<!-- 查询专家 -->
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_expert where 1 = 1 <include refid="searchList"></include>
+	</select>
+	<!-- 删除专家信息 -->
+	<delete id="delete" parameterType="String" >
+		delete from wzcg_expert where userId = #{id};
+	</delete>
+	<!-- 修改专家信息 start -->
+	<update id="update">
+		update wzcg_expert
+		<include refid="updateSQL"></include>
+		where userId = #{userId};
+	</update>
+	<sql id="search">
+		<if test="userId != null and userId != ''">  
+			AND userId = #{userId}
+		</if> 
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if> 
+		<if test="name != null and name != ''">  
+			AND name = #{name}
+		</if> 
+		<if test="picture != null and picture != ''">  
+			AND picture = #{picture}
+		</if> 
+		<if test="ID_image != null and ID_image != ''">  
+			AND ID_image = #{ID_image}
+		</if> 
+		<if test="sex != null and sex != ''">  
+			AND sex = #{sex}
+		</if> 
+		<if test="birthday != null and birthday != ''">  
+			AND birthday = #{birthday}
+		</if>
+		<if test="ID_card != null and ID_card != ''">  
+			AND ID_card = #{ID_card}
+		</if>
+		<if test="knowledge != null and knowledge != ''">  
+			AND knowledge = #{knowledge}
+		</if>
+		<if test="school != null and school != ''">  
+			AND school = #{school}
+		</if>
+		<if test="specialty != null and specialty != ''">  
+			AND specialty = #{specialty}
+		</if>
+	</sql>
+	<!-- 抽取查询 -->
+	<select id="extractSearch" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_expert where 1 = 1 <include refid="extractSearchList"></include>
+	</select>
+	<sql id="searchList">
+		<if test="userId != null and userId != ''">  
+			AND userId like concat('%', #{userId}, '%') 
+		</if> 
+		<if test="profession != null and profession != ''">  
+			AND profession like concat('%', #{profession}, '%') 
+		</if> 
+		<if test="knowledge != null and knowledge != ''">  
+			AND knowledge = #{knowledge}
+		</if> 
+		<if test="job_name != null and job_name != ''">  
+			AND job_name = #{job_name}
+		</if> 
+		<if test="timeMin != null and timeMin != ''">  
+			AND work_time >= #{timeMin}
+		</if> 
+		<if test="timeMax != null and timeMax != ''">  
+			AND work_time &lt;= #{timeMax}
+		</if>
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if> 
+	</sql>
+	<sql id="extractSearchList">
+		<if test="profession != null and profession != ''">  
+			AND profession like concat('%', #{profession}, '%') 
+		</if> 
+		<if test="knowledge != null and knowledge != ''">  
+			AND knowledge = #{knowledge}
+		</if> 
+		<if test="job_name != null and job_name != ''">  
+			AND job_name = #{job_name}
+		</if> 
+		<if test="timeMin != null and timeMin != ''">  
+			AND work_time >= #{timeMin}
+		</if> 
+		<if test="timeMax != null and timeMax != ''">  
+			AND work_time &lt;= #{timeMax}
+		</if>
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if>
+			limit #{count}
+	</sql>
+	<sql id="updateSQL">
+		<set>
+			<if test="state != null and state != '' ">
+				state=#{state},
+			</if>
+			<if test="name != null and name != '' ">
+				name=#{name},
+			</if>
+			<if test="picture != null and picture != '' ">
+				csny=#{picture},
+			</if>
+			<if test="ID_image != null and ID_image != '' ">
+				ID_image=#{ID_image},
+			</if>
+			<if test="sex != null and sex != '' ">
+				sex=#{sex},
+			</if>
+			<if test="birthday != null and birthday != '' ">
+				birthday=#{birthday},
+			</if>
+			<if test="ID_card != null and ID_card != '' ">
+				ID_card=#{ID_card},
+			</if>
+			<if test="knowledge != null and knowledge != '' ">
+				knowledge=#{knowledge},
+			</if>
+			<if test="school != null and school != '' ">
+				school=#{school},
+			</if>
+			<if test="specialty != null and specialty != '' ">
+				specialty=#{specialty},
+			</if>
+			<if test="begin_work_time != null and begin_work_time != '' ">
+				begin_work_time=#{begin_work_time},
+			</if>
+			<if test="work_time != null and work_time != '' ">
+				work_time=#{work_time},
+			</if>
+			<if test="work_unit != null and work_unit != '' ">
+				work_unit=#{work_unit},
+			</if>
+			<if test="responsible_person != null and responsible_person != '' ">
+				responsible_person=#{responsible_person},
+			</if>
+			<if test="job_function != null and job_function != '' ">
+				job_function=#{job_function},
+			</if>
+			<if test="job_name != null and job_name != '' ">
+				job_name=#{job_name},
+			</if>
+			<if test="work_address != null and work_address != '' ">
+				work_address=#{work_address},
+			</if>
+			<if test="work_zip_code != null and work_zip_code != '' ">
+				work_zip_code=#{work_zip_code},
+			</if>
+			<if test="address != null and address != '' ">
+				address=#{address},
+			</if>
+			<if test="zip_code != null and zip_code != '' ">
+				zip_code=#{zip_code},
+			</if>
+			<if test="work_phone != null and work_phone != '' ">
+				work_phone=#{work_phone},
+			</if>
+			<if test="phone != null and phone != '' ">
+				phone=#{phone},
+			</if>
+			<if test="mobile_phone != null and mobile_phone != '' ">
+				mobile_phone=#{mobile_phone},
+			</if>
+			<if test="profession != null and profession != '' ">
+				profession=#{profession},
+			</if>
+			<if test="email != null and email != '' ">
+				email=#{email},
+			</if>
+			<if test="resume != null and resume != '' ">
+				resume=#{resume},
+			</if>
+			<if test="experience_a != null and experience_a != '' ">
+				experience_a=#{experience_a},
+			</if>
+			<if test="experience_b != null and experience_b != '' ">
+				experience_b=#{experience_b},
+			</if>
+			<if test="promise != null and promise != '' ">
+				promise=#{promise},
+			</if>
+			<if test="cgzx_suggestion != null and cgzx_suggestion != '' ">
+				cgzx_suggestion=#{cgzx_suggestion},
+			</if>
+			<if test="cgb_suggestion != null and cgb_suggestion != '' ">
+				cgb_suggestion=#{cgb_suggestion},
+			</if>
+			<if test="createdate != null and createdate != '' ">
+				createdate=#{createdate},
+			</if>
+			<if test="reason != null and reason != '' ">
+				reason=#{reason},
+			</if>
+		</set>
+	</sql>
+</mapper>

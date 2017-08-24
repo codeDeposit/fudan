@@ -1,0 +1,226 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="renderer" content="webkit">
+		<link href="${jypath}/app/css/plugins/summernote/summernote.css" rel="stylesheet">
+    	<link href="${jypath}/app/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+		<%@ include file="../../common/css.jsp" %>
+		<%@ include file="../../common/js.jsp" %>
+    	<!-- SUMMERNOTE -->
+	    <script src="${jypath}/app/js/plugins/summernote/summernote.min.js"></script>
+	    <script src="${jypath}/app/js/plugins/summernote/summernote-zh-CN.js"></script>
+	</head>
+	<%@ include file="../../common/toast.jsp"%>
+	<body style='height:2000px !important;'>
+		<div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>联系信息</h2>
+                <ol class="breadcrumb" style="margin-left:0px !important;margin-top:0px;">
+                    <li>
+                        <a href="index.html">主页</a>
+                    </li>
+                    <li>
+                        <a>app设置</a>
+                    </li>
+                    <li>
+                        <strong>联系信息</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="ibox-content">
+        
+			<div class="text-right" style="margin:10px">
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_contact">
+	                   	修改
+	            </button>
+			</div>
+			<div class="modal inmodal fade" id="modal_contact" tabindex="-1" role="dialog"  aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">
+								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+							</button>
+							<h4 class="modal-title">联系信息修改</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal aForm" role="form" id="Form_contact" onsubmit="return fSubmit()">
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">显示内容</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_name" id="goods_name" class="form-control" placeholder="客服页面显示内容（200字）" maxlength="200" required>
+									</div>
+								</div>
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">联系电话</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_number" id="goods_number" class="form-control" placeholder="客服电话" maxlength="50" >
+										<!--  <span class="help-block m-b-none">如果不输入商品货号,系统自动生成一个唯一的货号.</span> -->
+									</div>
+								</div>
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">服务邮箱</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_number" id="goods_number" class="form-control" placeholder="邮箱地址" maxlength="50" >
+										<!--  <span class="help-block m-b-none">如果不输入商品货号,系统自动生成一个唯一的货号.</span> -->
+									</div>
+								</div>
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">微信公众号</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_number" id="goods_number" class="form-control" placeholder="微信公众号" maxlength="50" >
+										<!--  <span class="help-block m-b-none">如果不输入商品货号,系统自动生成一个唯一的货号.</span> -->
+									</div>
+								</div>
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">官网地址</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_number" id="goods_number" class="form-control" placeholder="网站地址" maxlength="50" >
+										<!--<span class="help-block m-b-none">如果不输入商品货号,系统自动生成一个唯一的货号.</span> -->
+									</div>
+								</div>
+								<div class="form-group col-sm-12">
+									<label class="col-sm-2 control-label">公司名称</label>
+									<div class="col-sm-10">
+										<input type="text" name="goods_number" id="goods_number" class="form-control" placeholder="公司名称" maxlength="50" >
+										<!--  <span class="help-block m-b-none">如果不输入商品货号,系统自动生成一个唯一的货号.</span> -->
+									</div>
+								</div>
+							</form>
+                        </div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-white" data-dismiss="modal">
+								关闭
+							</button>
+							<button type="submit" class="btn btn-primary" form="Form_contact">
+								保存
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+            
+			<div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>内容</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>显示内容</td>
+                                    <td>非常感谢您使用我们的APP。如果您在使用过程中遇到任何问题，请及时联系我们。</td>
+                                    <td>
+                                    	<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+									</td>
+                                </tr>
+                                <tr>
+                                    <td>联系电话</td>
+                                    <td>400-300-200</td>
+                                    <td>
+										<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+									</td>
+                                </tr>
+                                <tr>
+                                    <td>服务邮箱</td>
+                                    <td>fudan@qq.com</td>
+                                    <td>
+                                    	<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>微信公众号</td>
+                                    <td>zsyy</td>
+                                    <td>
+                                    	<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>官网地址</td>
+                                    <td>http://www.zhshyy120.cn</td>
+                                    <td>
+                                    	<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>公司名称</td>
+                                    <td>上海复单信息技术有限公司</td>
+                                    <td>
+                                    	<button onclick="fState()" type="button" class="btn btn-warning btn-sm">
+											关闭
+										</button>
+										<button onclick="fState()" type="button" class="btn btn-primary btn-sm">
+											显示
+										</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+			
+			
+		</div>
+		<script>
+			 $(document).ready(function () {
+		            $('.summernote').summernote({
+		                lang: 'zh-CN'
+		            });
+		     });
+	         var edit = function () {
+	            $("#eg").addClass("no-padding");
+	            $('.click2edit').summernote({
+	                lang: 'zh-CN',
+	                focus: true
+	            });
+	         };
+	         var save = function () {
+	            $("#eg").removeClass("no-padding");
+	            var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+alert(aHTML);
+	            $('.click2edit').destroy();
+	         };
+		</script>
+	</body>
+</html>

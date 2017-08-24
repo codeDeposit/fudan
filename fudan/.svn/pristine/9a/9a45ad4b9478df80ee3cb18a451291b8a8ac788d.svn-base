@@ -1,0 +1,43 @@
+package com.jy.controller.oa.workflow;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.service.oa.workflow.ProcessTemplateService;
+import com.jy.task.utils.JsonInfo;
+
+/**
+ * process流程与template模板关联
+ * @author admin
+ *
+ */
+@Controller
+@RequestMapping("/oa/workflow")
+public class ProcessTemplateController {
+	
+	private ProcessTemplateService processTemplateService;
+	
+	public ProcessTemplateService getProcessTemplateService() {
+		return processTemplateService;
+	}
+
+	@Resource(name="processTemplateService")
+	public void setProcessTemplateService(
+			ProcessTemplateService processTemplateService) {
+		this.processTemplateService = processTemplateService;
+	}
+
+	/**
+	 * 添加流程与模板之间的关联
+	 * @param processTemplate
+	 * @return
+	 */
+	public JsonInfo add(ProcessTemplate processTemplate) {
+		JsonInfo info = processTemplateService.save(processTemplate);
+		return info;
+	}
+
+}

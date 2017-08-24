@@ -1,0 +1,93 @@
+	$(document).ready(function() {
+		fuLoading();
+		$('.form_date').datetimepicker({
+	        language: 'zh-CN',
+	        weekStart: 1,
+	        todayBtn: 1,
+	        autoclose: 1,
+	        todayHighlight: 1,
+	        startView: 2,
+	        minView: 2,
+	        forceParse: 0,
+	    });
+	    getPhoneGroup();
+	});
+	// 获取通讯录分组
+	function getPhoneGroup() {
+		var url = "/oa/phonegroup/listall";
+		$.ajax({
+			type: "get",
+			url: jypath + url,
+			success: function(data) {
+				// 将json字符串解析为json对象数组
+				var phoneGroups = eval("("+data+")"); 
+				for(var phoneGroup in phoneGroups) {
+					// 获取json对象数组的每个对象
+					var phoneGroupObj = phoneGroups[phoneGroup];
+					$("#phoneGroupSelect").append("<option value='"+ phoneGroupObj.groupId +"'>"+ phoneGroupObj.groupName +"</option>");
+					$("#phoneGroupAddSelect").append("<option value='"+ phoneGroupObj.groupId +"'>"+ phoneGroupObj.groupName +"</option>");
+				}
+				fuCloseLayer();
+			}
+		});
+	}
+   	// 添加类型
+   	$("#addsubmitbtn").click(function() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/phonebook/add",
+   			data: $("#addform").serialize(),
+   			success : function(html) {
+   				refresh();
+   			}
+   		});
+   	});
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/phonebook/getdetails";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?phoneId="+id+"&operation="+operation,
+   			success: function(data){
+   				fuCloseLayer();
+		    	$("#getInfoOrUpdate").html(data);
+		    }
+   		});
+   	}
+	// 删除
+	function fDelete(typeId) {
+		var url = "/oa/phonebook/del";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?phoneId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	// 查询
+	$("#phonebooksearchbtn").click(function() {
+		var id = "phonebooktable";
+		var url = jypath + "/oa/phonebook/list";
+		var type = "post";
+		var data = $("#phonebooksearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "phonebooktable";
+		var url= jypath+"/oa/phonebook/list";
+		var type = "get";
+		var data = $("#phonebooksearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}

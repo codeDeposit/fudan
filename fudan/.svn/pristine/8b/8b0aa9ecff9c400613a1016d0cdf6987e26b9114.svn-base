@@ -1,0 +1,30 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.CarApply;
+import com.jy.entity.oa.admin.CarApplyVO;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface CarApplyService {
+
+	// 添加车辆申请单
+	JsonInfo save(CarApply carApply);
+
+	// 获取申请单详细信息
+	CarApplyVO getInfoBy(Long repairId);
+
+	// 修改申请单信息
+	JsonInfo update(CarApply carApply);
+
+	// 批量删除申请单
+	JsonInfo del(Long[] applyId);
+
+	// 获取申请单列表
+	List<CarApply> get(String carNo, Short approvalStatus, String userFullname);
+
+	// 申请单分页列表
+	List<CarApplyVO> getPageList(PageBean pb, String carNo, Short approvalStatus, String userFullname);
+
+}

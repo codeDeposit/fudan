@@ -1,0 +1,40 @@
+package com.jy.service.oa.info;
+
+import java.util.List;
+
+import com.jy.entity.oa.info.News;
+import com.jy.entity.oa.info.NewsType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface NewsTypeService {
+
+	// 获取新闻类型列表
+	List<NewsType> get(String typeName, Short sn);
+
+	// 添加新闻类型
+	JsonInfo save(NewsType newsType);
+
+	// 修改新闻类型信息
+	JsonInfo update(NewsType newsType);
+
+	// 获取详细信息
+	NewsType getDetailsBy(Long typeId);
+
+	// 批量删除
+	JsonInfo del(Long[] typeId);
+
+	// 获取最大的sn值
+	Short getTop();
+
+	// 获取所有的类型
+	List<NewsType> getAll();
+
+	// 分页后的列表
+	List<NewsType> getPageList(PageBean pb);
+
+	// 获取新闻类别下的新闻列表
+	List<News> getNews(Long[] typeId, String subject, String author);
+
+}

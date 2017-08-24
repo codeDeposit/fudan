@@ -1,0 +1,24 @@
+package com.jy.entity.oa.communicate;
+
+public class MailAttach {
+
+	private Long mailId;
+	private Long fileId;
+
+	public Long getMailId() {
+		return mailId;
+	}
+
+	public void setMailId(Long mailId) {
+		this.mailId = mailId;
+	}
+
+	public Long getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long fileId) {
+		this.fileId = fileId;
+	}
+
+}

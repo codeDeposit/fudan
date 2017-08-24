@@ -1,0 +1,138 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.AssetsType;
+import com.jy.service.oa.admin.AssetsTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/assetstype")
+public class AssetsTypeController {
+
+	private AssetsTypeService assetsTypeService;
+
+	public AssetsTypeService getAssetsTypeService() {
+		return assetsTypeService;
+	}
+
+	@Resource(name="assetsTypeService")
+	public void setAssetsTypeService(AssetsTypeService assetsTypeService) {
+		this.assetsTypeService = assetsTypeService;
+	}
+	
+	/**
+	 * 添加资产类型
+	 * @param assetsType
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(AssetsType assetsType) {
+		JsonInfo info = assetsTypeService.save(assetsType);
+		return info;
+	}
+	
+	/**
+	 * 修改资产类型
+	 * @param assetsType
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(AssetsType assetsType) {
+		JsonInfo info = assetsTypeService.update(assetsType);
+		return info;
+	}
+	
+	/**
+	 * 删除资产类型
+	 * @param assetsTypeId
+	 * @return
+	 */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public JsonInfo del(Long assetsTypeId) {
+		JsonInfo info = assetsTypeService.del(assetsTypeId);
+		return info;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param assetsTypeId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long assetsTypeId, String operation) {
+		AssetsType assetsType = assetsTypeService.getInfoBy(assetsTypeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("assetsType", assetsType);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/admin/assetstype_form");
+		
+		return mv;
+	}
+	
+	/**
+	 * 获取列表
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String typeName) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<AssetsType> assetsTypes = assetsTypeService.get(typeName);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(assetsTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<AssetsType> pageAssetsTypes = assetsTypeService.getPageList(pb, typeName);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/assetstype_table");
+		}else {
+			mv.setViewName("system/oa/admin/assetstype_list");
+		}
+		mv.addObject("assetsTypes", pageAssetsTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 获取所有资产类型
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<AssetsType> listAll() {
+		List<AssetsType> assetsTypes = assetsTypeService.getAll();
+		return assetsTypes;
+	}
+	
+}

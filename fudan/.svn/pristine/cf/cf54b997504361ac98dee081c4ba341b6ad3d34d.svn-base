@@ -1,0 +1,29 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.BookType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface BookTypeService {
+
+	// 添加图书类别
+	JsonInfo save(BookType bookType);
+
+	// 修改图书类别信息
+	JsonInfo update(BookType bookType);
+
+	// 获取详细信息
+	BookType getInfoBy(Long typeId);
+
+	// 批量删除
+	JsonInfo delete(Long[] typeId);
+
+	// 获取图书类别列表
+	List<BookType> get(String typeName);
+
+	// 分页获取图书类别列表
+	List<BookType> getPageList(PageBean pb, String typeName);
+
+}

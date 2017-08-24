@@ -1,0 +1,33 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.CarApply;
+import com.jy.entity.oa.admin.CarApplyVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface CarApplyMapper {
+
+	// 添加车辆申请单
+	int insert(CarApply carApply);
+
+	// 获取申请单详细信息
+	CarApplyVO selectInfoBy(Long applyId);
+
+	// 修改申请单信息
+	int update(CarApply carApply);
+
+	// 批量删除申请单
+	int delete(Long applyId);
+
+	// 获取申请单列表
+	List<CarApply> select(@Param("carNo") String carNo, @Param("approvalStatus") Short approvalStatus, @Param("userFullname") String userFullname);
+
+	// 申请单分页列表
+	List<CarApplyVO> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("carNo") String carNo, @Param("approvalStatus") Short approvalStatus, @Param("userFullname") String userFullname);
+
+}

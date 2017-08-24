@@ -1,0 +1,32 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.GoodsApply;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface GoodsApplyService {
+
+	// 添加申请单
+	JsonInfo save(GoodsApply goodsApply);
+
+	// 获取详细信息
+	GoodsApply getInfoBy(Long applyId);
+
+	// 修改信息
+	JsonInfo update(GoodsApply goodsApply);
+
+	// 批量删除
+	JsonInfo del(Long[] applyId);
+
+	// 获取申请列表
+	List<GoodsApply> get(GoodsApply goodsApply);
+
+	// 申请单分页列表
+	List<GoodsApply> getPageList(PageBean pb, GoodsApply goodsApply);
+
+	// 审核申请单
+	JsonInfo review(Long goodsId, Short status);
+
+}

@@ -1,0 +1,150 @@
+package com.jy.entity.oa.admin;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Car {
+
+	private Long carId;
+	private String carNo;
+	private Integer typeId;
+	private String engineNo;
+	private Date buyInsureTime;		//购买保险时间
+	private Date auditTime;			//年审时间
+	private String notes;
+	private String factoryModel;
+	private String driver;
+	private Date buyDate;			//购置日期
+	private Short status;
+	private String cartImage;
+	
+	//用于显示
+	private String buyInsureTime1;
+	private String auditTime1;
+	private String buyDate1;
+
+	public String getBuyInsureTime1() {
+		return buyInsureTime1;
+	}
+
+	public void setBuyInsureTime1(String buyInsureTime1) {
+		this.buyInsureTime1 = buyInsureTime1;
+	}
+
+	public String getAuditTime1() {
+		return auditTime1;
+	}
+
+	public void setAuditTime1(String auditTime1) {
+		this.auditTime1 = auditTime1;
+	}
+
+	public String getBuyDate1() {
+		return buyDate1;
+	}
+
+	public void setBuyDate1(String buyDate1) {
+		this.buyDate1 = buyDate1;
+	}
+
+	public Long getCarId() {
+		return carId;
+	}
+
+	public void setCarId(Long carId) {
+		this.carId = carId;
+	}
+
+	public String getCarNo() {
+		return carNo;
+	}
+
+	public void setCarNo(String carNo) {
+		this.carNo = carNo;
+	}
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
+	public String getEngineNo() {
+		return engineNo;
+	}
+
+	public void setEngineNo(String engineNo) {
+		this.engineNo = engineNo;
+	}
+
+	public Date getBuyInsureTime() {
+		return buyInsureTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setBuyInsureTime(Date buyInsureTime) {
+		this.buyInsureTime = buyInsureTime;
+	}
+
+	public Date getAuditTime() {
+		return auditTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setAuditTime(Date auditTime) {
+		this.auditTime = auditTime;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getFactoryModel() {
+		return factoryModel;
+	}
+
+	public void setFactoryModel(String factoryModel) {
+		this.factoryModel = factoryModel;
+	}
+
+	public String getDriver() {
+		return driver;
+	}
+
+	public void setDriver(String driver) {
+		this.driver = driver;
+	}
+
+	public Date getBuyDate() {
+		return buyDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setBuyDate(Date buyDate) {
+		this.buyDate = buyDate;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getCartImage() {
+		return cartImage;
+	}
+
+	public void setCartImage(String cartImage) {
+		this.cartImage = cartImage;
+	}
+
+}

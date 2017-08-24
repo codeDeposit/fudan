@@ -1,0 +1,35 @@
+package com.jy.service.app;
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.AppOrders;
+import com.jy.repository.app.AppOrdersDao;
+
+@Service(value = "appOrdersService")
+public class AppOrdersService{
+	
+	@Resource
+	private AppOrdersDao appOrdersDao;
+	
+	public List<AppOrders> find(AppOrders appOrders) {
+		return this.appOrdersDao.find(appOrders);
+	}
+
+	public List<AppOrders> search(AppOrders appOrders) {
+		return this.appOrdersDao.search(appOrders);
+	}
+	
+	public int add(AppOrders appOrders) {
+		appOrdersDao.insert(appOrders);
+		return 1;
+	}
+	
+	public int update(AppOrders appOrders) {
+		return this.appOrdersDao.update(appOrders);
+	}
+	
+	public int delete(AppOrders appOrders) {
+		return this.appOrdersDao.delete(appOrders);
+	}
+	
+}

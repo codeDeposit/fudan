@@ -1,0 +1,59 @@
+package com.jy.repository.oa.communicate;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface MailMapper {
+
+	/**
+	 * 添加邮件
+	 * 
+	 * @param mail
+	 * @return
+	 */
+	int insert(Mail mail);
+
+	/**
+	 * 获取刚添加的邮件ID号
+	 * 
+	 * @return
+	 */
+	Long selectMaxId();
+
+	/**
+	 * 更新邮件
+	 * 
+	 * @param mail
+	 * @return
+	 */
+	int update(Mail mail);
+
+	/**
+	 * 获取邮件详细信息
+	 * 
+	 * @param mailId
+	 * @return
+	 */
+	Mail selectInfoBy(Long mailId);
+
+	/**
+	 * 删除邮件
+	 * 
+	 * @param mId
+	 * @return
+	 */
+	int delete(Long mId);
+
+	/**
+	 * 删除邮箱中的邮件
+	 * 
+	 * @param mailId
+	 * @param accountId
+	 */
+	void deleteBy(@Param("mailId") Long mailId,
+			@Param("userId") String accountId);
+
+}

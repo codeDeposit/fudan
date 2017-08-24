@@ -1,0 +1,188 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+import java.util.List;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public class Mail {
+
+	// mailStatus: 1为 正式邮件， 2为 草稿邮件
+
+	private Long mailId;
+	private String sender;
+	private String senderId;
+	private Short importantFlag;
+	private Date sendTime;
+	private String content;
+	private String subject;
+	private String copyToNames;
+	private String copyToIDs;
+	private String recipientNames;
+	private String recipientIDs;
+	private Short mailStatus;
+	private String fileIds;
+	private String filenames;
+	private List<FileAttach> mailAttachs;
+
+	// 用于接收参数，存放附件Id和接收人Id
+	private Long[] fileId;
+	private Long[] recipientID;
+
+	// 用于接收，附件名称和接收人名称
+	private String[] filename;
+	private String[] recipientName;
+
+	public List<FileAttach> getMailAttachs() {
+		return mailAttachs;
+	}
+
+	public void setMailAttachs(List<FileAttach> mailAttachs) {
+		this.mailAttachs = mailAttachs;
+	}
+
+	public Long getMailId() {
+		return mailId;
+	}
+
+	public void setMailId(Long mailId) {
+		this.mailId = mailId;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public Short getImportantFlag() {
+		return importantFlag;
+	}
+
+	public void setImportantFlag(Short importantFlag) {
+		this.importantFlag = importantFlag;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getCopyToNames() {
+		return copyToNames;
+	}
+
+	public void setCopyToNames(String copyToNames) {
+		this.copyToNames = copyToNames;
+	}
+
+	public String getCopyToIDs() {
+		return copyToIDs;
+	}
+
+	public void setCopyToIDs(String copyToIDs) {
+		this.copyToIDs = copyToIDs;
+	}
+
+	public String getRecipientNames() {
+		return recipientNames;
+	}
+
+	public void setRecipientNames(String recipientNames) {
+		this.recipientNames = recipientNames;
+	}
+
+	public String getRecipientIDs() {
+		return recipientIDs;
+	}
+
+	public void setRecipientIDs(String recipientIDs) {
+		this.recipientIDs = recipientIDs;
+	}
+
+	public Short getMailStatus() {
+		return mailStatus;
+	}
+
+	public void setMailStatus(Short mailStatus) {
+		this.mailStatus = mailStatus;
+	}
+
+	public String getFileIds() {
+		return fileIds;
+	}
+
+	public void setFileIds(String fileIds) {
+		this.fileIds = fileIds;
+	}
+
+	public String getFilenames() {
+		return filenames;
+	}
+
+	public void setFilenames(String filenames) {
+		this.filenames = filenames;
+	}
+
+	public String getSenderId() {
+		return senderId;
+	}
+
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+
+	public Long[] getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long[] fileId) {
+		this.fileId = fileId;
+	}
+
+	public Long[] getRecipientID() {
+		return recipientID;
+	}
+
+	public void setRecipientID(Long[] recipientID) {
+		this.recipientID = recipientID;
+	}
+
+	public String[] getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String[] filename) {
+		this.filename = filename;
+	}
+
+	public String[] getRecipientName() {
+		return recipientName;
+	}
+
+	public void setRecipientName(String[] recipientName) {
+		this.recipientName = recipientName;
+	}
+
+}

@@ -1,0 +1,31 @@
+package com.jy.service.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import com.jy.entity.oa.hrm.SalaryItem;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface SalaryItemService {
+
+	// 添加薪酬项目
+	JsonInfo save(SalaryItem salaryItem);
+
+	// 获取薪酬项目详细信息
+	SalaryItem getInfoBy(Long salaryItemId);
+
+	// 修改薪酬项目信息
+	JsonInfo update(SalaryItem salaryItem);
+
+	// 批量删除薪酬项目
+	JsonInfo delete(Long[] salaryItemId);
+
+	// 获取薪酬项目列表
+	List<SalaryItem> get(String itemName, BigDecimal defaultVal, Long[] ids);
+
+	// 薪酬项目分页列表
+	List<SalaryItem> getPageList(PageBean pb, String itemName, BigDecimal defaultVal, Long[] ids);
+
+}

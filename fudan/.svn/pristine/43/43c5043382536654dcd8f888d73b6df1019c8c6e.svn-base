@@ -1,0 +1,38 @@
+package com.jy.service.customer;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.customer.SaleProject;
+import com.jy.repository.customer.SaleProjectDao;
+
+@Service("saleProjectService")
+public class SaleProjectService{
+	
+	@Resource
+	private SaleProjectDao saleProjectDao;
+	
+	public List<SaleProject> find(SaleProject saleProject) {
+		return this.saleProjectDao.find(saleProject);
+	}
+
+	public List<SaleProject> search(SaleProject saleProject) {
+		return this.saleProjectDao.search(saleProject);
+	}
+
+	public int insert(SaleProject saleProject) {
+		return this.saleProjectDao.insert(saleProject);
+	}
+
+	public int update(SaleProject saleProject) {
+		return this.saleProjectDao.update(saleProject);
+	}
+
+	public int delete(SaleProject saleProject) {
+		return this.saleProjectDao.delete(saleProject);
+	}
+	
+}
+
+  
+   

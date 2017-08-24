@@ -1,0 +1,120 @@
+	var json;
+	$(document).ready(function() {
+		fuLoading();
+		//加载数据...
+		setTimeout("init()",200);
+	});
+	function init() {
+		$("#fileAttach").fileinput({
+		    language: 'zh',
+		    showUpload: false,
+		    allowedFileExtensions: ['doc', 'docx', 'pdf'],
+		    overwriteInitial: false,
+		    maxFileSize: 10000,
+		    maxFileCount: 1,
+		});
+		getArchiveType();
+	}
+	function getArchiveType() {
+		var url = "/oa/archivestype/listall";
+		$.ajax({
+			type: "get",
+			url: jypath + url,
+			success: function(data) {
+				// 将json字符串解析为json对象数组
+				var archiveTypes = $.parseJSON(data); 
+				for(var archiveType in archiveTypes) {
+					// 获取json对象数组的每个对象
+					var archiveTypeObj = archiveTypes[archiveType];
+					$("#archiveTypeSelect").append("<option value='"+ archiveTypeObj.typeId +"'>"+ archiveTypeObj.typeName +"</option>");
+					$("#addArchiveTemplate").append("<option value='"+ archiveTypeObj.typeId +"'>"+ archiveTypeObj.typeName +"</option>");
+				}
+				fuCloseLayer();
+			}
+		});
+	}
+	$("#submitbtn").click(function() {
+		// 上传文件
+   		fileUpload();
+	});
+   	// 上传文件
+   	function fileUpload() {
+   		$.ajaxFileUpload({
+   			url: jypath + "/oa/fileattach/add",
+   			fileElementId: "fileAttachId",
+   			data: {fileAttachType: "archive"},
+   			dataType:"JSON",
+   			success: function(data) {
+   				json = data;
+   				submitData();
+   			}
+   		});
+   	}
+   	// 提交数据
+   	function submitData() {
+   		var typeId = $("#addArchiveTemplate option:selected").val();
+   		var tempName = $("#tempName").val();
+   		var obj = eval("("+json+")");
+   		var tempPath = obj[0].tempPath;
+   		var fileId = obj[0].fileAttach.fileId;
+   		var url = "/oa/archtemplate/add";
+   		$.ajax({
+			type: "post",
+   			url:jypath + url,
+   			data: {tempName:""+tempName, tempPath:""+tempPath, fileId:""+fileId, typeId:""+typeId},
+   			success : function(html) {
+   				$("#addModal").modal("hide");
+   				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   	}
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		fuLoading();
+		var url = "/oa/archtemplate/getInfo";
+		$.ajax({
+			type: "get",
+   			url: jypath+url+"?templateId="+id+"&operation="+operation,
+   			success: function(data){
+		    	$("#getInfoOrUpdate").html(data);
+		    	fuCloseLayer();
+		    }
+   		});
+   	}
+	// 删除公文模板
+	function fDelete(typeId) {
+		var url = "/oa/archtemplate/multidel";
+		$.ajax({
+			type: "get",
+			url: jypath+url+"?templateId="+typeId,
+			success : function(html) {
+				fuShowSuccess();
+   				refresh();
+   			}
+		});
+	}
+	// 查询
+	$("#searchbtn").click(function() {
+		var id = "archtemplatetableandpageturn";
+		var url = jypath + "/oa/archtemplate/list";
+		var type = "post";
+		var data = $("#searchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "archtemplatetableandpageturn";
+		var url= jypath+"/oa/archtemplate/list";
+		var type = "get";
+		var data = $("#searchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}

@@ -1,0 +1,18 @@
+package com.jy.service.oa.workflow;
+
+import java.util.List;
+
+import org.activiti.engine.repository.ProcessDefinition;
+
+public interface OAProcessService {
+	
+	/**
+	 * 流程定义列表，获取最新版本的列表
+	 * 
+	 * @param processName
+	 * @param page
+	 * @return
+	 */
+	public List<ProcessDefinition> getProDefs(String processName, int page);
+
+}

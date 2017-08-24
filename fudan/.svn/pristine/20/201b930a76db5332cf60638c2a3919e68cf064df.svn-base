@@ -1,0 +1,53 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.entity.oa.admin.BookSn;
+import com.jy.service.oa.admin.BookSnService;
+
+
+@Controller
+@RequestMapping("/oa/booksn")
+public class BookSnController {
+
+	private BookSnService bookSnService;
+
+	public BookSnService getBookSnService() {
+		return bookSnService;
+	}
+
+	@Autowired
+	public void setBookSnService(BookSnService bookSnService) {
+		this.bookSnService = bookSnService;
+	}
+	
+	/**
+	 * 获取为借阅图书的booksn列表
+	 * @param bookId
+	 * @return
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public List<BookSn> list(Long bookId) {
+		List<BookSn> booksn = bookSnService.get(bookId);
+		return booksn;
+	}
+	
+	/**
+	 * 获取以借阅的booksn列表
+	 * @param bookId
+	 * @return
+	 */
+	@RequestMapping("/listbor")
+	@ResponseBody
+	public List<BookSn> listBor(Long bookId) {
+		List<BookSn> booksn = bookSnService.getBorsn(bookId);
+		return booksn;
+	}
+	
+}

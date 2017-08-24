@@ -1,0 +1,153 @@
+package com.jy.service.oa.impl.document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.document.DocFolder;
+import com.jy.entity.oa.document.DocFolderVO;
+import com.jy.repository.oa.document.DocFolderMapper;
+import com.jy.service.oa.document.DocFolderService;
+import com.jy.task.utils.JsonInfo;
+
+
+@Service("docFolderService")
+public class DocFolderServiceImpl implements DocFolderService {
+
+	private DocFolderMapper docFolderMapper;
+
+	public DocFolderMapper getDocFolderMapper() {
+		return docFolderMapper;
+	}
+
+	@Autowired
+	public void setDocFolderMapper(DocFolderMapper docFolderMapper) {
+		this.docFolderMapper = docFolderMapper;
+	}
+
+	// 添加目录
+	@Override
+	public JsonInfo save(DocFolder docFolder) {
+		//插入数据
+		int result = docFolderMapper.insert(docFolder);
+		//获取刚刚插入数据的ID
+		Long maxFolderId = docFolderMapper.selectFolderId();
+		//设置path
+		String path = null; 
+		if(docFolder.getParentId() == 0) {
+			path = maxFolderId + ".";
+		}else {
+			path = docFolderMapper.selectPath(docFolder.getParentId());
+			path = path + maxFolderId + ".";
+		}
+		
+		docFolder.setPath(path);
+		docFolder.setFolderId(maxFolderId);
+		result = docFolderMapper.updatePath(docFolder);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取目录详细信息
+	@Override
+	public DocFolder getInfo(Long folderId) {
+		DocFolder docFolder = docFolderMapper.selecInfoBy(folderId);
+		//设置上级文件夹名称
+		if(docFolder.getParentId()>0) {
+			DocFolder parentFolder = docFolderMapper.selecInfoBy(docFolder.getParentId());
+			docFolder.setParentFolderName(parentFolder.getFolderName());
+		}else {
+			docFolder.setParentFolderName("全部文件夹");
+		}
+		return docFolder;
+	}
+
+	// 更改目录名称
+	@Override
+	public JsonInfo update(DocFolder docFolder) {
+		int result = docFolderMapper.update(docFolder);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除目录
+	@Override
+	public JsonInfo delete(Long folderId) {
+		int result = docFolderMapper.delete(folderId);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	@Override
+	public List<DocFolderVO> getAll(String userId, String folderName, Short isShared) {
+		List<DocFolderVO> docFolders = new ArrayList<DocFolderVO>();
+		//获取第一层目录
+		List<DocFolder> fatherFolders = docFolderMapper.selectFirst(userId, folderName, isShared);
+		//根据目录的ID号获取下一层目录
+		for(DocFolder df : fatherFolders) {
+			DocFolderVO dfv = new DocFolderVO();
+			dfv.setFatherFolder(df);
+			List<DocFolderVO> childFolders = getFoldersBy(df, userId, folderName, isShared);
+			dfv.setChildFolders(childFolders);
+			docFolders.add(dfv);
+		}
+		return docFolders;
+	}
+	
+	//递归获取下一层目录
+	private List<DocFolderVO> getFoldersBy(DocFolder df, String userId, String folderName, Short isShared) {
+		List<DocFolderVO> fatherFolders = new ArrayList<DocFolderVO>();
+		//获取第一层目录下的所有子目录
+		List<DocFolder> childFolders = docFolderMapper.selectSubFolderBy(df.getFolderId(), userId, folderName, isShared);
+		
+		for(DocFolder df1 : childFolders) {
+			DocFolderVO dfv = new DocFolderVO();
+			dfv.setFatherFolder(df1);
+			List<DocFolderVO> childchildvos = getFoldersBy(df1, userId, folderName, isShared);
+			dfv.setChildFolders(childchildvos);
+			fatherFolders.add(dfv);
+		}
+		return fatherFolders;
+	}
+	
+	
+
+	// 文件夹转移
+	@Override
+	public JsonInfo transfer(Long fatherFolderId, Long childFolderId) {
+		String fatherPath = docFolderMapper.selectPath(fatherFolderId);
+		String childPath = fatherPath + childFolderId + ".";
+		int result = docFolderMapper.updateParentIdAndPath(fatherFolderId, childPath, childFolderId);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	@Override
+	public List<DocFolder> getAllByUserId(String accountId) {
+		List<DocFolder> docFolders = docFolderMapper.selectAll(accountId);
+		return docFolders;
+	}
+
+}

@@ -1,0 +1,255 @@
+package com.jy.entity.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class SalaryPayoff {
+
+	private final short CHECK_FLAG_NONE = (short) 0;// 未审核
+	private final short CHECK_FLAG_PASS = (short) 1;// 审核通过
+	private final short CHECK_FLAG_NOT_PASS = (short) 2;// 审核未通过
+
+	private Long recordId;
+	private String fullname;
+	private Long userId;
+	private String profileNo;
+	private String idNo;
+	private BigDecimal standAmount;
+	private BigDecimal encourageAmount;
+	private BigDecimal deductAmount;
+	private BigDecimal achieveAmount;
+	private String encourageDesc;
+	private String deductDesc;
+	private String memo;
+	private BigDecimal acutalAmount;
+	private Date regTime;
+	private String register;
+	private String checkName;
+	private Date checkTime;
+	private Short checkStatus;
+	private Date startTime;
+	private Date endTime;
+	private String checkOpinion;
+	
+	private String regTime1;
+	private String checkTime1;
+	private String startTime1;
+	private String endTime1;
+
+	public String getRegTime1() {
+		return regTime1;
+	}
+
+	public void setRegTime1(String regTime1) {
+		this.regTime1 = regTime1;
+	}
+
+	public String getCheckTime1() {
+		return checkTime1;
+	}
+
+	public void setCheckTime1(String checkTime1) {
+		this.checkTime1 = checkTime1;
+	}
+
+	public String getStartTime1() {
+		return startTime1;
+	}
+
+	public void setStartTime1(String startTime1) {
+		this.startTime1 = startTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
+	}
+
+	public Long getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(Long recordId) {
+		this.recordId = recordId;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getProfileNo() {
+		return profileNo;
+	}
+
+	public void setProfileNo(String profileNo) {
+		this.profileNo = profileNo;
+	}
+
+	public String getIdNo() {
+		return idNo;
+	}
+
+	public void setIdNo(String idNo) {
+		this.idNo = idNo;
+	}
+
+	public BigDecimal getStandAmount() {
+		return standAmount;
+	}
+
+	public void setStandAmount(BigDecimal standAmount) {
+		this.standAmount = standAmount;
+	}
+
+	public BigDecimal getEncourageAmount() {
+		return encourageAmount;
+	}
+
+	public void setEncourageAmount(BigDecimal encourageAmount) {
+		this.encourageAmount = encourageAmount;
+	}
+
+	public BigDecimal getDeductAmount() {
+		return deductAmount;
+	}
+
+	public void setDeductAmount(BigDecimal deductAmount) {
+		this.deductAmount = deductAmount;
+	}
+
+	public BigDecimal getAchieveAmount() {
+		return achieveAmount;
+	}
+
+	public void setAchieveAmount(BigDecimal achieveAmount) {
+		this.achieveAmount = achieveAmount;
+	}
+
+	public String getEncourageDesc() {
+		return encourageDesc;
+	}
+
+	public void setEncourageDesc(String encourageDesc) {
+		this.encourageDesc = encourageDesc;
+	}
+
+	public String getDeductDesc() {
+		return deductDesc;
+	}
+
+	public void setDeductDesc(String deductDesc) {
+		this.deductDesc = deductDesc;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public BigDecimal getAcutalAmount() {
+		return acutalAmount;
+	}
+
+	public void setAcutalAmount(BigDecimal acutalAmount) {
+		this.acutalAmount = acutalAmount;
+	}
+
+	public Date getRegTime() {
+		return regTime;
+	}
+
+	public void setRegTime(Date regTime) {
+		this.regTime = regTime;
+	}
+
+	public String getRegister() {
+		return register;
+	}
+
+	public void setRegister(String register) {
+		this.register = register;
+	}
+
+	public String getCheckName() {
+		return checkName;
+	}
+
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
+
+	public Date getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(Date checkTime) {
+		this.checkTime = checkTime;
+	}
+
+	public Short getCheckStatus() {
+		return checkStatus;
+	}
+
+	public void setCheckStatus(Short checkStatus) {
+		this.checkStatus = checkStatus;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getCheckOpinion() {
+		return checkOpinion;
+	}
+
+	public void setCheckOpinion(String checkOpinion) {
+		this.checkOpinion = checkOpinion;
+	}
+
+	public short getCHECK_FLAG_NONE() {
+		return CHECK_FLAG_NONE;
+	}
+
+	public short getCHECK_FLAG_PASS() {
+		return CHECK_FLAG_PASS;
+	}
+
+	public short getCHECK_FLAG_NOT_PASS() {
+		return CHECK_FLAG_NOT_PASS;
+	}
+
+}

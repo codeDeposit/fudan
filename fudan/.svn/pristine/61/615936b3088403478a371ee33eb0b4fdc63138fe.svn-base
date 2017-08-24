@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.info.NoticeMapper">
+
+	<!-- 根据 标题、发布者 模糊查询 start -->
+	<select id="select" resultType="com.jy.entity.oa.info.Notice">
+		select * from fudan_oa_notice where 1 = 1
+		<include refid="fudan_oa_notice"></include>
+	</select>
+
+	<sql id="fudan_oa_notice">
+		<if test="postName != null and postName != '' ">
+			and postName like concat("%", #{postName}, "%")
+		</if>
+		<if test="noticeTitle != null and noticeTitle != '' ">
+			and noticeTitle like concat("%", #{noticeTitle}, "%")
+		</if>
+	</sql>
+	<!-- 根据 标题、发布者 模糊查询 end -->
+
+	<!-- 添加公告 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.info.Notice">
+		insert fudan_oa_notice
+		<include refid="insertSQL"></include>
+	</insert>
+
+	<sql id="insertSQL">
+		<set>
+			<if test="postName != null and postName != '' ">
+				postName = #{postName},
+			</if>
+			<if test="noticeTitle != null and noticeTitle != '' ">
+				noticeTitle = #{noticeTitle},
+			</if>
+			<if test="noticeContent != null and noticeContent != '' ">
+				noticeContent = #{noticeContent},
+			</if>
+			<if test="effectiveDate != null">
+				effectiveDate = #{effectiveDate},
+			</if>
+			<if test="expirationDate != null">
+				expirationDate = #{expirationDate},
+			</if>
+			<if test="state != null">
+				state = #{state},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加公告 end -->
+
+	<!-- 获取详细信息 start -->
+	<select id="selectBy" parameterType="Long"
+		resultType="com.jy.entity.oa.info.Notice">
+		select * from fudan_oa_notice where noticeId = #{noticeId}
+	</select>
+	<!-- 获取详细信息 end -->
+
+	<!-- 修改公告 start -->
+	<update id="update" parameterType="com.jy.entity.oa.info.Notice">
+		update fudan_oa_notice
+		<include refid="insertSQL"></include>
+		where noticeId = #{noticeId}
+	</update>
+	<!-- 修改公告 end -->
+	
+	<!-- 删除公告 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_notice where noticeId = #{noticeId}
+	</delete>
+	<!-- 删除公告 end -->
+	
+	<!-- 分页显示公告列表 start -->
+	<select id="selectPageDate" resultType="com.jy.entity.oa.info.Notice">
+		select * from fudan_oa_notice where 1=1
+		<include refid="fudan_oa_notice"></include>
+		order by noticeId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页显示公告列表 end -->
+
+	<!-- 发布公告 start -->
+	<update id="updateState" parameterType="Long">
+		update fudan_oa_notice set state = 1 where noticeId = #{noticeId}
+	</update>
+	<!-- 发布公告 end -->
+	
+</mapper>

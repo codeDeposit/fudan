@@ -1,0 +1,440 @@
+var _id;//项目id
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	fileSetting('/jpg|jpg|JPG|jpeg|JPEG|png|PNG|ico|ICO|ico/i',4);//类型,大小;input的id为filePicture,name为filePicture
+	$('#createdate').val(fuDate());
+	$('.form_date').datetimepicker({/*时间初始化*/
+	    language: 'zh-CN',
+	    weekStart: 1,
+	    todayBtn: 1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 2,
+	    forceParse: 0,
+	}); 
+	$.ajax({//类别调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/kind/list",
+		success:function(data){
+			$('#category1').html(data);
+		}
+	}); 
+	$.ajax({//单位调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/unit/list",
+		success:function(data){
+			$('#unit').html(data);
+		}
+	});
+	$.ajax({//采购方式调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/type/list",
+		success:function(data){
+			$('#types').html(data);
+		}
+	});
+	/**
+	 * 搜索页面方法调用
+	 */
+	$.ajax({//需求部门调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/org/role/getBm",
+		success:function(data){
+			var obj = eval('('+ data +')');
+			var lData = obj.obj;
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+			} else {
+				document.getElementById('bm').innerHTML = "<option value=''>--请选择--</option>";
+				for(var i=0;i<lData.length;i++){
+					document.getElementById('bm').innerHTML += "<option value="+ lData[i]['id'] +">"+ lData[i]['name'] +"</option>";
+				}
+			}
+		}
+	});
+});
+function fGetProduct(){//产品调取
+	var lId = $('#category1').val();
+	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/kind/list2",
+		data:{
+			id:lId
+		},
+		success:function(data){
+			$('#category2').html(data);
+		}
+	}); 
+}	
+function fDelete() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/delete",
+		data:{xqtbId:_id},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fList(); 
+			}
+		}
+	});
+} 
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/list",
+		success : function(data) {
+			 $('#xqtbList').html(data);
+			 fuCloseLayer();
+			 /**
+			  * 按钮显示判断
+			 */
+			 xqtbAddButton();
+		}
+	});
+}
+function fAdd() {
+	fuLoading();
+	setTimeout("fAdd2()",200);
+	return false;
+}
+function fAdd2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/add",
+		data : $("#xqtbForm").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				$('#addModal').modal('hide');
+				document.getElementById("xqtbForm").reset();
+			  	fList();
+			  	fuClose();
+			  	$('#createdate').val(fuDate());
+			}
+		}
+	});
+}
+function fEdit(param,param2){
+	fuLoading(); 	
+	setTimeout('fEdit2(\''+param+'\','+param2+');',500);
+	return false;
+}
+function fEdit2(param,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/updateView",
+		data:{xqtbId:param,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#popupEdit').html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/updateData",
+		data : $("#xqtbEditForm").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#mxqtbEdit').modal('hide');
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/search",
+		data : $("#xqtbSearchForm").serialize(),
+		success : function(data) {
+			$('#xqtbList').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}
+function fExcel(param){
+	if(param == 1){//搜索
+		window.location.href= basePath+'backstage/wzcg/xqtb/excel?' + $("#xqtbSearchForm").serialize();
+	}else{//单条数据导出
+		window.location.href= basePath+'backstage/wzcg/xqtb/excel?xqtbId='+param
+	}
+}
+function fUpdateStatus(param1,param2,param3,param4){//需求提交
+	if(param3 == '' || param4 == ''){
+		fuConfirm(1,1,'流程未启用,是否前往开启流程？');
+	}else{
+		fuLoading();
+		setTimeout("fUpdateStatus2(\'"+param1+"\',\'"+param2+"\',\'"+param3+"\',\'"+param4+"\')",200);
+	}
+}
+function fUpdateStatus2(param1,param2,param3,param4){//需求提交
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/updateStatus",
+		data :{
+			xqtbId:param1,
+			state:2,
+			processDefinitionKey:param3,
+			positionId:param4
+		},
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fUpdateStatusS(param1,param2,param3,param4,param5,param6){//需求审核
+	if(param5 == '' && param6 == false && param4 == ''){
+		fuConfirm(1,1,'流程未启用,是否前往开启流程？');
+	}else{
+		fuLoading();
+		setTimeout("fUpdateStatusS2(\'"+param1+"\',\'"+param2+"\',\'"+param3+"\',\'"+param4+"\',\'"+param5+"\',\'"+param6+"\')",200);
+	}
+}
+function fUpdateStatusS2(param1,param2,param3,param4,param5,param6){//需求审核
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/updateStatusS",
+		data :{
+			xqtbId:param1,
+			processInstanceId:param2,
+			approveStatus:param3,
+			approveOption:param4,
+			positionId:param5,
+			isOver:param6
+		},
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function againSubmit(param1,param2,param3,param4){//需求被拒绝再次提交
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/xqtb/againSubmit",
+		data :{
+			xqtbId:param1,
+			processInstanceId:param2,
+			processDefinitionKey:param3,
+			positionId:param4
+		},
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fworkflowDetail(param1,param2){
+	var width=document.documentElement.clientWidth * 0.85+"px";
+	var height=document.documentElement.clientHeight * 0.85+"px";
+	layer.open({
+	    type: 2,
+	    title: '当前节点',
+	    shadeClose: true,
+	    maxmin: true,
+	    area: [width, height],
+	    content: jypath+"/act-process-editor/diagram-viewer/index.html?processDefinitionId="+param2+"&processInstanceId="+param1 //iframe的url
+	});
+}
+function fxqtbItemAmount(){//得到金额总价
+	var lcounts = $('#counts').val();
+	var lprice = $('#price').val();
+	var lnumber = parseInt(lcounts) * parseInt(lprice);
+	if(lcounts != '' && lprice != ''){
+		$('#amount').val(lnumber);
+	}
+}
+function fItemList(param,param2) {
+	fuLoading();
+	if(param != '' && param != undefined && param != null){
+		_id = param;
+	}
+	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/item/list",
+		data:{
+			projectId: _id,
+			state:param2,
+			mark:'xqtb'
+		},
+		success:function(data){
+			$('#itemList').html(data); 
+			$('#mItemList').modal('show');	
+			fuCloseLayer();
+		}
+	});
+}
+function fItemDelete(param,param2){
+	var amounts = document.getElementsByName('xqAmount');//得到总价
+	var amountStr = 0;
+	for(var i=0;i<amounts.length;i++){
+		amountStr += parseInt(amounts[i].innerText);
+	}
+ 	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/item/delete?mark=xqtb",
+		data:{id:param,amountStr:(amountStr - param2)},
+		success:function(data){
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fItemList();
+			}
+		}
+	}); 
+	return false;
+}
+function fItemAdd(){
+	fuLoading();
+	setTimeout("fItemAdd2();",200);
+	return false;
+}
+function fItemAdd2(){	
+	document.getElementById('projectId').value = _id;
+	var ids = ['filePicture'];
+	var amount = document.getElementById('amount').value;
+	var amounts = document.getElementsByName('xqAmount');//得到总价
+	var amountStr = 0;
+	for(var i=0;i<amounts.length;i++){
+		amountStr = parseInt(amounts[i].innerText) + amountStr;
+	}	
+	amountStr = amountStr + parseInt(amount);
+	$.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/item/add?"+$("#xqItemAddForm").serialize()+"&amountStr="+amountStr+"&mark=xqtb",
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",	
+		success:function(data){
+			$('#mItemAdd').modal('hide');
+			document.getElementById("xqItemAddForm").reset();
+			fuCloseLayer();
+			fItemList();
+		}
+	});
+}
+function fItemEdit(param,param2){
+	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/item/updateView",
+		data:{id: param,mark:param2},
+		success:function(data){
+			$('#popupItemEdit').html(data); 	
+		}
+	}); 
+}
+function fItemUpdate(){
+	fuLoading();
+	setTimeout("fItemUpdate2();",200);
+	return false;
+}
+function fItemUpdate2(){
+	$.ajax({
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/item/updateData",
+		data:$("#ItemEditForm").serialize(),
+		success:function(data){
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				$('#dItemEdit').modal('hide');
+				fuCloseLayer();
+			 	fItemList();
+			}
+		}
+	});
+}
+function getTotalPrice(){//得到金额总价
+	var count = $('#counts').val();
+	var price = $('#price').val();
+	document.getElementById('amount').value = count*price;
+}
+function deleteToast(param1,param2) {
+	if(param2 == "xqtbDelete"){
+		_id = param1;
+	}
+	fuConfirm(param1,param2);
+}
+function fuSure(param1,param2){
+	fuLoading();
+	fuClose();
+	if(param1 == 1 && param2 == 1){//开启流程
+		window.location.href = basePath + "backstage/workflow/process/list";
+	}else if(param2 == "xqtbDelete"){
+		setTimeout("fDelete();",200);
+	}else{
+		setTimeout("fItemDelete("+ param1 +","+ param2 +");",200);
+	}
+}
+/**
+ * 按钮显示判断
+ */
+function xqtbAddButton(){
+	var mMark = document.getElementById('mMark').value;
+	if(mMark == "true"){
+		document.getElementById('xqtbAdd').style.display = "none";
+	}
+}

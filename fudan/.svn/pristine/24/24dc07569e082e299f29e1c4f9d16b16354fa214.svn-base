@@ -1,0 +1,203 @@
+package com.jy.entity.oa.admin;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class FixedAssets {
+
+	private Long assetsId;
+	private String assetsNo;				//资产编号
+	private String assetsName;				//资产名称
+	private String model;					//规格型号
+	private Long assetsTypeId;				//资产类型编号
+	private String manufacturer;			//制造厂商
+	private Date manuDate;					//出厂日期
+	private Date buyDate;					//置办日期
+	private String beDep;					//部门名称(只有一个)
+	private String custodian;				//保管人(只有一个)
+	private String notes;					//备注
+	private BigDecimal remainValRate;		//残值率
+	private Long depreTypeId;				//折旧类型
+	private Date startDepre;				//开始折旧日期
+	private BigDecimal intendTerm;			//预计使用年限
+	private BigDecimal intendWorkGross;		//预计总工作量
+	private String workGrossUnit;			//单位
+	private BigDecimal assetValue;			//资产值
+	private BigDecimal assetCurValue;		//资产当前值
+	private BigDecimal depreRate;
+	private BigDecimal defPerWorkGross;		//默认周期工作量
+	
+	public Long getAssetsId() {
+		return assetsId;
+	}
+
+	public void setAssetsId(Long assetsId) {
+		this.assetsId = assetsId;
+	}
+
+	public String getAssetsNo() {
+		return assetsNo;
+	}
+
+	public void setAssetsNo(String assetsNo) {
+		this.assetsNo = assetsNo;
+	}
+
+	public String getAssetsName() {
+		return assetsName;
+	}
+
+	public void setAssetsName(String assetsName) {
+		this.assetsName = assetsName;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public Long getAssetsTypeId() {
+		return assetsTypeId;
+	}
+
+	public void setAssetsTypeId(Long assetsTypeId) {
+		this.assetsTypeId = assetsTypeId;
+	}
+
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public Date getManuDate() {
+		return manuDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setManuDate(Date manuDate) {
+		this.manuDate = manuDate;
+	}
+
+	public Date getBuyDate() {
+		return buyDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setBuyDate(Date buyDate) {
+		this.buyDate = buyDate;
+	}
+
+	public String getBeDep() {
+		return beDep;
+	}
+
+	public void setBeDep(String beDep) {
+		this.beDep = beDep;
+	}
+
+	public String getCustodian() {
+		return custodian;
+	}
+
+	public void setCustodian(String custodian) {
+		this.custodian = custodian;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public BigDecimal getRemainValRate() {
+		return remainValRate;
+	}
+
+	public void setRemainValRate(BigDecimal remainValRate) {
+		this.remainValRate = remainValRate;
+	}
+
+	public Long getDepreTypeId() {
+		return depreTypeId;
+	}
+
+	public void setDepreTypeId(Long depreTypeId) {
+		this.depreTypeId = depreTypeId;
+	}
+
+	public Date getStartDepre() {
+		return startDepre;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartDepre(Date startDepre) {
+		this.startDepre = startDepre;
+	}
+
+	public BigDecimal getIntendTerm() {
+		return intendTerm;
+	}
+
+	public void setIntendTerm(BigDecimal intendTerm) {
+		this.intendTerm = intendTerm;
+	}
+
+	public BigDecimal getIntendWorkGross() {
+		return intendWorkGross;
+	}
+
+	public void setIntendWorkGross(BigDecimal intendWorkGross) {
+		this.intendWorkGross = intendWorkGross;
+	}
+
+	public String getWorkGrossUnit() {
+		return workGrossUnit;
+	}
+
+	public void setWorkGrossUnit(String workGrossUnit) {
+		this.workGrossUnit = workGrossUnit;
+	}
+
+	public BigDecimal getAssetValue() {
+		return assetValue;
+	}
+
+	public void setAssetValue(BigDecimal assetValue) {
+		this.assetValue = assetValue;
+	}
+
+	public BigDecimal getAssetCurValue() {
+		return assetCurValue;
+	}
+
+	public void setAssetCurValue(BigDecimal assetCurValue) {
+		this.assetCurValue = assetCurValue;
+	}
+
+	public BigDecimal getDepreRate() {
+		return depreRate;
+	}
+
+	public void setDepreRate(BigDecimal depreRate) {
+		this.depreRate = depreRate;
+	}
+
+	public BigDecimal getDefPerWorkGross() {
+		return defPerWorkGross;
+	}
+
+	public void setDefPerWorkGross(BigDecimal defPerWorkGross) {
+		this.defPerWorkGross = defPerWorkGross;
+	}
+
+}

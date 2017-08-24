@@ -1,0 +1,180 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button id="modaladdbtn" type="button"
+	class="btn btn-success pull-right" data-toggle="modal"
+	data-target="#officegoodstypeAddModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="officegoodstypeAddModal" tabindex="-1"
+	role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title text-center" id="newsAddModalLabel">车辆维修单添加</h4>
+			</div>
+			<div class="modal-body">
+				<form id="booktypeaddform" class="form-horizontal aForm" role="form">
+					<div class="form-group">
+						<label class="controle-label col-md-2 col-sm-2">车牌号码</label>
+						<div class="col-md-7 col-sm-7">
+							<input id="goodsnames" type="text" class="form-control" readonly
+								aria-required="true"> <input id="goodsIds" name="carId"
+								type="hidden" />
+						</div>
+						<div class="col-md-3 col-sm-3">
+							<div class="col-md-6 col-sm-6">
+								<button type="button" class="btn btn-info btn-sm"
+									data-toggle="modal" data-target="#selectgoods">
+									<i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+								</button>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<button type="button" class="btn btn-default btn-sm"
+									id="goodsbtn">
+									<i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="controle-label col-md-2 col-sm-2">维护日期</label>
+						<div class="col-md-10 col-sm-10">
+							<div class="input-group pull-left col-md-12">
+								<div class="input-group date form_date" data-date=""
+									data-date-format="yyyy-MM-dd" data-link-field="dtp_input1"
+									data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" name="repairDate"
+										type="text" value='' readonly required aria-required="true">
+									<span class="input-group-addon"><span
+										class="glyphicon glyphicon-remove"></span>
+									</span> <span class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="controle-label col-md-2 col-sm-2">经办人</label>
+						<div class="col-md-7 col-sm-7">
+							<input id="recipientName" name="executant" type="text" readonly
+								class="form-control" aria-required="true">
+						</div>
+						<div class="col-md-3 col-sm-3">
+							<div class="col-md-6 col-sm-6">
+								<button type="button" class="btn btn-info btn-sm"
+									data-toggle="modal" data-target="#addMod">
+									<i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+								</button>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<button type="button" class="btn btn-default btn-sm" id="empbtn">
+									<i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="controle-label col-md-2 col-sm-2">维修类型</label>
+						<div class="col-md-10 col-sm-10">
+							<select class="form-control" name="repairType" datatype="select"
+								errormsg="请选择！">
+								<option value="">--请选择--</option>
+								<option value="维修">维修</option>
+								<option value="保养">保养</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 col-sm-2">费用</label>
+						<div class="col-md-10 col-sm-10">
+							<input id="bookname" name="fee" type="text" class="form-control"
+								aria-required="true">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 col-sm-2">维护原因</label>
+						<div class="col-md-10 col-sm-10">
+							<textarea rows="3" name="reason" class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 col-sm-2">备注</label>
+						<div class="col-md-10 col-sm-10">
+							<textarea rows="3" name="notes" class="form-control"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button id="booktypeaddbtn" type="button" class="btn btn-success">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->
+
+<!-- 选择车辆弹窗 start -->
+<div class="modal fade" id="selectgoods" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- <div class="modal-header"> -->
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">&times;</button>
+			<h4 class="modal-title headBg">
+				<i class="glyphicon glyphicon-user"
+					style="text-shadow: #000 5px 3px 3px;color:#ccc;"></i> &nbsp;车辆选择
+			</h4>
+			<!-- </div> -->
+			<div class="modal-body" style="height:300px;">
+				<div class="upside">
+					<form id="carsearchform" role="form" class="SearchForm">
+						<div class="form-group col-md-12 col-sm-12">
+							<label class="control-label col-sm-3 labelPad">查询：车牌号码</label> <input
+								type="text" id="carNoSearch"
+								class="form-control col-sm-8 forinBlo" name="carNo">
+							<button id="tccarsearchbtn" class="btn btn-success btn-sm"
+								type="button">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</div>
+					</form>
+				</div>
+				<div class="middleside">
+					<table class="table table-striped table-hover">
+						<thead style="display:block;width:520px;">
+							<tr>
+								<th style="width:50px;"><input type="checkbox"
+									class="checkAll" onclick="chooseAll()"></th>
+								<th style="width:120px;">序号</th>
+								<th style="width:350px;">车牌号码</th>
+							</tr>
+						</thead>
+						<tbody id="goodstable" class="tBody"
+							style="display:block;width:520px;height:178px;overflow:auto;">
+							<!-- 车辆列表打印到此处 -->
+							<!-- <tr>
+		<td class="text-center wiD"><input type="checkbox"></td>
+		<td class="text-center seQuence">${index.count}</td>
+		<td id="${org.id}" class="wiDl">${org.name}</td>
+	</tr> -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-success aYes" id="surebtn">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 选择车辆弹窗 end -->

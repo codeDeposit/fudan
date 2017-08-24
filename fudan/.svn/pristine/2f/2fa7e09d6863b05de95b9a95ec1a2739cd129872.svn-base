@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.task.DiaryMapper">
+
+	<!-- 获取列表 start -->
+	<select id="selectAll" resultType="com.jy.entity.oa.task.Diary">
+		SELECT * FROM fudan_oa_diary where 1=1 and userId = #{userId}
+		<if test="startTime != null">
+			and dayTime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null">
+			and dayTime &lt;= #{endTime}
+		</if>
+		<if test="diaryType != null">
+			and diaryType = #{diaryType}
+		</if>
+	</select>
+	<!-- 获取列表 end -->
+<!-- 
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM fudan_oa_diary
+		WHERE diaryId = #{diaryId}
+	</delete>
+
+	<select id="selectDetails" resultType="com.jy.entity.oa.task.DiaryVo">
+		SELECT
+		diaryId,dayTime,content,diaryType,fullname FROM
+		emp_diary_view edv
+		WHERE edv.diaryType = 1 AND diaryId = #{diaryId}
+	</select>
+
+	<insert id="insert" parameterType="com.jy.entity.oa.task.Diary">
+		INSERT INTO
+		fudan_oa_diary(userId,dayTime,content,diaryType)
+		values(#{eId},
+		#{dayTime},#{content},#{diaryType})
+	</insert> -->
+	
+	<!-- 分页获取列表 start-->
+	<select id="selectPageData" resultType="com.jy.entity.oa.task.Diary">
+		SELECT * FROM fudan_oa_diary where 1=1 and userId = #{userId}
+		<if test="startTime != null">
+			and dayTime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null">
+			and dayTime &lt;= #{endTime}
+		</if>
+		<if test="diaryType != null">
+			and diaryType = #{diaryType}
+		</if>
+		order by diaryId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取列表 end-->
+	
+	<!-- 添加日志 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.task.Diary">
+		insert fudan_oa_diary <include refid="insertsql"></include>
+	</insert>
+	
+	<sql id="insertsql">
+		<set>
+			<if test="userId != null and userId != '' ">
+				userId = #{userId},
+			</if>
+			<if test="dayTime != null ">
+				dayTime = #{dayTime},
+			</if>
+			<if test="diaryType != null ">
+				diaryType = #{diaryType},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加日志 end -->
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.task.Diary">
+		select * from fudan_oa_diary where diaryId = #{diaryId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 日志修改 start -->
+	<update id="update" parameterType="com.jy.entity.oa.task.Diary">
+		update fudan_oa_diary <include refid="updatesql"></include>
+		where diaryId = #{diaryId}
+	</update>
+	
+	<sql id="updatesql">
+		<set>
+			<if test="dayTime != null ">
+				dayTime = #{dayTime},
+			</if>
+			<if test="diaryType != null ">
+				diaryType = #{diaryType},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+		</set>
+	</sql>
+	<!-- 日志修改 end -->
+	
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_diary where diaryId = #{diaryId}
+	</delete>
+
+</mapper>

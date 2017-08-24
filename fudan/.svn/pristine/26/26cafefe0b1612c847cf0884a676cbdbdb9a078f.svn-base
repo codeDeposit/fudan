@@ -1,0 +1,22 @@
+package com.jy.repository.oa;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface EmployeeMapper {
+	
+	public List<Employee> selectAll(@Param("roleId") String roleId, @Param("orgId") String orgId, @Param("positionId") String positionId);
+
+	public Employee selectItSelf(@Param("userId") String accountId);
+
+	public void updateInfo(EmployeeInfoVo employeeInfo);
+
+	public void updatePass(String accountId, String pass);
+
+}

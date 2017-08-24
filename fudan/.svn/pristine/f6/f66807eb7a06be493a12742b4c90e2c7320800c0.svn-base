@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.workflow.ApplyMapper">
+
+	<!-- 添加流程申请 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.workflow.Apply">
+		insert fudan_workflow_apply <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="id != null and id != '' ">
+				id = #{id},
+			</if>
+			<if test="title != null and title != '' ">
+				title = #{title},
+			</if>
+			<if test="applier != null and applier != '' ">
+				applier = #{applier},
+			</if>
+			<if test="applierId != null and applierId != '' ">
+				applierId = #{applierId},
+			</if>
+			<if test="applyTime != null ">
+				applyTime = #{applyTime},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="refuseReason != null and refuseReason != '' ">
+				refuseReason = #{refuseReason},
+			</if>
+			<if test="pId != null and pId != '' ">
+				pId = #{pId},
+			</if>
+			<if test="docName != null and docName != '' ">
+				docName = #{docName},
+			</if>
+			<if test="docPath != null and docPath != '' ">
+				docPath = #{docPath},
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				orgId = #{orgId},
+			</if>
+			<if test="orgName != null and orgName != '' ">
+				orgName = #{orgName},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加流程申请 end -->
+	
+	
+	<!-- 个人申请列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.workflow.Apply">
+		select * from fudan_workflow_apply where applierId = #{userId} and status = 1
+		<if test="processName != null and processName != '' ">
+			and title like concat("%",#{processName},"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+	</select>
+	<!-- 个人申请列表 end -->
+	
+	
+	<!-- 个人申请分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.workflow.Apply">
+		select * from fudan_workflow_apply where applierId = #{userId} and status = 1
+		<if test="processName != null and processName != '' ">
+			and title like concat("%",#{processName},"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+		order by applyTime desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 个人申请分页列表 end -->
+	
+	
+	<!-- 根据流程实例id获取申请信息 start -->
+	<select id="selectBy" resultType="com.jy.entity.oa.workflow.Apply">
+		select * from fudan_workflow_apply where pId = #{pId}
+	</select>
+	<!-- 根据流程实例id获取申请信息 end -->
+	
+	
+	<!-- 更新申请状态 start -->
+	<update id="update">
+		update fudan_workflow_apply set status = #{status} where id = #{applyId} 
+	</update>
+	<!-- 更新申请状态 end -->
+	
+	
+	<!-- 查询已完成任务列表 start -->
+	<select id="selectCompletedPageList" resultType="com.jy.entity.oa.workflow.Apply">
+		select * from fudan_workflow_apply where applierId = #{applierId} and status != 1
+	</select>
+	<!-- 查询已完成任务列表 end -->
+	
+</mapper>

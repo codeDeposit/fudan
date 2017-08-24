@@ -1,0 +1,176 @@
+package com.jy.entity.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+public class StandSalary {
+
+	private Long standardId;
+	private String standardNo;
+	private String standardName;
+	private BigDecimal totalMoney;
+	private String framer;
+	private Date setdownTime;
+	private String checkName;
+	private Date checkTime;
+	private String modifyName;
+	private Date modifyTime;
+	private String checkOpinion;
+	private Short status;
+	private String memo;
+
+	private Long[] salaryItemId;
+
+	private List<StandSalaryItem> standSalaryItems;
+	
+	//用于显示
+	private String setdownTime1;
+	private String modifyTime1;
+	private String checkTime1;
+
+	public String getSetdownTime1() {
+		return setdownTime1;
+	}
+
+	public void setSetdownTime1(String setdownTime1) {
+		this.setdownTime1 = setdownTime1;
+	}
+
+	public String getModifyTime1() {
+		return modifyTime1;
+	}
+
+	public void setModifyTime1(String modifyTime1) {
+		this.modifyTime1 = modifyTime1;
+	}
+
+	public String getCheckTime1() {
+		return checkTime1;
+	}
+
+	public void setCheckTime1(String checkTime1) {
+		this.checkTime1 = checkTime1;
+	}
+
+	public Long getStandardId() {
+		return standardId;
+	}
+
+	public void setStandardId(Long standardId) {
+		this.standardId = standardId;
+	}
+
+	public String getStandardNo() {
+		return standardNo;
+	}
+
+	public void setStandardNo(String standardNo) {
+		this.standardNo = standardNo;
+	}
+
+	public String getStandardName() {
+		return standardName;
+	}
+
+	public void setStandardName(String standardName) {
+		this.standardName = standardName;
+	}
+
+	public BigDecimal getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalMoney(BigDecimal totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+	public String getFramer() {
+		return framer;
+	}
+
+	public void setFramer(String framer) {
+		this.framer = framer;
+	}
+
+	public Date getSetdownTime() {
+		return setdownTime;
+	}
+
+	public void setSetdownTime(Date setdownTime) {
+		this.setdownTime = setdownTime;
+	}
+
+	public String getCheckName() {
+		return checkName;
+	}
+
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
+
+	public Date getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(Date checkTime) {
+		this.checkTime = checkTime;
+	}
+
+	public String getModifyName() {
+		return modifyName;
+	}
+
+	public void setModifyName(String modifyName) {
+		this.modifyName = modifyName;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public String getCheckOpinion() {
+		return checkOpinion;
+	}
+
+	public void setCheckOpinion(String checkOpinion) {
+		this.checkOpinion = checkOpinion;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public Long[] getSalaryItemId() {
+		return salaryItemId;
+	}
+
+	public void setSalaryItemId(Long[] salaryItemId) {
+		this.salaryItemId = salaryItemId;
+	}
+
+	public List<StandSalaryItem> getStandSalaryItems() {
+		return standSalaryItems;
+	}
+
+	public void setStandSalaryItems(List<StandSalaryItem> standSalaryItems) {
+		this.standSalaryItems = standSalaryItems;
+	}
+
+}

@@ -1,0 +1,17 @@
+package com.jy.repository.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.OAResource;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface OAResourceMapper {
+
+	// 获取角色对应的所有一级权限
+	List<OAResource> selectAllResourceOfRole(String roleId);
+
+	// 获取子菜单
+	List<OAResource> selectSubResource(String id);
+
+}

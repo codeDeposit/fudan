@@ -1,0 +1,121 @@
+package com.jy.entity.wzcg;
+
+public class WzcgXqtb {
+	
+	private String xqtbId;
+	private String state;
+	private String name;
+	private String creator;
+	private String roleId;
+	private String approveId;
+	private String positionId;
+	private String zxjg;
+	private String price;
+	private String remark;
+	private String createdate;
+	private String bm;
+	private String processInstanceId;
+	private String processDefinitionId;
+	
+	//另加
+	private int priceMin;//金额大于
+	private int priceMax;//金额小于
+	
+	public String getXqtbId() {
+		return xqtbId;
+	}
+	public void setXqtbId(String xqtbId) {
+		this.xqtbId = xqtbId;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getCreatedate() {
+		return createdate;
+	}
+	public void setCreatedate(String createdate) {
+		this.createdate = createdate;
+	}
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	public String getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public String getBm() {
+		return bm;
+	}
+	public void setBm(String bm) {
+		this.bm = bm;
+	}
+	public String getZxjg() {
+		return zxjg;
+	}
+	public void setZxjg(String zxjg) {
+		this.zxjg = zxjg;
+	}
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+	public String getProcessDefinitionId() {
+		return processDefinitionId;
+	}
+	public void setProcessDefinitionId(String processDefinitionId) {
+		this.processDefinitionId = processDefinitionId;
+	}
+	public int getPriceMin() {
+		return priceMin;
+	}
+	public void setPriceMin(int priceMin) {
+		this.priceMin = priceMin;
+	}
+	public int getPriceMax() {
+		return priceMax;
+	}
+	public void setPriceMax(int priceMax) {
+		this.priceMax = priceMax;
+	}
+	public String getApproveId() {
+		return approveId;
+	}
+	public void setApproveId(String approveId) {
+		this.approveId = approveId;
+	}
+	public String getPositionId() {
+		return positionId;
+	}
+	public void setPositionId(String positionId) {
+		this.positionId = positionId;
+	}
+	
+}

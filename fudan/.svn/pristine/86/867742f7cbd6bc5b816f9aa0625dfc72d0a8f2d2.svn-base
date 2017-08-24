@@ -1,0 +1,199 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="description" content="overview & stats" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link href="${jypath}/resource/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+		<link href="${jypath}/resource/bootstrap-datetimepacker/css/bootstrapDatepickr-1.0.0.css" rel="stylesheet">
+		<link href="${jypath}/resource/bootstrap-validator/css/bootstrapValidator.min.css" rel="stylesheet">
+		<link href="${jypath}/resource/bootstrap-file-input/css/fileinput.min.css" rel="stylesheet">
+		<style type="text/css">
+			td {
+				text-align: center;
+				height: 40px;
+			}
+			.ta {
+				text-align: left;
+				height: 100px;
+				vertical-align: top;
+			}
+			.tn {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body style="font-size: 1.3em; font-family: Microsoft YaHei,'宋体' ;">
+		<div class="container" style="margin-top: 0px;" align="center">
+			<div style="margin-top: -10px;">
+				<h2>第二军医大学物资采购供应商申请表</h2>
+			</div>
+			<table style="width:100%;margin-top: 10px;" border="1">
+				<tr>
+					<td class="tn" style="width:25%">企业名称</td>
+					<td style="width:25%"> ${supplier.company } </td>
+					<td class="tn" style="width:25%">法定代表人</td>
+					<td style="width:25%"> ${supplier.represent } </td>
+				</tr>
+				<tr>
+					<td class="tn">企业注册地址</td>
+					<td> ${supplier.company_address } </td>
+					<td class="tn">邮政编码</td>
+					<td> ${supplier.zip_code } </td>
+				</tr>
+				<tr>
+					<td class="tn">法人身份证号码</td>
+					<td> ${supplier.ID_card } </td>
+					<td class="tn">注册资金</td>
+					<td> ${supplier.bankroll } 万元 </td>
+				</tr>
+				<tr>
+					<td class="tn">营业执照注册号</td>
+					<td> ${supplier.company_register_number } </td>
+					<td class="tn">营业执照编号</td>
+					<td> ${supplier.license } </td>
+				</tr>
+				<tr>
+					<td class="tn">国税登记号</td>
+					<td> ${supplier.national_tax } </td>
+					<td class="tn">地税登记号</td>
+					<td> ${supplier.land_tax } </td>
+				</tr>
+				<tr>
+					<td class="tn">组织机构代码</td>
+					<td> ${supplier.organization } </td>
+					<td class="tn">企业类型</td>
+					<td> ${supplier.company_type } </td>
+				</tr>
+				<tr>
+					<td class="tn">行业分类</td>
+					<td> ${supplier.profession_class } </td>
+					<td class="tn">主管部门</td>
+					<td> ${supplier.charge } </td>
+				</tr>
+				<tr>
+					<td class="tn">行政管理资质号</td>
+					<td> ${supplier.admin_number } </td>
+					<td class="tn">发证机关</td>
+					<td> ${supplier.office1 } </td>
+				</tr>
+				<tr>
+					<td class="tn">生产许可证</td>
+					<td> ${supplier.produce_card } </td>
+					<td class="tn">发证机关</td>
+					<td> ${supplier.office2 } </td>
+				</tr>
+				<tr>
+					<td class="tn">成立时间</td>
+					<td> ${supplier.found_time } </td>
+					<td class="tn">申请时间</td>
+					<td> ${supplier.apply_time } </td>
+				</tr>
+				<tr>
+					<td class="tn">经营范围</td>
+					<td colspan="3"> ${supplier.business_scope } </td>
+				</tr>
+				<tr>
+					<td class="tn">主营产品</td>
+					<td colspan="3" class="ta"> ${supplier.main_product } </td>
+				</tr>
+				<tr>
+					<td class="tn">兼营产品</td>
+					<td colspan="3" class="ta"> ${supplier.part_time_product } </td>
+				</tr>
+				<tr>
+					<td class="tn">开户银行</td>
+					<td> ${supplier.bank } </td>
+					<td class="tn">银行账号</td>
+					<td> ${supplier.account } </td>
+				</tr>
+				<tr>
+					<td class="tn">联系人</td>
+					<td> ${supplier.contacts } </td>
+					<td class="tn">联系电话</td>
+					<td> ${supplier.contacts_phone } </td>
+				</tr>
+				<tr>
+					<td class="tn">传真</td>
+					<td> ${supplier.fax_phone } </td>
+					<td class="tn">手机号码</td>
+					<td> ${supplier.mobile_number } </td>
+				</tr>
+				<tr>
+					<td class="tn">电子邮件</td>
+					<td> ${supplier.email } </td>
+					<td class="tn">企业网址</td>
+					<td> ${supplier.website } </td>
+				</tr>
+				<tr>
+					<td class="tn">参加投标经历</td>
+					<td colspan="3" class="ta"> ${supplier.experience } </td>
+				</tr>
+				<tr>
+					<td class="tn">企业简介</td>
+					<td colspan="3" class="ta"> ${supplier.brief_introduction } </td>
+				</tr>
+				<tr>
+					<td class="tn">供应商承诺</td>
+					<td colspan="3" class="ta"> ${supplier.promise } </td>
+				</tr>
+				<tr>
+					<td class="tn">物资采购中心意见</td>
+					<td colspan="3" class="ta"> ${supplier.cgzx_suggest } </td>
+				</tr>
+				<tr>
+					<td class="tn">物资采购办意见</td>
+					<td colspan="3" class="ta"> ${supplier.cgb_suggest } </td>
+				</tr>
+			</table>
+			<div id="btnPrint" style="margin-top: 10px;margin-bottom: 10px;">
+				<a href="javascript:void(0);" onclick="doPrint();" target="_blank" class='btn btn-primary' title="打印"><i class='glyphicon glyphicon-print'></i> 打印</a>
+			</div>
+		</div>
+		<script src="${jypath}/resource/js/jquery.min.js"></script>
+		<script src="${jypath}/resource/res/ajaxfileupload.js"></script>
+		<script src="${jypath}/resource/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+		<script src="${jypath}/resource/bootstrap-datetimepacker/js/bootstrapDatepickr-1.0.0.min.js"></script>
+		<script src="${jypath}/resource/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+		<script src="${jypath}/resource/bootstrap-file-input/js/fileinput.min.js"></script>
+		<script src="${jypath}/resource/bootstrap-file-input/js/fileinput_locale_zh.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			});
+			var HKEY_Root, HKEY_Path, HKEY_Key;
+			HKEY_Root = "HKEY_CURRENT_USER";
+			HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+			function PageSetup_Null() {//设置网页打印的页眉页脚为空
+				try {
+					var Wsh = new ActiveXObject("WScript.Shell");
+					HKEY_Key = "header";
+					Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+					HKEY_Key = "footer";
+					Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+				} catch(e) {
+				}
+			}
+			function PageSetup_Default() {//设置网页打印的页眉页脚为默认值
+				try {
+					var Wsh = new ActiveXObject("WScript.Shell");
+					HKEY_Key = "header";
+					Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&w&b页码,&p/&P");
+					HKEY_Key = "footer";
+					Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&u&b&d");
+				} catch(e) {
+				}
+			}
+			function doPrint() {
+				$("#btnPrint").hide();
+				PageSetup_Null();
+				window.print();
+				$("#btnPrint").show();
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+package com.jy.repository.oa.communicate;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.communicate.MailFolder;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface MailFolderMapper {
+
+	// 获取第一层私有的邮箱目录列表
+	List<MailFolder> selectFirst(@Param("userId") String userId);
+
+	//获取第一层目录下的所有目录
+	List<MailFolder> selectSubFolderBy(@Param("folderId") Long folderId, @Param("userId") String userId);
+
+	// 添加邮箱目录
+	int insert(MailFolder mailFolder);
+
+	// 获取parentId对应的depLevel、path
+	MailFolder selectDepLevelAndPathBy(Long folderId);
+
+	// 获取最大folderId值
+	Long selectMaxBy(Long folderId);
+
+	// 修改邮箱目录名称
+	int update(MailFolder mailFolder);
+
+	// 删除邮箱目录
+	int delete(Long folderId);
+
+	int updatePath(MailFolder mailFolder);
+
+	// 获取公有的邮箱目录
+	List<MailFolder> selectPublic();
+
+	// 获取邮箱目录详细信息
+	MailFolder selectBy(Long folderId);
+
+}

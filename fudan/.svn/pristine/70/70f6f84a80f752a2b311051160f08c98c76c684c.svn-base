@@ -1,0 +1,48 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="Modal_kind_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">物资类别添加</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" role="form" id="Form_kind_add" onsubmit="return fAdd()">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">物资类别</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="kind_add_id" name="kind_add_id" maxlength="255" placeholder="物资类别" >
+								<option value="0"> --请选择-- </option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">类别锁定</label>
+						<div class="col-sm-10">
+							<input type="checkbox" id="kind_add_pid" maxlength="255" onclick="fLock()" placeholder="类别锁定" >
+							<span style="color:#8f8f94">(保持在固定类别下添加项目)</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">项目名称</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="kind_add_name" name="name" maxlength="255" placeholder="项目名称" required>
+						</div>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<button type="submit" class="btn btn-success">
+							保存
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

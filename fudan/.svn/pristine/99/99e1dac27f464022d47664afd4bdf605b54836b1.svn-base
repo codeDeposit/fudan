@@ -1,0 +1,860 @@
+var _id;//客户id
+var _name;//企业名称
+var _address;//定位地址
+var _mark;//按钮判断
+$(document).ready(function() {
+	fuLoading();
+	setTimeout("fList()",200);
+	$('.form_date').datetimepicker({/*时间初始化*/
+	    language: 'zh-CN',
+	    weekStart: 1,
+	    todayBtn: 1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 2,
+	    forceParse: 0,
+	}); 
+	amapCurrentPosition();
+});
+/**
+ * 高德地图定位插件
+ */
+function amapCurrentPosition() {
+    var geolocation = new AMap.Geolocation({
+        timeout: 5000 /*定位超时*/
+    });
+    geolocation.getCurrentPosition(function(status, result) {
+        if (status == 'complete') {
+            onLocateSuccess(result)
+        } else if (status == 'error') {
+            if (result.message.indexOf('Geolocation permission denied.') !== -1) {
+                createAlert('请打开定位权限', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+            } else {
+                createAlert('无法获取精确位置,将定位城市', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+            }
+            createAlert('定位失败 ！', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+        }
+    })
+}
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/list",
+		success : function(data) {
+			 $('#customer_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fAdd() {
+	fuLoading();
+	setTimeout("fAdd2()",200);
+	return false;
+}
+function fAdd2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/add",
+		data : $("#Form_customer_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_customer_add").reset();
+				$('#Modal_customer_add').modal('hide');
+			  	fList();
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList(); 
+			}
+		}
+	});
+}
+function fuSure(param1,param2){
+	if(param2 == 'customer'){
+		fDelete2(param1);
+	}else if(param2 == 'contacts'){
+		fContactsDelete2(param1);
+	}else if(param2 == 'saleActivity'){
+		fSaleActivityDelete2(param1);
+	}else if(param2 == 'saleProject'){
+		fSaleProjectDelete2(param1);
+	}else if(param2 == 'contract'){
+		fContractDelete2(param1);
+	}
+}
+function fDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#customer_detail').html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/update",
+		data : $("#Form_customer_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_customer_detail').modal('hide');
+				fList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/search",
+		data : $("#Form_customer_search").serialize(),
+		success : function(data) {
+			$('#customer_list').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}
+/**
+ * 菜单栏方法调取
+ * @param param1
+ */
+function fBasic(param1,param2){//基本信息
+	_id = param1;
+	_name = param2;
+	document.getElementById('customer_index_customerName').innerHTML = _name;
+	$('#xxoo a[href="#home"]').tab('show');
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/customer/basic",
+		data:{id:param1},
+		success : function(data) {
+			fuCloseLayer();
+			$('#home').html(data);
+		}
+	});
+}
+function fContacts_list(){//联系人
+	//新增联系人form所属客户,值打印
+	document.getElementById('add_customerId').value = _id;
+	document.getElementById('add_company').value = _name;
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contacts/list",
+		data:{customerId:_id},
+		success : function(data) {
+			fuCloseLayer();
+			$('#contacts').html(data);
+		}
+	});
+}
+function fContactsAdd(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contacts/add",
+		data : $("#Form_contacts_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_contacts_add").reset();
+				$('#Modal_contacts_add').modal('hide');
+				fContacts_list()
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fContactsDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fContactsDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contacts/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fContacts_list(); 
+			}
+		}
+	});
+}
+function fContactsDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fContactsDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fContactsDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contacts/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#contacts_detail').html(data);
+		}
+	});
+}
+function fContactsUpdate(){
+	fuLoading(); 	
+	setTimeout("fContactsUpdate2();",500);
+	return false;
+}
+function fContactsUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contacts/update",
+		data : $("#Form_contacts_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_contacts_detail').modal('hide');
+				fContacts_list();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSalesActivityList(){//销售行动
+	//新增联系人form所属客户,值打印
+	document.getElementById('saleActivity_customerId').value = _id;
+	document.getElementById('saleActivity_company').value = _name;
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleActivity/list",
+		data:{customerId:_id},
+		success : function(data) {
+			fuCloseLayer();
+			$('#sale_action').html(data);
+		}
+	});
+}
+function fSaleActivityAdd(){
+	var ids = ['attachments'];
+	$.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url : basePath+"backstage/saleActivity/add?"+$("#Form_saleActivity_add").serialize(),
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",
+		success:function(data){
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_saleActivity_add").reset();
+				$('#Modal_saleActivity_add').modal('hide');
+				fSalesActivityList()
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fSaleActivityDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fSaleActivityDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleActivity/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fSalesActivityList();
+			}
+		}
+	});
+}		
+function fSaleActivityDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fSaleActivityDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fSaleActivityDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleActivity/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#saleActivity_detail').html(data);
+		}
+	});
+}
+function fSaleActivityUpdate(){
+	fuLoading(); 	
+	setTimeout("fSaleActivityUpdate2();",500);
+	return false;
+}
+function fSaleActivityUpdate2(){
+	var ids = ['attachment_sale'];
+	$.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url : basePath+"backstage/saleActivity/update?"+$("#Form_saleActivity_detail").serialize(),
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",
+		success:function(data){
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_saleActivity_detail').modal('hide');
+				fSalesActivityList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSalesProjectList(){//销售项目
+	//新增联系人form所属客户,值打印
+	document.getElementById('saleProject_customerId').value = _id;
+	document.getElementById('saleProject_company').value = _name;
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/list",
+		data:{customerId:_id},
+		success : function(data) {
+			fuCloseLayer();
+			$('#sale_project').html(data);
+		}
+	});
+}
+function fSaleProjectAdd(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/add",
+		data : $("#Form_saleProject_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_saleProject_add").reset();
+				$('#Modal_saleProject_add').modal('hide');
+				fSalesProjectList()
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fSaleProjectDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fSaleProjectDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fSalesProjectList(); 
+			}
+		}
+	});
+}		
+function fSaleProjectDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fSaleProjectDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fSaleProjectDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#saleProject_detail').html(data);
+		}
+	});
+}
+function fSaleProjectUpdate(){
+	fuLoading(); 	
+	setTimeout("fSaleProjectUpdate2();",500);
+	return false;
+}
+function fSaleProjectUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/update",
+		data : $("#Form_saleProject_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_saleProject_detail').modal('hide');
+				fSalesProjectList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSalesProjectList(){//合同信息
+	//新增联系人form所属客户,值打印
+	document.getElementById('saleProject_customerId').value = _id;
+	document.getElementById('saleProject_company').value = _name;
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/list",
+		data:{customerId:_id},
+		success : function(data) {
+			fuCloseLayer();
+			$('#sale_project').html(data);
+		}
+	});
+}
+function fSaleProjectAdd(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/add",
+		data : $("#Form_saleProject_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				document.getElementById("Form_saleProject_add").reset();
+				$('#Modal_saleProject_add').modal('hide');
+				fSalesProjectList()
+			  	fuClose();
+			}
+		}
+	});
+	return false;
+}
+function fSaleProjectDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fSaleProjectDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fSalesProjectList(); 
+			}
+		}
+	});
+}		
+function fSaleProjectDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fSaleProjectDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fSaleProjectDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#saleProject_detail').html(data);
+		}
+	});
+}
+function fSaleProjectUpdate(){
+	fuLoading(); 	
+	setTimeout("fSaleProjectUpdate2();",500);
+	return false;
+}
+function fSaleProjectUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/saleProject/update",
+		data : $("#Form_saleProject_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_saleProject_detail').modal('hide');
+				fSalesProjectList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fContractList(){
+	//新增联系人form所属客户,值打印
+	document.getElementById('contract_add_customerId').value = _id;
+	document.getElementById('contract_add_company').value = _name;
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contract/list",
+		data:{customerId:_id},
+		success : function(data) {
+			fuCloseLayer();
+			$('#contract').html(data);
+		}
+	});
+}
+function fContractAdd(){
+	//总额计算
+	var total1 = document.getElementById('contract_add_amount').value * 100;
+	var price1 = document.getElementById('price1').value;
+	var price2 = document.getElementById('price2').value;
+	var price3 = document.getElementById('price3').value;
+	var total2 = parseInt(price1) + parseInt(price2) + parseInt(price3);
+	var total3 = total2*100;
+	if(total1 != total3){
+		alert('付款金额与合同总额不相等');
+	}else{
+		var salesJSON = [];
+		var nameLength = document.getElementsByName('salesPeople');
+		var priceLength = document.getElementsByName('salesPrice');
+		for(var i=0;i<nameLength.length;i++){
+			 var str = {'name':nameLength[i].value,'price':priceLength[i].value};
+			 salesJSON.push(str);
+		}
+		var jsonstr = JSON.stringify(salesJSON);
+		document.getElementById('contract_add_salesJson').value  = jsonstr;
+		var ids = ['attachments2'];
+		$.ajaxFileUpload({
+			type:"post",
+			async:false,
+			url : basePath+"backstage/contract/add?"+$("#Form_contract_add").serialize(),
+			ecureuri:false,
+	    	fileElementId:ids,
+			dataType:"JSON",
+			success:function(data){
+				var obj = eval('(' + data + ')');
+				if (obj.res == 0) {
+					alert(obj.resMsg);
+				} else {
+					document.getElementById("Form_contract_add").reset();
+					$('#Modal_contract_add').modal('hide');
+					fContractList();
+				  	fuClose();
+				}
+			}
+		});
+	}
+	return false;
+}
+function fContractDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fContractDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contract/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fContractList(); 
+			}
+		}
+	});
+}	
+function fContractDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fContractDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fContractDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contract/detail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#contract_detail').html(data);
+		}
+	});
+}
+function fContractUpdate(){
+	fuLoading(); 	
+	setTimeout("fContractUpdate2();",500);
+	return false;
+}
+function fContractUpdate2(){
+	 var salesJSON = [];
+	 var nameLength = document.getElementsByName('salesPeople_detail');
+	 var priceLength = document.getElementsByName('salesPrice_detail');
+	 for(var i=0;i<nameLength.length;i++){
+		 var str = {'name':nameLength[i].value,'price':priceLength[i].value};
+		 salesJSON.push(str);
+	 }
+	 var jsonstr = JSON.stringify(salesJSON);
+	 document.getElementById('contract_update_salesJson').value  = jsonstr;
+	 var ids = ['attachment_detail'];
+	 $.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url : basePath+"backstage/contract/update?"+$("#Form_contract_detail").serialize(),
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",
+		success:function(data){
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_contract_detail').modal('hide');
+				fContractList();
+				fuCloseLayer();
+			}
+		}
+	 });
+}
+function fContractFundsDetail(param1,param2){
+	fuLoading(); 	
+	setTimeout('fContractFundsDetail2(\''+param1+'\','+param2+');',500);
+	return false;
+}
+function fContractFundsDetail2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contract/fundsDetail",
+		data:{id:param1,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#funds_detail').html(data);
+		}
+	});
+}
+function fContractFundsUpdate(){
+	var price1 = document.getElementById('contract_funds_detail_price1').value*100;
+	var price2 = document.getElementById('contract_funds_detail_price2').value*100;
+	var price3 = document.getElementById('contract_funds_detail_price3').value*100;
+	var total_funds = price1 + price2 + price3;
+	var price1End = document.getElementById('contract_funds_detail_price1End').value*100;
+	var price1Mark = document.getElementById('price1Mark').value;
+	var time1End = document.getElementById('time1End').value;
+	var price2End = document.getElementById('contract_funds_detail_price2End').value*100;
+	var price2Mark = document.getElementById('price2Mark').value;
+	var time2End = document.getElementById('time2End').value;
+	var price3End = document.getElementById('contract_funds_detail_price3End').value*100;
+	var price3Mark = document.getElementById('price3Mark').value;
+	var time3End = document.getElementById('time3End').value;
+	var total_end_funds = price1End + price2End + price3End;
+	if(price1End == 0.0 && price2End == 0.0 && price3End == 0.0 && time1End == '' && time2End == '' && time3End == ''){
+		document.getElementById('contract_funds_detail_hint').innerHTML = '';
+		fuLoading(); 	
+		setTimeout("fContractFundsUpdate2();",500);
+	}else if(price1End != 0.0 && price2End != 0.0 && price3End != 0.0 && time1End != '' && time2End != '' && time3End != ''){
+		if(total_end_funds != total_funds){
+			document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额填写错误，与规定金额不符。';
+		}else{
+			document.getElementById('contract_funds_detail_hint').innerHTML = '';
+			fuLoading(); 	
+			setTimeout("fContractFundsUpdate2();",500);
+		}
+	}else if(price1End != 0.0 && price2End != 0.0 && price3End != 0.0){
+		if(price1Mark == 0.0){
+			if(price1End != 0.0){
+				if(time1End == '' || time2End == '' || time3End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price1Mark > price1){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}
+		if(price2Mark == 0.0){
+			if(price2End != 0.0){
+				if(time1End == '' || time2End == '' || time3End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price1Mark > price1){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}
+		if(price3Mark == 0.0){
+			if(price3End != 0.0){
+				if(time1End == '' || time2End == '' || time3End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price1Mark > price1){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}
+	}else{
+		if(price1Mark == 0.0){
+			if(price1End != 0.0){
+				if(time1End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price1Mark > price1){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}else if(price2Mark == 0.0){
+			if(price2End != 0.0){
+				if(time2End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price2Mark > price2){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}else if(price3Mark == 0.0){
+			if(price3End != 0.0){
+				if(time3End == ''){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>请填写付款日期';
+				}else if(price3Mark > price3){
+					document.getElementById('contract_funds_detail_hint').innerHTML = '<i class="icon-warning-sign"></i>付款金额大于应付账款，请重新输入！';
+				}else{
+					document.getElementById('contract_funds_detail_hint').innerHTML = '';
+					fuLoading(); 	
+					setTimeout("fContractFundsUpdate2();",500);
+				}
+			}
+		}
+	}
+	return false;
+}
+function fContractFundsUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/contract/fundsUpdate",
+		data : $("#Form_contract_funds_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_contract_funds_detail').modal('hide');
+				fContractList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fDefault(param){
+	_numberId = param;
+}
+function fEmployeePrint(param){
+	document.getElementById("salesPeople" + _numberId).value = param;
+}

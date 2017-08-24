@@ -1,0 +1,31 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="../common/styleUrl.jsp" %>
+<form class="form-horizontal aForm" role="form">
+	<input type="hidden" id="id" name="id" value="${customer.id }">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">企业名称</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="company" name="company" maxlength="255" value="${customer.company }" placeholder="企业名称" readonly required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">负&nbsp;&nbsp;责&nbsp;&nbsp;人</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="responsible" name="responsible" maxlength="255" value="${customer.responsible }" placeholder="负责人" readonly required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">企业地址</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="address" name="address" maxlength="255" value="${customer.address }" placeholder="企业地址" readonly required>
+		</div>
+	</div> 
+	<div class="form-group">
+		<label class="col-sm-2 control-label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+		<div class="col-sm-10">
+           <textarea class="form-control" id="remark" name="remark" maxlength="255" placeholder="备注" readonly required>${customer.remark }</textarea>
+       </div>
+	</div>
+</form>

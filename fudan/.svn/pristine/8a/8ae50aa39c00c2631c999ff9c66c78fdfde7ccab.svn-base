@@ -1,0 +1,63 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button type="button" id="addbtn" class="btn btn-success pull-right"
+	data-toggle="modal" data-target="#addModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+	aria-labelledby="newsAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="newsAddModalLabel">日程添加</h4>
+			</div>
+			<div class="modal-body">
+				<form id="calendarplanaddform" class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-1">日期</label>
+						<div class="col-md-11">
+							<div class="input-group date form_date" data-date=""
+								data-date-format="yyyy-MM-dd" data-link-field="dtp_input1"
+								data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" name="dayTime" type="text"
+									value='' readonly required aria-required="true" placeholder="开始时间">
+								<span class="input-group-addon"><span
+									class="glyphicon glyphicon-remove"></span> </span> <span
+									class="input-group-addon"><span
+									class="glyphicon glyphicon-calendar"></span> </span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-1">类型</label>
+						<div class="col-md-11">
+							<select class="form-control forinBlo" name="diaryType">
+								<option selected value="">--请选择--</option>
+								<option value="0">个人日志</option>
+								<option value="1">工作日志</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-1">内容</label>
+						<!-- 页面加载完成后，将UMeditor编辑器加入newsContent中  -->
+						<div class="col-md-11"><%@ include file="../common/editor.jsp"%></div>
+					</div>
+					<div class="modal-footer">
+						<button id="closebtn" type="button" class="btn btn-default"
+							data-dismiss="modal">关闭</button>
+						<button id="calendarplansaddbtn" type="button"
+							class="btn btn-success">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->

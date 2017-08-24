@@ -1,0 +1,127 @@
+package com.jy.controller.wzcg;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.jy.common.ajax.AjaxRes;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.wzcg.WzcgUnit;
+import com.jy.service.wzcg.WzcgUnitService;
+
+@Controller("wzcgUnitController")
+@RequestMapping(value="/backstage/wzcg/unit")
+public class WzcgUnitController extends BaseController<WzcgUnit> {
+	
+	@Resource(name="wzcgUnitService")
+	private WzcgUnitService wzcgUnitService;
+	
+	/**
+	 * 类别首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{	
+		return "/system/wzcg/unit/unit_index";
+	}
+	
+	@RequestMapping("/list")
+	public String list(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{	
+		List<WzcgUnit> list = wzcgUnitService.find(wzcgUnit);
+		model.addAttribute("list",list);
+		model.addAttribute("count",list.size());
+		return "/system/wzcg/unit/unit_list";
+	}
+
+	/**
+	 * 添加
+	 * @param request
+	 * @param model
+	 * @param wzcgUnit
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		wzcgUnitService.insert(wzcgUnit);
+		ar.setSucceedMsg("success"); 
+		return ar;
+	}
+	
+	/**
+	 * 详细
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/detail")  
+	public String detail(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		wzcgUnit = wzcgUnitService.find(wzcgUnit).get(0);
+		model.addAttribute("unit",wzcgUnit);
+		model.addAttribute("mark",mark);
+		return "/system/wzcg/unit/unit_detail";
+	}
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/update")  
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgUnitService.update(wzcgUnit);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 更新状态（1有效2无效）
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateState")  
+	@ResponseBody
+	public AjaxRes updateState(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgUnitService.update(wzcgUnit);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+	/**
+	 * 搜索
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/search")  
+	public String search(HttpServletRequest request,Model model,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{		
+		List<WzcgUnit> list = wzcgUnitService.search(wzcgUnit);
+		model.addAttribute("list",list);
+		model.addAttribute("count",list.size());
+		return "/system/wzcg/unit/unit_list";
+	}
+	
+	/**
+	 * 删除
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,@ModelAttribute WzcgUnit wzcgUnit)throws Exception{		
+		AjaxRes ar = getAjaxRes();
+		wzcgUnitService.delete(wzcgUnit);
+		ar.setSucceedMsg("success");
+		return ar;
+	}
+	
+}

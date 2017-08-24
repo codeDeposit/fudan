@@ -1,0 +1,18 @@
+package com.jy.service.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.OAOrg;
+
+public interface OAOrgService {
+
+	// 获取所有部门
+	List<OAOrg> getAll();
+
+	// 获取部门详细信息
+	List<OAOrg> getInfoBy(String orgId);
+
+	// 根据员工姓名获取部门ID
+	OAOrg getInfoByEmpId(String userId);
+
+}

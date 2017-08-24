@@ -1,0 +1,110 @@
+package com.jy.service.oa.impl.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.personal.HolidayRecord;
+import com.jy.repository.oa.personal.HolidayRecordMapper;
+import com.jy.service.oa.personal.HolidayRecordService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("holidayRecordService")
+public class HolidayRecordServiceImpl implements HolidayRecordService {
+
+	private HolidayRecordMapper holidayRecordMapper;
+
+	public HolidayRecordMapper getHolidayRecordMapper() {
+		return holidayRecordMapper;
+	}
+
+	@Autowired
+	public void setHolidayRecordMapper(HolidayRecordMapper holidayRecordMapper) {
+		this.holidayRecordMapper = holidayRecordMapper;
+	}
+
+	// 添加假期设置
+	@Override
+	public JsonInfo save(HolidayRecord holidayRecord) {
+		
+		int result = holidayRecordMapper.insert(holidayRecord);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改假期设置
+	@Override
+	public JsonInfo update(HolidayRecord holidayRecord) {
+		int result = holidayRecordMapper.update(holidayRecord);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取假期详细信息
+	@Override
+	public HolidayRecord getInfoBy(Long recordId) {
+		HolidayRecord holidayRecord = holidayRecordMapper.selectInfoBy(recordId);
+		
+		holidayRecord.setStartTime1(DateStringUtil.dateToString3(holidayRecord.getStartTime()));
+		holidayRecord.setEndTime1(DateStringUtil.dateToString3(holidayRecord.getEndTime()));
+		
+		return holidayRecord;
+	}
+
+	// 批量删除假期
+	@Override
+	public JsonInfo delete(Long[] recordId) {
+		int result = 0;
+		for(Long rId: recordId) {
+			result = holidayRecordMapper.delete(rId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取假期信息列表
+	@Override
+	public List<HolidayRecord> get(Date startTime, Date endTime,HolidayRecord holidayRecord) {
+		List<HolidayRecord> holidayRecords = holidayRecordMapper.select(startTime, endTime, holidayRecord);
+		return holidayRecords;
+	}
+
+	@Override
+	public List<HolidayRecord> getPageList(PageBean pb, Date startTime, Date endTime, HolidayRecord holidayRecord) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<HolidayRecord> pageholidayRecords = holidayRecordMapper.selectPageData(firstIndex, toIndex, startTime, endTime, holidayRecord);
+		for(HolidayRecord hr: pageholidayRecords) {
+			hr.setStartTime1(DateStringUtil.dateToString3(hr.getStartTime()));
+			hr.setEndTime1(DateStringUtil.dateToString3(hr.getEndTime()));
+		}
+		return pageholidayRecords;
+	}
+
+}

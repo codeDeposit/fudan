@@ -1,0 +1,31 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.BookType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface BookTypeMapper {
+
+	// 添加图书类别
+	int insert(BookType bookType);
+
+	// 修改图书类别信息
+	int update(BookType bookType);
+
+	// 获取详细信息
+	BookType selectInfoBy(Long typeId);
+
+	// 批量删除
+	int delete(Long tId);
+
+	// 获取图书类别列表
+	List<BookType> select( @Param("typeName") String typeName);
+
+	// 分页获取图书类别列表
+	List<BookType> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("typeName") String typeName);
+
+}

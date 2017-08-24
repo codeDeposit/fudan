@@ -1,0 +1,85 @@
+a {
+    color: #ccc;
+    display: block;
+}
+
+body {
+    background-color: #2D9AD2
+}
+
+.aui-list-item-input {
+    position: relative;
+}
+
+#myCanvas {
+    width: 70px;
+    height: 42px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.aui-list-item span {
+    padding-top: .5rem;
+}
+
+.aui-list .aui-list-item {
+    padding-right: .75rem;
+}
+
+.aui-icon-correct {
+    font-weight: bold;
+    color: #009688;
+    display: none;
+}
+
+.aui-list .subBtn {
+    margin: 1rem 0;
+    background-color: #F5F5F5;
+}
+
+.aui-list .aui-list-item:after {
+    height: 0;
+}
+
+.aui-list:after {
+    height: 0;
+}
+
+.aui-list .liName:after {
+    height: 1px;
+}
+
+.aui-bar-nav {
+    background-color: transparent;
+}
+
+.logo {
+    width: 60%;
+    height: 3rem;
+    background: url(../../image/login/logo.png) no-repeat 0 0;
+    background-size: contain;
+    margin: 2rem auto 1rem;
+}
+
+.aui-content {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #2D9AD2;
+}
+
+.borRad {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 5px;
+    overflow: hidden;
+}
+
+.liPassword {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+}
+
+.aui-list:before {
+    height: 0;
+}

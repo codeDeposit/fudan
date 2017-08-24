@@ -1,0 +1,57 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.communicate.MailAttach;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.repository.oa.communicate.MailAttachMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.communicate.MailAttachService;
+
+@Service("mailAttachService")
+public class MailAttachServiceImpl implements MailAttachService{
+	
+	private MailAttachMapper mailAttachMapper;
+	private FileAttachMapper fileAttachMapper;
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	public MailAttachMapper getMailAttachMapper() {
+		return mailAttachMapper;
+	}
+
+	@Autowired
+	public void setMailAttachMapper(MailAttachMapper mailAttachMapper) {
+		this.mailAttachMapper = mailAttachMapper;
+	}
+
+	/**
+	 * 根据mailId查询所有与邮件关联的附件
+	 */
+	@Override
+	public List<FileAttach> getBy(Long mailId) {
+		List<MailAttach> mailAttachs = mailAttachMapper.selectBy(mailId);
+		if(mailAttachs == null || mailAttachs.size() == 0) {
+			return null;
+		}
+		List<FileAttach> fileAttachs = new ArrayList<FileAttach>();
+		for (MailAttach mailAttach : mailAttachs) {
+			Long fileId = mailAttach.getFileId();
+			FileAttach fileAttach = fileAttachMapper.selectBy(fileId);
+			fileAttachs.add(fileAttach);
+		}
+		return fileAttachs;
+	}
+	
+}

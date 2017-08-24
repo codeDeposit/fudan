@@ -1,0 +1,34 @@
+package com.jy.repository.oa.info;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.info.News;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface NewsMapper {
+
+	// 模糊查询 获取列表信息
+	List<News> selectBy(@Param("typeId") Long typeId, @Param("subject") String subject, @Param("author") String author);
+
+	// 添加新闻
+	int insert(News news);
+
+	// 根据newsId获取详细信息
+	News selectDetailsBy(Long newsId);
+
+	// 根据newsId 修改信息
+	int updateBy(News news);
+
+	// 根据newsId 批量删除
+	void delete(Long newsId);
+
+	// 分页模糊查询
+	List<News> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("typeId") Long typeId,
+			@Param("subject") String subject, @Param("author") String author);
+	// 发布新闻
+	int release(@Param("newsId")Long newsId, @Param("status")Integer status);
+
+}

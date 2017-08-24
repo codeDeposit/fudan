@@ -1,0 +1,122 @@
+package com.jy.entity.oa.admin;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class GoodsApply {
+
+	private Long applyId;
+	private Long goodsId;
+	private Date applyDate;
+	private String applyNo;
+	private Integer useCounts;
+	private String proposer;
+	private String userId;
+	private String notes;
+	private Short approvalStatus;
+	private OfficeGoods officeGoods;
+
+	private String goodsName;
+	
+	// 用于显示
+	private String applyDate1;
+
+	public String getApplyDate1() {
+		return applyDate1;
+	}
+
+	public void setApplyDate1(String applyDate1) {
+		this.applyDate1 = applyDate1;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public Long getApplyId() {
+		return applyId;
+	}
+
+	public void setApplyId(Long applyId) {
+		this.applyId = applyId;
+	}
+
+	public Long getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Long goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public Date getApplyDate() {
+		return applyDate;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public void setApplyDate(Date applyDate) {
+		this.applyDate = applyDate;
+	}
+
+	public String getApplyNo() {
+		return applyNo;
+	}
+
+	public void setApplyNo(String applyNo) {
+		this.applyNo = applyNo;
+	}
+
+	public Integer getUseCounts() {
+		return useCounts;
+	}
+
+	public void setUseCounts(Integer useCounts) {
+		this.useCounts = useCounts;
+	}
+
+	public String getProposer() {
+		return proposer;
+	}
+
+	public void setProposer(String proposer) {
+		this.proposer = proposer;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public Short getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(Short approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public OfficeGoods getOfficeGoods() {
+		return officeGoods;
+	}
+
+	public void setOfficeGoods(OfficeGoods officeGoods) {
+		this.officeGoods = officeGoods;
+	}
+
+}

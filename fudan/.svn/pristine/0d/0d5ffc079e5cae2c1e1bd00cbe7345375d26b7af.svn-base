@@ -1,0 +1,320 @@
+package com.jy.controller.system.backstage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.base.Const;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.common.utils.tree.MenuTreeUtil;
+import com.jy.common.utils.webpage.PageData;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.setting.WebSite;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.resources.Resources;
+import com.jy.service.setting.WebSiteService;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.system.resources.ResourcesService;
+
+@Controller
+@RequestMapping("/backstage/")
+public class BackstageController extends BaseController<Object>{
+	
+	@Autowired
+	public ResourcesService menuService;
+	@Autowired
+	private AccountService service;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private WebSiteService webSiteService;
+	
+	/*
+	 * 访问系统首页
+	 */
+	@RequestMapping("index")
+	public String index(Model model,HttpServletRequest request){
+		Account  acount = AccountShiroUtil.getCurrentUser();
+		List<Resources> menus = new ArrayList<Resources>();//菜单列表数组定义
+		String userId = "";
+		String menu = "";
+		String ref = "y";
+		String layer = "0";
+		Object menu_o = null;
+		try {
+			Session session = SecurityUtils.getSubject().getSession();//shiro获取用户信息,shiro管理的session
+			acount = (Account) session.getAttribute(Const.SESSION_USER);//获得用户
+			userId = acount.getAccountId();//获得用户Id
+			if(!"y".equals(ref)){//首次登陆菜单调取
+				menu_o = session.getAttribute(Const.SESSION_MENULIST);
+			}
+			menus = (List<Resources>)menu_o;
+			if(menus == null){
+				if(StringUtils.isBlank(layer)){//layer为空，boolean变量为true
+					layer = "1";
+				}
+				menus = menuService.findMenuTree(userId,layer);
+				session.setAttribute(Const.SESSION_MENULIST, menus);
+			}
+			if(menus != null){
+				menu = MenuTreeUtil.indexBuildTreeHtml(menus);//首页菜单处理			
+			}
+			//session注入
+			session.setAttribute("loginName", acount.getLoginName());
+			session.setAttribute("orgName", roleService.getOrg(acount.getRoleId()).getName());
+			session.setAttribute("picUrl", acount.getPicUrl());
+			WebSite webSite	= webSiteService.find().get(0);
+			session.setAttribute("logo",webSite.getLogo());
+			session.setAttribute("webSiteName",webSite.getWebTitleWord());
+			session.setAttribute("copyright",webSite.getCopyright());
+			if(acount.getName() == null ||  acount.getName().equals("")){
+				session.setAttribute("name","用户");
+			}else{
+				session.setAttribute("name", acount.getName());
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+		}	
+		model.addAttribute("menu",menu);
+		return "/system/index/index";
+	}
+	
+	/*
+	 * 二级菜单
+	 */
+	@RequestMapping("index2")
+	public String index2(Model model,HttpServletRequest request){	
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+		Account acount = AccountShiroUtil.getCurrentUser();
+		List<Resources> menus = new ArrayList<Resources>();//菜单列表数组定义
+		List<Resources> menus2 = new ArrayList<Resources>();//菜单列表数组定义
+		String userId = "";
+		String menu = "";
+		String ref = request.getParameter("ref");
+		String layer = request.getParameter("layer");
+		String menuId = request.getParameter("menuId");
+		Object menu_o = null;
+		StringBuffer html = new StringBuffer();
+		try {
+			Session session = SecurityUtils.getSubject().getSession();//shiro获取用户信息,shiro管理的session
+			acount = (Account) session.getAttribute(Const.SESSION_USER);//获得用户
+			userId = acount.getAccountId();//获得用户Id
+			menus = menuService.findMenuTree(userId,layer);
+			for(Resources res : menus){
+				if(res.getParentId().equals(menuId)){
+					html.append("<li>");
+					html.append("<a href='javascript:void(0)'><i class='"+ res.getIcon() +"'></i> <span class='nav-label'>"+ res.getName() +"</span><span class='icon-angle-right' style='float:right'></span></a>"); 
+					html.append("<ul class='nav nav-second-level collapse in'>");
+					for(Resources res2:menus){
+						if(res2.getParentId().equals(res.getId())){
+							html.append("<li id='"+ res2.getId() +"'><a href='"+basePath+"backstage/"+ res2.getResUrl() +"' class='J_menuItem' ><i class='"+ res2.getIcon() +"'></i>"+ res2.getName() +"</a></li>");
+						}
+					}
+					html.append("</ul>");
+				}
+				html.append("</li>");
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+		}			
+		model.addAttribute("menu",html);
+		return "/system/index/menu";
+	}
+	
+	/*
+	 * 二级菜单
+	 */
+	@RequestMapping("index3")
+	public String index3(Model model,HttpServletRequest request){	
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
+		Account acount = AccountShiroUtil.getCurrentUser();
+		String userId = "";
+		String layer = request.getParameter("layer");
+		String menuId = request.getParameter("menuId");
+		StringBuffer html = new StringBuffer();
+		try {
+			Session session = SecurityUtils.getSubject().getSession();//shiro获取用户信息,shiro管理的session
+			acount = (Account) session.getAttribute(Const.SESSION_USER);//获得用户
+			userId = acount.getAccountId();//获得用户Id
+			List<Resources> menus = menuService.findMenuTree(userId,layer);
+			Resources menu = null;
+			for (Resources resources : menus) {
+				if(resources.getId().equals(menuId)) {
+					menu = resources;
+				}
+			}
+			/*递归处理树形菜单*/
+			diGui(menu,menus);
+			for(Resources res : menu.getNodes()){
+				String menuhtml = addCss(res, basePath);
+				html.append(menuhtml);
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+		}
+		model.addAttribute("menu",html);
+		return "/system/index/menu";
+	}
+	/*递归处理树形菜单*/
+	private void diGui(Resources menu, List<Resources> menus) {
+		String resourcesId = menu.getId();
+		List<Resources> resources = new ArrayList<Resources>();
+		for (Resources resource : menus) {
+			if(resource.getParentId().equals(resourcesId)) {
+				resources.add(resource);
+				diGui(resource,menus);
+			}
+		}
+		menu.setNodes(resources);
+	}
+	
+	// 给每个菜单加入样式
+	private String addCss(Resources resource, String basePath) {
+		StringBuffer menucss = new StringBuffer();
+		// 一级菜单
+		menucss.append("<li>");
+		menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+resource.getName()+"</span><span class='icon-angle-right' style='float:right'></span></a>");
+		// 二级菜单
+		List<Resources> subs = resource.getNodes();
+		if(subs != null) {
+			menucss.append("<ul class='nav nav-second-level'>");
+			for(Resources sub : subs){
+				menucss.append("<li>");
+				if(sub.getNodes() != null && sub.getNodes().size() == 0 && sub.getResUrl().length() != 0) {
+					menucss.append("<a class='J_menuItem' href='"+basePath+sub.getResUrl()+"')\"><i class='fa fa-home'></i><span class='nav-label'>"+sub.getName()+"</span>");
+				}else {
+					menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+sub.getName()+"</span>");
+				}
+				//三级菜单
+				List<Resources> subsubs = sub.getNodes();
+				if(subsubs != null && subsubs.size() > 0) {
+					menucss.append("<span class='icon-angle-right' style='float:right'></span></a>");
+					menucss.append("<ul class='nav nav-third-level'>");
+					for(Resources subsub : subsubs) {
+						menucss.append("<li>");
+						if(subsub.getResUrl() != null) {
+							menucss.append("<a class='J_menuItem' href='"+basePath+subsub.getResUrl()+"')\"><i class='fa fa-home'></i><span class='nav-label'>"+subsub.getName()+"</span></a>");
+						}else {
+							menucss.append("<a href='#'><i class='fa fa-home'></i><span class='nav-label'>"+subsub.getName()+"</span></a>");
+						}
+						menucss.append("</li>"); // 三级li
+					}
+					menucss.append("</ul>"); // 三级ul
+				}else {
+					menucss.append("</a>");
+				}
+				menucss.append("</li>"); // 二级li
+			}
+			menucss.append("</ul>");	// 二级ul
+		}
+		menucss.append("</li>");
+		return menucss.toString();
+	}
+
+	@RequestMapping("toast")
+	public String toast(Model model,HttpServletRequest request) {	
+		return "/system/common/toast";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="menu/getMenu", method=RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes getMenu(){	
+		AjaxRes ar = getAjaxRes();
+		List<Resources> menus = new ArrayList<Resources>();
+		PageData pd = this.getPageData();
+		String ref = pd.getString("ref");
+		String layer = pd.getString("layer");
+		Object menu_o = null;
+		try {
+			//shiro获取用户信息,shiro管理的session
+			Session session = SecurityUtils.getSubject().getSession();
+			//获得用户
+			Account acount = (Account)session.getAttribute(Const.SESSION_USER);
+			//获得用户Id
+			String userId = acount.getAccountId();
+			if(!"y".equals(ref)){	
+				menu_o = session.getAttribute(Const.SESSION_MENULIST);
+			}
+			menus=(List<Resources>)menu_o;
+			if(menus == null){
+				if(StringUtils.isBlank(layer))layer = "1";
+				menus = menuService.findMenuTree(userId,layer);
+				session.setAttribute(Const.SESSION_MENULIST, menus);
+			}
+			if(menus != null){
+				//将对象处理成树
+				String html = MenuTreeUtil.buildTreeHtml(menus);			
+				ar.setSucceed(html);
+			}
+		} catch (Exception e) {
+			logger.error(e.toString(),e);
+			ar.setFailMsg("获取菜单失败");
+		}			
+		return ar;
+	}
+	
+	@RequestMapping("adv")
+	public String advUI(Model model) {	
+		return "/system/adv/adv";
+	}
+	
+	@RequestMapping("404")
+	public String errorlistUI(Model model){	
+		return "/system/error/404";
+	}
+	
+	/**
+	 * 没权限页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("noAuthorized")
+	public String noAuthorizedUI(Model model){	
+		return Const.NO_AUTHORIZED_URL;
+	}
+	
+	//ajax数据调取
+	@RequestMapping("ajax")
+	public AjaxRes ajax(){
+		AjaxRes ar = getAjaxRes();//数据返回对象
+		ar.setSucceedMsg("获取菜单成功");
+		ar.setFailMsg("获取菜单失败");
+		return ar;
+	}
+	
+	/*
+	 * 系统设置
+	 */
+	@RequestMapping("systemSetting")
+	public String systemSetting(Model model) {	
+		return "/system/system/systemSetting";
+	}
+	
+	/*
+	 * 信息修改
+	 */
+	@RequestMapping("systemInfo")
+	public String systemInfo(HttpServletRequest request,Model model) {	
+		Account account = AccountShiroUtil.getCurrentUser();
+		account = service.accountInfo(account);
+		model.addAttribute("account",account);
+		return "/system/common/systemInfo";
+	}
+	
+}

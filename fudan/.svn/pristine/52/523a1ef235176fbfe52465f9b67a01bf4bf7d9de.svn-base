@@ -1,0 +1,38 @@
+package com.jy.service.oa.task;
+
+import java.util.List;
+
+import com.jy.entity.oa.task.Diary;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface DiaryService {
+	
+	// 获取日志列表
+	public List<Diary> getDiary(String startTime, String endTime, Short diaryType);
+	
+	/*public List<Diary> searchDiary();
+	
+	public ResponseInfoVo delDiary(Integer[] diaryId);
+	
+	public ResponseInfoVo<DiaryVo> getDiaryDetails(Integer diaryId);
+	
+	public ResponseInfoVo<Diary> saveDiary(Diary diary, Account account);*/
+
+	// 分页获取列表
+	public List<Diary> getPageList(PageBean pb, String startTime,
+			String endTime, Short diaryType);
+
+	// 添加日志
+	public JsonInfo save(Diary diary);
+
+	// 日志详细信息
+	public Diary getInfoBy(Long diaryId);
+
+	// 日志修改
+	public JsonInfo update(Diary diary);
+
+	// 删除日志
+	public JsonInfo delete(Long[] diaryId);
+
+}

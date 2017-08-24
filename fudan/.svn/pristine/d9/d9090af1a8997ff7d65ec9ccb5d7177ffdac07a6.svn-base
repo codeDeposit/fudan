@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=WebRoot/pc,resources/spring,resources/mybatis,WebRoot/404.jsp,resources/spring/spring-application.xml,WebRoot/WEB-INF,WebRoot/500.jsp
+validator.Unchecked=

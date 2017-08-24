@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.MailBoxMapper">
+	<!-- 添加邮件与邮箱的关联 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.MailBox">
+		insert fudan_oa_mail_box <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="mailId !=null ">
+				mailId = #{mailId},
+			</if>
+			<if test="folderId !=null ">
+				folderId = #{folderId},
+			</if>
+			<if test="userId !=null ">
+				userId = #{userId},
+			</if>
+			<if test="sendTime !=null ">
+				sendTime = #{sendTime},
+			</if>
+			<if test="delFlag !=null ">
+				delFlag = #{delFlag},
+			</if>
+			<if test="readFlag !=null ">
+				readFlag = #{readFlag},
+			</if>
+			<if test="replyFlag !=null ">
+				replyFlag = #{replyFlag},
+			</if>
+			<if test="note !=null and note !='' ">
+				note = #{note},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加邮件与邮箱的关联 end -->
+	
+	
+	<!-- 获取mailbox的详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.MailBox">
+		select * from fudan_oa_mail_box where boxId = #{boxId}
+	</select>
+	<!-- 获取mailbox的详细信息 end -->
+	
+	
+	<!-- 删除邮件 start -->
+	<update id="delete" parameterType="com.jy.entity.oa.communicate.MailBox">
+		update fudan_oa_mail_box <include refid="updateSQL"></include>
+		where boxId = #{boxId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="folderId !=null ">
+				folderId = #{folderId},
+			</if>
+			<if test="delFlag !=null ">
+				delFlag = #{delFlag},
+			</if>
+			<if test="note !=null and note !='' ">
+				note = #{note},
+			</if>
+		</set>
+	</sql>
+	<!-- 删除邮件 start -->
+	
+	
+	<!-- 获取邮件列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.communicate.MailBox">
+		select * from fudan_oa_mail_box box, fudan_oa_mail mail where box.mailId=mail.mailId and box.userId = #{userId} and box.delFlag = 0
+		<if test="subject != null and subject !='' ">
+			and mail.subject like concat("%", #{subject} ,"%")
+		</if>
+		<if test="sender != null and sender !='' ">
+			and mail.sender like concat("%", #{sender} ,"%")
+		</if>
+		<if test="recipientNames != null and recipientNames !='' ">
+			and mail.recipientNames like concat("%", #{recipientNames},"%")
+		</if>
+		<if test="folderId != null ">
+			and box.folderId = #{folderId}
+		</if>
+		order by box.sendTime desc
+	</select>
+	<!-- 获取邮件列表 end -->
+	
+	<!-- 删除邮件 -->
+	<update id="deleteBy">
+		update fudan_oa_mail_box set delFlag = 1
+		where boxId = #{boxId}
+	</update>
+
+	<!-- 邮箱移至目录 -->
+	<update id="transfer">
+		update fudan_oa_mail_box set folderId=#{folderId}
+		where boxId=#{boxId}
+	</update>
+	
+	<!-- 邮件分页列表 -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.communicate.MailBox">
+		select * from fudan_oa_mail_box box, fudan_oa_mail mail where box.mailId=mail.mailId and box.userId = #{userId} and box.delFlag = 0
+		<if test="subject != null and subject !='' ">
+			and mail.subject like concat("%", #{subject} ,"%")
+		</if>
+		<if test="sender != null and sender !='' ">
+			and mail.sender like concat("%", #{sender} ,"%")
+		</if>
+		<if test="recipientNames != null and recipientNames !='' ">
+			and mail.recipientNames like concat("%", #{recipientNames},"%")
+		</if>
+		<if test="folderId != null ">
+			and box.folderId = #{folderId}
+		</if>
+		order by box.sendTime desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+</mapper>

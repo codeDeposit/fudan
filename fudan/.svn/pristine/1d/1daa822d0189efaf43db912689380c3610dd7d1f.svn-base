@@ -1,0 +1,67 @@
+package com.jy.entity.oa.task;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Diary {
+
+	private Long diaryId;
+	private Date dayTime;
+	private String content;
+	private Short diaryType;
+	private String userId;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	//用于显示数据
+	private String dayTime1;
+
+	public String getDayTime1() {
+		return dayTime1;
+	}
+
+	public void setDayTime1(String dayTime1) {
+		this.dayTime1 = dayTime1;
+	}
+
+	public Long getDiaryId() {
+		return diaryId;
+	}
+
+	public void setDiaryId(Long diaryId) {
+		this.diaryId = diaryId;
+	}
+
+	public Date getDayTime() {
+		return dayTime;
+	}
+
+	@DateTimeFormat( pattern = "yyyy-MM-dd" )
+	public void setDayTime(Date dayTime) {
+		this.dayTime = dayTime;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Short getDiaryType() {
+		return diaryType;
+	}
+
+	public void setDiaryType(Short diaryType) {
+		this.diaryType = diaryType;
+	}
+
+}

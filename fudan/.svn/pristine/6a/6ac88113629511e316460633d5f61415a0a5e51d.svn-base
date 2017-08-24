@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.EmpProfileMapper">
+
+	<!-- 添加档案信息 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.EmpProfile">
+		insert fudan_oa_emp_profile <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="profileNo !=null and profileNo !='' ">
+				profileNo = #{profileNo},
+			</if>
+			<if test="fullname !=null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="address !=null and address !='' ">
+				address = #{address},
+			</if>
+			<if test="birthday !=null ">
+				birthday = #{birthday},
+			</if>
+			<if test="homeZip !=null and homeZip !='' ">
+				homeZip = #{homeZip},
+			</if>
+			<if test="sex !=null and sex !='' ">
+				sex = #{sex},
+			</if>
+			<if test="marriage !=null and marriage !='' ">
+				marriage = #{marriage},
+			</if>
+			<if test="designation !=null and designation !='' ">
+				designation = #{designation},
+			</if>
+			<if test="jobId !=null ">
+				jobId = #{jobId},
+			</if>
+			<if test="position !=null and position !='' ">
+				position = #{position},
+			</if>
+			<if test="phone !=null and phone !='' ">
+				phone = #{phone},
+			</if>
+			<if test="mobile !=null and mobile !='' ">
+				mobile = #{mobile},
+			</if>
+			<if test="openBank !=null and openBank !='' ">
+				openBank = #{openBank},
+			</if>
+			<if test="bankNo !=null and bankNo !='' ">
+				bankNo = #{bankNo},
+			</if>
+			<if test="qq !=null and qq !='' ">
+				qq = #{qq},
+			</if>
+			<if test="email !=null and email !='' ">
+				email = #{email},
+			</if>
+			<if test="hobby !=null and hobby !='' ">
+				hobby = #{hobby},
+			</if>
+			<if test="religion !=null and religion !='' ">
+				religion = #{religion},
+			</if>
+			<if test="party !=null and party !='' ">
+				party = #{party},
+			</if>
+			<if test="nationality !=null and nationality !='' ">
+				nationality = #{nationality},
+			</if>
+			<if test="race !=null and race !='' ">
+				race = #{race},
+			</if>
+			<if test="birthPlace !=null and birthPlace !='' ">
+				birthPlace = #{birthPlace},
+			</if>
+			<if test="eduDegree !=null and eduDegree !='' ">
+				eduDegree = #{eduDegree},
+			</if>
+			<if test="eduMajor !=null and eduMajor !='' ">
+				eduMajor = #{eduMajor},
+			</if>
+			<if test="eduCollege !=null and eduCollege !='' ">
+				eduCollege = #{eduCollege},
+			</if>
+			<if test="startWorkDate !=null ">
+				startWorkDate = #{startWorkDate},
+			</if>
+			<if test="eduCase !=null and eduCase !='' ">
+				eduCase = #{eduCase},
+			</if>
+			<if test="awardPunishCase !=null and awardPunishCase !='' ">
+				awardPunishCase = #{awardPunishCase},
+			</if>
+			<if test="trainingCase !=null and trainingCase !='' ">
+				trainingCase = #{trainingCase},
+			</if>
+			<if test="workCase !=null and workCase !='' ">
+				workCase = #{workCase},
+			</if>
+			<if test="idCard !=null and idCard !='' ">
+				idCard = #{idCard},
+			</if>
+			<if test="photo !=null and photo !='' ">
+				photo = #{photo},
+			</if>
+			<if test="standardMiNo !=null and standardMiNo !='' ">
+				standardMiNo = #{standardMiNo},
+			</if>
+			<if test="standardMoney !=null and standardMoney !='' ">
+				standardMoney = #{standardMoney},
+			</if>
+			<if test="standardName !=null and standardName !='' ">
+				standardName = #{standardName},
+			</if>
+			<if test="standardId !=null">
+				standardId = #{standardId},
+			</if>
+			<if test="creator !=null and creator !='' ">
+				creator = #{creator},
+			</if>
+			<if test="createtime !=null and createtime !='' ">
+				createtime = #{createtime},
+			</if>
+			<if test="approvalStatus !=null ">
+				approvalStatus = #{approvalStatus},
+			</if>
+			<if test="memo !=null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="depName !=null and depName !='' ">
+				depName = #{depName},
+			</if>
+			<if test="depId !=null ">
+				depId = #{depId},
+			</if>
+			<if test="delFlag !=null ">
+				delFlag = #{delFlag},
+			</if>
+			<if test="userId !=null ">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加档案信息 end -->
+	
+	
+	<!-- 修改档案信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.EmpProfile">
+		update fudan_oa_emp_profile <include refid="insertSQL"></include>
+		where profileId = #{profileId}
+	</update>
+	<!-- 修改档案信息 start -->
+	
+	
+	<!-- 获取档案详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.EmpProfile">
+		select * from fudan_oa_emp_profile where profileId = #{profileId}
+	</select>
+	<!-- 获取档案详细信息 end -->
+	
+	
+	<!-- 审核档案信息 start -->
+	<update id="updateReview" parameterType="com.jy.entity.oa.hrm.EmpProfile">
+		update fudan_oa_emp_profile <include refid="updateReviewSql"></include>
+		where profileId = #{profileId}
+	</update>
+	
+	<sql id="updateReviewSql">
+		<set>
+			<if test="checkName !=null and checkName !='' ">
+				checkName = #{checkName},
+			</if>
+			<if test="checktime !=null ">
+				checktime = #{checktime},
+			</if>
+			<if test="approvalStatus !=null ">
+				approvalStatus = #{approvalStatus},
+			</if>
+			<if test="opprovalOpinion !=null and opprovalOpinion !='' ">
+				opprovalOpinion = #{opprovalOpinion},
+			</if>
+		</set>
+	</sql>
+	<!-- 审核档案信息 end -->
+	
+	
+	<!-- 删除档案信息 start -->
+	<update id="delete" parameterType="Long">
+		update fudan_oa_emp_profile set delFlag = 1 where profileId = #{profileId}
+	</update>
+	<!-- 删除档案信息 end -->
+	
+	
+	<!-- 获取未删除档案列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.EmpProfile">
+		select * from fudan_oa_emp_profile where delFlag = 0
+		<if test="profileNo !=null and profileNo !='' ">
+			and profileNo like concat("%", #{profileNo}, "%")
+		</if>
+		<if test="fullname !=null and fullname !='' ">
+			and fullname like concat("%", #{fullname}, "%")
+		</if>
+		<if test="idCard !=null and idCard !='' ">
+			and idCard like concat("%", #{idCard}, "%")
+		</if>
+		<if test="approvalStatus !=null ">
+			and approvalStatus = #{approvalStatus}
+		</if>
+	</select>
+	<!-- 获取未删除档案列表 end -->
+	
+	
+	<!-- 获取已删除档案列表 start -->
+	<select id="selectDel"  resultType="com.jy.entity.oa.hrm.EmpProfile">
+		select * from fudan_oa_emp_profile where delFlag =1
+		<if test="profileNo !=null and profileNo !='' ">
+			and profileNo like concat("%", #{profileNo}, "%")
+		</if>
+		<if test="fullname !=null and fullname !='' ">
+			and fullname like concat("%", #{fullname}, "%")
+		</if>
+		<if test="idCard !=null and idCard !='' ">
+			and idCard like concat("%", #{idCard}, "%")
+		</if>
+		<if test="approvalStatus !=null ">
+			and approvalStatus = #{approvalStatus}
+		</if>
+	</select>
+	<!-- 获取已删除档案列表 end -->
+	
+	
+	<!-- 恢复档案信息 start -->
+	<update id="updateDelFlag" parameterType="Long">
+		update fudan_oa_emp_profile set delFlag = 0 where profileId = #{profileId}
+	</update>
+	<!-- 恢复档案信息 end -->
+	
+	
+	<!-- 未删除档案分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.EmpProfile">
+		select * from fudan_oa_emp_profile where delFlag = 0
+		<if test="profileNo !=null and profileNo !='' ">
+			and profileNo like concat("%", #{profileNo}, "%")
+		</if>
+		<if test="fullname !=null and fullname !='' ">
+			and fullname like concat("%", #{fullname}, "%")
+		</if>
+		<if test="idCard !=null and idCard !='' ">
+			and idCard like concat("%", #{idCard}, "%")
+		</if>
+		<if test="approvalStatus !=null ">
+			and approvalStatus = #{approvalStatus}
+		</if>
+		order by profileId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+	
+	<!-- 已删除档案分页列表 start -->
+	<select id="selectDelPageData" resultType="com.jy.entity.oa.hrm.EmpProfile">
+		select * from fudan_oa_emp_profile where delFlag = 1
+		<if test="profileNo !=null and profileNo !='' ">
+			and profileNo like concat("%", #{profileNo}, "%")
+		</if>
+		<if test="fullname !=null and fullname !='' ">
+			and fullname like concat("%", #{fullname}, "%")
+		</if>
+		<if test="idCard !=null and idCard !='' ">
+			and idCard like concat("%", #{idCard}, "%")
+		</if>
+		<if test="approvalStatus !=null ">
+			and approvalStatus = #{approvalStatus}
+		</if>
+		order by profileId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	
+</mapper>

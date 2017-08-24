@@ -1,0 +1,124 @@
+package com.jy.entity.oa.admin;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class InStock {
+
+	private Long buyId;
+	private String providerName;
+	private String stockNo;
+	private BigDecimal price;
+	private Integer inCounts;
+	private BigDecimal amount;
+	private Date inDate;
+	private String buyer;
+	
+	private OfficeGoods officeGoods;
+	private Long goodsId;
+	//用于接受参数
+	private String goodsName;
+	
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	//用于展示
+	private String inDate1;
+
+	public String getInDate1() {
+		return inDate1;
+	}
+
+	public void setInDate1(String inDate1) {
+		this.inDate1 = inDate1;
+	}
+
+	public Long getBuyId() {
+		return buyId;
+	}
+
+	public void setBuyId(Long buyId) {
+		this.buyId = buyId;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
+	}
+
+	public String getStockNo() {
+		return stockNo;
+	}
+
+	public void setStockNo(String stockNo) {
+		this.stockNo = stockNo;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public Integer getInCounts() {
+		return inCounts;
+	}
+
+	public void setInCounts(Integer inCounts) {
+		this.inCounts = inCounts;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public Date getInDate() {
+		return inDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setInDate(Date inDate) {
+		this.inDate = inDate;
+	}
+
+	public String getBuyer() {
+		return buyer;
+	}
+
+	public void setBuyer(String buyer) {
+		this.buyer = buyer;
+	}
+
+	public OfficeGoods getOfficeGoods() {
+		return officeGoods;
+	}
+
+	public void setOfficeGoods(OfficeGoods officeGoods) {
+		this.officeGoods = officeGoods;
+	}
+
+	public Long getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Long goodsId) {
+		this.goodsId = goodsId;
+	}
+
+}

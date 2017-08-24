@@ -1,0 +1,25 @@
+package com.jy.service.oa.personal;
+
+import java.util.List;
+
+import com.jy.entity.oa.personal.DutyRegister;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface DutyRegisterService {
+
+	// 考勤补签
+	JsonInfo retroactive(DutyRegister dutyRegister);
+
+	// 批量删除补签信息
+	JsonInfo delete(Long[] registerId);
+
+	// 获取补签信息列表
+	List<DutyRegister> get(Short inOffFlag, Long[] userId, Long regMins);
+
+	// 补签信息分页列表
+	List<DutyRegister> getPageList(PageBean pb, Short inOffFlag, Long[] userId,
+			Long regMins);
+
+}

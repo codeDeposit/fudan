@@ -1,0 +1,37 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %> 
+		<%@ include file="../../common/title.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<style>
+			html,body{padding:12px;}
+			#confirmLayer{width:96%;margin:0 auto;height:72px;text-align:center;margin-top:40px;border-top:1px solid #F4F4F4;color:#fff;}
+			#confirmLayer a{color:#fff;}
+			#confirmLayer button{margin:20px;}
+		</style>
+	</head>
+	<body>
+		<!-- 内容区 -->
+		${webSite.expertNotice }
+		<!-- end -->
+		<div id="confirmLayer">
+			<a href="${jypath}/loginIndex">
+				<button type="button" class="btn btn-danger">
+					返回
+				</button>
+			</a>
+			<a href="${jypath}/backstage/wzcg/expert/expert_reg">
+				<button type="button" class="btn btn-success">
+					同意
+				</button>
+			</a>
+		</div>
+	</body>
+</html>

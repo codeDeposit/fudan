@@ -1,0 +1,103 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.BookType;
+import com.jy.repository.oa.admin.BookTypeMapper;
+import com.jy.service.oa.admin.BookTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("bookTypeService")
+public class BookTypeServiceImpl implements BookTypeService {
+
+	private BookTypeMapper bookTypeMapper;
+
+	public BookTypeMapper getBookTypeMapper() {
+		return bookTypeMapper;
+	}
+
+	@Autowired
+	public void setBookTypeMapper(BookTypeMapper bookTypeMapper) {
+		this.bookTypeMapper = bookTypeMapper;
+	}
+
+	// 添加图书类别
+	@Override
+	public JsonInfo save(BookType bookType) {
+		int result = bookTypeMapper.insert(bookType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改图书类别信息
+	@Override
+	public JsonInfo update(BookType bookType) {
+		int result = bookTypeMapper.update(bookType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public BookType getInfoBy(Long typeId) {
+		BookType bookType = bookTypeMapper.selectInfoBy(typeId);
+		return bookType;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo delete(Long[] typeId) {
+		int result = 0;
+		for(Long tId : typeId) {
+			result = bookTypeMapper.delete(tId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取图书类别列表
+	@Override
+	public List<BookType> get(String typeName) {
+		List<BookType> bookTypes = bookTypeMapper.select(typeName);
+		return bookTypes;
+	}
+
+	// 分页获取图书类别列表
+	@Override
+	public List<BookType> getPageList(PageBean pb, String typeName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<BookType> bookTypes = bookTypeMapper.selectPageData(firstIndex, toIndex, typeName);
+		
+		return bookTypes;
+	}
+
+}

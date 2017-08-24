@@ -1,0 +1,51 @@
+package com.jy.entity.oa.workflow;
+
+public class Approve {
+
+	private String id;
+	private String approver;
+	private String approveOption;
+	private Short approveStatus;
+	private String applyId;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getApprover() {
+		return approver;
+	}
+
+	public void setApprover(String approver) {
+		this.approver = approver;
+	}
+
+	public String getApproveOption() {
+		return approveOption;
+	}
+
+	public void setApproveOption(String approveOption) {
+		this.approveOption = approveOption;
+	}
+
+	public Short getApproveStatus() {
+		return approveStatus;
+	}
+
+	public void setApproveStatus(Short approveStatus) {
+		this.approveStatus = approveStatus;
+	}
+
+	public String getApplyId() {
+		return applyId;
+	}
+
+	public void setApplyId(String applyId) {
+		this.applyId = applyId;
+	}
+
+}

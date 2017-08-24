@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.customer.SaleProjectDao">
+	
+	<resultMap type="com.jy.entity.customer.SaleProject" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="responsible" property="responsible"/>
+		<result column="name" property="name"/>
+		<result column="quarry" property="quarry"/>
+		<result column="stage" property="stage"/>
+		<result column="amount" property="amount"/>
+		<result column="date" property="date"/>
+		<result column="depict" property="depict"/>
+		<result column="customerId" property="customerId"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from cus_sale_project where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from cus_sale_project where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="responsible != null and responsible != ''">  
+		    AND responsible = #{responsible}
+		</if>  
+		<if test="name != null and name != ''">  
+		    AND name = #{name}
+		</if> 
+		<if test="quarry != null and quarry != ''">  
+		    AND quarry = #{quarry}
+		</if> 
+		<if test="stage != null and stage != ''">  
+		    AND stage = #{stage}
+		</if> 
+		<if test="amount != null and amount != ''">  
+		    AND amount = #{amount}
+		</if>  
+		<if test="date != null and date != ''">  
+		    AND date = #{date}
+		</if>    
+		<if test="depict != null and depict != ''">  
+		    AND depict = #{depict}
+		</if>  
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>        
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">
+		 	AND id = #{id}
+		</if>
+		<if test="responsible != null and responsible != ''">  
+		    AND responsible = #{responsible}
+		</if>  
+		<if test="name != null and name != ''">  
+		    AND name = #{name}
+		</if> 
+		<if test="quarry != null and quarry != ''">  
+		    AND quarry = #{quarry}
+		</if> 
+		<if test="stage != null and stage != ''">  
+		    AND stage = #{stage}
+		</if> 
+		<if test="amount != null and amount != ''">  
+		    AND amount = #{amount}
+		</if>  
+		<if test="date != null and date != ''">  
+		    AND date = #{date}
+		</if>    
+		<if test="depict != null and depict != ''">  
+		    AND depict = #{depict}
+		</if>  
+		<if test="customerId != 0">  
+		    AND customerId = #{customerId}
+		</if>        
+	</sql>
+	
+	<insert id="insert">
+		insert into cus_sale_project (responsible,name,quarry,stage,amount,date,depict,customerId) 
+			values 
+		(#{responsible},#{name},#{quarry},#{stage},#{amount},#{date},#{depict},#{customerId})
+	</insert>
+	
+	<update id="update">
+		update cus_sale_project <include refid="updateSql"></include> where id = #{id} 
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="responsible != null and responsible != ''">  
+				responsible = #{responsible},
+			</if>
+			<if test="name != null and name != ''">  
+				name = #{name},
+			</if>
+			<if test="quarry != null and quarry != ''">  
+				quarry = #{quarry},
+			</if>
+			<if test="stage != null and stage != ''">  
+				stage = #{stage},
+			</if>
+			<if test="amount != null and amount != ''">  
+				amount = #{amount},
+			</if>
+			<if test="date != null and date != ''">  
+				date = #{date},
+			</if>
+			<if test="depict != null and depict != ''">  
+				depict = #{depict},
+			</if>
+			<if test="customerId != 0">  
+				customerId = #{customerId},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from cus_sale_project where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+		<if test="customerId != 0">
+			customerId = #{customerId}
+		</if>
+	</delete>
+	
+</mapper>

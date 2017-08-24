@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.CarMapper">
+
+	<!-- baseMap start -->
+	<resultMap type="com.jy.entity.oa.admin.Car" id="baseMap">
+		<id property="carId" column="carId"/>
+		<result property="carNo" column="carNo"/>
+		<result property="engineNo" column="engineNo"/>
+		<result property="buyInsureTime" column="buyInsureTime"/>
+		<result property="auditTime" column="auditTime"/>
+		<result property="notes" column="notes"/>
+		<result property="factoryModel" column="factoryModel"/>
+		<result property="driver" column="driver"/>
+		<result property="buyDate" column="buyDate"/>
+		<result property="status" column="status"/>
+		<result property="cartImage" column="cartImage"/>
+		<association property="typeId" column="typeId" select="selectCarType"></association>
+	</resultMap>
+	
+	<select id="selectCarType" parameterType="Integer" resultType="com.jy.entity.oa.admin.CarType">
+		select * from fudan_oa_carType where typeId = #{typeId}
+	</select>
+	<!-- baseMap end -->
+
+	<!-- 添加车辆 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.Car">
+		insert fudan_oa_car <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="carNo != null and carNo != '' ">
+				carNo = #{carNo},
+			</if>
+			<if test="typeId != null ">
+				typeId = #{typeId},
+			</if>
+			<if test="engineNo != null and engineNo != '' ">
+				engineNo = #{engineNo},
+			</if>
+			<if test="buyInsureTime != null ">
+				buyInsureTime = #{buyInsureTime},
+			</if>
+			<if test="auditTime != null ">
+				auditTime = #{auditTime},
+			</if>
+			<if test="notes != null and notes != '' ">
+				notes = #{notes},
+			</if>
+			<if test="factoryModel != null and factoryModel != '' ">
+				factoryModel = #{factoryModel},
+			</if>
+			<if test="driver != null and driver != '' ">
+				driver = #{driver},
+			</if>
+			<if test="buyDate != null ">
+				buyDate = #{buyDate},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="cartImage != null and cartImage != '' ">
+				cartImage = #{cartImage},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加车辆 end -->
+	
+	
+	<!-- 获取车的详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.admin.Car">
+		select * from fudan_oa_car where carId = #{carId}
+	</select>
+	<!-- 获取车的详细信息 end -->
+	
+	
+	<!-- 修改车的信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.Car">
+		update fudan_oa_car <include refid="updateSQL"></include>
+		where carId = #{carId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="carNo != null and carNo != '' ">
+				carNo = #{carNo},
+			</if>
+			<if test="typeId != null ">
+				typeId = #{typeId},
+			</if>
+			<if test="engineNo != null and engineNo != '' ">
+				engineNo = #{engineNo},
+			</if>
+			<if test="buyInsureTime != null ">
+				buyInsureTime = #{buyInsureTime},
+			</if>
+			<if test="auditTime != null ">
+				auditTime = #{auditTime},
+			</if>
+			<if test="notes != null and notes != '' ">
+				notes = #{notes},
+			</if>
+			<if test="factoryModel != null and factoryModel != '' ">
+				factoryModel = #{factoryModel},
+			</if>
+			<if test="driver != null and driver != '' ">
+				driver = #{driver},
+			</if>
+			<if test="buyDate != null ">
+				buyDate = #{buyDate},
+			</if>
+			<if test="status != null ">
+				carNo = #{carNo},
+			</if>
+			<if test="cartImage != null and cartImage != '' ">
+				cartImage = #{cartImage},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改车的信息 end -->
+	
+	
+	<!-- 批量删除 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_car where carId = #{carId}
+	</delete>
+	<!-- 批量删除 end -->
+	
+	
+	<!-- 获取车列表 start -->
+	<select id="select" parameterType="com.jy.entity.oa.admin.Car" resultType="com.jy.entity.oa.admin.Car">
+		select * from fudan_oa_car where 1=1
+		<if test="carNo != null and carNo != '' ">
+			and carNo like concat("%", #{carNo}, "%")
+		</if>
+		<if test="typeId != null ">
+			and typeId = #{typeId}
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+	</select>
+	<!-- 获取车列表 end -->
+	
+	
+	<!-- 车分页列表 start -->
+	<select id="selectPageList" resultType="com.jy.entity.oa.admin.Car">
+		select * from fudan_oa_car where 1=1
+		<if test="car.carNo != null and car.carNo != '' ">
+			and carNo like concat("%", #{car.carNo}, "%")
+		</if>
+		<if test="car.typeId != null ">
+			and typeId = #{car.typeId}
+		</if>
+		<if test="car.status != null ">
+			and status = #{car.status}
+		</if>
+		order by carId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 车分页列表 end -->
+	
+</mapper>

@@ -1,0 +1,35 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.GoodsApply;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface GoodsApplyMapper {
+
+	// 添加申请单
+	int insert(GoodsApply goodsApply);
+
+	// 获取详细信息
+	GoodsApply selectInfoBy(Long applyId);
+
+	// 修改信息
+	int update(GoodsApply goodsApply);
+
+	// 删除
+	int delete(Long aId);
+
+	// 获取申请列表
+	List<GoodsApply> selectBy(GoodsApply goodsApply);
+
+	// 申请单分页列表
+	List<GoodsApply> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("goodsApply") GoodsApply goodsApply);
+
+	// 审核申请单
+	int updateStatus(@Param("goodsId") Long goodsId, @Param("status") Short status);
+
+}

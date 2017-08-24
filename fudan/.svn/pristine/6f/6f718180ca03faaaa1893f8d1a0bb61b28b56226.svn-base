@@ -1,0 +1,273 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html lang="zh_CN">
+	<head>
+		<base href="<%=basePath%>">
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="description" content="overview & stats" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- Bootstrap -->
+    	<link href="<%=basePath%>resource/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+		<link href="<%=basePath%>resource/bootstrap-datetimepacker/css/bootstrapDatepickr-1.0.0.css" rel="stylesheet">
+		<link href="<%=basePath%>resource/bootstrap-validator/css/bootstrapValidator.min.css" rel="stylesheet">
+    	<link href="<%=basePath%>resource/bootstrap-file-input/css/fileinput.min.css" rel="stylesheet">
+    	
+	<style type="text/css">
+		td {
+		 	text-align: center;
+		 	height: 40px;
+		} 
+		.ta{
+			text-align: left;
+		 	height:100px;
+		 	vertical-align: top;
+		}
+		.tn {
+			font-weight: bold;
+		}
+		
+	</style>
+	
+</head>
+
+<body style="font-size: 1.3em; font-family: Microsoft YaHei,'宋体' ;">
+	<div style="margin-top: 0px;" align="center">
+		<div style="margin-top: -10px;">
+			<h2>第二军医大学物资采购评审专家资格申请表</h2>
+		</div>
+		<table style="width:99%;margin-top: 10px;" border="1">
+  			<tr>
+				<td class="tn" style="width:14%">姓名</td>
+				<td style="width:14%">
+					${expert.xm }
+				</td>
+				<td class="tn" style="width:12%">性别</td>
+				<td style="width:14%">
+					<c:if test="${expert.xb==1 }">男</c:if>
+				  	<c:if test="${expert.xb==2 }">女</c:if>
+				</td>
+				<td class="tn" style="width:12%">出生年月</td>
+				<td style="width:14%;">
+					${expert.csny }
+				</td>
+				<td style="width:20%;border-bottom-style: hidden;">&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="tn">身份</td>
+				<td>
+					<c:if test="${expert.sf==1 }">军人</c:if>
+				  	<c:if test="${expert.sf==2 }">非军人</c:if>
+					<c:if test="${expert.sf=='' }">&nbsp;</c:if>
+				</td>
+				<td class="tn">身份证号</td>
+				<td colspan="3">
+					${expert.sfzh }
+				</td>
+				<td style="border-bottom-style: hidden;">照</td>
+			</tr>
+			<tr>
+				<td class="tn">毕业院校</td>
+				<td>
+					${expert.byxy }
+				</td>
+				<td class="tn">学历</td>
+				<td>
+				  	<c:if test="${expert.xl==1 }">本科</c:if>
+				  	<c:if test="${expert.xl==2 }">硕士</c:if>
+					<c:if test="${expert.xl==3 }">博士</c:if>
+					<c:if test="${expert.xl=='' }">&nbsp;</c:if>
+				</td>
+				<td class="tn">所学专业</td>
+				<td>
+					${expert.sxzy }
+				</td>
+				<td style="border-bottom-style: hidden;">片</td>
+			</tr>
+			<tr>
+				<td class="tn">参加工作时间</td>
+				<td colspan="2">
+					${expert.cjgzsj }
+				</td>
+				<td class="tn" colspan="2">从事本专业时间</td>
+				<td>
+					${expert.csbzysj }
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="tn">工作单位</td>
+				<td colspan="4">
+					${expert.gzdw }
+				</td>
+				<td class="tn">负责人</td>
+				<td>
+					${expert.fzr }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">现任职务</td>
+				<td colspan="3">
+					${expert.xrzw }
+				</td>
+				<td class="tn">技术职称</td>
+				<td colspan="2">
+				  	<c:if test="${expert.jszc==1 }">中级</c:if>
+					<c:if test="${expert.jszc==2 }">副高级</c:if>
+					<c:if test="${expert.jszc==3 }">高级</c:if>
+					<c:if test="${expert.jszc=='' }">&nbsp;</c:if>
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">单位地址</td>
+				<td colspan="4">
+					${expert.dwdz }
+				</td>
+				<td class="tn">邮编</td>
+				<td>
+					${expert.dwyb }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">家庭住址</td>
+				<td colspan="4">
+					${expert.jtdz }
+				</td>
+				<td class="tn">邮编</td>
+				<td>
+					${expert.jtyb }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">办公电话</td>
+				<td>
+					${expert.bgdh }
+				</td>
+				<td class="tn">住宅电话</td>
+				<td>
+					${expert.zzdh }
+				</td>
+				<td class="tn">手机</td>
+				<td colspan="2">
+					${expert.sj }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">申请评审专业类别</td>
+				<td colspan="3">
+					${expert.sqpszylb }
+				</td>
+				<td class="tn">Email</td>
+				<td colspan="2">
+					${expert.email }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">开户银行</td>
+				<td colspan="2">
+					${expert.khyh }
+				</td>
+				<td class="tn">银行账号</td>
+				<td colspan="3">
+					${expert.yhzh }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">个人简历</td>
+				<td colspan="6" class="ta" >
+					${expert.grjl }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">参加咨询评审情况</td>
+				<td colspan="6" class="ta" >
+					${expert.cjzxpsqk }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">何时取得部门何种技术职称</td>
+				<td colspan="6" class="ta" >
+					${expert.hsqdbm }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">个人承诺</td>
+				<td colspan="6" class="ta" >
+					${expert.grcn }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">采购中心初审意见</td>
+				<td colspan="6" class="ta" >
+					${expert.cgzxcsyj }
+				</td>
+			</tr>
+			<tr>
+				<td class="tn">采购办审定意见</td>
+				<td colspan="6" class="ta" >
+					${expert.cgbcdyj }
+				</td>
+			</tr>
+			</table>
+			<div id="btnPrint" style="margin-top: 10px;margin-bottom: 10px;">
+				<a href="javascript:void(0);" onclick="doPrint();" target="_blank" class='btn btn-primary' title="打印"><i class='glyphicon glyphicon-print'></i> 打印</a>
+			</div>
+    </div>
+	
+    <script src="<%=basePath%>resource/js/jquery.min.js"></script>
+    <script src="<%=basePath%>resource/res/ajaxfileupload.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="<%=basePath%>resource/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script src="<%=basePath%>resource/bootstrap-datetimepacker/js/bootstrapDatepickr-1.0.0.min.js"></script>
+    <script src="<%=basePath%>resource/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+    <script src="<%=basePath%>resource/bootstrap-file-input/js/fileinput.min.js"></script>
+    <script src="<%=basePath%>resource/bootstrap-file-input/js/fileinput_locale_zh.js"></script>
+    <script type="text/javascript">
+    	$(document).ready(function() {
+			
+		});
+		
+		var HKEY_Root,HKEY_Path,HKEY_Key; 
+		HKEY_Root="HKEY_CURRENT_USER";
+		HKEY_Path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+		
+		//设置网页打印的页眉页脚为空 
+		function PageSetup_Null(){ 
+			try{ 
+				var Wsh=new ActiveXObject("WScript.Shell"); 
+				HKEY_Key="header"; 
+				Wsh.RegWrite(HKEY_Root+HKEY_Path+HKEY_Key,""); 
+				HKEY_Key="footer"; 
+				Wsh.RegWrite(HKEY_Root+HKEY_Path+HKEY_Key,""); 
+			}catch(e){
+			} 
+		} 
+		
+		//设置网页打印的页眉页脚为默认值 
+		function PageSetup_Default(){ 
+			try{ 
+				var Wsh=new ActiveXObject("WScript.Shell"); 
+				HKEY_Key="header"; 
+				Wsh.RegWrite(HKEY_Root+HKEY_Path+HKEY_Key,"&w&b页码,&p/&P"); 
+				HKEY_Key="footer"; 
+				Wsh.RegWrite(HKEY_Root+HKEY_Path+HKEY_Key,"&u&b&d"); 
+			}catch(e){
+			} 
+		} 
+		
+		
+		function doPrint(){
+			$("#btnPrint").hide();
+			PageSetup_Null(); 
+			window.print();
+			$("#btnPrint").show();
+		}
+	</script>
+</body>
+</html>

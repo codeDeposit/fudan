@@ -1,0 +1,46 @@
+package com.jy.service.oa.hrm;
+
+import java.util.List;
+
+import com.jy.entity.oa.hrm.EmpProfile;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface EmpProfileService {
+
+	// 添加档案信息
+	JsonInfo save(EmpProfile empProfile);
+
+	// 修改档案信息
+	JsonInfo update(EmpProfile empProfile);
+
+	// 获取档案详细信息
+	EmpProfile getInfoBy(Long profileId);
+
+	// 审核档案信息
+	JsonInfo review(EmpProfile empProfile);
+
+	// 批量删除档案
+	JsonInfo delete(Long[] profileId);
+
+	// 获取未删除档案列表
+	List<EmpProfile> get(String profileNo, String fullname, String idCard,
+			Short approvalStatus);
+
+	// 获取已删除档案列表
+	List<EmpProfile> getDel(String profileNo, String fullname, String idCard,
+			Short approvalStatus);
+
+	// 批量恢复档案
+	JsonInfo recovery(Long[] profileId);
+
+	// 未删除档案分页列表
+	List<EmpProfile> getPageList(PageBean pb, String profileNo,
+			String fullname, String idCard, Short approvalStatus);
+
+	//删除档案分页列表
+	List<EmpProfile> getDelPageList(PageBean pb, String profileNo,
+			String fullname, String idCard, Short approvalStatus);
+
+}

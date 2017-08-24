@@ -1,0 +1,119 @@
+package com.jy.controller.oa.archive;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.service.oa.archive.ArchTemplateService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/archtemplate")
+public class ArchTemplateController {
+
+	private ArchTemplateService archTemplateService;
+
+	public ArchTemplateService getArchTemplateService() {
+		return archTemplateService;
+	}
+
+	@Resource(name="archTemplateService")
+	public void setArchTemplateService(ArchTemplateService archTemplateService) {
+		this.archTemplateService = archTemplateService;
+	}
+
+	/**
+	 * 添加一条数据
+	 * @param archTemplate
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(ArchTemplate archTemplate) {
+		// 添加模板与附件的关联
+		JsonInfo info = archTemplateService.save(archTemplate);
+		return info;
+	}
+
+	/**
+	 * 根据类型Id，tempName 模糊查询所有列表
+	 * 
+	 * @param typeId
+	 * @param tempName
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView listBy(HttpServletRequest request, @RequestParam(value="typeId", required=false) Long typeId, @RequestParam(value="tempName", required=false) String tempName) {
+		// 接收当前页的参数，并转换
+		String pageNosStr = request.getParameter("pageNos");
+		Integer pageNos = null;
+		if(!(pageNosStr == null)) {
+			pageNos = Integer.valueOf(pageNosStr);
+		}else {
+			pageNos = 1;
+		}
+		List<ArchTemplate> archTemplates = archTemplateService.getSomeBy(typeId, tempName);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(archTemplates.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<ArchTemplate> pageArchTemplates = archTemplateService.getPageList(pb,typeId,tempName);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/archives/archtemplate_list");
+		mv.addObject("archTemplates", pageArchTemplates);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 根据 templateId 获取详细信息
+	 * @param templateId
+	 * @return
+	 */
+	@RequestMapping("/getInfo")
+	public ModelAndView getBy(Long templateId, String operation) {
+		ArchTemplate archTemplate = archTemplateService.getBy(templateId);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/archives/archtemplate_form");
+		mv.addObject("archTemplate", archTemplate);
+		mv.addObject("operation", operation);
+		return mv;
+	}
+	
+	/**
+	 * 修改模板，及附件
+	 * @param archTemplate
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(ArchTemplate archTemplate) {
+		JsonInfo info = archTemplateService.update(archTemplate);
+		return info;
+	}
+	
+	/**
+	 * 根据 templateId 批量删除
+	 * @param templateIds
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] templateId) {
+		JsonInfo info = archTemplateService.del(templateId);
+		return info;
+	}
+
+}

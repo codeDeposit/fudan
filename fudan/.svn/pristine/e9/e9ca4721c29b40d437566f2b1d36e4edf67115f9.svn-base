@@ -1,0 +1,21 @@
+package com.jy.repository.oa.personal;
+
+import java.util.List;
+import com.jy.entity.oa.personal.DutySection;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DutySectionDao {
+	
+	List<DutySection> find(DutySection dutySection);
+	
+	List<DutySection> search(DutySection dutySection);
+	
+	int delete(DutySection dutySection);
+	
+	int insert(DutySection dutySection);
+
+	int update(DutySection dutySection);
+ 
+
+}

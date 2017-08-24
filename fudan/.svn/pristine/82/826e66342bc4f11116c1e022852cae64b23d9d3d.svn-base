@@ -1,0 +1,84 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.CarType;
+import com.jy.repository.oa.admin.CarTypeMapper;
+import com.jy.service.oa.admin.CarTypeService;
+import com.jy.task.utils.JsonInfo;
+
+
+@Service("carTypeService")
+public class CarTypeServiceImpl implements CarTypeService {
+
+	private CarTypeMapper carTypeMapper;
+
+	public CarTypeMapper getCarTypeMapper() {
+		return carTypeMapper;
+	}
+
+	@Autowired
+	public void setCarTypeMapper(CarTypeMapper carTypeMapper) {
+		this.carTypeMapper = carTypeMapper;
+	}
+
+	// 添加车类型
+	@Override
+	public JsonInfo save(CarType carType) {
+		int result = carTypeMapper.insert(carType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public CarType getInfoBy(Integer typeId) {
+		CarType carType = carTypeMapper.selectInfoBy(typeId);
+		return carType;
+	}
+
+	// 修改信息
+	@Override
+	public JsonInfo update(CarType carType) {
+		int result = carTypeMapper.update(carType);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo del(Integer[] typeId) {
+		int result = 0;
+		for(Integer tId : typeId) {
+			result = carTypeMapper.delete(tId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取车类型列表
+	@Override
+	public List<CarType> get() {
+		List<CarType> carTypes = carTypeMapper.selectAll();
+		return carTypes;
+	}
+
+}

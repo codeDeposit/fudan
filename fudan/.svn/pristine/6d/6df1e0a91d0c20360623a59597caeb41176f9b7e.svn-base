@@ -1,0 +1,67 @@
+package com.jy.service.customer;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.customer.Contacts;
+import com.jy.entity.customer.Contract;
+import com.jy.entity.customer.Customer;
+import com.jy.entity.customer.SaleActivity;
+import com.jy.entity.customer.SaleProject;
+import com.jy.repository.customer.ContactsDao;
+import com.jy.repository.customer.ContractDao;
+import com.jy.repository.customer.CustomerDao;
+import com.jy.repository.customer.SaleActivityDao;
+import com.jy.repository.customer.SaleProjectDao;
+
+@Service("customerService")
+public class CustomerServicer{
+	
+	@Resource
+	private CustomerDao customererDao;
+	@Resource
+	private ContactsDao contactsDao;
+	@Resource
+	private SaleActivityDao saleActivityDao;
+	@Resource
+	private SaleProjectDao saleProjectDao;
+	@Resource
+	private ContractDao contractDao;
+	  
+ 	public List<Customer> find(Customer customer){
+ 		return customererDao.find(customer);
+ 	}
+	  
+ 	public List<Customer> search(Customer customer){
+ 		return customererDao.search(customer);
+ 	}
+	  
+ 	public int insert(Customer customer){
+ 		return customererDao.insert(customer);
+ 	}
+	  
+ 	public int update(Customer customer){
+ 		return customererDao.update(customer);
+ 	}
+	  
+ 	public int delete(Customer customer){
+ 		int id = customer.getId();
+ 		Contacts contacts = new Contacts();
+ 		contacts.setCustomerId(id);
+ 		SaleActivity saleActivity = new SaleActivity();
+ 		saleActivity.setCustomerId(id);
+ 		SaleProject saleProject = new SaleProject();
+ 		saleProject.setCustomerId(id);
+ 		Contract contract = new Contract();
+ 		contract.setCustomerId(id);
+ 		contactsDao.delete(contacts);
+ 		saleActivityDao.delete(saleActivity);
+ 		saleProjectDao.delete(saleProject);
+ 		contractDao.delete(contract);
+ 		return customererDao.delete(customer);
+ 	}
+  
+}

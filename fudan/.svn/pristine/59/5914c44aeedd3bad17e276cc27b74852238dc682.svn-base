@@ -1,0 +1,257 @@
+package com.jy.service.oa.impl.task;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.entity.oa.task.WorkPlan;
+import com.jy.entity.oa.task.WorkPlanVO;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.repository.oa.task.WorkPlanMapper;
+import com.jy.service.oa.task.WorkPlanService;
+import com.jy.service.system.org.OrgService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("workPlanService")
+public class WorkPlanServiceImpl implements WorkPlanService {
+
+	private WorkPlanMapper workPlanMapper;
+	private FileAttachMapper fileAttachMapper;
+	private EmployeeMapper employeeMapper;
+	private OrgService orgService;
+
+	public OrgService getOrgService() {
+		return orgService;
+	}
+
+	@Autowired
+	public void setOrgService(OrgService orgService) {
+		this.orgService = orgService;
+	}
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public WorkPlanMapper getworkPlanMapper() {
+		return workPlanMapper;
+	}
+
+	@Autowired
+	public void setworkPlanMapper(WorkPlanMapper workPlanMapper) {
+		this.workPlanMapper = workPlanMapper;
+	}
+	
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	// 添加工作计划
+	@Override
+	public JsonInfo save(WorkPlan workPlan) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		workPlan.setUserId(account.getAccountId());
+		if(workPlan.getIsPersonal() == 1) {
+			Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+			workPlan.setPrincipal(employee.getFullname());
+			workPlan.setStatus((short)1);
+		}else if(workPlan.getIsPersonal() == 0) {
+			workPlan.setStatus((short)0);
+		}
+		int result = workPlanMapper.insert(workPlan);
+		//获取刚插入的工作计划Id
+		Long planId = workPlanMapper.selectMaxId();
+		// 将工作计划的相关附件保存
+		Long[] fileId = workPlan.getFileId();
+		for(Long fId : fileId) {
+			result = workPlanMapper.insertFile(fId,planId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取工作计划详细信息
+	@Override
+	public WorkPlan getInfoBy(Long planId) {
+		//获取工作计划
+		WorkPlan workPlan = workPlanMapper.selectWorkPlanBy(planId);
+		//获取工作计划对应的fileId
+		List<Long> fileIds = workPlanMapper.selectFileIdBy(planId);
+		List<FileAttach> fas = new ArrayList<FileAttach>();
+		//循环取出fileId对应的详细内容
+		for(Long fileId : fileIds) {
+			FileAttach fa = fileAttachMapper.selectBy(fileId);
+			fas.add(fa);
+		}
+		workPlan.setStartTime1(DateStringUtil.dateToString3(workPlan.getStartTime()));
+		workPlan.setEndTime1(DateStringUtil.dateToString3(workPlan.getEndTime()));
+		workPlan.setFileAttachs(fas);
+		return workPlan;
+	}
+
+	// 修改工作计划信息
+	@Override
+	public JsonInfo update(WorkPlan workPlan) {
+		//更新工作计划信息
+		int result = workPlanMapper.update(workPlan);
+		//更新附件信息：删除之前所有附件信息，添加新附件信息
+		result = workPlanMapper.deleteFile(workPlan.getPlanId());
+		Long[] fileIds = workPlan.getFileId();
+		for(Long fileId:fileIds) {
+			result = workPlanMapper.insertFile(fileId, workPlan.getPlanId());
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除工作计划
+	@Override
+	public JsonInfo del(Long[] planId) {
+		int result = 0;
+		//先删除对应的file
+		for(Long pId: planId) {
+			result = workPlanMapper.deleteFile(pId);
+			result = workPlanMapper.delete(pId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 工作计划列表
+	@Override
+	public List<WorkPlan> get(String planName, Short isPersonal) {
+		List<WorkPlan> workPlans = workPlanMapper.select(planName, isPersonal);
+		return workPlans;
+	}
+
+	// 我的计划列表
+	@Override
+	public List<WorkPlan> getMy(String planName, Long typeId) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<WorkPlan> workPlans = workPlanMapper.selectMy(planName, typeId, account.getAccountId());
+		return workPlans;
+	}
+
+	// 部门计划列表
+	@Override
+	public List<WorkPlan> getOrg(String planName, Long typeId, String principal) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		String orgId = orgService.findBy(account.getAccountId());
+		List<WorkPlan> workPlans = workPlanMapper.selectOrg(planName, typeId, principal, orgId);
+		return workPlans;
+	}
+
+	// 分页列表
+	@Override
+	public List<WorkPlanVO> getPageList(PageBean pb, String planName,
+			Short isPersonal) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<WorkPlanVO> workPlans = workPlanMapper.selectPageData(firstIndex, toIndex, planName, isPersonal);
+		
+		for(WorkPlanVO wp: workPlans) {
+			wp.setStartTime1(DateStringUtil.dateToString3(wp.getStartTime()));
+			wp.setEndTime1(DateStringUtil.dateToString3(wp.getEndTime()));
+		}
+		
+		return workPlans;
+	}
+
+	// 我的计划分页列表
+	@Override
+	public List<WorkPlanVO> getMyPageList(PageBean pb, String planName, Long typeId) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<WorkPlanVO> workPlans = workPlanMapper.selectMyPageData(firstIndex, toIndex, planName, typeId, account.getAccountId());
+		for(WorkPlanVO wp: workPlans) {
+			wp.setStartTime1(DateStringUtil.dateToString3(wp.getStartTime()));
+			wp.setEndTime1(DateStringUtil.dateToString3(wp.getEndTime()));
+		}
+		return workPlans;
+	}
+
+	// 部门分页列表
+	@Override
+	public List<WorkPlanVO> getOrgPageList(PageBean pb, String planName,
+			Long typeId, String principal) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		String orgId = orgService.findBy(account.getAccountId());
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<WorkPlanVO> workPlans = workPlanMapper.selectOrgPageData(firstIndex, toIndex, planName, typeId, principal, orgId);
+		for(WorkPlanVO wp: workPlans) {
+			wp.setStartTime1(DateStringUtil.dateToString3(wp.getStartTime()));
+			wp.setEndTime1(DateStringUtil.dateToString3(wp.getEndTime()));
+		}
+		return workPlans;
+	}
+
+	//激活或禁用
+	@Override
+	public JsonInfo updates(Long planId, Short status) {
+		JsonInfo info = new JsonInfo();
+		int result = workPlanMapper.updates(planId, status);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+	
+}

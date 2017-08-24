@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.ResumeFileMapper">
+
+	<!-- 添加简历与附件的关联 start -->
+	<insert id="insert">
+		insert into fudan_oa_resume_file(fileId, resumeId) values(#{fileId}, #{resumeId})
+	</insert>
+	<!-- 添加简历与附件的关联 end -->
+	
+	
+	<!-- 删除简历与附件的关联 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_resume_file where resumeId = #{resumeId}
+	</delete>
+	<!-- 删除简历与附件的关联 end -->
+	
+	
+	<!-- 获取file的Id号 start -->
+	<select id="selectIdsBy" parameterType="Long" resultType="Long">
+		select fileId from fudan_oa_resume_file where resumeId = #{resumeId} 
+	</select>
+	<!-- 获取file的Id号 end -->
+	
+</mapper>

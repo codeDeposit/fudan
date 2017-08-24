@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.AdminDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Admin" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_admin where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_admin where 1=1 <include refid="searchSql"></include>
+	</select>
+	<sql id="findSql">
+		<if test="admin_id != 0">  
+		    AND admin_id = #{admin_id}
+		</if>  
+		<if test="admin_name != '' and admin_name != null">  
+		    AND admin_name = #{admin_name}
+		</if>
+		<if test="admin_password != '' and admin_password != null">  
+		    AND admin_password = #{admin_password}
+		</if>
+		<if test="admin_gid != '' and admin_gid != null">  
+		    AND admin_gid = #{admin_gid}
+		</if>  
+	</sql>
+	<sql id="searchSql">
+		<if test="admin_id != 0">  
+		    AND admin_id = #{admin_id}
+		</if>  
+		<if test="admin_name != '' and admin_name != null">  
+		    AND admin_name = #{admin_name}
+		</if>
+		<if test="admin_password != '' and admin_password != null">  
+		    AND admin_password = #{admin_password}
+		</if>
+		<if test="admin_gid != '' and admin_gid != null">  
+		    AND admin_gid = #{admin_gid}
+		</if> 
+	</sql>
+	<insert id="insert">
+		insert into app_admin (admin_id,admin_name,admin_password,admin_login_time,admin_login_num,admin_is_super,admin_gid) 
+			values 
+		(#{admin_id},#{admin_name},#{admin_password},#{admin_login_time},#{admin_login_num},#{admin_is_super},#{admin_gid})
+	</insert>
+	<update id="update">
+		update app_admin <include refid="updateSql"></include> where admin_id = #{admin_id}
+	</update>
+	<sql id="updateSql">
+		<set>
+			<if test="admin_gid != '' and admin_gid != null">  
+		    	admin_gid = #{admin_gid},
+			</if>  
+			<if test="admin_name != '' and admin_name != null">  
+		    	admin_name = #{admin_name},
+			</if>  
+		    	admin_login_time = #{admin_login_time},
+		</set>
+	</sql>
+	<delete id="delete">
+		delete from app_admin where 
+		<if test="admin_id != 0">
+			admin_id = #{admin_id}
+		</if>
+	</delete>
+</mapper>

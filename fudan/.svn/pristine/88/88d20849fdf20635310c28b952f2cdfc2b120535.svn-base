@@ -1,0 +1,165 @@
+package com.jy.service.oa.impl.personal;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.personal.DutyRegister;
+import com.jy.repository.oa.personal.DutyRegisterMapper;
+import com.jy.repository.oa.personal.DutySectionDao;
+import com.jy.service.oa.personal.DutyRegisterService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("dutyRegisterService")
+public class DutyRegisterServiceImpl implements DutyRegisterService {
+
+	private DutySectionDao dutySectionMapper;
+	public DutySectionDao getDutySectionMapper() {
+		return dutySectionMapper;
+	}
+
+	@Autowired
+	public void setDutySectionMapper(DutySectionDao dutySectionMapper) {
+		this.dutySectionMapper = dutySectionMapper;
+	}
+
+	private DutyRegisterMapper dutyRegisterMapper;
+
+	public DutyRegisterMapper getDutyRegisterMapper() {
+		return dutyRegisterMapper;
+	}
+
+	@Autowired
+	public void setDutyRegisterMapper(DutyRegisterMapper dutyRegisterMapper) {
+		this.dutyRegisterMapper = dutyRegisterMapper;
+	}
+
+	// 考勤补签
+	@Override
+	/*public JsonInfo retroactive(DutyRegister dutyRegister) {
+		Date registerDate = dutyRegister.getRegisterDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(registerDate);
+		int dayofweek = c.get(Calendar.DAY_OF_WEEK); 	//周日到周六：1~7
+		dutyRegister.setDayOfWeek(dayofweek);
+		//小时
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		//分钟
+		int minute = c.get(Calendar.MINUTE);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		//获取签到时间
+		Date qianDao = null;
+		try {
+			qianDao = sdf.parse(hour+":"+minute);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Date time = null;
+		//获取班制定义中的班次时间
+		if(dutyRegister.getInOffFlag() == 1) {		//上班
+			time = dutySectionMapper.selectInfoBy(dutyRegister.getSectionId()).getDutyStartTime();
+			if(qianDao.compareTo(time) > 0) {
+				dutyRegister.setRegFlag((short)2);
+				int regMins = (int)((qianDao.getTime() - time.getTime())/(1000*60));
+				dutyRegister.setRegMins(regMins);
+			}else {
+				dutyRegister.setRegFlag((short)1);
+				dutyRegister.setRegMins(0);
+			}
+		}else if(dutyRegister.getInOffFlag() == 2) {		//下班
+			time = dutySectionMapper.selectInfoBy(dutyRegister.getSectionId()).getDutyEndTime();
+			if(time.compareTo(qianDao) > 0) {
+				dutyRegister.setRegFlag((short)3);
+				int regMins = (int)((time.getTime() - qianDao.getTime())/(1000*60));
+				dutyRegister.setRegMins(regMins);
+			}else {
+				dutyRegister.setRegFlag((short)1);
+				dutyRegister.setRegMins(0);
+			}
+		}
+		
+		int result = dutyRegisterMapper.insert(dutyRegister);
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}*/
+
+	// 批量删除补签信息
+	public JsonInfo delete(Long[] registerId) {
+		int result = 0;
+		for (Long rId : registerId) {
+			result = dutyRegisterMapper.delete(rId);
+		}
+
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取补签信息列表
+	@Override
+	public List<DutyRegister> get(Short inOffFlag, Long[] userId, Long regMins) {
+		StringBuilder userIdStr = new StringBuilder();
+		final String DOU_HAO = ",";
+		
+		if(userId != null && userId.length > 0) {
+			for (Long uId : userId) {
+				userIdStr.append(uId + DOU_HAO);
+			}
+			userIdStr.deleteCharAt(userIdStr.length() - 1);
+		}
+		List<DutyRegister> dutyRegisters = dutyRegisterMapper.select(inOffFlag, userIdStr.toString(), regMins);
+		return dutyRegisters;
+	}
+
+	//补签信息分页列表
+	@Override
+	public List<DutyRegister> getPageList(PageBean pb, Short inOffFlag,
+			Long[] userId, Long regMins) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		StringBuilder userIdStr = new StringBuilder();
+		final String DOU_HAO = ",";
+		if(userId != null && userId.length > 0) {
+			for (Long uId : userId) {
+				userIdStr.append(uId + DOU_HAO);
+			}
+			userIdStr.deleteCharAt(userIdStr.length() - 1);
+		}
+		List<DutyRegister> dutyRegisters = dutyRegisterMapper.selectPageData(firstIndex, toIndex, inOffFlag, userIdStr.toString(), regMins);
+		
+		for(DutyRegister dr : dutyRegisters) {
+			dr.setRegisterDate1(DateStringUtil.dateToString4(dr.getRegisterDate()));
+		}
+		
+		return dutyRegisters;
+	}
+
+	@Override
+	public JsonInfo retroactive(DutyRegister dutyRegister) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+}

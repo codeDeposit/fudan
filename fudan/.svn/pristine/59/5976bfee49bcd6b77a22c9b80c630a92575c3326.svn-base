@@ -1,0 +1,24 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgExpert;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WzcgExpertDao extends BaseDao<WzcgExpert> {
+	
+	List<WzcgExpert> find(WzcgExpert expert);
+	
+	List<WzcgExpert> search(WzcgExpert expert);
+	
+	void insert(WzcgExpert expert);
+	
+	void update(WzcgExpert expert);
+	
+	void delete(String id);
+	
+	List<WzcgExpert> extractSearch(WzcgExpert expert);
+	
+}

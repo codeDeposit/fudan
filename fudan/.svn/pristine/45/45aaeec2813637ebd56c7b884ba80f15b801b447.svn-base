@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.OAResourceMapper">
+
+	<!-- 获取角色对应的一级菜单 start-->
+	<select id="selectAllResourceOfRole" parameterType="String" resultType="com.jy.entity.oa.OAResource">
+		select id, name, type, resUrl, sort from oa_base_resource where parentId=0 and isValid=1 and id in (select resourceId from oa_base_role_resource where roleId = 1) order by sort asc;
+	</select>
+	<!-- 获取角色对应的一级菜单 end-->
+	
+	
+	<!-- 获取子菜单 start-->
+	<select id="selectSubResource" parameterType="String" resultType="com.jy.entity.oa.OAResource">
+		select id, name, type, resUrl, sort from oa_base_resource where parentId = #{id} and isValid=1
+	</select>
+	<!-- 获取子菜单 end-->
+
+</mapper>

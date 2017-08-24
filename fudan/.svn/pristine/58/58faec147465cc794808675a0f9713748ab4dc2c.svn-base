@@ -1,0 +1,47 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+	   	<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<style>
+			tr, th {
+				text-align: center;
+			}
+			.headBg {
+				background: #6495ED;
+			}
+			.modal-title {
+				color: #000;
+				font-weight: bold;
+			}
+			.SearchForm .forinBlo{display: inline-block;width: 66.66%;}
+			.labelPad{padding-top: 7px;}
+		    i {
+		        font-style: normal;
+		        text-align: center;
+		    }
+		    .xinghao {
+		        color: red;
+		    }
+		</style>
+		<!-- 局部刷新 js -->
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<script src="${jypath}/pc/js/oa/partrefresh.js"></script>
+		<script src="${jypath}/pc/js/oa/pageturning.js"></script>
+	</head>
+	<body>
+		<!-- padding盒子 start-->
+    	<div>
+    	</div>
+    	<!-- padding盒子 end-->
+    </body>
+
+</html>

@@ -1,0 +1,134 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.hrm.Job;
+import com.jy.entity.oa.hrm.JobVO;
+import com.jy.repository.oa.hrm.JobMapper;
+import com.jy.service.oa.hrm.JobService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("jobService")
+public class JobServiceImpl implements JobService {
+
+	private JobMapper jobMapper;
+
+	public JobMapper getJobMapper() {
+		return jobMapper;
+	}
+
+	@Autowired
+	public void setJobMapper(JobMapper jobMapper) {
+		this.jobMapper = jobMapper;
+	}
+
+	// 添加职位
+	@Override
+	public JsonInfo save(Job job) {
+		job.setDelFlag((short)0);//岗位未删除
+		int result = jobMapper.insert(job);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取职位详细信息
+	@Override
+	public Job getInfoBy(Long jobId) {
+		Job job = jobMapper.selectInfoBy(jobId);
+		return job;
+	}
+
+	// 编辑职位信息
+	@Override
+	public JsonInfo update(Job job) {
+		int result = jobMapper.update(job);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除职位信息
+	@Override
+	public JsonInfo delete(Long[] jobId) {
+		int result = 0;
+		for(Long jId : jobId) {
+			result = jobMapper.delete(jId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取职位信息列表
+	@Override
+	public List<Job> get(String jobName, String orgName, String memo) {
+		List<Job> jobs = jobMapper.select(jobName, orgName, memo);
+		return jobs;
+	}
+
+	// 获取已删除职位信息列表
+	@Override
+	public List<JobVO> getDel(String jobName, String orgName, String memo) {
+		List<JobVO> jobs = jobMapper.selectDel(jobName, orgName, memo);
+		return jobs;
+	}
+
+	// 恢复职位
+	@Override
+	public JsonInfo updateFlag(Long[] jobId) {
+		int result = 0;
+		for(Long jId : jobId) {
+			result = jobMapper.updateFlag(jId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	//职位分页列表
+	@Override
+	public List<JobVO> getPageList(PageBean pb, String jobName, String orgName,
+			String memo) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<JobVO> jobs = jobMapper.selectPageData(firstIndex, toIndex, jobName, orgName, memo);
+		return jobs;
+	}
+
+	// 根据部门id获取job列表
+	@Override
+	public List<Job> getByOrg(String orgId) {
+		List<Job> jobs = jobMapper.selectByOrg(orgId);
+		return jobs;
+	}
+
+}

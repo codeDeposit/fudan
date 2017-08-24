@@ -1,0 +1,149 @@
+package com.jy.service.wzcg;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.area.Area;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgSupplier;
+import com.jy.entity.wzcg.WzcgExtract;
+import com.jy.repository.wzcg.WzcgSupplierDao;
+import com.jy.repository.wzcg.WzcgExtractDao;
+import com.jy.service.area.AreaService;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.service.system.org.RoleService;
+
+@Service(value = "wzcgSupplierService")
+public class WzcgSupplierService extends BaseServiceImp<WzcgSupplier> {
+	
+	@Resource
+	private WzcgSupplierDao wzcgSupplierDao;
+	@Resource
+	private WzcgExtractDao wzcgExtractDao;
+	@Resource(name = "wzcgKindService")
+	private WzcgKindService kindService;
+	@Autowired
+	public AreaService areaService;
+	@Autowired
+	public RoleService roleService;
+	
+	public List<WzcgSupplier> find(WzcgSupplier supplier) {
+		return wzcgSupplierDao.find(supplier);
+	}
+	
+	public void insert(WzcgSupplier supplier){
+		wzcgSupplierDao.insert(supplier);
+	}
+	
+	public void update(WzcgSupplier supplier){
+		wzcgSupplierDao.update(supplier);
+	}
+	
+	public void delete(String id){
+		wzcgSupplierDao.delete(id);
+	}
+	
+	public Map<Boolean,List<WzcgSupplier>> list(){
+		Map<Boolean,List<WzcgSupplier>> map = new HashMap<Boolean, List<WzcgSupplier>>();
+		boolean mark = false;//按钮显示判断
+		Account account = AccountShiroUtil.getCurrentUser();
+		WzcgSupplier supplier = new WzcgSupplier();
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		//判断用户是否为管理员组织
+		if(roleService.getOrg(account.getRoleId()).getId().equals("9")){//管理员登录
+			supplierList = this.find(supplier);
+			mark = true;
+		}else{//非管理员登陆
+			supplier.setUserId(account.getAccountId());
+			supplierList = this.find(supplier);
+		}
+		map.put(mark,supplierList);
+		return map;
+	}
+	
+	public Map<Boolean,List<WzcgSupplier>> searchList(WzcgSupplier supplier){
+		Map<Boolean,List<WzcgSupplier>> map = new HashMap<Boolean, List<WzcgSupplier>>();
+		boolean mark = true;//按钮显示判断
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		supplierList = wzcgSupplierDao.search(supplier);
+		map.put(mark,supplierList);
+		return map;
+	}
+	
+	public List<WzcgSupplier> listFull(List<WzcgSupplier> supplierList) {
+		for(int i=0;i<supplierList.size();i++){
+			//得到经营范围
+			String strList[] = supplierList.get(i).getBusiness_scope().split(",");
+			String str = "";
+			for(int j=0;j<strList.length;j++){
+				str += kindService.getKind(Integer.parseInt(strList[j])).getName() + ",";
+			}
+			supplierList.get(i).setBusiness_scope(str);
+			//得到企业注册地址
+			String company_addressStr[] = supplierList.get(i).getCompany_address().split(",");
+			String company_address = "";
+			for(int g=0;g<company_addressStr.length;g++){
+				Area area = new Area();
+				area.setId(company_addressStr[g]);
+//				company_address += areaService.select(area).getName() + ",";
+			}
+			supplierList.get(i).setCompany_address(company_address);
+		}
+		return supplierList;
+	}
+	
+	/**
+	 * 抽取方法
+	 */
+
+	/**
+	 * 抽取内容详情
+	 * @param supplier
+	 * @return
+	 */
+	public Map<List<WzcgSupplier>,List<WzcgSupplier>> extractDetail(WzcgExtract extract){
+		Map<List<WzcgSupplier>,List<WzcgSupplier>> map = new HashMap<List<WzcgSupplier>,List<WzcgSupplier>>();
+		List<WzcgSupplier> supplier1List = new ArrayList<WzcgSupplier>();
+		List<WzcgSupplier> supplier2List = new ArrayList<WzcgSupplier>();
+		extract = wzcgExtractDao.find(extract).get(0);
+		if(!extract.getResult1().equals("")){
+			String result1[] = extract.getResult1().split(",");
+			for(int i=0;i<result1.length;i++){
+				WzcgSupplier supplier = new WzcgSupplier();
+				supplier.setUserId(result1[i]);
+				supplier1List.add(wzcgSupplierDao.find(supplier).get(0));
+			}
+		}
+		if(!extract.getResult2().equals("")){
+			String result2[] = extract.getResult2().split(",");
+			for(int i=0;i<result2.length;i++){
+				WzcgSupplier supplier = new WzcgSupplier();
+				supplier.setUserId(result2[i]);
+				supplier2List.add(wzcgSupplierDao.find(supplier).get(0));
+			}
+		}
+		map.put(supplier1List,supplier2List);
+		return map;
+	}
+	
+	/*
+	 * 抽取搜索
+	 */
+	public Map<Boolean,List<WzcgSupplier>> extractSearchList(WzcgSupplier supplier){
+		Map<Boolean,List<WzcgSupplier>> map = new HashMap<Boolean, List<WzcgSupplier>>();
+		boolean mark = true;//按钮显示判断
+		List<WzcgSupplier> supplierList = new ArrayList<WzcgSupplier>();
+		supplierList = wzcgSupplierDao.extractSearch(supplier);
+		map.put(mark,supplierList);
+		return map;
+	}
+	
+}

@@ -1,0 +1,180 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="renderer" content="webkit">
+		<%@ include file="../../common/css.jsp" %>
+		<link rel="stylesheet" href="${jypath}/app/css/plugins/webuploader/webuploader.css"> 
+		<link rel="stylesheet" href="${jypath}/app/css/file/style.css"> 
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/app/js/plugins/webuploader/webuploader.min.js"></script>
+		<script src="${jypath}/app/js/file/upload2.js"></script>
+		<script src="${jypath}/pc/js/file/ajaxfileupload.js"></script>
+		<style>
+			.demo{min-width:360px;margin:30px auto;padding:10px 20px}
+			.demo h3{line-height:40px; font-weight: bold;}
+			.file-item{float: left; position: relative; width: 110px;height: 110px; margin: 0 20px 20px 0; padding: 4px;}
+			.file-item .info{overflow: hidden;}
+			.uploader-list{width: 100%; overflow: hidden;}
+		</style>
+	</head>
+	<%@ include file="../../common/toast.jsp"%>
+	<body style='background-color:#fff'>
+		<div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>商品添加</h2>
+                <ol class="breadcrumb" style="margin-left:0px !important">
+                    <li>
+                        <a href="index.html">主页</a>
+                    </li>
+                    <li>
+                        <a>药品商城</a>
+                    </li>
+                    <li>
+                        <strong>商品添加</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+	    <div class="ibox-content">
+	    	<div class="form-group col-sm-12">
+	    		<label class="col-sm-1 control-label">说明书</label>
+	    		<div class="col-sm-10">
+					<img src="${jypath }/pc/image/user/user.png" id="dImage" style="background-color:#dfdfdf;">
+					<p class="text-warning"><small>支持png,jpg,jpeg,ico格式图片，大小不超过4M,宽度为800像素</small></p>
+					<input type="file" name="picUrl" id="FileInput" onchange="javascript:setImagePreview();" style="cursor:pointer">
+				 </div>
+            </div>
+	    	<div class="form-group col-sm-12">
+                <label class="col-sm-1 control-label">图文详情</label>
+                <div class="col-sm-10">
+	                <div class="demo">
+			            <div id="uploader">
+			                <div class="queueList">
+			                    <div id="dndArea" class="placeholder">
+			                        <div id="filePicker"></div>
+			                        <p>或将照片拖到这里，单次最多可选20张</p>
+			                    </div>
+			                </div>
+			                <div class="statusBar" style="display:none;">
+			                    <div class="progress">
+			                        <span class="text">0%</span>
+			                        <span class="percentage"></span>
+			                    </div><div class="info"></div>
+			                    <div class="btns">
+			                        <div id="filePicker2"></div><div class="uploadBtn" onclick="fUploadMark()">开始上传</div>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+              	</div>
+	    	</div>
+	    	<div class="form-group col-sm-12">
+                <div class="col-sm-6" style="text-align:center">
+                    <button class="btn btn-default" type="submit">上一步</button>
+                </div>
+                <div class="col-sm-6" style="text-align:center">
+                	<button class="btn btn-primary" onclick="fSubmit()">完成</button>
+                 </div>
+            </div>
+	    </div>
+	</body>
+	<script>
+		var _pd = 0;//是否已上传图片
+		var _size = true;//图片大小判断
+		var _type = true;//图片类型判断
+		
+		function fUploadMark(){
+			_pd = 1;
+		}
+		function fSubmit(){
+			if(_pd == 0){
+				fuError('请上传产品图片');
+			}else if(_size == 4){
+				fuError('图片大小不能超过4M');
+			}else{
+				var ids = ['imgDesc'];
+				$.ajaxFileUpload({
+					type:"post",
+					async:false,
+					url:"${jypath}/appAdminGoods/addImgDesc?goods_id=" + ${mark},
+					ecureuri:false,
+			    	fileElementId:ids,
+					dataType:"JSON",
+					success:function(data){
+						var obj = eval('('+ data +')');
+						if(obj.res == 0){
+							fuError();
+						}else{
+							fuSuccess();
+							setTimeout('fLoading()',1000);
+						}
+					}
+				});
+		   }
+		}
+		function fLoading(){
+			window.location.href ="../appAdminGoods/index";
+		}
+		function setImagePreview(){//下面用于图片上传预览功能
+			var docObj = document.getElementById("FileInput");
+			var imgObjPreview = document.getElementById("dImage");
+			var ldot = docObj.value.lastIndexOf(".");
+	        var type = docObj.value.substring(ldot + 1);
+			if(docObj.value.length > 1 && docObj.value) {     
+				if(type == "JPG" || type == "jpg" || type == "jpeg" || type == "JPEG" || type == "ico" || type == "ICO" || type == "png" || type == "PNG") {
+					if(docObj.size > 4194304){//文件大小判断
+						_size = false;
+						alert("图片大小不能超过4M");
+						docObj.outerHTML = input.outerHTML.replace(/(value=\").+\"/i,"$1\"");
+						document.getElementById('FileInput').value = "";
+					}else{
+						_size = true;
+						if(docObj.files &&docObj.files[0])
+						{
+							//火狐下，直接设img属性
+						    imgObjPreview.style.width = '146px';
+							imgObjPreview.style.height = '140px';
+							imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);
+						}
+						else
+						{
+							//IE下，使用滤镜
+							docObj.select();
+							var imgSrc = document.selection.createRange().text;
+							var localImagId = document.getElementById("dImage");
+							//必须设置初始大小
+							localImagId.style.width = "146px";
+							localImagId.style.height = "140px";
+							//图片异常的捕捉，防止用户修改后缀来伪造图片
+							try{
+								localImagId.style.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+								localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+							}
+							catch(e)
+							{
+								alert("您上传的图片格式不正确，请重新选择!");
+								return false;
+							}
+							document.selection.empty();
+						}
+					}
+				}else{
+					_type = false;
+					alert("您上传的图片格式不正确，请重新选择!");
+					docObj.outerHTML=input.outerHTML.replace(/(value=\").+\"/i,"$1\"");
+					document.getElementById('FileInput').value = "";
+				}
+			}else{
+				docObj.outerHTML=input.outerHTML.replace(/(value=\").+\"/i,"$1\"");
+				document.getElementById('FileInput').value = "";
+			}	
+			return true;
+		}
+	</script>
+</html>

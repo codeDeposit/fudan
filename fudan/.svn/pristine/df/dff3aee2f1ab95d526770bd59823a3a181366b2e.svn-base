@@ -1,0 +1,66 @@
+package com.jy.service.oa.impl;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.OARole;
+import com.jy.repository.oa.AccountMapper;
+import com.jy.repository.oa.OARoleMapper;
+import com.jy.service.oa.MyOARoleService;
+
+@Service("MyOARoleService")
+public class MyOARoleServiceImpl implements MyOARoleService {
+
+	private OARoleMapper oARoleMapper;
+	private AccountMapper accountMapper;
+
+	public AccountMapper getAccountMapper() {
+		return accountMapper;
+	}
+
+	@Autowired
+	public void setAccountMapper(AccountMapper accountMapper) {
+		this.accountMapper = accountMapper;
+	}
+
+	public OARoleMapper getoARoleMapper() {
+		return oARoleMapper;
+	}
+	
+	@Autowired
+	public void setoARoleMapper(OARoleMapper oARoleMapper) {
+		this.oARoleMapper = oARoleMapper;
+	}
+
+	// 获取用户oa权限
+	@Override
+	public Set<String> findRights(String userId) {
+		Set<String> rightSet = new HashSet<String>();
+		// 根据userId获取对应的员工信息
+		Employee employee = accountMapper.selectEmployeeByAccountId(userId);
+//		String right = oARoleMapper.getRights(employee.getRoleId());
+		String admin = "_ALL";
+//		if (admin.equals(right)) {
+//			rightSet.add(admin);
+//		} else {
+//			String[] rights = right.split(",");
+//			for (int i = 0; i < rights.length; i++) {
+//				rightSet.add(rights[i]);
+//			}
+//		}
+		return rightSet;
+	}
+
+	// 获取所有角色
+	@Override
+	public List<OARole> getAll() {
+		List<OARole> roles = oARoleMapper.selectAll();
+		return roles;
+	}
+
+}

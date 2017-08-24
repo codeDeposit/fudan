@@ -1,0 +1,30 @@
+package com.jy.service.oa.task;
+
+import java.util.List;
+
+import com.jy.entity.oa.task.Appointment;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface AppointmentService {
+
+	// 添加约会
+	JsonInfo save(Appointment appointment);
+
+	// 获取约会详细信息
+	Appointment getInfoBy(Long appointId);
+
+	// 修改约会信息
+	JsonInfo update(Appointment appointment);
+
+	// 批量删除约会
+	JsonInfo del(Long[] appointId);
+
+	// 获取约会列表
+	List<Appointment> get(Appointment appointment);
+
+	// 分页获取列表
+	List<Appointment> getPageList(PageBean pb, Appointment appointment);
+
+}

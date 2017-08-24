@@ -1,0 +1,36 @@
+package com.jy.entity.workflow.online.apply;
+
+import org.apache.ibatis.type.Alias;
+
+@Alias("ApproverSetting")
+public class ApproverSetting {
+
+	private String accountId;
+	private String positionId;
+	private String processDefinitionKey;
+
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(String positionId) {
+		this.positionId = positionId;
+	}
+
+	public String getProcessDefinitionKey() {
+		return processDefinitionKey;
+	}
+
+	public void setProcessDefinitionKey(String processDefinitionKey) {
+		this.processDefinitionKey = processDefinitionKey;
+	}
+
+}

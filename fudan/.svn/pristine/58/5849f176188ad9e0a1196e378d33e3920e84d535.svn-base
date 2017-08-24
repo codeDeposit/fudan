@@ -1,0 +1,160 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="../../common/styleUrl.jsp" %>
+<div class="modal fade" id="Modal_saleActivity_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">销售行动</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" role="form" enctype="multipart/form-data" id="Form_saleActivity_detail" onsubmit="return fSaleActivityUpdate()">
+					<input type="hidden" id="id" name="id" value="${saleActivity.id }">
+					<input type="hidden" name="customerId" value="${saleActivity.customerId }">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">行动方式</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="byway_detail" name="byway"  required>
+								<option value="">--请选择--</option>
+								<option value="1">电话拜访</option>
+								<option value="2">现场拜访</option>
+								<option value="3">QQ和微信拜访</option>
+							</select>
+						</div>
+					</div> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label">重要程度</label>
+						<div class="col-sm-10">
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level1" value="1" required> 一般
+							</label>
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level2" value="2" required> 重要
+							</label>
+							<label class="radio-inline">
+							  <input type="radio" name="level" id="level3" value="3" required> 紧急
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">行动时间</label>
+						<div class="col-sm-10">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="beginDate" name="beginDate" type="text" value="${saleActivity.beginDate }" placeholder="执行截止日期"  readonly required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">当前位置</label>
+						<div class="col-sm-10 ">
+			            	<input type="text" class="form-control" id="location" name="location" value="${saleActivity.location }" maxlength="255" placeholder="点击位置获取进行定位" readonly required>
+				       	</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12 text-right">
+							<button type="button" class="btn btn-info" id="mapPosition_detail">地图查看</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12" id="container_detail">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">主&nbsp;&nbsp;办&nbsp;&nbsp;人</label>
+						<div class="col-sm-10">
+				            <input type="text" class="form-control" id="sponsor" name="sponsor" value="${saleActivity.sponsor }" maxlength="255" placeholder="主办人"  required>
+				       </div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</label>
+						<div class="col-sm-5">
+				           <label class="col-sm-2 control-label"><a href="<%=imgUrl %>image/customer/saleActivity/${saleActivity.customerId }/${saleActivity.attachment }" style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;height: 27px;" target="__bank">${saleActivity.attachment }</a></label>
+				       </div>
+				       <div class="col-sm-5">
+							<input type="file" class="form-control" id="attachment_sale" name="attachment_sale" value="${saleActivity.attachment }" maxlength="255" placeholder="附件"  >
+				       </div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容</label>
+						<div class="col-sm-10">
+				            <textarea class="form-control" id="content" name="content" maxlength="1000" placeholder="内容"  required>${saleActivity.content }</textarea>
+				       </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<c:if test="${mark == 2}">
+							<button type="submit" class="btn btn-success">
+								保存
+							</button>
+						</c:if>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$('#Modal_saleActivity_detail').modal('show');
+		$("#byway_detail option[value='" + ${saleActivity.byway } + "']").attr("selected",true);
+		$("input[name='level'][value='" + ${saleActivity.level } + "']").attr("checked",true); 
+		/**
+		 * 高德地图定位插件
+		 */
+		amapCurrentPosition_detail();
+	});
+	function amapCurrentPosition_detail() {
+	    var geolocation = new AMap.Geolocation({
+	        timeout: 5000 /*定位超时*/
+	    });
+	    geolocation.getCurrentPosition(function(status, result) {
+	        if (status == 'complete') {
+	            onLocateSuccess_detail(result);
+	        } else if (status == 'error') {
+	            if (result.message.indexOf('Geolocation permission denied.') !== -1) {
+	                createAlert('请打开定位权限', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+	            } else {
+	                createAlert('无法获取精确位置,将定位城市', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+	            }
+	            createAlert('定位失败 ！', '#e51c23'); /* success:#009688 |,| warning ：#ffc107 |,| danger：#e51c23*/
+	        }
+	    })
+	}
+	function onLocateSuccess_detail(result) {
+	    var latlng = {
+	        lat: ${saleActivity.lat },
+	        lng: ${saleActivity.lng }
+	    } /*坐标*/
+	    document.getElementById("mapPosition_detail").addEventListener('click', function() {//地图查看
+            aMapInit_detail(latlng);
+        })
+	}
+	function aMapInit_detail(latlng) {
+	    if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+	        document.getElementById('container_detail').style.height = document.documentElement.clientHeight - 220 + "px";
+	    };
+	    var map = new AMap.Map('container_detail', {
+	        resizeEnable: true,
+	        center: [latlng.lng, latlng.lat],
+	        zoom: 18
+	    });
+	    map.plugin(["AMap.ToolBar"], function() {
+	        map.addControl(new AMap.ToolBar());
+	    });
+	    var marker = new AMap.Marker({
+	        map: map,
+	        position: [latlng.lng, latlng.lat],
+	        offset: new AMap.Pixel(0, 0), //偏移位置
+	        draggable: false, //是否可拖动
+	        content: '<div><img src="${jypath}/pc/image/location/mark.png"> </div>'
+	    });
+	}
+</script>

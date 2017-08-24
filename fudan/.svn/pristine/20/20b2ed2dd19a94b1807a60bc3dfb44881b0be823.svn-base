@@ -1,0 +1,336 @@
+package com.jy.entity.oa.hrm;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Resume {
+	private final String PASS = "通过筛选";
+	private final String NOTPASS = "未通过筛选";
+	private final String READY_INTERVIEW = "准备安排面试";
+	private final String PASS_INTERVIEW = "通过面试";
+	private final String NOT_PASS_INTERVIEW = "未通过面试";
+
+	private Long resumeId;
+	private String fullname;
+	private Integer age;
+	private Date birthday;
+	private String address;
+	private String zip;
+	private String sex;
+	private String position;
+	private String phone;
+	private String mobile;
+	private String email;
+	private String hobby;
+	private String religion;
+	private String party;
+	private String nationality;
+	private String race;
+	private String birthPlace;
+	private String eduCollege;
+	private String eduDegree;
+	private String eduMajor;
+	private Date startWorkDate;
+	private String idNo;
+	private String photo;
+	private String status;
+	private String memo;
+	private String registor;
+	private Date regTime;
+	private String workCase;
+	private String trainCase;
+	private String projectCase;
+	
+	private String birthday1;
+	private String startWorkDate1;
+	public String getBirthday1() {
+		return birthday1;
+	}
+
+	public void setBirthday1(String birthday1) {
+		this.birthday1 = birthday1;
+	}
+
+	public String getStartWorkDate1() {
+		return startWorkDate1;
+	}
+
+	public void setStartWorkDate1(String startWorkDate1) {
+		this.startWorkDate1 = startWorkDate1;
+	}
+
+	private String regTime1;
+
+	public String getRegTime1() {
+		return regTime1;
+	}
+
+	public void setRegTime1(String regTime1) {
+		this.regTime1 = regTime1;
+	}
+
+	public Long getResumeId() {
+		return resumeId;
+	}
+
+	public void setResumeId(Long resumeId) {
+		this.resumeId = resumeId;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getHobby() {
+		return hobby;
+	}
+
+	public void setHobby(String hobby) {
+		this.hobby = hobby;
+	}
+
+	public String getReligion() {
+		return religion;
+	}
+
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getParty() {
+		return party;
+	}
+
+	public void setParty(String party) {
+		this.party = party;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	public String getRace() {
+		return race;
+	}
+
+	public void setRace(String race) {
+		this.race = race;
+	}
+
+	public String getBirthPlace() {
+		return birthPlace;
+	}
+
+	public void setBirthPlace(String birthPlace) {
+		this.birthPlace = birthPlace;
+	}
+
+	public String getEduCollege() {
+		return eduCollege;
+	}
+
+	public void setEduCollege(String eduCollege) {
+		this.eduCollege = eduCollege;
+	}
+
+	public String getEduDegree() {
+		return eduDegree;
+	}
+
+	public void setEduDegree(String eduDegree) {
+		this.eduDegree = eduDegree;
+	}
+
+	public String getEduMajor() {
+		return eduMajor;
+	}
+
+	public void setEduMajor(String eduMajor) {
+		this.eduMajor = eduMajor;
+	}
+
+	public Date getStartWorkDate() {
+		return startWorkDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartWorkDate(Date startWorkDate) {
+		this.startWorkDate = startWorkDate;
+	}
+
+	public String getIdNo() {
+		return idNo;
+	}
+
+	public void setIdNo(String idNo) {
+		this.idNo = idNo;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public String getRegistor() {
+		return registor;
+	}
+
+	public void setRegistor(String registor) {
+		this.registor = registor;
+	}
+
+	public Date getRegTime() {
+		return regTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setRegTime(Date regTime) {
+		this.regTime = regTime;
+	}
+
+	public String getWorkCase() {
+		return workCase;
+	}
+
+	public void setWorkCase(String workCase) {
+		this.workCase = workCase;
+	}
+
+	public String getTrainCase() {
+		return trainCase;
+	}
+
+	public void setTrainCase(String trainCase) {
+		this.trainCase = trainCase;
+	}
+
+	public String getProjectCase() {
+		return projectCase;
+	}
+
+	public void setProjectCase(String projectCase) {
+		this.projectCase = projectCase;
+	}
+
+	public String getPASS() {
+		return PASS;
+	}
+
+	public String getNOTPASS() {
+		return NOTPASS;
+	}
+
+	public String getREADY_INTERVIEW() {
+		return READY_INTERVIEW;
+	}
+
+	public String getPASS_INTERVIEW() {
+		return PASS_INTERVIEW;
+	}
+
+	public String getNOT_PASS_INTERVIEW() {
+		return NOT_PASS_INTERVIEW;
+	}
+
+}

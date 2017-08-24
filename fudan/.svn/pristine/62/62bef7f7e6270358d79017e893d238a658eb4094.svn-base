@@ -1,0 +1,39 @@
+package com.jy.service.wzcg;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.repository.wzcg.WzcgExtractDao;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.entity.wzcg.WzcgExtract;
+
+@Service(value = "wzcgExtractService")
+public class WzcgExtractService extends BaseServiceImp<WzcgExtract> {
+	
+	@Resource
+	private WzcgExtractDao wzcgExtractDao;
+	
+	public List<WzcgExtract> find(WzcgExtract extract){
+		return wzcgExtractDao.find(extract);
+	}
+	
+	public List<WzcgExtract> search(WzcgExtract extract){
+		return wzcgExtractDao.search(extract);
+	}
+	
+	public void insert(WzcgExtract extract){
+		wzcgExtractDao.insert(extract);
+	}
+	
+	public void update(WzcgExtract extract){
+		wzcgExtractDao.update(extract);
+	}
+	
+	public void delete(int id){
+		wzcgExtractDao.delete(id);
+	}
+
+}

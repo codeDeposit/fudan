@@ -1,0 +1,20 @@
+package com.jy.repository.app;
+
+import java.util.List;
+import com.jy.entity.app.AppOrders;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AppOrdersDao{
+	
+	public List<AppOrders> find(AppOrders appOrders);
+
+	public List<AppOrders> search(AppOrders appOrders);
+
+	public void insert(AppOrders appOrders);
+
+	public int update(AppOrders appOrders);
+	
+	public int delete(AppOrders appOrders);
+	
+}

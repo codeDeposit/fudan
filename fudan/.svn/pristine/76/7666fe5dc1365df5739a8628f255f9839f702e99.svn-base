@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.task.CalendarPlanMapper">
+
+	<!-- 添加日程 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.task.CalendarPlan">
+		insert fudan_oa_calendar_plan <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="startTime != null ">
+				startTime = #{startTime},
+			</if>
+			<if test="endTime != null ">
+				endTime = #{endTime},
+			</if>
+			<if test="urgent != null ">
+				urgent = #{urgent},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="fullname != null and fullname != '' ">
+				fullname = #{fullname},
+			</if>
+			<if test="assignerId != null ">
+				assignerId = #{assignerId},
+			</if>
+			<if test="assignerName != null and assignerName != '' ">
+				assignerName = #{assignerName},
+			</if>
+			<if test="showStyle != null ">
+				showStyle = #{showStyle},
+			</if>
+			<if test="taskType != null ">
+				taskType = #{taskType},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加日程 end -->
+	
+	
+	<!-- 获取日程详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where planId = #{planId}
+	</select>
+	<!-- 获取日程详细信息 end -->
+	
+	
+	<!-- 修改日程信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.task.CalendarPlan">
+		update fudan_oa_calendar_plan <include refid="insertSQL"></include>
+		where planId = #{planId}
+	</update>
+	<!-- 修改日程信息 end -->
+	
+	
+	<!-- 批量删除日程 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_calendar_plan where planId = #{planId}
+	</delete>
+	<!-- 批量删除日程 start -->
+	
+	
+	<!-- 完成任务 start -->
+	<update id="updateComplete">
+		update fudan_oa_calendar_plan set status = 1, feedback = #{feedback}
+		where planId = #{planId}
+	</update>
+	<!-- 完成任务 end -->
+	
+	
+	<!-- 获取要执行的任务列表 start -->
+	<select id="selectZX" parameterType="com.jy.entity.oa.task.CalendarPlan" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where userId = #{userId}
+			<if test="startTime != null ">
+				and startTime &gt;= #{startTime}
+			</if>
+			<if test="endTime != null ">
+				and endTime &lt;= #{endTime}
+			</if>
+			<if test="urgent != null ">
+				and urgent = #{urgent}
+			</if>
+			<if test="content != null and content != '' ">
+				and content like concat("%", #{content} ,"%")
+			</if>
+			<if test="status != null ">
+				and status = #{status}
+			</if>
+			<if test="assignerName != null and assignerName != '' ">
+				and assignerName like concat("%", #{assignerName} ,"%")
+			</if>
+	</select>
+	<!-- 获取要执行的任务列表 end -->
+	
+	
+	<!-- 获取我分配的任务列表 start -->
+	<select id="selectFP" parameterType="com.jy.entity.oa.task.CalendarPlan" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where assignerId = #{assignerId}
+			<if test="startTime != null ">
+				and startTime &gt;= #{startTime}
+			</if>
+			<if test="endTime != null ">
+				and endTime &lt;= #{endTime}
+			</if>
+			<if test="urgent != null ">
+				and urgent = #{urgent}
+			</if>
+			<if test="content != null and content != '' ">
+				and content like concat("%", #{content} ,"%")
+			</if>
+			<if test="status != null ">
+				and status = #{status}
+			</if>
+	</select>
+	<!-- 获取我分配的任务列表 end -->
+	
+	
+	<!-- 分页获取要执行的任务列表 start -->
+	<select id="selectZXPageData" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where userId = #{userId}
+		<if test="startTime != null ">
+			and startTime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null ">
+			and endTime &lt;= #{endTime}
+		</if>
+		<if test="urgent != null ">
+			and urgent = #{urgent}
+		</if>
+		<if test="content != null and content != '' ">
+			and content like concat("%", #{content} ,"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+		<if test="assignerName != null and assignerName != '' ">
+			and assignerName like concat("%", #{assignerName} ,"%")
+		</if>
+		order by planId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 获取要执行的任务列表 end -->
+	
+	
+	<!-- 分页获取我分配的任务列表 start -->
+	<select id="selectFPPageData" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where assignerId = #{userId}
+		<if test="startTime != null ">
+			and startTime &gt;= #{startTime}
+		</if>
+		<if test="endTime != null ">
+			and endTime &lt;= #{endTime}
+		</if>
+		<if test="urgent != null ">
+			and urgent = #{urgent}
+		</if>
+		<if test="content != null and content != '' ">
+			and content like concat("%", #{content} ,"%")
+		</if>
+		<if test="status != null ">
+			and status = #{status}
+		</if>
+		order by planId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页获取我分配的任务列表 end -->
+	
+	
+	<!-- 限期任务列表 start -->
+	<select id="selectXQ" resultType="com.jy.entity.oa.task.CalendarPlan">
+		select * from fudan_oa_calendar_plan where taskType = 1
+	</select>
+	<!-- 限期任务列表 end -->
+	
+</mapper>

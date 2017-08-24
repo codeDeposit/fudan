@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.DutySectionDao">
+	
+	<resultMap type="com.jy.entity.oa.personal.DutySection" id="ResultMap">
+		<id column="sectionId" property="sectionId"/>
+		<result column="sectionName" property="sectionName"/>
+		<result column="dutyStartTime" property="dutyStartTime"/>
+		<result column="dutyEndTime" property="dutyEndTime"/>
+		<result column="isNoontimeRest" property="isNoontimeRest"/>
+		<result column="restStartTime" property="restStartTime"/>
+		<result column="restEndTime" property="restEndTime"/>
+		<result column="totalTime" property="totalTime"/>
+		<result column="isSign" property="isSign"/>
+		<result column="isLate" property="isLate"/>
+		<result column="lateMinute" property="lateMinute"/>
+		<result column="isSeriousLate" property="isSeriousLate"/>
+		<result column="seriousLateMinute" property="seriousLateMinute"/>
+		<result column="isAbsenteeism" property="isAbsenteeism"/>
+		<result column="absenteeismMinute" property="absenteeismMinute"/>
+	</resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from fudan_oa_duty_section where 1 = 1 <include refid="findSql"></include>
+	</select>
+	
+	<insert id="insert">
+		insert fudan_oa_duty_section <include refid="insertSQL"></include>
+	</insert>
+	
+	<delete id="delete" parameterType="com.jy.entity.oa.personal.DutySection">
+		delete from fudan_oa_duty_section where sectionId = #{sectionId}
+	</delete>
+	
+	<update id="update" parameterType="com.jy.entity.oa.personal.DutySection">
+		update fudan_oa_duty_section <include refid="updateSql"></include> where sectionId = #{sectionId}
+	</update>
+	
+	<select id="search" parameterType="com.jy.entity.oa.personal.DutySection" resultType="com.jy.entity.oa.personal.DutySection">
+		select * from fudan_oa_duty_section where 1 = 1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="sectionName !=null and sectionName != '' ">
+				sectionName = #{sectionName},
+			</if>
+			<if test="dutyStartTime !=null ">
+				dutyStartTime = #{dutyStartTime},
+			</if>
+			<if test="dutyEndTime !=null ">
+				dutyEndTime = #{dutyEndTime},
+			</if>
+			<if test="isNoontimeRest !=null ">
+				isNoontimeRest = #{isNoontimeRest},
+			</if>
+			<if test="restStartTime !=null ">
+				restStartTime = #{restStartTime},
+			</if>
+			<if test="restEndTime !=null ">
+				restEndTime = #{restEndTime},
+			</if>
+			<if test="totalTime !=null and totalTime !='' ">
+				totalTime = #{totalTime},
+			</if>
+			<if test="isSign !=null ">
+				isSign = #{isSign},
+			</if>
+			<if test="isLate !=null ">
+				isLate = #{isLate},
+			</if>
+			<if test="lateMinute !=null ">
+				lateMinute = #{lateMinute},
+			</if>
+			<if test="isSeriousLate !=null ">
+				isSeriousLate = #{isSeriousLate},
+			</if>
+			<if test="seriousLateMinute !=null ">
+				seriousLateMinute = #{seriousLateMinute},
+			</if>
+			<if test="isAbsenteeism !=null ">
+				isAbsenteeism = #{isAbsenteeism},
+			</if>
+			<if test="absenteeismMinute !=null ">
+				absenteeismMinute = #{absenteeismMinute},
+			</if>
+		</set>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="sectionId != null and  sectionId != ''">
+		 	AND sectionId = #{sectionId}
+		</if>
+		<if test="sectionName != null and sectionName !='' ">
+			AND sectionName like concat("%", #{sectionName} ,"%")
+		</if>
+	</sql>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="sectionName !=null and sectionName != '' ">
+				sectionName = #{sectionName},
+			</if>
+			<if test="dutyStartTime !=null ">
+				dutyStartTime = #{dutyStartTime},
+			</if>
+			<if test="dutyEndTime !=null ">
+				dutyEndTime = #{dutyEndTime},
+			</if>
+			<if test="isNoontimeRest !=null ">
+				isNoontimeRest = #{isNoontimeRest},
+			</if>
+			<if test="restStartTime !=null ">
+				restStartTime = #{restStartTime},
+			</if>
+			<if test="restEndTime !=null ">
+				restEndTime = #{restEndTime},
+			</if>
+			<if test="totalTime !=null and totalTime !='' ">
+				totalTime = #{totalTime},
+			</if>
+			<if test="isSign !=null ">
+				isSign = #{isSign},
+			</if>
+			<if test="isLate !=null ">
+				isLate = #{isLate},
+			</if>
+			<if test="lateMinute !=null ">
+				lateMinute = #{lateMinute},
+			</if>
+			<if test="isSeriousLate !=null ">
+				isSeriousLate = #{isSeriousLate},
+			</if>
+			<if test="seriousLateMinute !=null ">
+				seriousLateMinute = #{seriousLateMinute},
+			</if>
+			<if test="isAbsenteeism !=null ">
+				isAbsenteeism = #{isAbsenteeism},
+			</if>
+			<if test="absenteeismMinute !=null ">
+				absenteeismMinute = #{absenteeismMinute},
+			</if>
+		</set>
+	</sql>
+	
+	<sql id="findSql">
+		<if test="sectionId != null and  sectionId != ''">
+		 	AND sectionId = #{sectionId}
+		</if>
+		<if test="sectionName != null and sectionName !='' ">
+			AND sectionName like concat("%", #{sectionName} ,"%")
+		</if>
+	</sql>
+
+</mapper>

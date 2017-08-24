@@ -1,0 +1,251 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<html>
+<head>
+	<%@include file="../common/includeBaseSet.jsp" %>
+	<title>供应商登记申请表</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+		i{font-style: normal;color:red;text-align: center;}
+		body{padding: 5%;}
+	</style>
+</head>
+<body>
+	<h2 style="text-align:center;color:#F86B4F">第二军医大学</h2>
+	<h4 style="text-align:center;color:#3498db;font-weight:bold;">供应商登记申请表</h4>
+	<p style="text-align:center; font-size:12px;color:#8f8f94">(带
+		<i style="font-size:14px;vertical-align:middle;"> * </i> 号的为必填项目)
+	</p>
+	<form action="form_action.asp" method="get" class="login-form">
+  		<div class="form-group ">
+	    	<label for="name"><i> * </i>登陆账号</label>
+	    	<input type="email" class="form-control" name="username" placeholder="请使用邮箱注册" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>登陆密码</label>
+	    	<input type="password" class="form-control" name="password" placeholder="请输入至少6位数密码" minlength="6" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>企业名称</label>
+	    	<input type="text" class="form-control" name="qymc" placeholder="企业名称" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>法定代表人</label>
+	    	<input type="text" class="form-control" name="fddbr" placeholder="法定代表人" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name" style="display:block;text-align:left;"><i> * </i>企业注册地址</label>
+		    <select class="form-control col-sm-3" style="width:48%;display:inline-block;" id="companyArea" name="zcdz" required onchange="area();">
+		      <option value="">--选择省--</option>
+		    </select>
+		    <select class="form-control col-sm-3" style="width:48%; display:inline-block;" id="companyCity" name="city" required>
+		      <option value="">--选择市--</option>
+		    </select>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>邮政编码</label>
+	    	<input type="number" class="form-control" name="youbian" placeholder="邮政编码" required >
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>法人身份证号码</label>
+	    	<input type="number" class="form-control" name="sfzhm" placeholder="法人身份证号码" pattern="{18,20}" required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>注册资金</label>
+	    	<div style="height:34px;">
+	    		<input type="number" class="form-control" name="zczj" placeholder="0" style="width:80%;display:inline-block;" required oninput="this.value=this.value.replace(/[^1-9]/g,'')">
+	    		<p style="display:inline-block;text-align:center;width:18%;height:34px;background:#eee;border:1px solid #ccc;padding:0;margin:0;line-height:32px;border-radius:4px;">万元</p>
+	    	</div>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i>  *  </i>营业执照注册号</label>
+	    	<input type="number" class="form-control" name="zchm" placeholder="营业执照注册号" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>营业执照编号</label>
+	    	<input type="number" class="form-control" name="zcbh" placeholder="营业执照编号"  required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">国税登记号</label>
+	    	<input type="number" class="form-control" name="gsdjh" placeholder="国税登记号">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">地税登记号</label>
+	    	<input type="number" class="form-control" name="dsdjh" placeholder="地税登记号">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">组织机构代码</label>
+	    	<input type="number" class="form-control" name="zzjgdm" placeholder="组织机构代码">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">企业类型</label>
+	    	<input type="text" class="form-control" name="qylx" placeholder="企业类型">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>行业分类</label>
+	    	<input type="text" class="form-control" name="hyfl" placeholder="行业分类" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">主管部门</label>
+	    	<input type="text" class="form-control" name="zgbm" placeholder="主管部门">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">行政管理资质号</label>
+	    	<input type="text" class="form-control" name="xgzzh" placeholder="行政管理资质号">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">发证机关</label>
+	    	<input type="text" class="form-control" name="fzjg" placeholder="发证机关">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>成立时间</label>
+	    	<input type="date" name="clsj" class="form-control" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>申请时间</label>
+	    	<input type="date" name="sqsj" class="form-control" required>
+  		</div>
+  		<div class="form-group" >
+	    	<label for="name" style="display:block;text-align:left;"><i> * </i>经营范围</label>
+	    	 <select class="form-control col-sm-3" name="jyfw" style="width:49%;display:inline-block;" name="fanwei1"  datatype="select" errormsg="请选择！" required>
+		      <option value="">--请选择--</option>
+		      <option value="0">一般办公设备</option>
+		      <option value="1">信息类产品</option>
+		      <option value="2">文化装备（器材）</option>
+		      <option value="3">军需物资装备器材</option>
+		      <option value="4">军训器材</option>
+		      <option value="5">医疗卫生设备</option>
+		      <option value="6">教学科研仪器设备</option>
+		      <option value="7">营产营居</option>
+		      <option value="8">服务类</option>
+		      <option value="9">工程类+服务</option>
+		    </select>
+		    <select class="form-control col-sm-3" name="jyfw" style="width:48%; display:inline-block;" name="fanwei2" required>
+		      <option value="">--请选择--</option>
+		      <option value="0">一般办公设备</option>
+		      <option value="1">信息类产品</option>
+		      <option value="2">文化装备（器材）</option>
+		      <option value="3">军需物资装备器材</option>
+		      <option value="4">军训器材</option>
+		      <option value="5">医疗卫生设备</option>
+		      <option value="6">教学科研仪器设备</option>
+		      <option value="7">营产营居</option>
+		      <option value="8">服务类</option>
+		      <option value="9">工程类+服务</option>
+		    </select>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>主营产品</label>
+	    	 <textarea class="form-control" name="zycp" rows="3" placeholder="主营产品"  required></textarea>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>兼营产品</label>
+	    	 <textarea class="form-control" name="jycp" rows="3" placeholder="兼营产品" required></textarea>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>开户银行</label>
+	    	<input type="text" class="form-control" name="khyh" placeholder="开户银行" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>银行账号</label>
+	    	<input type="number" class="form-control" name="yhzh" placeholder="银行账号" pattern="{16,18}" required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>联系人</label>
+	    	<input type="text" class="form-control" name="lxr" placeholder="联系人" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>联系号码</label>
+	    	<input type="number" class="form-control" name="lxhm" placeholder="联系号码" pattern="{7,18}" required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>传真</label>
+	    	<input type="number" class="form-control" name="chuanzhen" placeholder="传真" required >
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>手机号码</label>
+	    	<input type="number" class="form-control" name="phonenum" placeholder="手机号码" pattern="{11,13}" required oninput="this.value=this.value.replace(/[^\d]/g,'')">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>电子邮箱</label>
+	    	<input type="email" class="form-control" name="emailname" placeholder="电子邮箱" required>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name">企业网址</label>
+	    	<input type="text" class="form-control" name="qynet" placeholder="企业网址">
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>参加投标经历</label>
+	    	 <textarea class="form-control" name="cjtb" rows="3" maxlength="1000" placeholder="参加投标经历,不能超过1000字" required></textarea>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>企业简介</label>
+	    	 <textarea class="form-control" name="qyjj" rows="3" maxlength="3000" placeholder="(企业所在地、机构设置、主要技术、经济技术、经营业绩、售后服务体系、是否纳入军队或上海市供应商库等）不能超过3000字" required></textarea>
+  		</div>
+  		<div class="form-group">
+	    	<label for="name"><i> * </i>供应商承诺</label>
+	    	 <textarea class="form-control" rows="2" readonly="readonly" >我方同意按照 《第二军医大学物资供应商库管理办法》的有关要求履行义务。</textarea>
+  		</div>
+  		<h4>附件：</h4>
+  		<a href="<%=basePath %>resource/file/关于征集第二军医大学供应商的公告.doc" class="list-group-item">关于征集第二军医大学供应商的公告.doc</a>
+		<a href="<%=basePath %>resource/file/第二军医大学供应商入库标准和程序.doc" class="list-group-item">第二军医大学供应商入库标准和程序.doc</a>
+		<a href="<%=basePath %>resource/file/第二军医大学物资集中采购目录（试行）.doc" class="list-group-item">第二军医大学物资集中采购目录(试行).doc</a>
+		<a href="<%=basePath %>resource/file/第二军医大学物资供应商库供应商登记申请表.doc" class="list-group-item">第二军医大学物资供应商库供应商登记申请表.doc</a>
+		<a href="<%=basePath %>resource/file/第二军医大学物资供应商入库初审表.doc" class="list-group-item">第二军医大学物资供应商入库初审表.doc</a>
+		<div class="center-block" style="width:114px;margin-top:30px;margin-bottom:20px;">
+			<input class="btn btn-warning" type="reset" value="重置" >
+			<input class="btn btn-primary" type="submit" value="提交" >
+		</div>
+	</form>
+</body>
+<script>
+	$(document).ready(function() {
+		$.ajax({//加载省
+			type: "POST",
+			async: false,
+			url: '<%=basePath%>backstage/supplier/provincelist',
+	    	data: {pareaid:0},
+			success: function(data){
+				$("#companyArea").html(data);//要刷新的div
+			}
+		});
+	});
+   	$('.login-form').submit(function() {
+	  	$.ajax({//地址选择ajax请求
+              cache: true,
+              type: "POST",
+              url:ajaxCallUrl,
+              data:$('.login-form').serialize(),
+              async: false,
+              error: function(request) {
+                  alert("error");
+              },
+              success: function(data) {
+              }
+           });
+ 		})
+ 		
+ 	 //注册地址
+	function area(_pd){
+		var province = $("#companyArea").val();
+		if(province != ""){
+			$.ajax({
+				type: "POST",
+				async: false,
+				url: '<%=basePath%>backstage/supplier/citylist',
+		    	data: {pareaid:province},
+				success: function(data){
+					$("#companyCity").html(data);//要刷新的div
+				}
+			});
+		};
+	}
+</script>
+</html>

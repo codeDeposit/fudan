@@ -1,0 +1,101 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+		<!-- 模拟态窗口 start-->
+		<div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header headBg">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						×
+					</button>
+					<h4 class="modal-title text-center" id="myModalLabel">折旧类别
+					<c:if test="${operation == 'update' }">
+						修改
+					</c:if></h4>
+				</div>
+				<div class="modal-body">
+					<form id="depretypeeditform" class="form-horizontal aForm" role="form" >
+						<input type="hidden" name="depreTypeId" value="${depreType.depreTypeId }">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">类别名称</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="typeName" value="${depreType.typeName }">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">折旧周期(单位：月)</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="deprePeriod" value="${depreType.deprePeriod }">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">折旧计算方法</label>
+							<div class="col-sm-10">
+								<select id="newsTypeSelect" class="form-control forinBlo" name="calMethod">
+									<c:if test="${depreType.calMethod == 1 }">
+										<option value="">--请选择--</option>
+										<option value="1" selected>评价年限法</option>
+										<option value="2">工作量法</option>
+										<option value="3">双倍余额递减法</option>
+										<option value="4">年数总和法</option>
+									</c:if>
+									<c:if test="${depreType.calMethod == 2 }">
+										<option value="">--请选择--</option>
+										<option value="1">评价年限法</option>
+										<option value="2" selected>工作量法</option>
+										<option value="3">双倍余额递减法</option>
+										<option value="4">年数总和法</option>
+									</c:if>
+									<c:if test="${depreType.calMethod == 3 }">
+										<option value="">--请选择--</option>
+										<option value="1">评价年限法</option>
+										<option value="2">工作量法</option>
+										<option value="3" selected>双倍余额递减法</option>
+										<option value="4">年数总和法</option>
+									</c:if>
+									<c:if test="${depreType.calMethod == 4 }">
+										<option value="">--请选择--</option>
+										<option value="1">评价年限法</option>
+										<option value="2">工作量法</option>
+										<option value="3">双倍余额递减法</option>
+										<option value="4" selected>年数总和法</option>
+									</c:if>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">方法描述</label>
+							<div class="col-sm-10">
+								<textarea rows="3" name="typeDesc" class="form-control">${depreType.typeDesc }</textarea>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button id="depretypeeditbtn" type="button" class="btn btn-success">保存</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		</div>
+		<!-- 模拟态窗口 end -->
+	<script type="text/javascript">
+		$(function() {
+			$("#infoorupdate").modal("show");
+		})
+		$("#depretypeeditbtn").click(function() {
+			var url = "/oa/depretype/edit";
+			$.ajax({
+				type : "post",
+				url : jypath + url,
+				data : $("#depretypeeditform").serialize(),
+				success : function() {
+					removeModal("booktypeInfoOrUpdate");
+					refresh();
+				}
+			});
+		});
+		$("#closebtn").click(function() {
+			removeModal("booktypeInfoOrUpdate");
+		});
+	</script>

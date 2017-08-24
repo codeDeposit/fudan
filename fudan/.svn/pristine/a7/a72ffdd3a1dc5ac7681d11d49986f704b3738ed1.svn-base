@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/views/system/common/head.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/common/styleUrl.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/common/systemInfo.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/noAuthorized.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/system/webSetting.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/wzcg/expert/expert_detail.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/wzcg/expert/expert_list.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/wzcg/expert/expert_reg.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/wzcg/supplier/supplier_print.jsp=UTF-8
+encoding//WebRoot/WEB-INF/views/system/wzcg/xqItem/xq_item_list.jsp=UTF-8

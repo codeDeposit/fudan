@@ -1,0 +1,130 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.CarApply;
+import com.jy.entity.oa.admin.CarApplyVO;
+import com.jy.service.oa.admin.CarApplyService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/carapply")
+public class CarApplyController {
+
+	private CarApplyService carApplyService;
+
+	public CarApplyService getCarApplyService() {
+		return carApplyService;
+	}
+
+	@Autowired
+	public void setCarApplyService(CarApplyService carApplyService) {
+		this.carApplyService = carApplyService;
+	}
+	
+	/**
+	 * 添加车辆申请单
+	 * @param carRepair
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(CarApply carApply) {
+		JsonInfo info = carApplyService.save(carApply);
+		return info;
+	}
+	
+	/**
+	 * 获取申请单详细信息
+	 * @param repairId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long applyId, String operation) {
+		CarApplyVO carApply = carApplyService.getInfoBy(applyId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/admin/carapply_form");
+		mv.addObject("carApply", carApply);
+		mv.addObject("operation", operation);
+		
+		return mv;
+	}
+	
+	/**
+	 * 修改申请单信息
+	 * @param carRepair
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(CarApply carApply) {
+		JsonInfo info = carApplyService.update(carApply);
+		return info;
+	}
+	
+	/**
+	 * 批量删除申请单
+	 * @param repairId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] applyId) {
+		JsonInfo info = carApplyService.del(applyId);
+		return info;
+	}
+	
+	/**
+	 * 获取申请单列表
+	 * @param carNo
+	 * @param repairType
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, @RequestParam(required=false) String carNo, 
+			@RequestParam(required=false) Short approvalStatus, @RequestParam(required=false) String userFullname) {
+		
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<CarApply> carApplys = carApplyService.get(carNo, approvalStatus, userFullname);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(carApplys.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<CarApplyVO> pageCarApplys = carApplyService.getPageList(pb, carNo, approvalStatus, userFullname);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/carapply_table");
+		}else {
+			mv.setViewName("system/oa/admin/carapply_list");
+		}
+		
+		mv.addObject("carApplys", pageCarApplys);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+}

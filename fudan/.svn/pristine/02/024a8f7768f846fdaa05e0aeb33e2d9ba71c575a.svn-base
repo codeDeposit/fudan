@@ -1,0 +1,225 @@
+package com.jy.controller.oa;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.utils.base.Const;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoJsonVo;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.entity.oa.EmployeeSelfInfoVo;
+import com.jy.entity.oa.OARole;
+import com.jy.entity.oa.task.DiaryVo;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.AccountService;
+import com.jy.service.oa.EmployeeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.ResponseInfoVo;
+
+/**
+ * OA子系统员工Controller
+ * 
+ */
+
+@Controller
+@RequestMapping("/oa/system")
+public class OAAccountController extends BaseController<Object> {
+
+	private AccountService accountService;
+
+	private EmployeeService employeeService;
+
+	public AccountService getAccountService() {
+		return accountService;
+	}
+
+	@Autowired
+	public void setAccountService(AccountService accountService) {
+		this.accountService = accountService;
+	}
+
+	public EmployeeService getEmployeeService() {
+		return employeeService;
+	}
+
+	@Autowired
+	public void setEmployeeService(EmployeeService employeeService) {
+		this.employeeService = employeeService;
+	}
+
+	/**
+	 * 获取当前登录用户的详细信息
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/listDetails")
+	@ResponseBody
+	public EmployeeSelfInfoVo listDetails() {
+		HttpSession session = this.getRequest().getSession();
+		Account account = (Account) session.getAttribute(Const.SESSION_USER);
+		EmployeeSelfInfoVo employeeSelfInfoVo = accountService.getItselect(account.getAccountId());
+		return employeeSelfInfoVo;
+	}
+
+	@RequestMapping("/editInfo")
+	@ResponseBody
+	public JsonInfo editAccount(Employee employee) {
+		//JsonInfo info = employeeService.edit(employee);
+		return null;
+	}
+
+	/**
+	 * 返回下属列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/listAccount")
+	@ResponseBody
+	public EmployeeInfoJsonVo list() {
+		HttpSession session = getRequest().getSession();
+		Account account = (Account) session.getAttribute(Const.SESSION_USER);
+		EmployeeInfoJsonVo employeeInfoJsonVo = accountService.listEmployeeInfo(account.getAccountId());
+		return employeeInfoJsonVo;
+	}
+
+	/**
+	 * 批量添加下属
+	 * 
+	 * @param account
+	 * @return
+	 */
+//	@RequestMapping("/addsubAccount")
+//	@ResponseBody
+//	public JsonInfo addAccount(int[] eIds) {
+//		Account account = (Account) getRequest().getSession().getAttribute(Const.SESSION_USER);
+//		JsonInfo responseInfoVo = (JsonInfo)(accountService.add(account.getAccountId(), eIds));
+//		return responseInfoVo;
+//	}
+
+	/**
+	 * 返回下属详细信息
+	 * 
+	 * @param subId
+	 * @return
+	 */
+	@RequestMapping("/listSubDetails")
+	@ResponseBody
+	public EmployeeInfoJsonVo getSubInfo(Integer subId) {
+		EmployeeInfoJsonVo employeeInfoJsonVo = accountService.listEmployeeInfoBy(subId);
+		return employeeInfoJsonVo;
+	}
+
+	/**
+	 * 编辑员工信息
+	 * 
+	 * @param account
+	 * @return
+	 */
+	@RequestMapping("/editAccount")
+	@ResponseBody
+	public String editAccount(Account account) {
+		// 实现accountService.edit(account)();
+		return null;
+	}
+
+	/**
+	 * 删除员工 批量删除
+	 * 
+	 * @param accountId
+	 * @return
+	 */
+	/*
+	 * @RequestMapping("/delSub")
+	 * 
+	 * @ResponseBody public ResponseInfoVo deleteAccount(Integer[] subIds) {
+	 * ResponseInfoVo responseInfoVo = accountService.delete(subIds); return
+	 * responseInfoVo; }
+	 */
+
+	/**
+	 * 员工离职 将状态改为离职即可
+	 * 
+	 * @param subId
+	 * @return
+	 */
+	@RequestMapping("/desertJobs")
+	@ResponseBody
+	public ResponseInfoVo desertJobs(Integer subId) {
+		ResponseInfoVo responseInfoVo = accountService.desert(subId);
+		return responseInfoVo;
+	}
+
+	/**
+	 * 根据姓名模糊查询下属
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping("/listSubByName")
+	@ResponseBody
+	public ResponseInfoVo<EmployeeInfoVo> getSubByName(String name) {
+		ResponseInfoVo<EmployeeInfoVo> responseInfoVo = accountService.getSub(name);
+		return responseInfoVo;
+	}
+
+	/**
+	 * 为员工设置OA权限
+	 * 
+	 * @param account
+	 * @param role
+	 * @return
+	 */
+	@RequestMapping("/setOARole")
+	@ResponseBody
+	public String setOARoleForAccount(Account account, OARole role) {
+		// 实现accountService.setRole();
+		return null;
+	}
+
+	/**
+	 * 根据下属名字查询工作日志
+	 * 
+	 * @param subName
+	 * @return
+	 */
+	@RequestMapping("/comboUserSub")
+	@ResponseBody
+	public ResponseInfoVo<DiaryVo> comboUserSub(String subName) {
+		ResponseInfoVo<DiaryVo> responseInfoVo = accountService.comboSub(subName);
+		return responseInfoVo;
+	}
+
+	/**
+	 * 获取所有下属的所有工作日志
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/subUserDiary")
+	@ResponseBody
+	public ResponseInfoVo<DiaryVo> subUserDiary() {
+		HttpSession session = this.getRequest().getSession();
+		Account account = (Account) session.getAttribute(Const.SESSION_USER);
+		ResponseInfoVo<DiaryVo> responseInfoVo = accountService.subUD(account.getAccountId());
+		return responseInfoVo;
+	}
+	
+	/**
+	 * 获取上级信息
+	 * @return
+	 */
+	@RequestMapping("/upUser")
+	@ResponseBody
+	public List<Employee> upUser() {
+		Account account = (Account) this.getRequest().getSession().getAttribute(Const.SESSION_USER);
+//		List<Employee> employees = accountService.getUpUser(account.getEmployee().getUserId());
+		return null;
+	}
+
+}

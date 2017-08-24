@@ -1,0 +1,18 @@
+package com.jy.service.app;
+
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.AppItem;
+import com.jy.repository.app.AppItemDao;
+
+@Service(value = "appItemService")
+public class AppItemService{
+	
+	@Resource
+	private AppItemDao appItemDao;
+	
+	public AppItem select(AppItem appItem){
+		return appItemDao.find(appItem);
+	}
+	
+}

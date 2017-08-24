@@ -1,0 +1,22 @@
+package com.jy.repository.customer;
+
+import java.util.List;
+
+import com.jy.entity.customer.Contacts;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface ContactsDao{
+	
+	public List<Contacts> find(Contacts contacts);
+
+	public List<Contacts> search(Contacts contacts);
+
+	public int insert(Contacts contacts);
+
+	public int update(Contacts contacts);
+
+	public int delete(Contacts contacts);
+	
+}
+

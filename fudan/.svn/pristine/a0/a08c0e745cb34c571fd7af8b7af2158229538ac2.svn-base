@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.wzcg.WzcgXqytDao">
+	
+	<resultMap type="com.jy.entity.wzcg.WzcgXqyt" id="ResultMap">
+		<result column="xqytId" property="xqytId"/>
+		<result column="state" property="state"/>
+		<result column="name" property="name"/>
+		<result column="creator" property="creator"/>
+		<result column="roleId" property="roleId"/>
+		<result column="approveId" property="approveId"/>
+		<result column="positionId" property="positionId"/>
+		<result column="price" property="price"/>
+		<result column="remark" property="remark"/>
+		<result column="createdate" property="createdate"/>
+		<result column="processInstanceId" property="processInstanceId"/>
+		<result column="processDefinitionId" property="processDefinitionId"/>
+		<result column="bm" property="bm"/>
+	</resultMap>
+	
+	<!-- 列表 -->
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_xqyt where 1 = 1
+		<if test="xqytId != null and xqytId != ''">  
+			AND xqytId = #{xqytId}
+		</if> 
+		<if test="state != null and state != ''">  
+			AND state = #{state}
+		</if>
+		<if test="name != null and name != ''">  
+			AND name = #{name}
+		</if>
+		<if test="creator != null and creator != ''">  
+			AND creator = #{creator}
+		</if>
+		<if test="roleId != null and roleId != ''">  
+			AND roleId = #{roleId}
+		</if>
+		<if test="remark != null and remark != ''">  
+			AND remark = #{remark}
+		</if>
+		<if test="createdate != null and createdate != ''">  
+			AND createdate = #{createdate}
+		</if>
+		<if test="processInstanceId != null and processInstanceId != ''">  
+			AND processInstanceId = #{processInstanceId}
+		</if>
+		<if test="processDefinitionId != null and processDefinitionId != ''">  
+			AND processDefinitionId = #{processDefinitionId}
+		</if>
+		<if test="approveId != null and approveId != ''">  
+			AND approveId = #{approveId}
+		</if>
+		<if test="positionId != null and positionId != ''">  
+			AND positionId = #{positionId}
+		</if>
+	</select>
+	<!-- 搜索 -->
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_xqyt where 1 = 1  
+		<if test="xqytId !=null and xqytId !=''">  
+		    AND xqytId like concat('%', #{xqytId}, '%') 
+		</if> 
+		<if test="state !=null and state !=''">  
+		    AND state = #{state} 
+		</if> 
+		<if test="bm !=null and bm !=''">  
+		    AND bm = #{bm} 
+		</if> 
+		<if test="priceMin !=null and priceMin !=''">  
+		    AND price >= #{priceMin} 
+		</if>
+		<if test="priceMax !=null and priceMax !=''">  
+		    AND price &lt;= #{priceMax} 
+		</if>
+		order by createdate desc
+	</select>
+	<select id="count" parameterType="String" resultMap="ResultMap">
+		select count(*) from wzcg_xqyt where 1 = 1  
+		<if test="xqytId !=null and xqytId !=''">  
+		    AND xqytId like concat('%', #{xqytId}, '%') 
+		</if> 
+		<if test="state !=null and state !=''">  
+		    AND state = #{state} 
+		</if> 
+		<if test="bm !=null and bm !=''">  
+		    AND bm = #{bm} 
+		</if> 
+		<if test="priceMin !=null and priceMin !=''">  
+		    AND price >= #{priceMin} 
+		</if>
+		<if test="priceMax !=null and priceMax !=''">  
+		    AND price &lt;= #{priceMax} 
+		</if>
+		order by createdate desc
+	</select>
+	<!-- 新增 -->
+	<insert id="insert">
+		insert into wzcg_xqyt 
+		(xqytId,state,name,creator,bm,roleId,price,remark,createdate,processInstanceId,processDefinitionId,approveId,positionId) 
+		values 
+		(#{xqytId},#{state},#{name},#{creator},#{bm},#{roleId},#{price},#{remark},#{createdate},#{processInstanceId},#{processDefinitionId},#{approveId},#{positionId})
+	</insert>
+	<!-- 删除 -->
+	<delete id="delete">
+		delete from wzcg_xqyt where xqytId = #{xqytId}
+	</delete>
+	<!-- 更新 -->	
+	<update id="update">
+		update wzcg_xqyt 
+		<set>
+			<if test="name != null and name != ''">  
+				name = #{name},
+			</if>
+			<if test="remark != null and remark != ''">  
+				remark = #{remark},
+			</if>
+			<if test="state != null and state != ''">  
+				state = #{state},
+			</if>
+			<if test="processInstanceId != null and processInstanceId != ''">  
+				processInstanceId = #{processInstanceId},	
+			</if>
+			<if test="processDefinitionId != null and processDefinitionId != ''">  
+				processDefinitionId = #{processDefinitionId},
+			</if>
+			<if test="approveId != null and approveId != ''">  
+				approveId = #{approveId},
+			</if>
+			<if test="positionId != null and positionId != ''">  
+				positionId = #{positionId},
+			</if>
+			<if test="price != null and price != ''">  
+				price = #{price},
+			</if>
+		</set> 
+		where xqytId = #{xqytId}
+	</update>
+</mapper>

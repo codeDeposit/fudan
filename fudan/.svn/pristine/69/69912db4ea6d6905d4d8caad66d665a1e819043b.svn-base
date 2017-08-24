@@ -1,0 +1,84 @@
+package com.jy.entity.oa.task;
+
+public class CalendarPlanVO {
+	
+	private Long planId;
+	private String jinji;		//紧急程度
+	private String title;		//内容
+	private String tState;		//状态
+	private String doman;		//执行人
+	private String distrim;		//分配人
+	private String Beback;	//反馈
+	private String tasktype;	//任务类型
+	private String start;		//开始时间
+	private String end;			//结束时间
+	private String backgroundColor;
+	
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+	public Long getPlanId() {
+		return planId;
+	}
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+	public String getJinji() {
+		return jinji;
+	}
+	public void setJinji(String jinji) {
+		this.jinji = jinji;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String gettState() {
+		return tState;
+	}
+	public void settState(String tState) {
+		this.tState = tState;
+	}
+	public String getDoman() {
+		return doman;
+	}
+	public void setDoman(String doman) {
+		this.doman = doman;
+	}
+	public String getDistrim() {
+		return distrim;
+	}
+	public void setDistrim(String distrim) {
+		this.distrim = distrim;
+	}
+	public String getBeback() {
+		return Beback;
+	}
+	public void setBeback(String beback) {
+		Beback = beback;
+	}
+	public String getTasktype() {
+		return tasktype;
+	}
+	public void setTasktype(String tasktype) {
+		this.tasktype = tasktype;
+	}
+	public String getStart() {
+		return start;
+	}
+	public void setStart(String start) {
+		this.start = start;
+	}
+	public String getEnd() {
+		return end;
+	}
+	public void setEnd(String end) {
+		this.end = end;
+	}
+	
+}

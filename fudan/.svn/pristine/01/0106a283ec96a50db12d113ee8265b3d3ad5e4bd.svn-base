@@ -1,0 +1,31 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.FixedAssets;
+import com.jy.entity.oa.admin.FixedAssetsVO;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface FixedAssetsService {
+	
+	// 添加固定资产
+	JsonInfo save(FixedAssets fixedAssets);
+	
+	// 修改固定资产
+	JsonInfo update(FixedAssets fixedAssets);
+	
+	// 删除固定资产
+	JsonInfo delete(Long[] assetsId);
+	
+	// 获取详细信息
+	FixedAssetsVO getInfoBy(Long assetsId);
+	
+	// 获取固定资产列表
+	List<FixedAssets> get(String assetsName, String beDep, Long assetsTypeId);
+
+	// 分页固定资产列表
+	List<FixedAssetsVO> selectPageList(PageBean pb, String assetsName,
+			String beDep, Long assetsTypeId);
+
+}

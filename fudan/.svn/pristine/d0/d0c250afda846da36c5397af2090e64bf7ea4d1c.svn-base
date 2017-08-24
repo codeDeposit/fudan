@@ -1,0 +1,29 @@
+var toast;
+$(document).ready(function(){
+	toast = new auiToast();
+});
+function fLogin() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"mobile/login",
+		data : $("#FMobileLogin").serialize(),
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			var data = obj.obj;
+			if(data['res'] != 0){
+				toast.fail({
+				    title:data['resMsg'],
+				    duration:2000
+				});
+			}else{
+				toast.success({
+				    title:"提交成功",
+				    duration:2000
+				});
+				window.location.href = "index";
+			}
+		}
+	});
+    return false;
+}

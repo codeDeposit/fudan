@@ -1,0 +1,125 @@
+package com.jy.service.oa.impl.info;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.info.Notice;
+import com.jy.repository.oa.info.NoticeMapper;
+import com.jy.service.oa.info.NoticeService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("noticeService")
+public class NoticeServiceImpl implements NoticeService {
+
+	private NoticeMapper noticeMapper;
+
+	public NoticeMapper getNoticeMapper() {
+		return noticeMapper;
+	}
+
+	@Autowired
+	public void setNoticeMapper(NoticeMapper noticeMapper) {
+		this.noticeMapper = noticeMapper;
+	}
+
+	// 根据 标题、发布者 模糊查询
+	@Override
+	public List<Notice> get(String noticeTitle, String postName) {
+		List<Notice> notices = noticeMapper.select(noticeTitle, postName);
+		
+		for(Notice n: notices) {
+			n.setEffectiveDate1(DateStringUtil.dateToString3(n.getEffectiveDate()));
+			n.setExpirationDate1(DateStringUtil.dateToString3(n.getExpirationDate()));
+		}
+		
+		return notices;
+	}
+
+	//添加公告
+	@Override
+	public JsonInfo save(Notice notice) {
+		notice.setEffectiveDate(DateStringUtil.stringToDate3(notice.getEffectiveDate1()));
+		notice.setExpirationDate(DateStringUtil.stringToDate3(notice.getExpirationDate1()));
+		
+		JsonInfo info = new JsonInfo();
+		int result = noticeMapper.insert(notice);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public Notice getDetails(Long noticeId) {
+		Notice notice = noticeMapper.selectBy(noticeId);
+		
+		notice.setEffectiveDate1(DateStringUtil.dateToString3(notice.getEffectiveDate()));
+		notice.setExpirationDate1(DateStringUtil.dateToString3(notice.getExpirationDate()));
+		
+		return notice;
+	}
+
+	// 修改公告
+	@Override
+	public JsonInfo update(Notice notice) {
+		JsonInfo info = new JsonInfo();
+		int result = noticeMapper.update(notice);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除
+	@Override
+	public JsonInfo del(Long[] noticeId) {
+		JsonInfo info = new JsonInfo();
+		for(Long id : noticeId) {
+			noticeMapper.delete(id);
+		}
+		info.setSuccess(true);
+		return info;
+	}
+
+	@Override
+	public List<Notice> getPageList(PageBean pb, String noticeTitle,
+			String postName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Notice> pageNotices = noticeMapper.selectPageDate(firstIndex, toIndex, noticeTitle, postName);
+		for(Notice n: pageNotices) {
+			n.setEffectiveDate1(DateStringUtil.dateToString3(n.getEffectiveDate()));
+			n.setExpirationDate1(DateStringUtil.dateToString3(n.getExpirationDate()));
+		}
+		return pageNotices;
+		
+	}
+
+	// 发布公告
+	@Override
+	public JsonInfo issue(Long[] noticeId) {
+		JsonInfo info = new JsonInfo();
+		for(Long id : noticeId) {
+			noticeMapper.updateState(id);
+		}
+		info.setSuccess(true);
+		return info;
+	}
+
+}

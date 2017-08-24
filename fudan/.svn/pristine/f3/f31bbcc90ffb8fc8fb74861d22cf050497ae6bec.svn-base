@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.JobChangeMapper">
+
+	<!-- 登记调动信息 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.JobChange">
+		insert fudan_oa_job_change <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="profileId !=null ">
+				profileId = #{profileId},
+			</if>
+			<if test="profileNo !=null and profileNo !='' ">
+				profileNo = #{profileNo},
+			</if>
+			<if test="userName !=null and userName !='' ">
+				userName = #{userName},
+			</if>
+			<if test="orgJobId !=null ">
+				orgJobId = #{orgJobId},
+			</if>
+			<if test="orgJobName !=null and orgJobName !='' ">
+				orgJobName = #{orgJobName},
+			</if>
+			<if test="newJobId !=null ">
+				newJobId = #{newJobId},
+			</if>
+			<if test="newJobName !=null and newJobName !='' ">
+				newJobName = #{newJobName},
+			</if>
+			<if test="orgStandardId !=null ">
+				orgStandardId = #{orgStandardId},
+			</if>
+			<if test="newStandardId !=null ">
+				newStandardId = #{newStandardId},
+			</if>
+			<if test="orgStandardNo !=null and orgStandardNo !='' ">
+				orgStandardNo = #{orgStandardNo},
+			</if>
+			<if test="orgStandardName !=null and orgStandardName !='' ">
+				orgStandardName = #{orgStandardName},
+			</if>
+			<if test="orgDepId !=null ">
+				orgDepId = #{orgDepId},
+			</if>
+			<if test="orgDepName !=null and orgDepName !='' ">
+				orgDepName = #{orgDepName},
+			</if>
+			<if test="orgTotalMoney !=null ">
+				orgTotalMoney = #{orgTotalMoney},
+			</if>
+			<if test="newStandardNo !=null and newStandardNo !='' ">
+				newStandardNo = #{newStandardNo},
+			</if>
+			<if test="newStandardName !=null and newStandardName !='' ">
+				newStandardName = #{newStandardName},
+			</if>
+			<if test="newDepId !=null ">
+				newDepId = #{newDepId},
+			</if>
+			<if test="newDepName !=null and newDepName !='' ">
+				newDepName = #{newDepName},
+			</if>
+			<if test="newTotalMoney !=null ">
+				newTotalMoney = #{newTotalMoney},
+			</if>
+			<if test="regName !=null and regName !='' ">
+				regName = #{regName},
+			</if>
+			<if test="regTime !=null and regTime !='' ">
+				regTime = #{regTime},
+			</if>
+			<if test="status !=null ">
+				status = #{status},
+			</if>
+			<if test="memo !=null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="changeReason !=null and changeReason !='' ">
+				changeReason = #{changeReason},
+			</if>
+		</set>
+	</sql>
+	<!-- 登记调动信息 end -->
+	
+	
+	<!-- 修改调动信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.JobChange">
+		update fudan_oa_job_change <include refid="insertSQL"></include>
+		where changeId = #{changeId}
+	</update>
+	<!-- 修改调动信息 end -->
+	
+	
+	<!-- 获取调动详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.JobChange">
+		select * from fudan_oa_job_change where changeId = #{changeId}
+	</select>
+	<!-- 获取调动详细信息 end -->
+	
+	
+	<!-- 审核调动信息 start -->
+	<update id="updateReview" parameterType="com.jy.entity.oa.hrm.JobChange">
+		update fudan_oa_job_change <include refid="updateReviewSQL"></include>
+		where changeId = #{changeId}
+	</update>
+	
+	<sql id="updateReviewSQL">
+		<set>
+			<if test="checkName !=null and checkName !='' ">
+				checkName = #{checkName},
+			</if>
+			<if test="checkTime !=null ">
+				checkTime = #{checkTime},
+			</if>
+			<if test="checkOpinion !=null and checkOpinion !='' ">
+				checkOpinion = #{checkOpinion},
+			</if>
+			<if test="status !=null ">
+				status = #{status},
+			</if>
+		</set>
+	</sql>
+	<!-- 审核调动信息 end -->
+	
+	
+	<!-- 删除调动信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_job_change where changeId = #{changeId}
+	</delete>
+	<!-- 删除调动信息 end -->
+	
+	
+	<!-- 获取调动信息列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.JobChange">
+		select * from fudan_oa_job_change
+		<where>
+			<if test="profileNo !=null and profileNo !='' ">
+				and profileNo like concat("%", #{profileNo} ,"%")
+			</if>
+			<if test="userName !=null and userName !='' ">
+				and userName like concat("%", #{userName} ,"%")
+			</if>
+			<if test="orgJobName !=null and orgJobName !='' ">
+				and orgJobName like concat("%", #{orgJobName} ,"%")
+			</if>
+			<if test="newJobName !=null and newJobName !='' ">
+				and newJobName like concat("%", #{newJobName} ,"%")
+			</if>
+		</where>
+	</select>
+	<!-- 获取调动信息列表 end -->
+	
+	
+	<!-- 调动分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.JobChange">
+		select * from fudan_oa_job_change
+		<where>
+			<if test="profileNo !=null and profileNo !='' ">
+				and profileNo like concat("%", #{profileNo} ,"%")
+			</if>
+			<if test="userName !=null and userName !='' ">
+				and userName like concat("%", #{userName} ,"%")
+			</if>
+			<if test="orgJobName !=null and orgJobName !='' ">
+				and orgJobName like concat("%", #{orgJobName} ,"%")
+			</if>
+			<if test="newJobName !=null and newJobName !='' ">
+				and newJobName like concat("%", #{newJobName} ,"%")
+			</if>
+		</where>
+		order by changeId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 调动分页列表 end -->
+	
+</mapper>

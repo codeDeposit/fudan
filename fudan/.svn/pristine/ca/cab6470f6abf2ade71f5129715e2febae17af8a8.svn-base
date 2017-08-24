@@ -1,0 +1,18 @@
+package com.jy.repository.oa;
+
+import java.util.List;
+
+import com.jy.entity.oa.OARole;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface OARoleMapper extends BaseDao<OARole>{
+	
+	//根据oaroleid，得到权限
+	public String getRights(Long roleId);
+
+	// 获取所有的角色
+	public List<OARole> selectAll();
+
+}

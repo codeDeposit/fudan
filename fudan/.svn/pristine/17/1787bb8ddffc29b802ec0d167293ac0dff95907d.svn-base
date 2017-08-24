@@ -1,0 +1,94 @@
+package com.jy.entity.oa.info;
+
+import java.util.Date;
+
+import com.jy.entity.oa.Employee;
+
+public class NewsComment {
+
+	private Long commentId;
+	private String content;
+	private Date createtime;
+	private String fullname;
+	private Long newsId;
+	private String userId;
+	
+	private News news;
+	private Employee employee;
+	
+	// 用于转换日期格式
+	private String createtime1;
+
+	public String getCreatetime1() {
+		return createtime1;
+	}
+
+	public void setCreatetime1(String createtime1) {
+		this.createtime1 = createtime1;
+	}
+
+	public Long getCommentId() {
+		return commentId;
+	}
+
+	public void setCommentId(Long commentId) {
+		this.commentId = commentId;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public java.util.Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(java.util.Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public News getNews() {
+		return news;
+	}
+
+	public void setNews(News news) {
+		this.news = news;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+	
+	public Long getNewsId() {
+		return newsId;
+	}
+
+	public void setNewsId(Long newsId) {
+		this.newsId = newsId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+}

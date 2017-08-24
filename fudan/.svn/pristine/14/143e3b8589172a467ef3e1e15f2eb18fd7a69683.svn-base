@@ -1,0 +1,25 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 查询 start-->
+<form id="noticesearchform" class="form-horizontal" role="form">
+	<div class="form-group col-md-5">
+		<label for="postnamesearch" class="control-label col-md-3 text-center">发布者</label>
+		<div class="col-md-9">
+			<input id="postnamesearch" type="text" class="form-control" name="postName">
+		</div>
+	</div>
+	<div class="form-group col-md-5">
+		<label for="noticetitlesearch" class="control-label col-md-3 text-center">标题</label>
+		<div class="col-md-9">
+			<input id="noticetitlesearch" type="text" class="form-control" name="noticeTitle">
+		</div>
+	</div>
+	<input type="hidden" id="operationId" name="operation"
+		value="partrefresh">
+	<div class="form-group col-md-1">
+		<button id="noticesearchbtn" class="btn btn-success btn-sm" type="button">
+			<i class="glyphicon glyphicon-search"></i>
+		</button>
+	</div>
+</form>
+<!-- 查询 end-->

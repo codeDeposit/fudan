@@ -1,0 +1,108 @@
+package com.jy.entity.oa.personal;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class HolidayRecord {
+
+	// 全公司假期
+	private final Short IS_ALL_HOLIDAY = 1;
+	// 个人假期
+	private final Short IS_PERSONAL_HOLIDAY = 0;
+	
+	private Long recordId;
+	private Date startTime;
+	private Date endTime;
+	private String descp;
+	private Long userId;
+	private String fullname;
+	private Short isAll;
+	
+	//用于展示
+	private String startTime1;
+	private String endTime1;
+
+	public String getStartTime1() {
+		return startTime1;
+	}
+
+	public void setStartTime1(String startTime1) {
+		this.startTime1 = startTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
+	}
+
+	public Long getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(Long recordId) {
+		this.recordId = recordId;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getDescp() {
+		return descp;
+	}
+
+	public void setDescp(String descp) {
+		this.descp = descp;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public Short getIsAll() {
+		return isAll;
+	}
+
+	public void setIsAll(Short isAll) {
+		this.isAll = isAll;
+	}
+
+	public Short getIS_ALL_HOLIDAY() {
+		return IS_ALL_HOLIDAY;
+	}
+
+	public Short getIS_PERSONAL_HOLIDAY() {
+		return IS_PERSONAL_HOLIDAY;
+	}
+
+}

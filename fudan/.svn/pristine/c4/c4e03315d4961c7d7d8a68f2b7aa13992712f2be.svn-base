@@ -1,0 +1,444 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<link href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.min.js" charset="UTF-8"></script><!-- 新增 日期选择-->
+		<script type="text/javascript" src="${jypath}/pc/js/date/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script><!-- 新增  语言-->
+		<link rel="stylesheet" href="${jypath}/pc/css/page/jquery.page.css">
+		<script type="text/javascript" src="${jypath}/pc/js/page/jquery.page.js"></script>
+		<style>
+			.table>tbody>tr>td{border-top-width: 0;padding:3px;}
+			textarea[name="wordArea"] {width: 100%;height: 100%;border-radius: 4px;border-color: #ccc;}
+			.addplus,.head{padding:10px ;}
+			legend{font-size: 20px;margin-bottom: 15px;}
+			.moHead .col-sm-4,.moHead .col-sm-8{padding:0 5px;}
+			.moHead .forPadding{padding-top:6px;}
+			.pageBox{width: 100%;background-color: #efefef;border-radius: 6px;}
+			.modal-body{padding-bottom: 0;}
+			.moContent{max-height:200px;overflow: hidden;}
+			.table{margin-bottom: 5px;}
+			.glyphicon-remove{color: red;cursor: pointer;}
+		</style>
+		<!-- 局部刷新 js -->
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<script src="${jypath}/pc/js/oa/partrefresh.js"></script>
+		<script src="${jypath}/pc/js/oa/pageturning.js"></script>
+	</head>
+
+<body>
+    <div class="head">
+        <button class="btn btn-success btn-sm" onclick="add();"><i class="glyphicon glyphicon-saved"></i> 保存</button>
+        <button class="btn btn-default btn-sm" onclick="cancel();"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+    </div>
+    <div class="content">
+        <fieldset>
+            <legend>工资发放信息</legend>
+            <form id="addform">
+            <input id="operation" value="${operation}" type="hidden">
+            <input name="recordId" value="${salaryPayoff.recordId}" type="hidden">
+            <table class="table">
+            	<tr>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                        <input class="form-control" size="16" name="startTime"  type="text" value="${salaryPayoff.startTime1}" readonly required aria-required="true">
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                        <input class="form-control" size="16" name="startTime"  type="text" readonly required aria-required="true">
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                    </div>
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">结束时间 </label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                        <input class="form-control" size="16" name="endTime"  type="text" value="${salaryPayoff.endTime1}"  readonly required aria-required="true">
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                	<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                        <input class="form-control" size="16" name="endTime"  type="text" value="" readonly required aria-required="true">
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+				                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                    </div>
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table class="table">
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">档案编号</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" id="profileno" name="profileNo" readonly="readonly" class="form-control" value="${salaryPayoff.profileNo}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" id="profileno" readonly="readonly" name="profileNo" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-info" onclick="getTableData();"><i class="glyphicon glyphicon-plus"></i> 选择档案</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">员工姓名</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" id="fullname" name="fullname" readonly="readonly" class="form-control" value="${salaryPayoff.fullname}">
+                                	<input type="hidden" id="userId" name="userId">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" id="fullname" name="fullname" readonly="readonly" class="form-control">
+                                	<input type="hidden" id="userId" name="userId">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">身份证号</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" id="idcard" name="idNo" readonly="readonly" class="form-control" value="${salaryPayoff.idNo}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" id="idcard" name="idNo" readonly="readonly" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                	<td>
+                		<div class="form-group">
+                            <label class="col-sm-2 control-label">薪标金额</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" id="standardmoney" name="standAmount" readonly="readonly" class="form-control" value="${salaryPayoff.standAmount}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" id="standardmoney" name="standAmount" readonly="readonly" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                	</td>
+                	<td>
+                		<div class="form-group">
+                            <label class="col-sm-2 control-label">奖励金额</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" name="encourageAmount" class="form-control" value="${salaryPayoff.encourageAmount}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" name="encourageAmount" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                	</td>
+                </tr>
+                <tr>
+                	<td>
+                		<div class="form-group">
+                            <label class="col-sm-2 control-label">扣除工资</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" name="deductAmount" class="form-control" value="${salaryPayoff.deductAmount}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" name="deductAmount" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                	</td>
+                	<td>
+                		<div class="form-group">
+                            <label class="col-sm-2 control-label">效绩工资</label>
+                            <div class="col-sm-10">
+                            	<c:choose>
+                            	<c:when test="${operation == 'update' }">
+                                	<input type="text" name="achieveAmount" class="form-control" value="${salaryPayoff.achieveAmount}">
+                                </c:when>
+                                <c:otherwise>
+                                	<input type="text" name="achieveAmount" class="form-control">
+                                </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                	</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label class="col-sm-1 control-label">奖励描述</label>
+                        <div class="col-sm-11">
+                        	<c:choose>
+                        	<c:when test="${operation == 'update' }">
+                            	<textarea name="encourageDesc" class="form-control" rows="3">${salaryPayoff.encourageDesc}</textarea>
+                            </c:when>
+                            <c:otherwise>
+                            	<textarea name="encourageDesc" class="form-control" rows="3"></textarea>
+                            </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label class="col-sm-1 control-label">扣除描述</label>
+                        <div class="col-sm-11">
+                        	<c:choose>
+                        	<c:when test="${operation == 'update' }">
+                            	<textarea name="deductDesc" class="form-control" rows="3">${salaryPayoff.deductDesc}</textarea>
+                            </c:when>
+                            <c:otherwise>
+                            	<textarea name="deductDesc" class="form-control" rows="3"></textarea>
+                            </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label class="col-sm-1 control-label">备注</label>
+                        <div class="col-sm-11">
+                        	<c:choose>
+                        	<c:when test="${operation == 'update' }">
+                            	<textarea name="memo" class="form-control" rows="3">${salaryPayoff.memo}</textarea>
+                            </c:when>
+                            <c:otherwise>
+                            	<textarea name="memo" class="form-control" rows="3"></textarea>
+                            </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </td>
+                </tr>
+                </form>
+            </table>
+        </fieldset>	
+    </div>
+    <!-- 模态窗口 -->
+    <div class="modal fade" id="myAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="padding:10px;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h5 class="modal-title">档案选择</h5>
+			</div>
+			<div class="modal-body">
+				<div class="moHead">
+					<form action="">
+						<table class="table">
+							<tr>
+								<td style="width:70px;padding-top:9px;">查询条件:</td>
+								<td>
+									<div class="form-group">
+			                            <label class="col-sm-2 control-label forPadding ">姓名</label>
+			                            <div class="col-sm-10 ">
+			                                <input type="text" id="standandNames" class="form-control">
+			                            </div>
+			                        </div>
+								</td>
+								<td>
+									<button type="button" class="btn btn-success btn-sm" onclick="getTableData();">
+										<i class="glyphicon glyphicon-search"></i>
+									</button>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="moContent">
+					<h5 class="modal-title" id="myModalLabel">档案列表</h5>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="text-center"><input type="checkbox" id="atchoose" onclick="cheeceAll()"></th>
+								<th class="text-center">序号</th>
+								<th class="text-center">档案编号</th>
+								<th class="text-center">员工姓名</th>
+							</tr>
+						</thead>
+						<tbody class="checkTable">
+							<%--
+								<tr>
+									<td class="text-center"><input type="checkbox"></td>
+									<td class="text-center">1</td>
+									<td class="text-center">名称</td>
+									<td class="text-center">800</td>
+								</tr>
+							--%>
+						</tbody>
+					</table>
+				</div>
+				<div class="pageBox">
+					<div id="page"></div>
+				</div>
+			</div>
+			<div class="modal-footer" style="padding:10px;">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-success checkSure">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+    <script type="text/javascript">
+    function cheeceAll(){
+        if($('#atchoose').is(":checked")){
+           $('.moContent').find('input[type="checkbox"]').prop('checked', true);
+        }else{
+            $('.moContent').find('input[type="checkbox"]').prop('checked', false);
+        }
+    }
+		$(function(){
+			// 初始化日期组件
+		    $('.form_date').datetimepicker({
+		        language: 'zh-CN',
+		        weekStart: 1,
+		        todayBtn: 1,
+		        autoclose: 1,
+		        todayHighlight: 1,
+		        startView: 2,
+		        minView: 2,
+		        forceParse: 0,
+		    });
+			
+			//分页设置
+			$("#page").Page({
+	          	totalPages: ${pageCount},//分页总数
+	          	liNums: 3,//分页的数字按钮数(建议取奇数)
+	          	activeClass: 'activP', //active 类样式定义
+	          	callBack : function(page){
+	          		getTableData(page);
+	          	}
+	      	});
+	      	//
+	      	$('.checkSure').on('click',function(){
+	      		$('.checkTable input[type="checkbox"').each(function(index, el) {
+	      			if($(this).is(":checked")){
+	      				var id = $(this).parent().parent().attr("id");
+	      				var profileno=$(this).parent().parent().find('td').eq(2).html();
+	      				var name=$(this).parent().parent().find('td').eq(3).html();
+	      				var idcard=$(this).parent().parent().find('td').eq(2).attr("id");
+	      				var standardmoney=$(this).parent().parent().find('td').eq(3).attr("id");
+	      				
+	      				$("#userId").val(id);
+	      				$("#profileno").val(profileno);
+	      				$("#fullname").val(name);
+	      				$("#idcard").val(idcard);
+	      				$("#standardmoney").val(standardmoney);
+	      			}
+	      		});
+	      		$('.checkTable').find('input[type="checkbox"]').prop('checked', false);
+	      		$('#myAddModal').modal('hide');
+	      	})
+		});
+		
+		// 获取列表数据
+		function getTableData(page) {
+			if(page == null) page = 1;
+			var standandName = $("#standandNames").val();
+			var pageCount = null;
+			$.ajax({
+				type: "post",
+				url : jypath+"/oa/empprofile/listreviewed",
+				data: "fullname="+standandName+"&pageNos="+page,
+				success: function(data) {
+					var obj = eval('('+data+')');
+					var salaryItems = obj.salaryItems;
+					var html = "";
+					var count = 1;
+					if(obj != null) {
+						for(var index in salaryItems) {
+							var salaryItem = salaryItems[index];
+							html += "<tr id='"+salaryItem.salaryItemId+"'><td class='text-center'><input type='checkbox'></td>";
+							html += "<td class='text-center'>"+count+"</td>";
+							html += "<td id='"+salaryItem.idcard+"' class='text-center'>"+salaryItem.itemName+"</td>";
+							html += "<td id='"+salaryItem.money+"' class='text-center'>"+salaryItem.defaultVal+"</td>";
+							count ++;
+						}
+					}
+					$(".checkTable").html(html);
+					$("#myAddModal").modal("show");
+				}
+			});
+		}
+		
+		function add() {
+			var data = $("#addform").serialize();
+			var operation = $("#operation").val();
+			if(operation == '') {
+				$.ajax({
+					type: "post",
+					url : jypath+"/oa/salarypayoff/add",
+					data: data,
+					success: function(data) {
+						window.location.href= jypath+"/oa/salarypayoff/list";
+					}
+				});
+			}else if(operation == 'update') {
+				$.ajax({
+					type: "post",
+					url : jypath+"/oa/salarypayoff/edit",
+					data: data,
+					success: function(data) {
+						window.location.href= jypath+"/oa/salarypayoff/list";
+					}
+				});
+			}
+		}
+		
+		function cancel() {
+			window.location.href= jypath+"/oa/salarypayoff/list";
+		}
+		
+	</script>
+</body>
+
+</html>

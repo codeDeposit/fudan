@@ -1,0 +1,27 @@
+package com.jy.repository.oa.workflow;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ApproveMapper {
+
+	/**
+	 * 添加审核记录
+	 * @param approve
+	 * @return
+	 */
+	int insert(Approve approve);
+
+	/**
+	 * 根据applyId获取所有审核信息
+	 * @param applyId
+	 * @return
+	 */
+	List<Approve> selectBy(@Param("applyId")String applyId);
+
+}

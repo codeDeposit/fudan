@@ -1,0 +1,221 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="Modal_contract_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header headBg">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="myModalLabel">新增合同</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal aForm" enctype="multipart/form-data" role="form" id="Form_contract_add" onsubmit="return fContractAdd()">
+					<input type="hidden" id="contract_add_salesJson" name="salesJson">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">所属客户</label>
+						<input type="hidden" id="contract_add_customerId" name="customerId">
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="contract_add_company" name="company" maxlength="255" placeholder="所属客户" readonly required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">合同名称</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" name="name" maxlength="255" placeholder="合同名称"  required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">合同编号</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="number" name="number" maxlength="255" placeholder="合同编号" readonly required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">合同金额</label>
+						<div class="col-sm-10">
+							<div class="input-group">
+								<input type="text" class="form-control" id="contract_add_amount" name="amount" maxlength="9" placeholder="合同金额" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</label>
+						<div class="col-sm-10">
+							<input type="file" class="form-control" id="attachments2" name="attachments2" maxlength="255" placeholder="附件"  required>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							 &nbsp;&nbsp;<span class="label label-info" >销售奖金 </span>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-primary">销&nbsp;&nbsp;售&nbsp;&nbsp;1&nbsp;</label>
+						<div class="col-sm-5">
+							<input class="form-control" type="text" id="salesPeople1" onclick="fDefault(1)" data-toggle="modal" data-target="#Modal_emplayee_listxx" name="salesPeople" placeholder="选择销售人" onfocus="this.blur()" required>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" class="form-control" id="salesPrice1" name="salesPrice" maxlength="255" placeholder="0.0" required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-primary">销&nbsp;&nbsp;售&nbsp;&nbsp;2&nbsp;</label>
+						<div class="col-sm-5">
+							<input class="form-control" id="salesPeople2" name="salesPeople" onclick="fDefault(2)" data-toggle="modal" data-target="#Modal_emplayee_listxx" placeholder="选择销售人" onfocus="this.blur()" required>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" class="form-control" id="salesPrice2" name="salesPrice" maxlength="255" placeholder="0.0" required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-primary">销&nbsp;&nbsp;售&nbsp;&nbsp;3&nbsp;</label>
+						<div class="col-sm-5">
+							<input class="form-control" id="salesPeople3" name="salesPeople" onclick="fDefault(3)" data-toggle="modal" data-target="#Modal_emplayee_listxx" placeholder="选择销售人" onfocus="this.blur()" required>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" class="form-control" id="salesPrice3" name="salesPrice" maxlength="255" placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>
+					<div id="salesArea">
+						<!-- 销售人员增加打印区域 -->
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12 text-center">
+							<button type="button" class="btn btn-success btn-sm" onclick="salesAdd()">
+								<i class="glyphicon glyphicon-plus"></i>增加
+							</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-danger">技术提成</label>
+						<div class="col-sm-10">
+							<div class="input-group">
+								<input type="text" class="form-control" id="percentage" name="percentage" maxlength="9" placeholder="0.0" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<div class="col-sm-12">
+							 &nbsp;&nbsp;<span class="label label-info">付款计划</span>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-warning">第&nbsp;&nbsp;一&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time1" name="time1" type="text" placeholder="第一次付款日期" onfocus="this.blur()" required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="price1" name="price1" maxlength="255" placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-warning">第&nbsp;&nbsp;二&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time2" name="time2" type="text" placeholder="第二次付款日期" onfocus="this.blur()" required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="price2" name="price2" maxlength="255" placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label class="col-sm-2 control-label text-warning">第&nbsp;&nbsp;三&nbsp;&nbsp;次&nbsp;</label>
+						<div class="col-sm-5">
+							<div class="input-group date form_date" data-date-format="yyyy-MM-dd">
+								<input class="form-control" id="time3" name="time3" type="text" placeholder="第三次付款日期" onfocus="this.blur()" required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<input type="text" class="form-control" id="price3" name="price3" maxlength="255" placeholder="0.0"  required>
+								<span class="input-group-addon" id="basic-addon">元</span>
+							</div>
+						</div>
+					</div>    
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+						<button type="submit" class="btn btn-success">
+							保存
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<%@ include file="../../org/emplayee/list.jsp"%>
+<script>
+	$(document).ready(function(){
+		var lengStr = document.getElementsByName('salesPeople');
+		/* for(var i=1;i<(lengStr.length+1);i++){ */
+		/* } */
+	});
+	function getDate(){
+		var count = $('.contract_list_tr').length;
+		var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + month + strDate;
+        var number = "HT-" + currentdate.toString() + "-" + (count+1);
+		$("#number").val(number);
+	}
+	function salesAdd(){
+		var number1 = document.getElementsByName('salesPeople').length;
+		var number = (number1 + 1);
+		document.getElementById('salesArea').innerHTML += '<div class="form-group" id="salesArea'+ number +'">'
+						+'<label class="col-sm-2 control-label text-primary">销&nbsp;&nbsp;售&nbsp;&nbsp;'+ number +'&nbsp;</label>'
+						+'<div class="col-sm-5">'
+							+'<input class="form-control" id="salesPeople'+ number +'" name="salesPeople" data-toggle="modal" onclick="fDefault('+ number +')" data-target="#Modal_emplayee_listxx" placeholder="选择销售人" onfocus="this.blur()" required>'
+						+'</div>'
+						+'<div class="col-sm-4">'
+							+'<div class="input-group">'
+								+'<input type="text" class="form-control" id="salesPrice"'+ number +' name="salesPrice" maxlength="255" placeholder="0.0" required>'
+								+'<span class="input-group-addon" id="basic-addon">元</span>'
+							+'</div>'
+						+'</div>'
+						+'<label class="col-sm-1 control-label text-danger text-center"><a href="javascript:void(0)" onclick="salesDelete('+ number +')"><i class="glyphicon glyphicon-minus text-danger"></i></a></label>'
+					+'</div>';
+		salesData(number);
+	}
+	function salesDelete(param){
+		$("#salesArea"+param).remove();
+	}
+</script>

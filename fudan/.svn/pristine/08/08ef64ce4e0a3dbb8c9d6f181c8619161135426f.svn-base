@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.BookBorRetMapper">
+
+	<!-- 新增借阅记录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.BookBorRet">
+		insert fudan_oa_book_bor_ret <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="bookSnId != null">
+				bookSnId = #{bookSnId},
+			</if>
+			<if test="borrowTime != null">
+				borrowTime = #{borrowTime},
+			</if>
+			<if test="returnTime != null">
+				returnTime = #{returnTime},
+			</if>
+			<if test="lastReturnTime != null">
+				lastReturnTime = #{lastReturnTime},
+			</if>
+			<if test="borrowIsbn != null and borrowIsbn != ''">
+				borrowIsbn = #{borrowIsbn},
+			</if>
+			<if test="bookName != null and bookName != ''">
+				bookName = #{bookName},
+			</if>
+			<if test="registerName != null and registerName != ''">
+				registerName = #{registerName},
+			</if>
+			<if test="fullname != null and fullname != ''">
+				fullname = #{fullname},
+			</if>
+		</set>
+	</sql>
+	<!-- 新增借阅记录 end -->
+	
+	
+	<!-- 获取记录详细信息  start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.admin.BookBorRet">
+		select * from fudan_oa_book_bor_ret where recordId = #{recordId}
+	</select>
+	<!-- 获取记录详细信息  end -->
+	
+	
+	<!-- 修改记录信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.BookBorRet">
+		update fudan_oa_book_bor_ret <include refid="insertSQL"></include>
+		where recordId = #{recordId}
+	
+	</update>
+	<!-- 修改记录信息 end -->
+	
+	
+	<!-- 获取借阅记录列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.admin.BookBorRet">
+		select * from fudan_oa_book_bor_ret where bookSnId in (select bookSnId from fudan_oa_book_sn where status = 1)
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%", #{bookName},"%")
+		</if>
+		<if test="borrowIsbn != null and borrowIsbn != '' ">
+			and borrowIsbn like concat("%", #{borrowIsbn},"%")
+		</if>
+	</select>
+	<!-- 获取借阅记录列表 end -->
+	
+	
+	<!-- 归还图书 start -->
+	<update id="updateLastReturnTime" parameterType="com.jy.entity.oa.admin.BookBorRet">
+		update fudan_oa_book_bor_ret set lastReturnTime = #{lastReturnTime} where recordId = #{recordId}
+	</update>
+	<!-- 归还图书 end -->
+	
+	
+	<!-- 归还图书列表 start -->
+	<select id="selectRet" resultType="com.jy.entity.oa.admin.BookBorRet">
+		select * from fudan_oa_book_bor_ret where bookSnId in (select bookSnId from fudan_oa_book_sn where status = 0)
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%", #{bookName},"%")
+		</if>
+		<if test="borrowIsbn != null and borrowIsbn != '' ">
+			and borrowIsbn like concat("%", #{borrowIsbn},"%")
+		</if>
+	</select>
+	<!-- 归还图书列表 end -->
+	
+	<!-- 借阅记录分页列表 start -->
+	<select id="selectBorPageData" resultType="com.jy.entity.oa.admin.BookBorRet">
+		select * from fudan_oa_book_bor_ret where bookSnId in (select bookSnId from fudan_oa_book_sn where status = 1)
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%", #{bookName},"%")
+		</if>
+		<if test="borrowIsbn != null and borrowIsbn != '' ">
+			and borrowIsbn like concat("%", #{borrowIsbn},"%")
+		</if>
+		order by recordId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 借阅记录分页列表 end -->
+	
+	<!-- 分页归还列表 start -->
+	<select id="selectRetPageData" resultType="com.jy.entity.oa.admin.BookBorRet">
+		select * from fudan_oa_book_bor_ret where bookSnId in (select bookSnId from fudan_oa_book_sn where status = 0)
+		<if test="bookName != null and bookName != '' ">
+			and bookName like concat("%", #{bookName},"%")
+		</if>
+		<if test="borrowIsbn != null and borrowIsbn != '' ">
+			and borrowIsbn like concat("%", #{borrowIsbn},"%")
+		</if>
+		order by recordId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 分页归还列表 end -->
+	
+</mapper>

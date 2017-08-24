@@ -1,0 +1,31 @@
+package com.jy.service.oa.archive;
+
+import java.util.List;
+
+import com.jy.entity.oa.archive.ArchivesType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface ArchivesTypeService {
+
+	// 添加分类
+	JsonInfo save(ArchivesType archivesType);
+
+	// 修改分类信息
+	JsonInfo update(ArchivesType archivesType);
+
+	// 删除分类
+	JsonInfo delete(long typeId);
+	
+	// 根据Id号获取分类详细信息
+	ArchivesType getBy(long typeId);
+
+	// 获取所有公文类别
+	List<ArchivesType> getAll();
+
+	// 分页显示列表
+	List<ArchivesType> getPageList(PageBean pb);
+	
+}
+
+

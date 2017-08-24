@@ -1,0 +1,118 @@
+package com.jy.entity.oa.archive;
+
+import java.util.Date;
+
+import com.jy.entity.oa.publics.FileAttach;
+
+public class ArchivesDoc {
+
+	private Long docId;
+	private String creator;
+	private Long creatorId;
+	private Long menderId;
+	private String mender;
+	private String docName;
+	private Short docStatus;
+	private Integer curVersion;
+	private String docPath;
+	private Date updatetime;
+	private Date createtime;
+	private FileAttach fileAttach;
+
+	public Long getDocId() {
+		return docId;
+	}
+
+	public void setDocId(Long docId) {
+		this.docId = docId;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public Long getCreatorId() {
+		return creatorId;
+	}
+
+	public void setCreatorId(Long creatorId) {
+		this.creatorId = creatorId;
+	}
+
+	public Long getMenderId() {
+		return menderId;
+	}
+
+	public void setMenderId(Long menderId) {
+		this.menderId = menderId;
+	}
+
+	public String getMender() {
+		return mender;
+	}
+
+	public void setMender(String mender) {
+		this.mender = mender;
+	}
+
+	public String getDocName() {
+		return docName;
+	}
+
+	public void setDocName(String docName) {
+		this.docName = docName;
+	}
+
+	public Short getDocStatus() {
+		return docStatus;
+	}
+
+	public void setDocStatus(Short docStatus) {
+		this.docStatus = docStatus;
+	}
+
+	public Integer getCurVersion() {
+		return curVersion;
+	}
+
+	public void setCurVersion(Integer curVersion) {
+		this.curVersion = curVersion;
+	}
+
+	public String getDocPath() {
+		return docPath;
+	}
+
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
+	}
+
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public FileAttach getFileAttach() {
+		return fileAttach;
+	}
+
+	public void setFileAttach(FileAttach fileAttach) {
+		this.fileAttach = fileAttach;
+	}
+
+}

@@ -1,0 +1,67 @@
+package com.jy.controller.oa.publics;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.entity.system.org.Org;
+import com.jy.service.system.org.OrgService;
+
+@Controller
+@RequestMapping("/org")
+public class OrgController {
+	
+	private OrgService orgService;
+
+	public OrgService getOrgService() {
+		return orgService;
+	}
+
+	@Resource(name="OrgService")
+	public void setOrgService(OrgService orgService) {
+		this.orgService = orgService;
+	}
+	
+	/**
+	 * 获取所有的组织：id,name；组织成菜单，打印到页面
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public String getAll() {
+		List<Org> orgs = orgService.getAll();
+		StringBuilder sbd = new StringBuilder();
+		for(Org o : orgs) {
+			sbd.append("<li>");
+			sbd.append("<a href='#' onclick='getEmp("+o.getId()+")' class='aHover sIndent'>");
+			sbd.append("<i class='glyphicon glyphicon-file'></i>&nbsp;"+ o.getName());
+			sbd.append("</a>");
+			sbd.append("</li>");
+		}
+		return sbd.toString();
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

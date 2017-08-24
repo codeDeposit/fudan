@@ -1,0 +1,32 @@
+package com.jy.service.oa.document;
+
+import java.util.List;
+
+import com.jy.entity.oa.document.DocFolder;
+import com.jy.entity.oa.document.DocFolderVO;
+import com.jy.task.utils.JsonInfo;
+
+
+public interface DocFolderService {
+
+	// 添加目录
+	JsonInfo save(DocFolder docFolder);
+
+	// 获取目录详细信息
+	DocFolder getInfo(Long folderId);
+
+	// 更改目录名称
+	JsonInfo update(DocFolder docFolder);
+
+	//删除目录
+	JsonInfo delete(Long folderId);
+
+	List<DocFolderVO> getAll(String userId, String folderName, Short isShared);
+
+	// 文件夹转移
+	JsonInfo transfer(Long fatherFolderId, Long childFolderId);
+
+	// 获取某个所有的文件夹列表
+	List<DocFolder> getAllByUserId(String accountId);
+
+}

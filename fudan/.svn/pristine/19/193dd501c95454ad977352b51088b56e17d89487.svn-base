@@ -1,0 +1,51 @@
+package com.jy.service.oa.communicate;
+
+import java.util.List;
+
+import com.jy.entity.oa.communicate.MailBox;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface MailBoxService {
+	
+	/**
+	 * 删除邮件
+	 * @return
+	 */
+	JsonInfo delete(Long boxId);
+
+	/**
+	 * 查找邮箱下的邮件
+	 * @return
+	 */
+	List<MailBox> get(String subject, String sender, String recipientNames,
+			Long folderId);
+
+	/**
+	 * 根据boxid查询mailbox
+	 * @param boxId
+	 * @return
+	 */
+	MailBox getBy(Long boxId);
+
+	/**
+	 * 邮件移至其他邮箱目录
+	 * @param boxId
+	 * @param folderId
+	 * @return
+	 */
+	JsonInfo transfer(Long boxId, Long folderId);
+
+	/**
+	 * 邮件分页列表
+	 * @param pb
+	 * @param subject
+	 * @param sender
+	 * @param recipientNames
+	 * @param folderId
+	 * @return
+	 */
+	List<MailBox> getPageList(PageBean pb, String subject, String sender,
+			String recipientNames, Long folderId);
+
+}

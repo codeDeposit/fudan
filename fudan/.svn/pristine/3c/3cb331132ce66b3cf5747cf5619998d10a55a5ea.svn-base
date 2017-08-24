@@ -1,0 +1,145 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+
+public class MailBox {
+	
+	// 常量: 状态值
+	private final static Short DEL_FLAG = 1;
+	private final static Short UNDEL_FLAG = 0;
+	private final static Short READ_FLAG = 1;
+	private final static Short UNREAD_FLAG = 0;
+	private final static Short REPLY_FLAG = 1;
+	private final static Short UNREPLY_FLAG = 0;
+
+	private Long boxId;
+	private Long mailId;
+	private Long folderId;
+	private String userId;
+	private Date sendTime;
+	private Short delFlag;
+	private Short readFlag;
+	private Short replyFlag;
+	private String note;
+	
+	private Mail mail;
+	
+	private String sendTime1;
+	
+	public String getSendTime1() {
+		return sendTime1;
+	}
+
+	public void setSendTime1(String sendTime1) {
+		this.sendTime1 = sendTime1;
+	}
+
+	public Short getReplyFlag() {
+		return this.replyFlag;
+	}
+	
+	public static Short getUndelFlag() {
+		return UNDEL_FLAG;
+	}
+
+	public Mail getMail() {
+		return mail;
+	}
+
+	public void setMail(Mail mail) {
+		this.mail = mail;
+	}
+
+	public Long getBoxId() {
+		return boxId;
+	}
+
+	public void setBoxId(Long boxId) {
+		this.boxId = boxId;
+	}
+
+	public Long getMailId() {
+		return mailId;
+	}
+
+	public void setMailId(Long mailId) {
+		this.mailId = mailId;
+	}
+
+	public Long getFolderId() {
+		return folderId;
+	}
+
+	public void setFolderId(Long folderId) {
+		this.folderId = folderId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public Short getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(Short delFlag) {
+		this.delFlag = delFlag;
+	}
+
+	public Short getReadFlag() {
+		return readFlag;
+	}
+
+	public void setReadFlag(Short readFlag) {
+		this.readFlag = readFlag;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+	
+	public void setReplyFlag(Short replyFlag) {
+		this.replyFlag = replyFlag;
+	}
+
+	public static Short getDelFalg() {
+		return DEL_FLAG;
+	}	
+	
+	public static Short getUndelFalg() {
+		return UNDEL_FLAG;
+	}
+
+	public static Short getReadFalg() {
+		return READ_FLAG;
+	}
+
+	public static Short getUnreadFlag() {
+		return UNREAD_FLAG;
+	}
+
+	public static Short getReply_Flag() {
+		return REPLY_FLAG;
+	}
+
+	public static Short getUnreplyFlag() {
+		return UNREPLY_FLAG;
+	}
+
+}

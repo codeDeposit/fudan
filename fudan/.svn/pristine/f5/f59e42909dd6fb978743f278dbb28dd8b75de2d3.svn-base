@@ -1,0 +1,26 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.CarType;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface CarTypeMapper {
+
+	// 添加车类型
+	int insert(CarType carType);
+
+	// 获取详细信息
+	CarType selectInfoBy(Integer typeId);
+
+	// 修改信息
+	int update(CarType carType);
+
+	// 批量删除
+	int delete(Integer typeId);
+
+	// 获取车类型列表
+	List<CarType> selectAll();
+
+}

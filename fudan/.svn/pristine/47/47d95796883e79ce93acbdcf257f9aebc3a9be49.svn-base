@@ -1,0 +1,22 @@
+package com.jy.service.oa.admin;
+
+import java.util.Date;
+import java.util.List;
+
+import com.jy.entity.oa.admin.DepreRecord;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface DepreRecordService {
+
+	//折旧记录总数
+	List<DepreRecord> get(String fixedAssetName, Date startDate, Date endDate);
+
+	//折旧记录分页列表
+	List<DepreRecord> getPageList(PageBean pb, String fixedAssetName,
+			Date startDate, Date endDate);
+
+	// 资产开始折旧计算
+	JsonInfo depreciate(Long assetsId);
+
+}

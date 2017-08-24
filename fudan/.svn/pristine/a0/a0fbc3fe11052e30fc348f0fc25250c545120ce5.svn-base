@@ -1,0 +1,56 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+        <!-- 模拟态窗口 start-->
+        <div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title text-center" id="newsAddModalLabeledit">薪酬项目详细信息</h4>
+            </div>
+                <div class="modal-body">
+                    <form id="booktypeaddformedit" class="form-horizontal aForm" role="form" >
+                    	<input type="hidden" value="${salaryItem.salaryItemId }" name="salaryItemId">
+                    	<div class="form-group">
+				  			<label class="control-label col-md-2 col-sm-2">薪酬项目名称</label>
+				  			<div class="col-md-10 col-sm-10">
+				            	<input name="itemName" type="text" class="form-control" value="${salaryItem.itemName }" aria-required="true">
+				            </div>
+				        </div>
+			  			<div class="form-group">
+				  			<label class="control-label col-md-2 col-sm-2">缺省值</label>
+				  			<div class="col-md-10 col-sm-10">
+				            	<input name="defaultVal" type="text" class="form-control" value="${salaryItem.defaultVal }" aria-required="true">
+				            </div>
+				        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <c:if test="${operation == 'update' }">
+                            	<button id="booktypeaddbtnedit" type="button" class="btn btn-success">修改</button>
+                            </c:if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- 模拟态窗口 end -->
+<script type="text/javascript">
+	$(function() {
+		$("#infoorupdate").modal("show");
+	})
+   	// 修改薪酬项目
+   	$("#booktypeaddbtnedit").click(function() {
+   		$.ajax({
+			type: "post",
+   			url:jypath + "/oa/salaryitem/edit",
+   			data: $("#booktypeaddformedit").serialize(),
+   			success : function(html) {
+				$("#booktypeaddbtn").attr("data-dismiss", "modal");
+				fuShowSuccess();
+   				refresh();
+   			}
+   		});
+   	});
+</script>

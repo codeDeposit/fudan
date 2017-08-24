@@ -1,0 +1,52 @@
+package com.jy.service.oa.impl.workflow;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.workflow.Approve;
+import com.jy.repository.oa.workflow.ApproveMapper;
+import com.jy.service.oa.workflow.ApproveService;
+import com.jy.task.utils.JsonInfo;
+
+@Service("approveService")
+public class ApproveServiceImpl implements ApproveService {
+	
+	private ApproveMapper approveMapper;
+
+	public ApproveMapper getApproveMapper() {
+		return approveMapper;
+	}
+
+	@Autowired
+	public void setApproveMapper(ApproveMapper approveMapper) {
+		this.approveMapper = approveMapper;
+	}
+
+	/**
+	 * 添加审核记录
+	 */
+	@Override
+	public JsonInfo save(Approve approve) {
+		JsonInfo info = new JsonInfo();
+		int result = approveMapper.insert(approve);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/**
+	 * 根据applyId获取所有审核信息
+	 */
+	@Override
+	public List<Approve> getBy(String applyId) {
+		List<Approve> approves = approveMapper.selectBy(applyId);
+		return approves;
+	}
+	
+
+}

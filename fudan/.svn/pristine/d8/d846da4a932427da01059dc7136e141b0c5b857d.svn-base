@@ -1,0 +1,40 @@
+package com.jy.repository.oa.hrm;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.hrm.StandSalary;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface StandSalaryMapper {
+
+	// 添加薪酬标准
+	int insert(StandSalary standSalary);
+
+	// 获取最大的id号
+	Long selectMaxId();
+
+	// 获取薪酬标准详细信息
+	StandSalary selectInfoBy(Long standardId);
+
+	// 修改薪酬标准信息
+	int update(StandSalary standSalary);
+
+	// 获取薪酬列表
+	List<StandSalary> select(@Param("standardNo") String standardNo, @Param("standardName") String standardName,
+			@Param("status") Short status);
+
+	// 删除薪酬标准
+	int delete(Long standardId);
+
+	// 审核薪酬标准
+	int updateReview(StandSalary standSalary);
+
+	// 薪酬标准分页列表
+	List<StandSalary> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("standardNo") String standardNo, @Param("standardName") String standardName,
+			@Param("status") Short status);
+
+}

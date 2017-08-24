@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.PersonDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Person" id="ResultMap"></resultMap>
+	
+	<select id="listLimitData" parameterType="Integer" resultMap="ResultMap">
+		select * from app_person where 1=1 
+		ORDER BY personId DESC LIMIT #{page},#{num};
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(*) from app_person where 1=1;
+	</select>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_person where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="personId != 0">  
+		    AND personId = #{personId}
+		</if>  
+	</sql>
+	
+	<insert id="insert">
+		insert into app_person (personId,name,phone,sex,address,age,addtime,num,picture) 
+			values 
+		(#{personId},#{name},#{phone},#{sex},#{address},#{age},curdate(),#{num},#{picture})
+	</insert>
+	
+	<update id="update">
+		update app_person <include refid="updateSql"></include> where personId = #{personId}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != '' and name != null">  
+			    name = #{name},
+			</if>
+			<if test="phone != '' and phone != null">  
+			    phone = #{phone},
+			</if>
+			<if test="sex != '' and phone != null">  
+			    sex = #{sex},
+			</if>
+			<if test="address != '' and address != null">  
+			    address = #{address},
+			</if>
+			<if test="age != 0">  
+			    age = #{age},
+			</if>
+			<if test="num != 0">  
+			    num = #{num},
+			</if>
+			<if test="picture != '' and picture != null">  
+			    picture = #{picture},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_person where 
+		<if test="personId != 0">
+			personId = #{personId}
+		</if>
+	</delete>
+</mapper>

@@ -1,0 +1,29 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.Car;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface CarService {
+
+	// 添加车辆
+	JsonInfo save(Car car);
+
+	// 获取车的详细信息
+	Car getInfoBy(Long carId);
+
+	// 修改车的信息
+	JsonInfo update(Car car);
+
+	// 批量删除
+	JsonInfo update(Long[] carId);
+
+	// 获取车列表
+	List<Car> get(Car car);
+
+	// 车分页列表
+	List<Car> getPageList(PageBean pb, Car car);
+
+}

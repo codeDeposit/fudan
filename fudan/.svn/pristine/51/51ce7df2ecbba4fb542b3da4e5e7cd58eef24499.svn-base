@@ -1,0 +1,84 @@
+package com.jy.entity.oa.admin;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class CarRepair {
+
+	private Long repairId;
+	private Date repairDate;
+	private String reason;
+	private String executant;
+	private String notes;
+	private String repairType;
+	private BigDecimal fee;
+	private Long carId;
+
+	public Long getRepairId() {
+		return repairId;
+	}
+
+	public void setRepairId(Long repairId) {
+		this.repairId = repairId;
+	}
+
+	public Date getRepairDate() {
+		return repairDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-DD")
+	public void setRepairDate(Date repairDate) {
+		this.repairDate = repairDate;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getExecutant() {
+		return executant;
+	}
+
+	public void setExecutant(String executant) {
+		this.executant = executant;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getRepairType() {
+		return repairType;
+	}
+
+	public void setRepairType(String repairType) {
+		this.repairType = repairType;
+	}
+
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
+	}
+
+	public Long getCarId() {
+		return carId;
+	}
+
+	public void setCarId(Long carId) {
+		this.carId = carId;
+	}
+
+}

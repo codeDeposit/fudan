@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.personal.HolidayRecordMapper">
+
+	<!-- 添加假期设置 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.personal.HolidayRecord">
+		insert fudan_oa_holiday_record <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="startTime !=null ">
+				startTime = #{startTime},
+			</if>
+			<if test="endTime !=null ">
+				endTime = #{endTime},
+			</if>
+			<if test="descp !=null and descp !='' ">
+				descp = #{descp},
+			</if>
+			<if test="userId !=null ">
+				userId = #{userId},
+			</if>
+			<if test="fullname !=null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="isAll !=null ">
+				isAll = #{isAll},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加假期设置 end -->
+	
+	
+	<!-- 修改假期设置 start -->
+	<update id="update" parameterType="com.jy.entity.oa.personal.HolidayRecord">
+		update fudan_oa_holiday_record <include refid="insertSQL"></include>
+		where recordId = #{recordId}
+	</update>
+	<!-- 修改假期设置 end -->
+	
+	
+	<!-- 获取假期详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.personal.HolidayRecord">
+		select * from fudan_oa_holiday_record where recordId = #{recordId}
+	</select>
+	<!-- 获取假期详细信息 end -->
+	
+	
+	<!-- 批量删除假期信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_holiday_record where recordId = #{recordId}
+	</delete>
+	<!-- 批量删除假期信息 end -->
+	
+	
+	<!-- 获取假期列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.personal.HolidayRecord">
+		select * from fudan_oa_holiday_record
+		<where>
+			<if test="startTime != null">
+				and startTime &gt;= #{startTime}
+			</if>
+			<if test="endTime != null">
+				and endTime &lt;= #{endTime}
+			</if>
+			<if test="holidayRecord.userId != null">
+				and userId = #{holidayRecord.userId}
+			</if>
+			<if test="holidayRecord.isAll != null">
+				and isAll = #{holidayRecord.isAll}
+			</if>
+		</where>
+	</select>
+	<!-- 获取假期列表 end -->
+	
+	
+	<!-- 假期设置分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.personal.HolidayRecord">
+		select * from fudan_oa_holiday_record
+		<where>
+			<if test="startTime != null">
+				and startTime &gt;= #{startTime}
+			</if>
+			<if test="endTime != null">
+				and endTime &lt;= #{endTime}
+			</if>
+			<if test="holidayRecord.userId != null">
+				and userId = #{holidayRecord.userId}
+			</if>
+			<if test="holidayRecord.isAll != null">
+				and isAll = #{holidayRecord.isAll}
+			</if>
+		</where>
+		order by recordId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 假期设置分页列表 end -->
+
+</mapper>

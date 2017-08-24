@@ -1,0 +1,48 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<div class="form-group">
+<table class="table table-bordered table-hover" style="width:100%">
+	<tr class="active">
+		<td>标题</td>
+		<td colspan="3">${hireIssue.title }</td>
+	</tr>
+	<tr class="active">
+		<td>招聘职位</td>
+		<td>${hireIssue.jobName }</td>
+		<td>招聘人数</td>
+		<td>${hireIssue.hireCount }</td>
+	</tr>
+	<tr class="active">
+		<td>招聘条件</td>
+		<td colspan="3">${hireIssue.jobCondition }</td>
+	</tr>
+	<tr class="active">
+		<td>开始时间</td>
+		<td>${hireIssue.startDate1 }</td>
+		<td>结束时间</td>
+		<td>${hireIssue.endDate1 }</td>
+	</tr>
+	<tr class="active">
+		<td>登记人</td>
+		<td>${hireIssue.regFullname }</td>
+		<td>登记时间</td>
+		<td>${hireIssue.regDate1 }</td>
+	</tr>
+	<tr class="active">
+		<td>变更人</td>
+		<td>${hireIssue.modifyFullname }</td>
+		<td>变更时间</td>
+		<td>${hireIssue.modifyDate1 }</td>
+	</tr>
+	<tr class="active">
+		<td>备注</td>
+		<td colspan="3">${hireIssue.memo }</td>
+	</tr>
+</table>
+</div>
+<input type="hidden" name="hireId" value="${hireIssue.hireId }">
+<div class="form-group">
+  	<label class="control-label col-md-1 col-sm-1">审核意见</label>
+  	<div class="col-md-11 col-sm-11">
+   		<textarea rows="3" name="checkOpinion" class="form-control"></textarea>
+   	</div>
+</div>

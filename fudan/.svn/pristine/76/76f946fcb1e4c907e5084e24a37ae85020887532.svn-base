@@ -1,0 +1,36 @@
+package com.jy.service.oa.communicate;
+
+import java.util.List;
+
+import com.jy.entity.oa.communicate.PhoneGroup;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface PhoneGroupService {
+
+	// 添加联系人分组
+	JsonInfo save(PhoneGroup phoneGroup);
+
+	// 修改联系人分组信息
+	JsonInfo update(PhoneGroup phoneGroup);
+
+	// 获取联系人分组信息
+	PhoneGroup getBy(Long groupId);
+
+	// 删除联系人分组
+	JsonInfo del(Long[] groupId);
+
+	// 获取最大的sn值
+	Integer getTop();
+
+	// 模糊查询获取联系人分组列表
+	List<PhoneGroup> getBy(String groupName, Short isShared, String userId);
+
+	// 分页获取联系人分组列表
+	List<PhoneGroup> getPageList(PageBean pb, String groupName, Short isShared,
+			String userId);
+
+	// 获取所有分类
+	List<PhoneGroup> getAll();
+	
+}

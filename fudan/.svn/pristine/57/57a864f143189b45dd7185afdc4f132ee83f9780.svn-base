@@ -1,0 +1,318 @@
+package com.jy.entity.wzcg;
+
+import java.sql.Timestamp;
+
+public class WzcgSupplier {
+	
+	private String userId;
+	private String state;
+	private String company;
+	private String represent;
+	private String company_address;
+	private String zip_code;
+	private String ID_card;
+	private double bankroll;
+	private String company_register_number;
+	private String license;
+	private String national_tax;
+	private String land_tax;
+	private String organization;
+	private String company_type;
+	private String profession_class;
+	private String charge;
+	private String admin_number;
+	private String office1;
+	private String produce_card;
+	private String office2;
+	private String found_time;
+	private String apply_time;
+	private String business_scope;
+	private String bank;
+	private String part_time_product;
+	private String experience;
+	private String brief_introduction;
+	private String account;
+	private String contacts;
+	private String contacts_phone;
+	private String fax_phone;
+	private String mobile_number;
+	private String email;
+	private String website;
+	private String main_product;
+	private String promise;
+	private String cgzx_suggest;
+	private String cgb_suggest;
+	private Timestamp createdate;
+	
+	private int bankrollMin;
+	private int bankrollMax;
+	private String found_time_min;
+	private String found_time_max;
+	private int count;
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
+	public String getRepresent() {
+		return represent;
+	}
+	public void setRepresent(String represent) {
+		this.represent = represent;
+	}
+	public String getCompany_address() {
+		return company_address;
+	}
+	public void setCompany_address(String company_address) {
+		this.company_address = company_address;
+	}
+	public String getZip_code() {
+		return zip_code;
+	}
+	public void setZip_code(String zip_code) {
+		this.zip_code = zip_code;
+	}
+	public String getID_card() {
+		return ID_card;
+	}
+	public void setID_card(String iD_card) {
+		ID_card = iD_card;
+	}
+	public double getBankroll() {
+		return bankroll;
+	}
+	public void setBankroll(double bankroll) {
+		this.bankroll = bankroll;
+	}
+	public String getCompany_register_number() {
+		return company_register_number;
+	}
+	public void setCompany_register_number(String company_register_number) {
+		this.company_register_number = company_register_number;
+	}
+	public String getLicense() {
+		return license;
+	}
+	public void setLicense(String license) {
+		this.license = license;
+	}
+	public String getNational_tax() {
+		return national_tax;
+	}
+	public void setNational_tax(String national_tax) {
+		this.national_tax = national_tax;
+	}
+	public String getLand_tax() {
+		return land_tax;
+	}
+	public void setLand_tax(String land_tax) {
+		this.land_tax = land_tax;
+	}
+	public String getOrganization() {
+		return organization;
+	}
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+	public String getCompany_type() {
+		return company_type;
+	}
+	public void setCompany_type(String company_type) {
+		this.company_type = company_type;
+	}
+	public String getProfession_class() {
+		return profession_class;
+	}
+	public void setProfession_class(String profession_class) {
+		this.profession_class = profession_class;
+	}
+	public String getCharge() {
+		return charge;
+	}
+	public void setCharge(String charge) {
+		this.charge = charge;
+	}
+	public String getAdmin_number() {
+		return admin_number;
+	}
+	public void setAdmin_number(String admin_number) {
+		this.admin_number = admin_number;
+	}
+	public String getOffice1() {
+		return office1;
+	}
+	public void setOffice1(String office1) {
+		this.office1 = office1;
+	}
+	public String getProduce_card() {
+		return produce_card;
+	}
+	public void setProduce_card(String produce_card) {
+		this.produce_card = produce_card;
+	}
+	public String getOffice2() {
+		return office2;
+	}
+	public void setOffice2(String office2) {
+		this.office2 = office2;
+	}
+	public String getFound_time() {
+		return found_time;
+	}
+	public void setFound_time(String found_time) {
+		this.found_time = found_time;
+	}
+	public String getApply_time() {
+		return apply_time;
+	}
+	public void setApply_time(String apply_time) {
+		this.apply_time = apply_time;
+	}
+	public String getBusiness_scope() {
+		return business_scope;
+	}
+	public void setBusiness_scope(String business_scope) {
+		this.business_scope = business_scope;
+	}
+	public String getBank() {
+		return bank;
+	}
+	public void setBank(String bank) {
+		this.bank = bank;
+	}
+	public String getPart_time_product() {
+		return part_time_product;
+	}
+	public void setPart_time_product(String part_time_product) {
+		this.part_time_product = part_time_product;
+	}
+	public String getExperience() {
+		return experience;
+	}
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+	public String getBrief_introduction() {
+		return brief_introduction;
+	}
+	public void setBrief_introduction(String brief_introduction) {
+		this.brief_introduction = brief_introduction;
+	}
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
+	}
+	public String getContacts() {
+		return contacts;
+	}
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+	public String getContacts_phone() {
+		return contacts_phone;
+	}
+	public void setContacts_phone(String contacts_phone) {
+		this.contacts_phone = contacts_phone;
+	}
+	public String getFax_phone() {
+		return fax_phone;
+	}
+	public void setFax_phone(String fax_phone) {
+		this.fax_phone = fax_phone;
+	}
+	public String getMobile_number() {
+		return mobile_number;
+	}
+	public void setMobile_number(String mobile_number) {
+		this.mobile_number = mobile_number;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getWebsite() {
+		return website;
+	}
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+	public String getMain_product() {
+		return main_product;
+	}
+	public void setMain_product(String main_product) {
+		this.main_product = main_product;
+	}
+	public String getPromise() {
+		return promise;
+	}
+	public void setPromise(String promise) {
+		this.promise = promise;
+	}
+	public String getCgzx_suggest() {
+		return cgzx_suggest;
+	}
+	public void setCgzx_suggest(String cgzx_suggest) {
+		this.cgzx_suggest = cgzx_suggest;
+	}
+	public String getCgb_suggest() {
+		return cgb_suggest;
+	}
+	public void setCgb_suggest(String cgb_suggest) {
+		this.cgb_suggest = cgb_suggest;
+	}
+	public Timestamp getCreatedate() {
+		return createdate;
+	}
+	public void setCreatedate(Timestamp createdate) {
+		this.createdate = createdate;
+	}
+	public int getBankrollMin() {
+		return bankrollMin;
+	}
+	public void setBankrollMin(int bankrollMin) {
+		this.bankrollMin = bankrollMin;
+	}
+	public int getBankrollMax() {
+		return bankrollMax;
+	}
+	public void setBankrollMax(int bankrollMax) {
+		this.bankrollMax = bankrollMax;
+	}
+	public String getFound_time_min() {
+		return found_time_min;
+	}
+	public void setFound_time_min(String found_time_min) {
+		this.found_time_min = found_time_min;
+	}
+	public String getFound_time_max() {
+		return found_time_max;
+	}
+	public void setFound_time_max(String found_time_max) {
+		this.found_time_max = found_time_max;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
+}

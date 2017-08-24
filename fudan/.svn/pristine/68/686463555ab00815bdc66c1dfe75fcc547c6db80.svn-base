@@ -1,0 +1,149 @@
+package com.jy.entity.oa.task;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class CalendarPlan {
+
+	private Long planId;
+	private Date startTime;
+	private Date endTime;
+	private Short urgent;
+	private String content;
+	private Short status;
+	private String fullname;	//fullname之间，使用逗号(,)分隔
+	private String assignerId;
+	private String assignerName;
+	private String feedback;
+	private Short showStyle;
+	private Short taskType;
+	private String userId;		//userId之间，使用逗号(,)分隔
+	
+	//用于显示
+	private String startTime1;
+	private String endTime1;
+
+	public String getStartTime1() {
+		return startTime1;
+	}
+
+	public void setStartTime1(String startTime1) {
+		this.startTime1 = startTime1;
+	}
+
+	public String getEndTime1() {
+		return endTime1;
+	}
+
+	public void setEndTime1(String endTime1) {
+		this.endTime1 = endTime1;
+	}
+
+	public Long getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Short getUrgent() {
+		return urgent;
+	}
+
+	public void setUrgent(Short urgent) {
+		this.urgent = urgent;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getAssignerId() {
+		return assignerId;
+	}
+
+	public void setAssignerId(String assignerId) {
+		this.assignerId = assignerId;
+	}
+
+	public String getAssignerName() {
+		return assignerName;
+	}
+
+	public void setAssignerName(String assignerName) {
+		this.assignerName = assignerName;
+	}
+
+	public String getFeedback() {
+		return feedback;
+	}
+
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
+	}
+
+	public Short getShowStyle() {
+		return showStyle;
+	}
+
+	public void setShowStyle(Short showStyle) {
+		this.showStyle = showStyle;
+	}
+
+	public Short getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(Short taskType) {
+		this.taskType = taskType;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+}

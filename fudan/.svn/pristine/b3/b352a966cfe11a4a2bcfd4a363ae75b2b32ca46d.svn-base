@@ -1,0 +1,31 @@
+package com.jy.service.oa.archive;
+
+import java.util.List;
+
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface ArchTemplateService {
+
+	/* 添加数据 */
+	JsonInfo save(ArchTemplate archTemplate);
+
+	/* 根据 typeId, tempName 模糊查询所有列表 */
+	List<ArchTemplate> getSomeBy(Long typeId, String tempName);
+
+	/* 根据 templateId 获取详细信息 */
+	ArchTemplate getBy(Long templateId);
+
+	/* 根据 templateId 批量删除 */
+	JsonInfo del(Long[] templateIds);
+
+	/* 分页显示列表 */
+	List<ArchTemplate> getPageList(PageBean pb, Long typeId, String tempName);
+
+	/* 修改模板数据 */
+	JsonInfo update(ArchTemplate archTemplate);
+	
+}
+
+

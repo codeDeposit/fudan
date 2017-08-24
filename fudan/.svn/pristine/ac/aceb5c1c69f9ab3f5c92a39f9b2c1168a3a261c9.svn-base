@@ -1,0 +1,23 @@
+package com.jy.service.oa.impl.archive;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.repository.oa.archive.ArchRecTypeMapper;
+import com.jy.service.oa.archive.ArchRecTypeService;
+
+
+@Service("archRecTypeService")
+public class ArchRecTypeServiceImpl implements ArchRecTypeService {
+
+	private ArchRecTypeMapper archRecTypeMapper;
+
+	public ArchRecTypeMapper getArchRecTypeMapper() {
+		return archRecTypeMapper;
+	}
+	
+//	@Autowired
+	public void setArchRecTypeMapper(ArchRecTypeMapper archRecTypeMapper) {
+		this.archRecTypeMapper = archRecTypeMapper;
+	}
+
+}

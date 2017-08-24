@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.document.DocumentMapper">
+	
+	<!-- 插入文档 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.document.Document">
+		insert fudan_oa_document <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="docName != null and docName != '' ">
+				docName = #{docName},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+			<if test="createtime != null ">
+				createtime = #{createtime},
+			</if>
+			<if test="updatetime != null ">
+				updatetime = #{updatetime},
+			</if>
+			<if test="folderId != null ">
+				folderId = #{folderId},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+			<if test="fullname != null ">
+				fullname = #{fullname},
+			</if>
+			<if test="haveAttach != null ">
+				haveAttach = #{haveAttach},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+		</set>
+	</sql>
+	<!-- 插入文档 end -->
+	
+	
+	<!-- 获取刚插入文档的ID号 start -->
+	<select id="selectMaxDocumentId" resultType="Long">
+		select max(docId) from fudan_oa_document
+	</select>
+	<!-- 获取刚插入文档的ID号 end -->
+	
+	
+	<!-- 插入文档与附件的关联 start -->
+	<insert id="insertFileId">
+		insert into fudan_oa_doc_file(fileId, docId) values(#{fileId}, #{docId})
+	</insert>
+	<!-- 插入文档与附件的关联 start -->
+	
+	
+	<!-- 获取文档详细信息 start -->
+	<select id="selectInfo" parameterType="Long" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where docId = #{docId}
+	</select>
+	<!-- 获取文档详细信息 end -->
+	
+	
+	<!-- 获取附件Id start -->
+	<select id="selectFileId" parameterType="Long" resultType="Long">
+		select fileId from fudan_oa_doc_file where docId = #{docId}
+	</select>
+	<!-- 获取附件Id end -->
+	
+	
+	<!-- 修改文档信息、文档分享 start -->
+	<update id="update" parameterType="com.jy.entity.oa.document.Document">
+		update fudan_oa_document <include refid="updateSQL"></include>
+		where docId = #{docId} 
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="docName != null and docName != '' ">
+				docName = #{docName},
+			</if>
+			<if test="content != null and content != '' ">
+				content = #{content},
+			</if>
+			<if test="createtime != null ">
+				createtime = #{createtime},
+			</if>
+			<if test="updatetime != null ">
+				updatetime = #{updatetime},
+			</if>
+			<if test="folderId != null ">
+				folderId = #{folderId},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+			<if test="fullname != null ">
+				fullname = #{fullname},
+			</if>
+			<if test="haveAttach != null ">
+				haveAttach = #{haveAttach},
+			</if>
+			<if test="isShared != null ">
+				isShared = #{isShared},
+			</if>
+			<if test="sharedUserIds != null and sharedUserIds != '' ">
+				sharedUserIds = #{sharedUserIds},
+			</if>
+			<if test="sharedUserNames != null and sharedUserNames != '' ">
+				sharedUserNames = #{sharedUserNames},
+			</if>
+			<if test="sharedDepIds != null and sharedDepIds != '' ">
+				sharedDepIds = #{sharedDepIds},
+			</if>
+			<if test="sharedDepNames != null and sharedDepNames != '' ">
+				sharedDepNames = #{sharedDepNames},
+			</if>
+			<if test="sharedRoleIds != null and sharedRoleIds != '' ">
+				sharedRoleIds = #{sharedRoleIds},
+			</if>
+			<if test="sharedRoleNames != null and sharedRoleNames != '' ">
+				sharedRoleNames = #{sharedRoleNames},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改文档信息、文档分享 end -->
+	
+	
+	<!-- 删除文档对应的附件信息 start -->
+	<delete id="deleteFileId" parameterType="Long">
+		delete from fudan_oa_doc_file where docId = #{documentId} 
+	</delete>
+	<!-- 删除文档对应的附件信息 end -->
+	
+	
+	<!-- 删除文档 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_document where docId = #{dId}
+	</delete>
+	<!-- 删除文档 end -->
+	
+	
+	<!-- 获取自己创建的文档 start -->
+	<select id="selectSelfDoc" parameterType="Long" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where userId = #{userId}
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="folderId != null ">
+			and folderId = #{folderId}
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{endDate}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+	</select>
+	<!-- 获取自己创建的文档 end -->
+	
+	
+	<!-- 获取被共享的文档 start -->
+	<select id="selectSharedDoc" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where isShared = 1
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="sharedUserNames != null and sharedUserNames != '' ">
+			and fullname like concat("%", #{sharedUserNames} ,"%")
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{createtime}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+	</select>
+	<!-- 获取被共享的文档 end -->
+	
+	
+	<!-- 获取共享文档列表 start -->
+	<select id="selectShare" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where isShared = 1
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="sharedUserNames != null and sharedUserNames != '' ">
+			and fullname like concat("%", #{sharedUserNames} ,"%")
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{createtime}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+	</select>
+	<!-- 获取共享文档列表 start -->
+	
+	
+	<!-- 获取公共文档 start -->
+	<select id="selectPublicDoc" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where folderId = #{folderId}
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{endDate}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+	</select>
+	<!-- 获取公共文档 end -->
+	
+	
+	<!-- 获取个人文档（自己创建） start -->
+	<select id="selectSelfPageData" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where userId = #{userId}
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="folderId != null ">
+			and folderId = #{folderId}
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{endDate}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+		order by docId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 获取个人文档（自己创建） end -->
+	
+	
+	<!-- 查询共享文档列表 start -->
+	<select id="selectSharePageData" resultType="com.jy.entity.oa.document.Document">
+		select * from fudan_oa_document where isShared = 1
+		<if test="docName != null and docName != '' ">
+			and docName like concat("%", #{docName} ,"%")
+		</if>
+		<if test="sharedUserNames != null and sharedUserNames != '' ">
+			and fullname like concat("%", #{sharedUserNames} ,"%")
+		</if>
+		<if test="endDate != null">
+			and createtime &lt;= #{endDate}
+		</if>
+		<if test="startDate != null">
+			and createtime &gt;= #{startDate}
+		</if>
+		order by docId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 查询共享文档列表 end -->
+	
+</mapper>

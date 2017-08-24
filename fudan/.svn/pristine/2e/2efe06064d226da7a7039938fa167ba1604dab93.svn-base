@@ -1,0 +1,22 @@
+package com.jy.repository.setting;
+
+import java.util.List;
+
+import com.jy.entity.setting.InfoBack;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface InfoBackDao extends BaseDao<InfoBack>{
+	
+	void insert(InfoBack infoBack);
+	
+	void delete(InfoBack infoBack);
+	
+	void update(InfoBack infoBack);
+	
+	InfoBack select(InfoBack infoBack);
+	
+	List<InfoBack> find(InfoBack infoBack);
+	
+}

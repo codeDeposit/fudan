@@ -1,0 +1,46 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+    <%@ include file="../common/styleUrl.jsp" %>
+        <!DOCTYPE HTML>
+        <html>
+
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+            <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui.2.0.css" />
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/login/findpassword.css">
+            <title>找回密码</title>
+        </head>
+
+        <body>
+            <header class="aui-bar aui-bar-nav">邮箱验证</header>
+            <div class="aui-content aui-margin-t-15">
+                <form action="" onsubmit=" return subFun()">
+                    <ul class="aui-list aui-form-list">
+                        <li class="aui-list-item proStep">
+                            <span style="color:#03a9f4;">1.邮箱验证</span>
+                            <span><i class="aui-iconfont aui-icon-right"></i></span>
+                            <span>2.输入验证码</span>
+                            <span><i class="aui-iconfont aui-icon-right"></i></span>
+                            <span>3.重置密码</span>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-mail"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="email" name="email" id="email" placeholder="输入邮箱" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item subBtn">
+                            <button type="submit" class="aui-btn aui-btn-info aui-btn-block aui-btn-sm">  下一步 </button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </body>
+        <script src="${jypath}/mobile/js/login/findpassword1.js"></script>
+
+        </html>

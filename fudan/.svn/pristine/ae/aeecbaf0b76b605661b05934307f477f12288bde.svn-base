@@ -1,0 +1,110 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.jy.entity.app.admin.Goods;
+import com.jy.entity.app.admin.GoodsImg;
+import com.jy.repository.app.admin.GoodsDao;
+import com.jy.repository.app.admin.GoodsImgDao;
+
+@Service(value = "goodsService")
+public class GoodsService{
+	
+	@Resource
+	private GoodsDao goodsDao;
+	@Resource
+	private GoodsImgDao goodsImgDao;
+	
+	public List<Goods> find(Goods goods) {
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();	
+		String imgUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/image/goods/";
+		List<Goods> list = goodsDao.find(goods);
+		//取出图片路径
+		for(int i=0;i<list.size();i++){
+			list.get(i).setGoods_image(imgUrl + list.get(i).getGoods_image());
+			list.get(i).setGoods_image1(imgUrl + list.get(i).getGoods_image1());
+			list.get(i).setGoods_image2(imgUrl + list.get(i).getGoods_image2());
+			list.get(i).setGoods_image3(imgUrl + list.get(i).getGoods_image3());
+			list.get(i).setGoods_image4(imgUrl + list.get(i).getGoods_image4());
+			list.get(i).setGoods_image5(imgUrl + list.get(i).getGoods_image5());
+		}
+		return list;
+	}
+
+	public List<Goods> search(Goods goods) {
+		return this.goodsDao.search(goods);
+	}
+
+	public int insert(Goods goods) {
+		//商品图片
+		GoodsImg goodsImg = goodsImgDao.find().get(0);
+		String str[] = goodsImg.getGoods_img().split(",");
+		String img = "";
+		String img1 = "";
+		String img2 = "";
+		String img3 = "";
+		String img4 = "";
+		String img5 = "";
+		if(str.length == 1){
+			img = str[0];
+			img1 = str[0];
+		}
+		if(str.length == 2){
+			img2 = str[1];
+		}
+		if(str.length == 3){
+			img3 = str[2];
+		}
+		if(str.length == 4){
+			img4 = str[3];
+		}
+		if(str.length == 5){
+			img5 = str[4];
+		}
+		goods.setGoods_image(img);
+		goods.setGoods_image1(img1);
+		goods.setGoods_image2(img2);
+		goods.setGoods_image3(img3);
+		goods.setGoods_image4(img4);
+		goods.setGoods_image5(img5);
+		//上传成功后图片表清空
+		goodsImg.setGoods_img("");
+		goodsImgDao.update(goodsImg);
+		//商品状态
+		goods.setGoods_state(1);
+		//商品分类
+		goods.setGc_id(goods.getGc_id_3());
+		this.goodsDao.insert(goods);
+		return goods.getGoods_id();
+	}
+	
+	/**
+	 * 产品上下架
+	 * @param goods
+	 * @return
+	 */
+	public int update(Goods goods) {
+		if(goods.getGoods_state() == 1){
+			goods.setGoods_state(0);
+		}else{
+			goods.setGoods_state(1);
+		}
+		if(goods.getGoods_commend() == 1){
+			goods.setGoods_commend(0);
+		}else{
+			goods.setGoods_commend(1);
+		}
+		return this.goodsDao.update(goods);
+	}
+
+	public int delete(Goods goods) {
+		return this.goodsDao.delete(goods);
+	}
+	
+}

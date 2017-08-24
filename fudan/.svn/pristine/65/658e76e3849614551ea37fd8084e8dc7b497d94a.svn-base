@@ -1,0 +1,16 @@
+package com.jy.repository.setting;
+
+import java.util.List;
+
+import com.jy.entity.setting.WebSite;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface WebSiteDao extends BaseDao<WebSite>{
+	
+	void update(WebSite webSite);
+	
+	List<WebSite> find();
+	
+}

@@ -1,0 +1,123 @@
+package com.jy.controller.oa.task;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.task.Appointment;
+import com.jy.service.oa.task.AppointmentService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/appointment")
+public class AppointmentController {
+
+	private AppointmentService appointmentService;
+
+	public AppointmentService getAppointmentService() {
+		return appointmentService;
+	}
+
+	@Resource(name="appointmentService")
+	public void setAppointmentService(AppointmentService appointmentService) {
+		this.appointmentService = appointmentService;
+	}
+
+	/**
+	 * 添加约会
+	 * 
+	 * @param appointment
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Appointment appointment) {
+		JsonInfo info = appointmentService.save(appointment);
+		return info;
+	}
+
+	/**
+	 * 获取约会详细信息
+	 * 
+	 * @param appointId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long appointId, String operation) {
+		Appointment appointment = appointmentService.getInfoBy(appointId);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/task/appoinment_form");
+		mv.addObject("appointment", appointment);
+		mv.addObject("operation", operation);
+		
+		return mv;
+	}
+
+	/**
+	 * 修改约会信息
+	 * 
+	 * @param appointment
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Appointment appointment) {
+		JsonInfo info = appointmentService.update(appointment);
+		return info;
+	}
+
+	/**
+	 * 批量删除约会
+	 * 
+	 * @param appointId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] appointId) {
+		JsonInfo info = appointmentService.del(appointId);
+		return info;
+	}
+
+	/**
+	 * 获取约会列表
+	 * 
+	 * @param appointment
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, Appointment appointment) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		List<Appointment> appointments = appointmentService.get(appointment);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(appointments.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<Appointment> pageAppointments = appointmentService.getPageList(pb, appointment);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/task/appointment_table");
+		}else {
+			mv.setViewName("system/oa/task/appointment_list");
+		}
+		mv.addObject("appointments", pageAppointments);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+}

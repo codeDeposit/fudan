@@ -1,0 +1,272 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+		<style type="text/css">
+			.picBoxedit {
+				width: 100px;
+				height: 160px;
+				padding-top: 25px;
+			}
+			.picBoxedit img {
+				max-width: 100%;
+				max-height: 100%;
+				width: auto;
+				height: 100px;
+			}
+			.picBoxedit div {
+				border: 1px dotted #ccc;
+				width: 100%;
+				height: 100%;
+			}
+			.warnWordedit {
+				color: red;
+				display: none;
+			}
+		</style>
+		<!-- 模拟态窗口 start-->
+		<div class="modal fade" id="infoorupdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<form role="form" id="careditform" class="form-horizontal" enctype="multipart/form-data" >
+				<div class="modal-content">
+					<div class="modal-body">
+						<input type="hidden" name="carId" value="${car.carId }">
+						<table class='table'>
+							<tr>
+								<td></td>
+								<td rowspan="3">
+								<div class="picBoxedit center-block">
+									<input type="file" name="imgedit" class="upPic" id="editbtn" required>
+									<div>
+										<img src="${jypath}/${car.cartImage }" alt="">
+										<p class="warnWordedit text-center"></p>
+									</div>
+									<button type="button" class="btn btn-success" id="upeditBtn">
+										<i class="glyphicon glyphicon-upload"></i>&nbsp;上传照片
+									</button>
+								</div></td>
+							</tr>
+							<tr>
+								<td class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-4 col-sm-4">车牌号码:</label>
+									<div class="col-md-8 col-sm-8">
+										<input type="text" class="form-control" name="carNo" value="${car.carNo }">
+									</div>
+								</div></td>
+							</tr>
+							<tr>
+								<td class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-4 col-sm-4">车辆类型</label>
+									<div class="col-md-8 col-sm-8">
+										<select class="form-control" name="typeId">
+											<c:if test="${car.typeId == 1 }">
+												<option value="">--请选择--</option>
+												<option value="1" selected>轿车</option>
+												<option value="2">货车</option>
+												<option value="3">商务车</option>
+											</c:if>
+											<c:if test="${car.typeId == 2 }">
+												<option value="">--请选择--</option>
+												<option value="1" >轿车</option>
+												<option value="2" selected>货车</option>
+												<option value="3">商务车</option>
+											</c:if>
+											<c:if test="${car.typeId == 3 }">
+												<option value="">--请选择--</option>
+												<option value="1" >轿车</option>
+												<option value="2">货车</option>
+												<option value="3" selected>商务车</option>
+											</c:if>
+										</select>
+									</div>
+								</div></td>
+							</tr>
+							<tr>
+								<td class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-4 col-sm-4">发动机型号:</label>
+									<div class="col-md-8 col-sm-8">
+										<input type="text" class="form-control" name="engineNo" value="${car.engineNo }">
+									</div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">购买保险时间:</label>
+							<div class="col-md-10 col-sm-10">
+								<div class="input-group date form_date col-md-12" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input" data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" name="buyInsureTime" type="text" value="${car.buyInsureTime1 }" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">年审时间:</label>
+							<div class="col-md-10 col-sm-10">
+								<div class="input-group date form_date col-md-12" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input" data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" name="auditTime" type="text" value="${car.auditTime1 }" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">厂牌型号:</label>
+							<div class="col-md-10 col-sm-10">
+								<input type="text" class="form-control" name="factoryModel" value="${car.factoryModel }">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">驾驶员:</label>
+							<div class="col-md-10 col-sm-10">
+								<input type="text" class="form-control" name="driver" value="${car.driver }">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">购置日期:</label>
+							<div class="col-md-10 col-sm-10">
+								<div class="input-group date form_date col-md-12" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input" data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" name="buyDate" type="text" value="${car.buyDate1 }" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">当前状态:</label>
+							<div class="col-md-10 col-sm-10">
+								<select class="form-control" name="status">
+									<c:if test="${car.status == 1 }">
+										<option value="">--请选择--</option>
+										<option value="1" selected>可用</option>
+										<option value="2">维修中</option>
+										<option value="0">已报废</option>
+									</c:if>
+									<c:if test="${car.status == 2 }">
+										<option value="">--请选择--</option>
+										<option value="1" >可用</option>
+										<option value="2" selected>维修中</option>
+										<option value="0">已报废</option>
+									</c:if>
+									<c:if test="${car.status == 0 }">
+										<option value="">--请选择--</option>
+										<option value="1" >可用</option>
+										<option value="2">维修中</option>
+										<option value="0" selected>已报废</option>
+									</c:if>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 col-sm-2">备注:</label>
+							<div class="col-md-10 col-sm-10">
+								<textarea class="form-control" rows="3" name="notes">${car.notes }</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<c:if test="${operation == 'update' }">
+							<button type="button" class="btn btn-success" id="bgrsurebtnedit">修改</button>
+						</c:if>
+					</div>
+				</div>
+			</form>
+		</div>
+		</div>
+		<!-- 模拟态窗口 end -->
+	<script type="text/javascript">
+		$(function() {
+			// 初始化日期组件
+			$('.form_date').datetimepicker({
+				language : 'zh-CN',
+				weekStart : 1,
+				todayBtn : 1,
+				autoclose : 1,
+				todayHighlight : 1,
+				startView : 2,
+				minView : 2,
+				forceParse : 0,
+			});
+			$('#Firm').on('change', function(event) {
+				if ($('#Firm option:selected').val() != '') {
+					$('#poSition').removeAttr('disabled');
+					$('#poSition').attr('title', '');
+				} else {
+					$('#poSition').val('');
+					$('#poSition').attr('disabled', 'disabled');
+					$('#poSition').attr('title', '请先选择所属部门或公司！');
+				}
+			});
+			$('#upeditBtn').off('click').on('click', function(event) {
+				$('#editbtn').click();
+			});
+			//图片上传开始
+			$('#editbtn').on('change', function() {
+				var that = $(this);
+				var aSpan = $('.warnWordedit');
+				judgeTypeSize(aSpan, that, 300, img_upload);
+			});
+			function judgeTypeSize(wWarn, fileObj, maxSize, callback) {
+				var value = fileObj.val();
+				if (!value.match(/.jpg|.jpeg|png/i)) {
+					wWarn.show();
+					wWarn.html('图片格式不正确！');
+					fileObj.val('');
+				} else {
+					var size = fileObj[0].files[0].size;
+					var trueSize = Math.ceil(size / 1024);
+					if (trueSize > maxSize) {
+						wWarn.show();
+						wWarn.html("照片尺寸过大，请重新选择!");
+						fileObj.val('');
+					} else {
+						wWarn.hide();
+						if (callback) {
+							callback(fileObj[0]);
+						}
+					}
+				}
+			}
+			function getImgUrl(fileObj) {
+				var url;
+				if (fileObj.files && fileObj.files[0]) {//火狐下
+					url = window.URL.createObjectURL(fileObj.files[0]);
+				} else {////IE下
+					fileObj.select();
+					url = fileObj.selection.createRange().text;
+					document.selection.empty();
+				}
+				return url;
+			}
+			function img_upload(fileObj) {
+				var url = getImgUrl(fileObj);
+				var imgBox = $('.picBoxedit');
+				var img = imgBox.find("img");
+				img.attr("src", url);
+				console.log("成功了");
+			}
+			//图片上传结束
+			$("#infoorupdate").modal("show");
+		})
+		$("#bgrsurebtnedit").click(function() {
+			var url = "/oa/car/edit";
+			var form = document.getElementById("careditform");
+			var formData = new FormData(form);
+			$.ajax({
+				type : "post",
+				url : jypath + url,
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				processData : false,
+				success : function(data) {
+					$("#bgrsurebtnedit").attr("data-data-dismiss", "modal");
+					refresh();
+				}
+			});
+		});
+	</script>
+</html>

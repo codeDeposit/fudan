@@ -1,0 +1,112 @@
+package com.jy.service.oa.impl.admin;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.OfficeGoods;
+import com.jy.entity.oa.admin.OfficeGoodsVO;
+import com.jy.repository.oa.admin.OfficeGoodsMapper;
+import com.jy.service.oa.admin.OfficeGoodsService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("officeGoodsService")
+public class OfficeGoodsServiceImpl implements OfficeGoodsService {
+
+	private OfficeGoodsMapper officeGoodsMapper;
+
+	public OfficeGoodsMapper getOfficeGoodsMapper() {
+		return officeGoodsMapper;
+	}
+
+	@Autowired
+	public void setOfficeGoodsMapper(OfficeGoodsMapper officeGoodsMapper) {
+		this.officeGoodsMapper = officeGoodsMapper;
+	}
+
+	// 添加办公品
+	@Override
+	public JsonInfo save(OfficeGoods officeGoods) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss-SSSS");//自动生成商品号
+	    if(officeGoods.getGoodsId()==null){
+	    	officeGoods.setGoodsNo(sdf.format(new Date()));
+	    	officeGoods.setStockCounts(0);
+	    }
+	    int result = officeGoodsMapper.insert(officeGoods);
+	    JsonInfo info = new JsonInfo();
+	    if(result > 0) {
+	    	info.setSuccess(true);
+	    }else {
+	    	info.setSuccess(false);
+	    }
+	    return info;
+	}
+
+	// 获取办公品详细信息
+	@Override
+	public OfficeGoods getInfoBy(Long goodsId) {
+		OfficeGoods officeGoods = officeGoodsMapper.selectInfoBy(goodsId);
+		return officeGoods;
+	}
+
+	// 修改办公品信息
+	@Override
+	public JsonInfo update(OfficeGoods officeGoods) {
+		int result = officeGoodsMapper.update(officeGoods);
+	    JsonInfo info = new JsonInfo();
+	    if(result > 0) {
+	    	info.setSuccess(true);
+	    }else {
+	    	info.setSuccess(false);
+	    }
+	    return info;
+	}
+
+	// 批量删除办公品
+	@Override
+	public JsonInfo del(Long[] goodsId) {
+		int result = 0;
+		for(Long gId : goodsId) {
+			result = officeGoodsMapper.delete(gId);
+		}
+	    JsonInfo info = new JsonInfo();
+	    if(result > 0) {
+	    	info.setSuccess(true);
+	    }else {
+	    	info.setSuccess(false);
+	    }
+	    return info;
+	}
+
+	// 获取办公品列表
+	@Override
+	public List<OfficeGoods> get(String goodsName, Long typeId) {
+		List<OfficeGoods> officeGoods = officeGoodsMapper.select(goodsName, typeId);
+		return officeGoods;
+	}
+
+	// 办公用品分页列表
+	@Override
+	public List<OfficeGoodsVO> getPageList(PageBean pb, String goodsName,
+			Long typeId) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<OfficeGoodsVO> officeGoods = officeGoodsMapper.selectPageList(firstIndex, toIndex, goodsName, typeId);
+		
+		return officeGoods;
+	}
+
+}

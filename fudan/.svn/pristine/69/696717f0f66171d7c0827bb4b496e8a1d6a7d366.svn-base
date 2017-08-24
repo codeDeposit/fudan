@@ -1,0 +1,168 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp"%>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<style>
+			.havHead {
+				background: #efefef;
+			}
+			.navBox {
+				width: 700px;
+				margin: 0 auto;
+				padding-top: 20px;
+			}
+			td {
+				padding: 8px;
+			}
+			.col-first {
+				width: 70px;
+			}
+			.col-aft {
+				width: 130px;
+			}
+			.td-put {
+				width: 300px;
+				height: 28px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+			}
+			.td-content {
+				height: 150px;
+				border-radius: 8px;
+				border: 1px solid #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 模拟态窗口 start-->
+		<div class="havHead">
+			<button class="btn btn-success btn-sm">
+				<i class="glyphicon glyphicon-envelope"></i>&nbsp;立即发送
+			</button>
+			<button class="btn btn-info btn-sm">
+				<i class="glyphicon glyphicon-floppy-disk"></i>&nbsp;存草稿
+			</button>
+			<button class="btn btn-warning btn-sm">
+				<i class="glyphicon glyphicon-refresh"></i>&nbsp;重置
+			</button>
+			<button class="btn btn-danger btn-sm">
+				<i class="glyphicon glyphicon-remove"></i>&nbsp;取消
+			</button>
+		</div>
+		<div class="navBox">
+			<table class="">
+				<tbody>
+					<tr>
+						<td class="text-right col-first">收件人:</td>
+						<td class="text-lfet">
+						<input type="email" class="td-put">
+						</td>
+						<td class="text-left col-aft">
+						<button class="btn btn-primary btn-sm">
+							<i class="glyphicon glyphicon-user"></i>&nbsp;选择收件人
+						</button></td>
+						<td class="text-left col-aft">
+						<button class="btn btn-info btn-sm">
+							<i class="glyphicon glyphicon-copy"></i>&nbsp;我要抄送
+						</button></td>
+					</tr>
+					<tr>
+						<td class="text-right td col-first">主题:</td>
+						<td class="text-left">
+						<input type="text" class="td-put">
+						</td>
+					</tr>
+					<tr>
+						<td class="text-right td col-first">优先级:</td>
+						<td class="">
+						<select name="" class="text-right td-put">
+							<option value=""></option>
+							<option value="1">一般</option>
+							<option value="2">无</option>
+						</select></td>
+						<td class="text-left td col-aft">
+						<input type="checkbox">
+						&nbsp;告诉他有信 </td>
+					</tr>
+					<tr>
+						<td class="text-right col-first">附件:</td>
+						<td class="">
+						<input type="text" class="td-put">
+						</td>
+						<td class="text-left td col-aft">
+						<button class="btn btn-primary btn-sm">
+							<i class="glyphicon glyphicon-upload"></i>&nbsp;上传
+						</button></td>
+					</tr>
+					<tr>
+						<td class="col-first"></td>
+						<td class="">
+						<input type="text" class="td-put">
+						</td>
+					</tr>
+					<tr>
+						<td rowspan="" class="text-right col-first" style="vertical-align:top;">内容:</td>
+						<td rowspan="" colspan="3"><div class="td-content" style="height:150px;"></div></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- 模拟态窗口 end -->
+	</body>
+	<script type="text/javascript">
+		$(function() {
+			$('.form_date').datetimepicker({
+				language : 'zh-CN',
+				weekStart : 1,
+				todayBtn : 1,
+				autoclose : 1,
+				todayHighlight : 1,
+				startView : 2,
+				minView : 2,
+				forceParse : 0,
+			});
+		});
+		$("#infoOrUpdatesubmitbtn").click(function() {
+			var url = "/oa/phonebook/edit";
+			$.ajax({
+				type : "post",
+				url : jypath + url,
+				data : $("#infoOrUpdateform").serialize(),
+				success : function() {
+					// 移除之前添加的模态
+					refresh();
+				}
+			});
+		});
+		$(document).ready(function() {
+			var groupId = "${phoneBook.groupId}";
+			var url = "/oa/phonegroup/listall";
+			$.ajax({
+				type : "get",
+				url : jypath + url,
+				success : function(data) {
+					// 将json字符串解析为json对象数组
+					var phoneGroups = eval("(" + data + ")");
+					for (var phoneGroup in phoneGroups) {
+						// 获取json对象数组的每个对象
+						var phoneGroupObj = phoneGroups[phoneGroup];
+						if (groupId == phoneGroupObj.groupId) {
+							$("#phoneGroupInfoOrUpdateSelect").append("<option selected value='" + phoneGroupObj.groupId + "'>" + phoneGroupObj.groupName + "</option>");
+						} else {
+							$("#phoneGroupInfoOrUpdateSelect").append("<option value='" + phoneGroupObj.groupId + "'>" + phoneGroupObj.groupName + "</option>");
+						}
+					}
+				}
+			});
+		});
+	</script>
+</html>

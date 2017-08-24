@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.DownloadDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Download" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_download where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_download where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="download_url != null and download_url != ''">  
+		    AND download_url = #{download_url}
+		</if>  
+		<if test="app_name != null and app_name != ''">  
+		    AND app_name = #{app_name}
+		</if> 
+		<if test="app_logo_img != null and app_logo_img != ''">  
+		    AND app_logo_img = #{app_logo_img}
+		</if> 
+		<if test="android_img != null and app_logo_img != ''">  
+		    AND android_img = #{android_img}
+		</if> 
+		<if test="ios_img != null and ios_img != ''">  
+		    AND ios_img = #{ios_img}
+		</if> 
+		<if test="android_url != null and android_url != ''">  
+		    AND android_url = #{android_url}
+		</if>
+		<if test="ios_url != null and ios_url != ''">  
+		    AND ios_url = #{ios_url}
+		</if>
+		<if test="app_version != 0">  
+		    AND app_version = #{app_version}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="download_url != null and download_url != ''">  
+		    AND download_url = #{download_url}
+		</if>  
+		<if test="app_name != null and app_name != ''">  
+		    AND app_name = #{app_name}
+		</if> 
+		<if test="app_logo_img != null and app_logo_img != ''">  
+		    AND app_logo_img = #{app_logo_img}
+		</if> 
+		<if test="android_img != null and app_logo_img != ''">  
+		    AND android_img = #{android_img}
+		</if> 
+		<if test="ios_img != null and ios_img != ''">  
+		    AND ios_img = #{ios_img}
+		</if> 
+		<if test="android_url != null and android_url != ''">  
+		    AND android_url = #{android_url}
+		</if>
+		<if test="ios_url != null and ios_url != ''">  
+		    AND ios_url = #{ios_url}
+		</if>
+		<if test="app_version != 0">  
+		    AND app_version = #{app_version}
+		</if>   
+	</sql>
+	
+	<insert id="insert">
+		insert into app_download (download_url,app_name,app_logo_img,android_img,,ios_img,android_url,ios_url,copyright,app_version,downlod_num,update_date) 
+			values 
+		(#{download_url},#{app_name},#{app_logo_img},#{android_img},#{ios_img},#{android_url},#{ios_url},#{copyright},#{app_version},#{downlod_num},now())
+	</insert>
+	
+	<update id="update">
+		update app_download <include refid="updateSql"></include> where id = #{id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="downlod_num != 0">  
+		    	downlod_num = #{downlod_num},
+			</if>  
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_download where 
+		<if test="brand_id != 0">
+			brand_id = #{brand_id}
+		</if>
+	</delete>
+</mapper>

@@ -1,0 +1,158 @@
+package com.jy.service.wzcg;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.repository.wzcg.WzcgXqtbDao;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.PositionService;
+import com.jy.service.system.org.RoleService;
+import com.jy.service.workflow.online.apply.ApproveTaskService;
+import com.jy.service.workflow.online.apply.ApproverSettingService;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.system.org.Org;
+import com.jy.entity.system.org.Position;
+import com.jy.entity.workflow.online.apply.ApproverSetting;
+import com.jy.entity.wzcg.WzcgXqtb;
+
+@Service(value = "wzcgXqtbService")
+public class WzcgXqtbService extends BaseServiceImp<WzcgXqtb> {
+	
+	@Resource
+	private WzcgXqtbDao wzcgXqtbDao;
+	@Resource(name="approveTaskService")
+	private ApproveTaskService approveTaskService;
+	@Resource(name="approverSettingService")
+	private ApproverSettingService approverSettingService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	public AccountService accountService;
+	@Autowired
+	private PositionService positionService;
+	
+	/**
+	 * 判断是否为审批者
+	 */
+	public boolean isApprove(){
+		return approverSettingService.isApprover();
+	}
+	
+	/**
+	 * 流程判断是否为最后一步
+	 * @return
+	 */
+	public boolean isOver(){
+		boolean isEndEvent = approveTaskService.isEndEvent();
+		return isEndEvent;
+	}
+	
+	/**
+	 * 得到流程调用数据
+	 * @return
+	 */
+	public ApproverSetting getFlowData(){
+		ApproverSetting approverSetting = approverSettingService.get();
+		return approverSetting;
+	}
+	
+	/**
+	 * 需求预填数据
+	 * @return
+	 */
+	public List<WzcgXqtb> getXqtbList(){
+		Account account = AccountShiroUtil.getCurrentUser();
+		Org org = roleService.getAccountOrg(account.getAccountId());
+		List<WzcgXqtb> xqtbList = new ArrayList<WzcgXqtb>();
+		WzcgXqtb xqtb = new WzcgXqtb();
+		if(org.getId().equals("9")){
+			xqtbList = this.find(xqtb);
+		}else{
+			boolean mark = this.isApprove();//判断是否为审批者
+			if(!mark){//非审批者需求预填数据
+				xqtb = new WzcgXqtb();
+				xqtb.setCreator(account.getAccountId());
+				xqtbList = this.find(xqtb);
+			}else{//审批者需求预填数据
+				Map<String, String> map = approveTaskService.list("xqtb");
+				for (Map.Entry<String, String> entry : map.entrySet()) { 
+					xqtb.setXqtbId(entry.getKey());
+					WzcgXqtb xqtb2 = this.find(xqtb).get(0); 
+					xqtbList.add(xqtb2);
+				}  
+			}
+		}
+		return xqtbList;
+	}
+	
+	/**
+	 * 数组数据完善（得到填报人员，得到审批人，得到职务名称）
+	 * @return
+	 */
+	public List<WzcgXqtb> getXqtbListFull(List<WzcgXqtb> xqtbList){
+		for(int i=0;i<xqtbList.size();i++){
+			xqtbList.get(i).setBm(roleService.getAccountOrg(xqtbList.get(i).getCreator()).getName());//得到需求部门
+			Account o = new Account();
+			o.setAccountId(xqtbList.get(i).getCreator());
+			xqtbList.get(i).setCreator(accountService.find(o).get(0).getName());//得到填报人员
+			o.setAccountId(xqtbList.get(i).getApproveId());
+			xqtbList.get(i).setApproveId((accountService.find(o).get(0).getName()));//得到审批人
+			Position position = new Position();
+			position.setId(xqtbList.get(i).getPositionId());
+			xqtbList.get(i).setPositionId(positionService.find(position).get(0).getName());//得到职务名称
+		}
+		return xqtbList;
+	}
+	
+	/**
+	 * 查询结果数组比对返回
+	 * 
+	 */
+	public List<WzcgXqtb> SearchList(List<WzcgXqtb> wzcgXqtbList)throws Exception{		
+		List<WzcgXqtb> xqtbListAll = new ArrayList<WzcgXqtb>();
+		List<WzcgXqtb> xqtbList = new ArrayList<WzcgXqtb>();
+		xqtbList = this.getXqtbList();//非审批者需求数据
+		for(int i=0;i<wzcgXqtbList.size();i++){//查询数据结果
+			for(int j=0;j<xqtbList.size();j++){
+				if(xqtbList.get(j).getXqtbId().equals(wzcgXqtbList.get(i).getXqtbId())){
+					xqtbListAll.add(wzcgXqtbList.get(i));
+				}
+			}
+		}
+		xqtbListAll = this.getXqtbListFull(xqtbListAll);//数组数据完善（得到填报人员，得到审批人，得到职务名称）
+		return xqtbListAll;
+	}
+	
+	public int count(WzcgXqtb wzcgXqtb){
+		return wzcgXqtbDao.count(wzcgXqtb);
+	}
+	
+	public List<WzcgXqtb> find(WzcgXqtb wzcgXqtb) {
+		return wzcgXqtbDao.find(wzcgXqtb);
+	}
+	
+	public List<WzcgXqtb> search(WzcgXqtb wzcgXqtb){
+		return wzcgXqtbDao.search(wzcgXqtb);
+	}
+	
+	public void insert(WzcgXqtb wzcgXqtb){
+		wzcgXqtbDao.insert(wzcgXqtb);
+	}
+	
+	public void delete(WzcgXqtb wzcgXqtb){
+		wzcgXqtbDao.delete(wzcgXqtb);
+	}
+	
+	public void update(WzcgXqtb wzcgXqtb){
+		wzcgXqtbDao.update(wzcgXqtb);
+	}
+
+}

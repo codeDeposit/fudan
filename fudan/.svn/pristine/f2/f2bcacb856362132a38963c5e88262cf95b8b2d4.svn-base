@@ -1,0 +1,13 @@
+package com.jy.repository.app;
+
+import com.jy.entity.app.AppCode;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public abstract interface AppCodeDao{
+	
+	public AppCode select(AppCode appCode);
+	
+	public int insert(AppCode appCode);
+	
+}

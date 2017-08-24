@@ -1,0 +1,189 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="modal fade" id="Modal_workNumber_add" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×
+				</button>
+				<h4 class="modal-title text-center" id="addModalLabel">新增班次</h4>
+			</div>
+			<form id="Form_workNumber_add" class="form-horizontal" role="form" onsubmit="return fAdd()">
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">班次名称</label>
+						<div class="col-sm-10 col-md-10">
+							<input id="sectionName" type="text" class="form-control" name="sectionName" placeholder="班次名称" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">上班时间</label>
+						<div class="col-sm-10 col-md-10">
+							<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" type="text" placeholder="上班时间" aria-required="true" onchange="fReckon()" id="dutyStartTime" name="dutyStartTime" onfocus="this.blur()" required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">下班时间</label>
+						<div class="col-sm-10 col-md-10">
+							<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" type="text" placeholder="下班时间" aria-required="true" onchange="fReckon()" id="dutyEndTime" name="dutyEndTime" onfocus="this.blur()" required>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">午休时间</label>
+						<div class="col-sm-10 col-md-10">
+							<div class="checkbox">
+							    <label>
+						      		<input type="checkbox" onclick="fLunchBreak()" name="isNoontimeRest" value="1">开启午休时间
+							    </label>
+						  	</div>
+						</div>
+					</div>
+					<div id="lunchBreakShow" style="display:none">
+						<div class="form-group pull-right">
+							<div class="col-sm-6 col-md-6 pull-right" style="margin-right:19%;">
+								<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" type="text" onchange="fReckon()" aria-required="true" name="restStartTime" id="restStartTime" onfocus="this.blur()" >
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+							<label class="col-sm-2 col-md-2 control-label pull-right">午休开始</label>
+						</div>
+						<div class="form-group pull-right">
+							<div class="col-sm-6 col-md-6 pull-right" style="margin-right:19%;">
+								<div class="input-group date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input6" data-link-format="yyyy-mm-dd">
+									<input class="form-control" size="16" type="text" onchange="fReckon()" aria-required="true" id="restEndTime" name="restEndTime" onfocus="this.blur()">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+							<label class="col-sm-2 col-md-2 control-label pull-right">午休结束</label>
+						</div>
+					</div>
+					<div class="form-group text-center">
+						<label class="col-sm-2 col-md-2 control-label">合计时长</label>
+						<div class="col-sm-10 col-md-10">
+							<input id="totalTime" name="totalTime" class="form-control" placeholder="合计时长" type="text" onfocus="this.blur()">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">下班打卡</label>
+						<div class="col-sm-4 col-md-4" style="margin-top:6px;">
+							<input type="radio" name="isSign" id="isSign" value="1">&nbsp;是
+						</div>
+						<div class="col-sm-4 col-md-4" style="margin-top:6px;">
+							<input type="radio" name="isSign" id="isSign" value="0">&nbsp;否
+						</div>
+					</div>
+					<hr/>
+					<label class="col-sm-12 col-md-12 pull-left">弹性工作制</label>
+					<div class="form-group">
+						<div class="checkbox col-md-12 center-block pull-right" >
+							<label class="control-label col-md-3" style="margin-left:15%;">
+								<input type="checkbox" name="isLate" value="1" >
+								允许迟到分钟数
+							</label>
+							<div class="col-md-4">
+								<input type="text" class="form-control" id="lateMinute" name="lateMinute" placeholder="0"  >
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="checkbox col-md-12  pull-right" style="margin-left:10%;">
+							<label class="control-label col-md-3 text-center" style="margin-left:15%;">
+								<input type="checkbox" name="isSeriousLate" value="1" >
+								严重迟到分钟数
+							</label>
+							<div class="col-md-4">
+								<input type="text" class="form-control" name="seriousLateMinute" id="seriousLateMinute" placeholder="0">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="checkbox col-md-12  pull-right" style="margin-left:10%;">
+							<label class="control-label col-md-3" style="margin-left:15%;">
+								<input type="checkbox" name="isAbsenteeism" value="1">
+								旷工迟到分钟数
+							</label>
+							<div class="col-md-4">
+								<input type="text" class="form-control" name="absenteeismMinute" id="absenteeismMinute" placeholder="0">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						关闭
+					</button>
+					<button id="dutysectioneditbtn" type="submit" class="btn btn-success">
+						保存
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var _break = 0;
+	//午休时间菜单管理
+	function fLunchBreak(){
+		$('#lunchBreakShow').toggle(400,function(){
+			if(_break == 0){
+				_break = 1;
+				fReckon();
+			}else{
+				_break = 0;
+				fReckon();
+			}
+	 	});
+	}
+	//合计时长计算
+	function fReckon(){
+		/**
+		* 工作时长计算
+		*/
+		var a1 = document.getElementById('dutyStartTime').value;
+		var a2 = document.getElementById('dutyEndTime').value;
+	    var time1 = parseInt(a1.substring(0,2));
+	    var time2 = parseInt(a2.substring(0,2));
+	    var timeHour = time2 - time1;//得到小时数相减结果
+	    var time3 = parseInt(a1.substring(3,5));
+	    var time4 = parseInt(a2.substring(3,5));
+	    var timeMinute = Math.abs(time4 - time3)/60;//得到分钟数相减结果
+	    var time1 = timeHour + timeMinute;
+	    var timeResult1 = time1.toFixed(1);
+	    /*
+	    * 午休时长计算
+	    */
+	    var b1 = document.getElementById('restStartTime').value;
+		var b2 = document.getElementById('restEndTime').value;
+	    var time3 = parseInt(b1.substring(0,2));
+	    var time4 = parseInt(b2.substring(0,2));
+	    var timeHour2 = time4 - time3;//得到小时数相减结果
+	    var time5 = parseInt(b1.substring(3,5));
+	    var time6 = parseInt(b2.substring(3,5));
+	    var timeMinute2 = Math.abs(time6 - time5)/60;//得到分钟数相减结果
+	    var time2 = timeHour2 + timeMinute2;
+	    var timeResult2 = time2.toFixed(1);
+	    /*
+	    * 最后时长计算
+	    */
+	    if(_break != 0){
+	    	var timeResult = timeResult1 - timeResult2;
+	    }else{
+		    var timeResult = timeResult1;
+	    }
+	    document.getElementById("totalTime").value = timeResult;
+	}
+</script>

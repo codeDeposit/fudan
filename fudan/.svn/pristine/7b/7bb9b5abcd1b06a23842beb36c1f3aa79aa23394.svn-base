@@ -1,0 +1,218 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.Book;
+import com.jy.entity.oa.admin.BookSn;
+import com.jy.entity.oa.admin.BookType;
+import com.jy.repository.oa.admin.BookMapper;
+import com.jy.repository.oa.admin.BookSnMapper;
+import com.jy.repository.oa.admin.BookTypeMapper;
+import com.jy.service.oa.admin.BookService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("bookService")
+public class BookServiceImpl implements BookService {
+
+	private BookMapper bookMapper;
+	private BookSnMapper bookSnMapper;
+	private BookTypeMapper bookTypeMapper;
+
+	public BookTypeMapper getBookTypeMapper() {
+		return bookTypeMapper;
+	}
+
+	@Autowired
+	public void setBookTypeMapper(BookTypeMapper bookTypeMapper) {
+		this.bookTypeMapper = bookTypeMapper;
+	}
+
+	public BookSnMapper getBookSnMapper() {
+		return bookSnMapper;
+	}
+
+	@Autowired
+	public void setBookSnMapper(BookSnMapper bookSnMapper) {
+		this.bookSnMapper = bookSnMapper;
+	}
+
+	public BookMapper getBookMapper() {
+		return bookMapper;
+	}
+
+	@Autowired
+	public void setBookMapper(BookMapper bookMapper) {
+		this.bookMapper = bookMapper;
+	}
+
+	// 添加图书
+	@Override
+	public JsonInfo save(Book book) {
+		//添加图书
+		book.setLeftAmount(book.getAmount());
+		int result = bookMapper.insert(book);
+		//获取新增图书Id号
+		Long bookId = bookMapper.selectMax();
+		//添加图书后，将每本书的sn号存到数据库
+		for(int i=1;i<=book.getAmount();i++){
+			String bookSnNumber = "";
+			//添加图书成功后，根据ISBN和图书数量自动生成每本图书SN号
+			BookSn bookSn = new BookSn();
+			//每本书的bookSn号根据书的ISBN号和数量自动生成,
+			//如书的ISBN是123,数量是3,则每本书的bookSn分别是：123-1,123-2,123-3
+			bookSnNumber=book.getIsbn()+"-"+i;
+			bookSn.setBookId(bookId);
+			bookSn.setBookSN(bookSnNumber);
+			//默认书的状态是0表示未借出
+			bookSn.setStatus((short) 0);
+			//添加bookSn信息
+			result = bookSnMapper.insert(bookSn);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 修改图书信息
+	@Override
+	public JsonInfo update(Book book, Long[] bookSnId) {
+		int result = 0;
+		String isbnDB = bookMapper.selectISBNBy(book.getBookId());
+		//比对图书的ISBN，如果不同，进行修改book内容，booksn也随之修改，并保存；
+		if(!(book.getIsbn().equals(isbnDB))) {
+			//修改booksn号
+			for(int i=1; i<=book.getAmount(); i++) {
+				String bookSnNumber = "";
+				//添加图书成功后，根据ISBN和图书数量自动生成每本图书SN号
+				BookSn bookSn = new BookSn();
+				//每本书的bookSn号根据书的ISBN号和数量自动生成,
+				//如书的ISBN是123,数量是3,则每本书的bookSn分别是：123-1,123-2,123-3
+				bookSnNumber=book.getIsbn()+"-"+i;
+				bookSn.setBookId(book.getBookId());
+				bookSn.setBookSN(bookSnNumber);
+				//默认书的状态是0表示未借出
+				bookSn.setStatus((short) 0);
+				//添加bookSn信息
+				result = bookSnMapper.update(bookSn);
+			}
+		}
+		result = bookMapper.update(book);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public Book getInfoBy(Long bookId) {
+		Book book = bookMapper.selectBy(bookId);
+		List<BookSn> bookSns = bookSnMapper.selectBy(bookId);
+		book.setBookSns(bookSns);
+		return book;
+	}
+
+	// 更新数量
+	@Override
+	public JsonInfo updateAmount(Long bookId, Integer addAmount) {
+		Book book = bookMapper.selectBy(bookId);
+		int amount = book.getAmount() + addAmount;
+		int leftAmount = book.getLeftAmount() + addAmount;
+		
+		book.setAmount(amount);
+		book.setLeftAmount(leftAmount);
+		
+		int result = bookMapper.updateAmount(book);
+		
+		//对应的book-sn也要改变
+		//获取之前这本书对应的最大的id号
+		List<BookSn> booksns = bookSnMapper.selectBy(bookId);
+		//存放每一本书的booksn中-后的数字：例如：xxx-1，则存1
+		List<Integer> snList = new ArrayList<Integer>();
+		for(BookSn sn : booksns) {
+			String snStr = sn.getBookSN();
+			String[] subsnStrs = snStr.split("-");
+			snList.add(Integer.valueOf(subsnStrs[1]));
+		}
+		Collections.sort(snList);
+		int maxSn = snList.get(snList.size()-1);
+		//获取图书的名字
+		String isbn = bookMapper.selectBy(bookId).getIsbn();
+		for(int i=1; i<=addAmount; i++) {
+			BookSn bookSn = new BookSn();
+			bookSn.setBookId(bookId);
+			String bookSN = isbn+"-"+(maxSn+i);
+			bookSn.setBookSN(bookSN);
+			bookSn.setStatus((short)0);
+			
+			bookSnMapper.insert(bookSn);
+		}
+		
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 删除图书
+	@Override
+	public JsonInfo delete(Long[] bookId) {
+		int result = 0;
+		for(Long bId : bookId) {
+			result = bookSnMapper.delete(bId);
+			result = bookMapper.delete(bId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取图书列表
+	@Override
+	public List<Book> get(Long typeId, String author, String bookName) {
+		List<Book> books = bookMapper.select(typeId, author, bookName);
+		return books;
+	}
+
+	// 分页获取图书列表
+	@Override
+	public List<Book> getPageList(PageBean pb, Long typeId, String author,
+			String bookName) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Book> pageBooks = bookMapper.selectPageData(firstIndex, toIndex, typeId, author, bookName);
+		for(Book book: pageBooks) {
+			BookType bt = bookTypeMapper.selectInfoBy(book.getTypeId());
+			book.setTypeName(bt.getTypeName());
+		}
+		return pageBooks;
+	}
+
+}

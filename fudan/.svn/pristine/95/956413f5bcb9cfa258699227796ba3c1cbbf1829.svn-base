@@ -1,0 +1,146 @@
+var _id;//类别id
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	fGetProduct();
+});
+function fGetProduct(){
+	$.ajax({//类别调取
+		type:"post",
+		async:false,
+		url:basePath+"backstage/wzcg/kind/printList",
+		success:function(data){	
+			$('#kind_add_id').html(data);
+		}
+	}); 
+}	
+function fDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fuSure(param1,param2){
+	if(param2 == 'kind'){
+		fDelete2(param1);
+	}
+}
+function fDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/delete",
+		data:{id:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList(); 
+			}
+		}
+	});
+}
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/list",
+		success : function(data) {
+			 $('#kind_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fLock(){
+	if ($('#kind_add_pid').is(':checked')) {
+		_id = $("#kind_add_id").val()
+		$('#kind_add_pid').attr("checked",'false');
+	}else{
+		_id = 0;
+		$('#kind_add_pid').attr("checked",'true');
+	}
+}
+function fChoiceSelect(){
+	fGetProduct();
+	$("#kind_add_id option[value='" + _id + "']").attr("selected", true);
+}
+function fAdd() {
+	fuLoading();
+	setTimeout("fAdd2()",200);
+	return false;
+}
+function fAdd2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/add",
+		data : $("#Form_kind_add").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				alert(obj.resMsg);
+			} else {
+				$('#Modal_kind_add').modal('hide');
+				$('#kind_add_name').val('');
+				$("input[name='kind_add_id'][value='0']").attr("checked",true); 
+			  	fList();
+			  	fuClose();
+			}
+		}
+	});
+}
+function fDetail(param,param2){
+	fuLoading(); 	
+	setTimeout('fDetail2(\''+param+'\','+param2+');',500);
+	return false;
+}
+function fDetail2(param,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/detail",
+		data:{id:param,mark:param2},
+		success : function(data) {
+			fuCloseLayer();
+			$('#kind_detail').html(data);
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/update",
+		data : $("#Form_kind_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_kind_detail').modal('hide');
+				fuCloseLayer();
+			 	fList();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"backstage/wzcg/kind/search",
+		data : $("#Form_kind_search").serialize(),
+		success : function(data) {
+			$('#kind_list').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}

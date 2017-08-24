@@ -1,0 +1,221 @@
+package com.jy.service.oa.impl.hrm;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.hrm.SalaryItem;
+import com.jy.entity.oa.hrm.StandSalary;
+import com.jy.entity.oa.hrm.StandSalaryItem;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.EmployeeMapper;
+import com.jy.repository.oa.hrm.SalaryItemMapper;
+import com.jy.repository.oa.hrm.StandSalaryItemMapper;
+import com.jy.repository.oa.hrm.StandSalaryMapper;
+import com.jy.service.oa.hrm.StandSalaryService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("standSalaryService")
+public class StandSalaryServiceImpl implements StandSalaryService {
+
+	private StandSalaryMapper standSalaryMapper;
+	private SalaryItemMapper salaryItemMapper;
+	private StandSalaryItemMapper standSalaryItemMapper;
+	private EmployeeMapper employeeMapper;
+
+	public EmployeeMapper getEmployeeMapper() {
+		return employeeMapper;
+	}
+
+	@Autowired
+	public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+		this.employeeMapper = employeeMapper;
+	}
+
+	public SalaryItemMapper getSalaryItemMapper() {
+		return salaryItemMapper;
+	}
+
+	@Autowired
+	public void setSalaryItemMapper(SalaryItemMapper salaryItemMapper) {
+		this.salaryItemMapper = salaryItemMapper;
+	}
+
+	public StandSalaryMapper getStandSalaryMapper() {
+		return standSalaryMapper;
+	}
+
+	@Autowired
+	public void setStandSalaryMapper(StandSalaryMapper standSalaryMapper) {
+		this.standSalaryMapper = standSalaryMapper;
+	}
+
+	public StandSalaryItemMapper getStandSalaryItemMapper() {
+		return standSalaryItemMapper;
+	}
+
+	@Autowired
+	public void setStandSalaryItemMapper(StandSalaryItemMapper standSalaryItemMapper) {
+		this.standSalaryItemMapper = standSalaryItemMapper;
+	}
+
+	// 添加薪酬标准
+	@Override
+	public JsonInfo save(StandSalary standSalary) {
+		standSalary.setStatus((short)0);
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		standSalary.setFramer(employee.getFullname());
+		standSalary.setSetdownTime(new Date());
+		int result = 0;
+		// 添加薪酬标准
+		result = standSalaryMapper.insert(standSalary);
+		// 获取最大的standSalaryId
+		Long standardId = standSalaryMapper.selectMaxId();
+		// 关联薪酬项目
+		Long[] salaryItemId = standSalary.getSalaryItemId();
+		if(salaryItemId != null) {
+			for (Long siId : salaryItemId) {
+				// 根据siId获取详细信息
+				SalaryItem salaryItem = salaryItemMapper.selectInfoBy(siId);
+				StandSalaryItem ssi = new StandSalaryItem();
+				ssi.setItemName(salaryItem.getItemName());
+				ssi.setAmount(salaryItem.getDefaultVal());
+				ssi.setSalaryItemId(salaryItem.getSalaryItemId());
+				ssi.setStandardId(standardId);
+				result = standSalaryItemMapper.insert(ssi);
+			}
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取薪酬标准详细信息
+	@Override
+	public StandSalary getInfoBy(Long standardId) {
+		StandSalary standSalary = standSalaryMapper.selectInfoBy(standardId);
+		List<StandSalaryItem> standSalaryItems = standSalaryItemMapper.selectBy(standardId);
+		
+		standSalary.setSetdownTime1(DateStringUtil.dateToString3(standSalary.getSetdownTime()));
+		if(standSalary.getCheckTime() != null) {
+			standSalary.setCheckTime1(DateStringUtil.dateToString3(standSalary.getCheckTime()));
+		}
+		if(standSalary.getModifyTime() != null) {
+			standSalary.setModifyTime1(DateStringUtil.dateToString3(standSalary.getModifyTime()));
+		}
+		
+		standSalary.setStandSalaryItems(standSalaryItems);
+		return standSalary;
+	}
+
+	// 修改薪酬标准信息
+	@Override
+	public JsonInfo update(StandSalary standSalary) {
+		int result = 0;
+		standSalary.setModifyTime(new Date());
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		standSalary.setModifyName(employee.getFullname());
+		// 修改薪酬标准
+		result = standSalaryMapper.update(standSalary);
+		//删除所有的关联
+		result = standSalaryItemMapper.delete(standSalary.getStandardId());
+		// 关联薪酬项目
+		Long[] salaryItemId = standSalary.getSalaryItemId();
+		if(salaryItemId != null) {
+			for (Long siId : salaryItemId) {
+				// 根据siId获取详细信息
+				SalaryItem salaryItem = salaryItemMapper.selectInfoBy(siId);
+				StandSalaryItem ssi = new StandSalaryItem();
+				ssi.setItemName(salaryItem.getItemName());
+				ssi.setAmount(salaryItem.getDefaultVal());
+				ssi.setSalaryItemId(salaryItem.getSalaryItemId());
+				ssi.setStandardId(standSalary.getStandardId());
+				result = standSalaryItemMapper.insert(ssi);
+			}
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取薪酬标准列表
+	@Override
+	public List<StandSalary> get(String standardNo, String standardName, Short status) {
+		List<StandSalary> standSalarys = standSalaryMapper.select(standardNo, standardName, status);
+		return standSalarys;
+	}
+
+	// 批量删除薪酬标准
+	@Override
+	public JsonInfo delete(Long[] standardId) {
+		int result = 0;
+		for(Long sId : standardId) {
+			result = standSalaryItemMapper.delete(sId);
+			result = standSalaryMapper.delete(sId);
+		}
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 审核薪酬标准
+	@Override
+	public JsonInfo review(StandSalary standSalary) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		Employee employee = employeeMapper.selectItSelf(account.getAccountId());
+		standSalary.setCheckName(employee.getFullname());
+		standSalary.setCheckTime(new Date());
+		
+		int result = standSalaryMapper.updateReview(standSalary);
+		JsonInfo info = new JsonInfo();
+		if (result > 0) {
+			info.setSuccess(true);
+		} else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 薪酬标准分页列表
+	@Override
+	public List<StandSalary> getPageList(PageBean pb, String standardNo,
+			String standardName, Short status) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<StandSalary> standSalarys = standSalaryMapper.selectPageData(firstIndex, toIndex, standardNo, standardName, status);
+		
+		for(StandSalary standSalary: standSalarys) {
+			standSalary.setSetdownTime1(DateStringUtil.dateToString3(standSalary.getSetdownTime()));
+		}
+		
+		return standSalarys;
+	}
+}

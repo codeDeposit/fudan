@@ -1,0 +1,139 @@
+package com.jy.controller.oa.admin;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.admin.GoodsApply;
+import com.jy.service.oa.admin.GoodsApplyService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/goodsapply")
+public class GoodsApplyController {
+
+	private GoodsApplyService goodsApplyService;
+
+	public GoodsApplyService getGoodsApplyService() {
+		return goodsApplyService;
+	}
+
+	@Resource(name="goodsApplyService")
+	public void setGoodsApplyService(GoodsApplyService goodsApplyService) {
+		this.goodsApplyService = goodsApplyService;
+	}
+	
+	/**
+	 * 添加申请单
+	 * @param goodsApply
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(GoodsApply goodsApply) {
+		JsonInfo info = goodsApplyService.save(goodsApply);
+		return info;
+	}
+	
+	/**
+	 * 获取详细信息
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getdetails(Long applyId, String operation) {
+		GoodsApply goodsApply = goodsApplyService.getInfoBy(applyId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/admin/goodsapplys_form");
+		mv.addObject("operation", operation);
+		mv.addObject("goodsApply", goodsApply);
+		
+		return mv;
+	}
+	
+	/**
+	 * 修改信息
+	 * @param goodsApply
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(GoodsApply goodsApply) {
+		JsonInfo info = goodsApplyService.update(goodsApply);
+		return info;
+	}
+	
+	/**
+	 * 批量删除
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] applyId) {
+		JsonInfo info = goodsApplyService.del(applyId);
+		return info;
+	}
+	
+	/**
+	 * 获取申请列表
+	 * @param goodsApply
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, GoodsApply goodsApply) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		List<GoodsApply> goodsApplys = goodsApplyService.get(goodsApply);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(goodsApplys.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		List<GoodsApply> pageGoodsApplys = goodsApplyService.getPageList(pb, goodsApply);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/admin/goodsapplys_table");
+		}else {
+			mv.setViewName("system/oa/admin/goodsapplys_list");
+		}
+		
+		mv.addObject("goodsApplys", pageGoodsApplys);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 审核申请单
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping
+	@ResponseBody
+	public JsonInfo review(Long goodsId, Short status) {
+		JsonInfo info = goodsApplyService.review(goodsId, status);
+		return info;
+	}
+
+}

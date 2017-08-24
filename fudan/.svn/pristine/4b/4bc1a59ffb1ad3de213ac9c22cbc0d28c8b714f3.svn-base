@@ -1,0 +1,161 @@
+package com.jy.service.oa.impl.communicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.communicate.Mail;
+import com.jy.entity.oa.communicate.MailAttach;
+import com.jy.entity.oa.communicate.MailBox;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.communicate.MailAttachMapper;
+import com.jy.repository.oa.communicate.MailBoxMapper;
+import com.jy.repository.oa.communicate.MailMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.communicate.MailBoxService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("mailBoxService")
+public class MailBoxServiceImpl implements MailBoxService{
+	
+	private MailBoxMapper mailBoxMapper;
+	private MailMapper mailMapper;
+	private MailAttachMapper mailAttachMapper;
+	private FileAttachMapper fileAttachMapper;
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	public MailAttachMapper getMailAttachMapper() {
+		return mailAttachMapper;
+	}
+
+	@Autowired
+	public void setMailAttachMapper(MailAttachMapper mailAttachMapper) {
+		this.mailAttachMapper = mailAttachMapper;
+	}
+
+	public MailMapper getMailMapper() {
+		return mailMapper;
+	}
+
+	@Autowired
+	public void setMailMapper(MailMapper mailMapper) {
+		this.mailMapper = mailMapper;
+	}
+
+	public MailBoxMapper getMailBoxMapper() {
+		return mailBoxMapper;
+	}
+
+	@Autowired
+	public void setMailBoxMapper(MailBoxMapper mailBoxMapper) {
+		this.mailBoxMapper = mailBoxMapper;
+	}
+
+	/**
+	 * 删除邮件
+	 * @return
+	 */
+	@Override
+	public JsonInfo delete(Long boxId) {
+		mailBoxMapper.deleteBy(boxId);
+		JsonInfo info = new JsonInfo();
+		info.setSuccess(true);
+		return info;
+	}
+
+	/**
+	 * 查找邮箱下的邮件
+	 * @return
+	 */
+	@Override
+	public List<MailBox> get(String subject, String sender,
+			String recipientNames, Long folderId) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		List<MailBox> mailboxs = mailBoxMapper.select(subject, sender, recipientNames, folderId, userId);
+		for (MailBox mailBox : mailboxs) {
+			Long mailId = mailBox.getMailId();
+			Mail mail = mailMapper.selectInfoBy(mailId);
+			List<MailAttach> mailAttachs = mailAttachMapper.selectBy(mailId);
+			List<FileAttach> fileAttachs = new ArrayList<FileAttach>();
+			for (MailAttach mailAttach : mailAttachs) {
+				Long fileId = mailAttach.getFileId();
+				FileAttach fileAttach = fileAttachMapper.selectBy(fileId);
+				fileAttachs.add(fileAttach);
+			}
+			mail.setMailAttachs(fileAttachs);
+			mailBox.setMail(mail);
+			mailBox.setSendTime1(DateStringUtil.dateToString4(mailBox.getSendTime()));
+		}
+		return mailboxs;
+	}
+
+	/**
+	 * 查询邮件详细信息
+	 */
+	@Override
+	public MailBox getBy(Long boxId) {
+		MailBox mailBox = mailBoxMapper.selectInfoBy(boxId);
+		return mailBox;
+	}
+
+	/**
+	 * 邮件转移目录到指定目录
+	 */
+	@Override
+	public JsonInfo transfer(Long boxId, Long folderId) {
+		JsonInfo info = new JsonInfo();
+		int result = mailBoxMapper.transfer(boxId, folderId);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/**
+	 * 邮件分页列表
+	 */
+	@Override
+	public List<MailBox> getPageList(PageBean pb, String subject,
+			String sender, String recipientNames, Long folderId) {
+		int pageSize = pb.getPageSize();
+		int currentPage = pb.getCurrentPage();
+		int firstIndex = (currentPage-1) * pageSize;
+		int toIndex = currentPage * pageSize;
+		Account account = AccountShiroUtil.getCurrentUser();
+		String userId = account.getAccountId();
+		List<MailBox> mailboxs = mailBoxMapper.selectPageData(firstIndex, toIndex, subject, sender, recipientNames, folderId, userId);
+		for (MailBox mailBox : mailboxs) {
+			Long mailId = mailBox.getMailId();
+			Mail mail = mailMapper.selectInfoBy(mailId);
+			List<MailAttach> mailAttachs = mailAttachMapper.selectBy(mailId);
+			List<FileAttach> fileAttachs = new ArrayList<FileAttach>();
+			for (MailAttach mailAttach : mailAttachs) {
+				Long fileId = mailAttach.getFileId();
+				FileAttach fileAttach = fileAttachMapper.selectBy(fileId);
+				fileAttachs.add(fileAttach);
+			}
+			mail.setMailAttachs(fileAttachs);
+			mailBox.setMail(mail);
+			mailBox.setSendTime1(DateStringUtil.dateToString4(mailBox.getSendTime()));
+		}
+		return mailboxs;
+	}
+	
+}

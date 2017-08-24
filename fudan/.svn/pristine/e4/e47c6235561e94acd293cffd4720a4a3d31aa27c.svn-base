@@ -1,0 +1,172 @@
+package com.jy.controller.oa.archive;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.entity.oa.archive.ArchivesType;
+import com.jy.service.oa.archive.ArchTemplateService;
+import com.jy.service.oa.archive.ArchivesTypeService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/archivestype")
+public class ArchivesTypeController {
+
+	private ArchivesTypeService archivesTypeService;
+
+	public ArchivesTypeService getArchivesTypeService() {
+		return archivesTypeService;
+	}
+
+	@Resource(name="archivesTypeService")
+	public void setArchivesTypeService(ArchivesTypeService archivesTypeService) {
+		this.archivesTypeService = archivesTypeService;
+	}
+	
+	private ArchTemplateService archTemplateService;
+
+	public ArchTemplateService getArchTemplateService() {
+		return archTemplateService;
+	}
+
+	@Resource(name = "archTemplateService")
+	public void setArchTemplateService(ArchTemplateService archTemplateService) {
+		this.archTemplateService = archTemplateService;
+	}
+	
+	/**
+	 * 添加分类
+	 * @param archivesType
+	 * @return
+	 */
+	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@ResponseBody
+	public JsonInfo add(ArchivesType archivesType) {
+		JsonInfo info = archivesTypeService.save(archivesType);
+		return info;
+	}
+	
+	/**
+	 * 修改分类
+	 * @param archivesType
+	 * @return
+	 */
+	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	public ModelAndView edit(ArchivesType archivesType) {
+		archivesTypeService.update(archivesType);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/archives/archives_list");
+		return mv;
+	}
+	
+	/**
+	 * 删除分类
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/del")
+	@ResponseBody
+	public JsonInfo del(long typeId) {
+		String tempName = "";
+		List<ArchTemplate> archTemplates = archTemplateService.getSomeBy(typeId, tempName);
+		int count = archTemplates.size();
+		// 先删除类型下的所有内容
+		if(count != 0) {
+			Long[] templateIds = new Long[count];
+			for(int i=0; i<count; i++) {
+				templateIds[i] = archTemplates.get(i).getTemplateId();
+			}
+			archTemplateService.del(templateIds);
+		}
+		JsonInfo info = archivesTypeService.delete(typeId);
+		return info;
+	}
+	
+	/**
+	 * 根据分类ID号，获取详细信息
+	 * @param typeId
+	 * @return
+	 */
+	@RequestMapping("/getinfo")
+	public ModelAndView getDetails(String operation, Long typeId) {
+		ArchivesType archivesType = archivesTypeService.getBy(typeId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/archives/archivestype_form");
+		mv.addObject("archivesType", archivesType);
+		mv.addObject("operation", operation);
+		return mv;
+	}
+	
+	/**
+	 * 获取所有公文类别, 分页显示
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request) {
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		// 获取公文类别总数
+		List<ArchivesType> archivesTypes = archivesTypeService.getAll();
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(archivesTypes.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<ArchivesType> pageArchivesTypes = archivesTypeService.getPageList(pb);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("system/oa/archives/archivestype_list");
+		mv.addObject("archivesTypes", pageArchivesTypes);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+	
+	/**
+	 * 加载删除模态框
+	 */
+	@RequestMapping("toast")
+	public ModelAndView toast(HttpServletRequest request) {
+		String param1 = request.getParameter("param"); // Integer类型
+		Long param = Long.valueOf(param1);
+		String tempName = "";
+		int count = archTemplateService.getSomeBy(param, tempName).size();
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/system/oa/common/data_toast");
+		mv.getModel().put("parm", param);
+		mv.getModel().put("count", count);
+		return mv;
+	}
+	
+	/**
+	 * 获取所有的公文类别列表
+	 * @return
+	 */
+	@RequestMapping("/listall")
+	@ResponseBody
+	public List<ArchivesType> listAll() {
+		List<ArchivesType> archivesTypes = archivesTypeService.getAll();
+		return archivesTypes;
+	}
+	
+}

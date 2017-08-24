@@ -1,0 +1,110 @@
+var _lat;
+var _lng;
+var _address;
+$(document).ready(function() {
+ 	fuLoading();
+	setTimeout("fList()",200);
+	$('.form_date').datetimepicker({/*时间初始化*/
+		language: 'zh-CN',
+        format: 'hh:ii',
+        startView:1,
+        autoclose: true,
+	});
+});
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysystem/list",
+		success : function(data) {
+			 $('#dutySystem_list').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fDelete(param1,param2) {
+	fuConfirm(param1,param2);
+} 
+function fDelete2(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysystem/delete",
+		data:{systemId:param1},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				alert(obj.resMsg);
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList(); 
+			}
+		}
+	});
+}
+function fuSure(param1,param2){
+		fDelete2(param1);
+}
+function fDetail(param1,param2){
+	openForm(param1);
+}
+function fUsing(param1,param2){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysystem/using",
+		data : {
+			systemId:param1,
+			isDefault:param2
+		},
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				fList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fUpdate(){
+	fuLoading(); 	
+	setTimeout("fUpdate2();",500);
+	return false;
+}
+function fUpdate2(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysystem/update2",
+		data : $("#Form_workNumber_detail").serialize(),
+		success : function(data) {
+			var obj = eval('(' + data + ')');
+			if (obj.res == 0) {
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+			} else {
+				$('#Modal_workNumber_detail').modal('hide');
+				fList();
+				fuCloseLayer();
+			}
+		}
+	});
+}
+function fSearch(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"oa/dutysystem/search",
+		data : $("#Form_dutySystem_search").serialize(),
+		success : function(data) {
+			$('#dutySystem_list').html(data);
+			fuCloseLayer();
+		}
+	});
+	return false;
+}

@@ -1,0 +1,62 @@
+package com.jy.repository.oa.document;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.document.Document;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DocumentMapper {
+
+	// 插入文档
+	int insert(Document document);
+
+	// 获取刚插入文档的ID号
+	Long selectMaxDocumentId();
+
+	// 插入文档与附件的关联
+	int insertFileId(@Param("fileId") Long fileId, @Param("docId") Long docId);
+
+	// 获取文档详细信息
+	Document selectInfo(Long docId);
+
+	// 获取附件Id
+	List<Long> selectFileId(Long docId);
+
+	// 修改文档信息、文档分享
+	int update(Document document);
+
+	// 删除所有的附件关联
+	int deleteFileId(Long documentId);
+
+	// 删除文档
+	int delete(Long dId);
+
+	// 获取自己创建的文档
+	List<Document> selectSelfDoc(@Param("userId") String userId, @Param("docName") String docName,
+			@Param("folderId") Long folderId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+	// 获取被共享的文档
+	List<Document> selectSharedDoc(@Param("docName") String docName, @Param("startDate") Date startDate,
+			@Param("endDate") Date endDate);
+	
+	// 获取共享文档列表
+	List<Document> selectShare(@Param("docName") String docName, @Param("sharedUserNames") String sharedUserNames, @Param("startDate") Date startDate,
+			@Param("endDate") Date endDate);
+	
+	// 获取公共文档
+	List<Document> selectPublicDoc(@Param("folderId") Long folderId, @Param("docName") String docName,
+			@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+	List<Document> selectSelfPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("userId") String userId, 
+			@Param("docName") String docName, @Param("folderId") Long folderId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+	//	查询共享文档分页列表
+	List<Document> selectSharePageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("docName") String docName, @Param("sharedUserNames") String sharedUserNames, @Param("startDate") Date startDate,
+			@Param("endDate") Date endDate);
+
+}

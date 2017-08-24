@@ -1,0 +1,109 @@
+package com.jy.service.oa.impl.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.oa.admin.CarRepair;
+import com.jy.entity.oa.admin.CarRepairVO;
+import com.jy.repository.oa.admin.CarRepairMapper;
+import com.jy.service.oa.admin.CarRepairService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Service("carRepairService")
+public class CarRepairServiceImpl implements CarRepairService {
+
+	private CarRepairMapper carRepairMapper;
+
+	public CarRepairMapper getCarRepairMapper() {
+		return carRepairMapper;
+	}
+
+	@Autowired
+	public void setCarRepairMapper(CarRepairMapper carRepairMapper) {
+		this.carRepairMapper = carRepairMapper;
+	}
+
+	// 添加车辆维修单
+	@Override
+	public JsonInfo save(CarRepair carRepair) {
+		int result = carRepairMapper.insert(carRepair);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取详细信息
+	@Override
+	public CarRepairVO getInfoBy(Long repairId) {
+		CarRepairVO carRepair = carRepairMapper.selectInfoBy(repairId);
+		carRepair.setRepairDate1(DateStringUtil.dateToString3(carRepair.getRepairDate()));
+		return carRepair;
+	}
+
+	// 修改维修单信息
+	@Override
+	public JsonInfo update(CarRepair carRepair) {
+		int result = carRepairMapper.update(carRepair);
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 批量删除维修单
+	@Override
+	public JsonInfo del(Long[] repairId) {
+		int result = 0;
+		for(Long rId : repairId) {
+			result = carRepairMapper.delete(rId);
+		}
+		JsonInfo info = new JsonInfo();
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	// 获取维修单列表
+	@Override
+	public List<CarRepair> get(String carNo, String repairType) {
+		List<CarRepair> carRepairs = carRepairMapper.select(carNo, repairType);
+		return carRepairs;
+	}
+
+	// 维修单分页列表
+	@Override
+	public List<CarRepairVO> getPageList(PageBean pb, String carNo, String repairType) {
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		
+		List<CarRepairVO> carRepairs = carRepairMapper.selectPageData(firstIndex, toIndex, carNo, repairType);
+		
+		for(CarRepairVO crv: carRepairs) {
+			crv.setRepairDate1(DateStringUtil.dateToString3(crv.getRepairDate()));
+		}
+		
+		return carRepairs;
+	}
+
+}

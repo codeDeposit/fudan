@@ -1,0 +1,91 @@
+package com.jy.controller.oa;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.Employee;
+import com.jy.entity.oa.EmployeeInfoVo;
+import com.jy.entity.system.account.Account;
+import com.jy.service.oa.EmployeeService;
+import com.jy.service.system.org.OrgService;
+import com.jy.task.utils.JsonInfo;
+
+@Controller
+@RequestMapping("/oa")
+public class EmployeeController{
+
+	private EmployeeService employeeService;
+	private OrgService orgService;
+
+	public OrgService getOrgService() {
+		return orgService;
+	}
+
+	@Resource(name="OrgService")
+	public void setOrgService(OrgService orgService) {
+		this.orgService = orgService;
+	}
+
+	public EmployeeService getEmployeeService() {
+		return employeeService;
+	}
+
+	@Resource(name="employeeService")
+	public void setEmployeeService(EmployeeService employeeService) {
+		this.employeeService = employeeService;
+	}
+
+	/**
+	 * 列出所有员工信息
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/listEm")
+	public ModelAndView list(@RequestParam(required=false) String roleId, @RequestParam(required=false) String orgId,
+							 @RequestParam(required=false) String positionId) {
+		List<Employee> employees = employeeService.list(roleId, orgId, positionId);
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("employees", employees);
+		mv.setViewName("system/oa/oarole/employee_table");
+		
+		return mv;
+	}
+
+	/**
+	 * 显示详细信息
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	@ResponseBody
+	public JsonInfo getDetailsInfo() {
+		/*Account account = AccountShiroUtil.getCurrentUser();
+		ResponseInfoVo<Employee> employeeInfoList = employeeService.getItSelfDetails(account.getAccountId());
+		return employeeInfoList;*/
+		return null;
+	}
+
+	/**
+	 * 当前用户修改个人资料
+	 * 
+	 * @param employeeInfo
+	 * @return
+	 */
+	@RequestMapping("/editItSelfInfo")
+	@ResponseBody
+	public JsonInfo editItSelfInfo(EmployeeInfoVo employeeInfo) {
+		Account account = AccountShiroUtil.getCurrentUser();
+		JsonInfo employeeInfoList = employeeService.editInfo(account.getAccountId(), employeeInfo);
+		return employeeInfoList;
+	}
+	
+}

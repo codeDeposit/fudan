@@ -1,0 +1,12 @@
+package com.jy.repository.app;
+
+import com.jy.entity.app.AppItem;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AppItemDao extends BaseDao<AppItem>{
+	
+	AppItem select(AppItem appItem);
+	
+}

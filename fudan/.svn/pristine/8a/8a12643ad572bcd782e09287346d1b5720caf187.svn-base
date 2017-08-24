@@ -1,0 +1,23 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.List;
+
+public class MailFolderVo {
+	
+	private MailFolder fatherFolder;			//父目录
+	private List<MailFolderVo> childFolders;	//子目录
+	
+	public MailFolder getFatherFolder() {
+		return fatherFolder;
+	}
+	public void setFatherFolder(MailFolder fatherFolder) {
+		this.fatherFolder = fatherFolder;
+	}
+	public List<MailFolderVo> getChildFolders() {
+		return childFolders;
+	}
+	public void setChildFolders(List<MailFolderVo> childFolders) {
+		this.childFolders = childFolders;
+	}
+	
+}

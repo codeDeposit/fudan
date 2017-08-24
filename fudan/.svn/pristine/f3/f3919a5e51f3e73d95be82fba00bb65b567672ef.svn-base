@@ -1,0 +1,110 @@
+package com.jy.service.oa.impl.publics;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.jy.common.utils.Const;
+import com.jy.common.utils.FileUpload;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.archive.ArchTemplateMapper;
+import com.jy.repository.oa.publics.FileAttachMapper;
+import com.jy.service.oa.publics.FileUploadService;
+
+@Service("fileUploadService")
+public class FileUploadServiceImpl implements FileUploadService {
+
+	private FileAttachMapper fileAttachMapper;
+	private ArchTemplateMapper archTemplateMapper;
+
+	public ArchTemplateMapper getArchTemplateMapper() {
+		return archTemplateMapper;
+	}
+
+	@Autowired
+	public void setArchTemplateMapper(ArchTemplateMapper archTemplateMapper) {
+		this.archTemplateMapper = archTemplateMapper;
+	}
+
+	public FileAttachMapper getFileAttachMapper() {
+		return fileAttachMapper;
+	}
+
+	@Autowired
+	public void setFileAttachMapper(FileAttachMapper fileAttachMapper) {
+		this.fileAttachMapper = fileAttachMapper;
+	}
+
+	// 单个文件上传
+	@Override
+	public FileAttach singleUpload(MultipartFile fileAttach, String fileType, String rootPath) {
+		
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		// 文件路径
+		String filePath = null;
+		if(fileType == null) {
+			filePath = Const.FILEPATHIMG + currentAccount.getName() +"/";
+		}else {
+			filePath = Const.FILEPATHFILE + fileType + currentAccount.getName() +"/";
+		}
+		//文件名
+		String fileName = fileAttach.getOriginalFilename().substring(0,fileAttach.getOriginalFilename().lastIndexOf("."));
+		// 获取扩展名
+		String extName = fileAttach.getOriginalFilename().substring(fileAttach.getOriginalFilename().lastIndexOf("."));
+		// 执行上传
+		FileUpload.fileUp(fileAttach,rootPath + filePath,fileAttach.getOriginalFilename().substring(0,fileAttach.getOriginalFilename().lastIndexOf(".")));
+
+		// 上传后要返回的对象
+		FileAttach fileAttach2 = new FileAttach();
+		fileAttach2.setFileName(fileName);
+		fileAttach2.setFilePath(filePath);
+		fileAttach2.setFileType(fileType);
+		fileAttach2.setNote(fileAttach.getSize()+" bytes");
+		fileAttach2.setExt(extName);
+		fileAttach2.setCreator(currentAccount.getName());
+		fileAttach2.setCreatetime(new Date());
+		
+		return fileAttach2;
+	}
+
+	// 多文件上传
+	@Override
+	public List<FileAttach> multiUpload(MultipartFile[] fileAttach, String fileType, String rootPath) {
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		// 文件路径
+		String filePath = Const.FILEPATHFILE + fileType +"/"+ currentAccount.getLoginName()+ "/";
+		// 返回的List
+		List<FileAttach> fileAttach1 = new ArrayList<FileAttach>();
+		for(MultipartFile multipartFile : fileAttach) {
+			//文件名
+//			String orriginalfilename = multipartFile.getOriginalFilename();
+//			int endindex = multipartFile.getOriginalFilename().lastIndexOf(".");
+			String fileName = multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().lastIndexOf("."));
+			// 获取扩展名
+			String extName = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+			// 执行上传
+			FileUpload.fileUp(multipartFile,rootPath + filePath,multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().lastIndexOf(".")));
+
+			// 上传后要返回的对象
+			FileAttach fileAttach2 = new FileAttach();
+			fileAttach2.setFileName(fileName);
+			fileAttach2.setFilePath(filePath);
+			fileAttach2.setFileType(fileType);
+			fileAttach2.setNote(multipartFile.getSize()+" bytes");
+			fileAttach2.setExt(extName);
+			fileAttach2.setCreator(currentAccount.getName());
+			fileAttach2.setCreatetime(new Date());
+			
+			fileAttach1.add(fileAttach2);
+		}
+		
+		return fileAttach1;
+	}
+
+}

@@ -1,0 +1,29 @@
+package com.jy.service.oa.admin;
+
+import java.util.List;
+
+import com.jy.entity.oa.admin.InStock;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+public interface InStockService {
+
+	// 添加入库单
+	JsonInfo save(InStock inStock);
+
+	// 获取详细信息
+	InStock getInfoBy(Long buyId);
+
+	// 修改信息
+	JsonInfo update(InStock inStock);
+
+	// 批量删除
+	JsonInfo del(Long[] buyId);
+
+	// 获取列表
+	List<InStock> get(InStock inStock);
+
+	// 分页显示列表
+	List<InStock> getPageList(PageBean pb, InStock inStock);
+
+}

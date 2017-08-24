@@ -1,0 +1,15 @@
+package com.jy.service.oa;
+
+import java.util.List;
+import java.util.Set;
+
+import com.jy.entity.oa.OARole;
+
+
+public interface MyOARoleService {
+	
+	public Set<String> findRights(String userId);
+
+	public List<OARole> getAll();
+	
+}

@@ -1,0 +1,26 @@
+package com.jy.entity.oa.document;
+
+import java.util.List;
+
+public class DocFolderVO {
+
+	private DocFolder fatherFolder;
+	private List<DocFolderVO> childFolders;
+
+	public DocFolder getFatherFolder() {
+		return fatherFolder;
+	}
+
+	public void setFatherFolder(DocFolder fatherFolder) {
+		this.fatherFolder = fatherFolder;
+	}
+
+	public List<DocFolderVO> getChildFolders() {
+		return childFolders;
+	}
+
+	public void setChildFolders(List<DocFolderVO> childFolders) {
+		this.childFolders = childFolders;
+	}
+
+}

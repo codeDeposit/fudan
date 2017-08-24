@@ -1,0 +1,40 @@
+package com.jy.service.customer;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.jy.entity.customer.SaleActivity;
+import com.jy.repository.customer.SaleActivityDao;
+
+@Service("saleActivityService")
+public class SaleActivityService{
+	
+	@Resource
+	private SaleActivityDao saleActivityDao;
+	
+	public List<SaleActivity> find(SaleActivity saleActivity) {
+		return this.saleActivityDao.find(saleActivity);
+	}
+
+	public List<SaleActivity> search(SaleActivity saleActivity) {
+		return this.saleActivityDao.search(saleActivity);
+	}
+
+	public int insert(SaleActivity saleActivity) {
+		return this.saleActivityDao.insert(saleActivity);
+	}
+
+	public int update(SaleActivity saleActivity) {
+		return this.saleActivityDao.update(saleActivity);
+	}
+
+	public int delete(SaleActivity saleActivity) {
+		return this.saleActivityDao.delete(saleActivity);
+	}
+	
+}
+
+  

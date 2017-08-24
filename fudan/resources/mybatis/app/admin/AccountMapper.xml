@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.AppAccountDao">
+	
+	<resultMap type="com.jy.entity.app.admin.Account" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_member where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_member where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>  
+		<if test="number != 0">  
+		    AND number = #{number}
+		</if>  
+		<if test="card != null and card != ''">  
+		    AND card = #{card}
+		</if> 
+		<if test="birthday != null and birthday != ''">  
+		    AND birthday = #{birthday}
+		</if>  
+		<if test="name != null and name != ''">  
+		    AND name like ('%', #{name}, '%') 
+		</if>  
+		<if test="true_name != null and true_name != ''">  
+		    AND true_name = #{true_name}
+		</if> 
+		<if test="password != null and password != ''">  
+		    AND password = #{password}
+		</if> 
+		<if test="email != null and email != ''">  
+		    AND email = #{email}
+		</if> 
+		<if test="mobile != null and mobile != ''">  
+		    AND mobile = #{mobile}
+		</if> 
+		<if test="contact != null and contact != ''">  
+		    AND contact = #{contact}
+		</if>
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="id != 0">  
+		    AND id = #{id}
+		</if>
+		<if test="number != 0">  
+		    AND number = #{number}
+		</if>  
+		<if test="card != null and card != ''">  
+		    AND card = #{card}
+		</if> 
+		<if test="birthday != null and birthday != ''">  
+		    AND birthday = #{birthday}
+		</if> 
+		<if test="name != null and name != ''">  
+		    AND name like ('%', #{name}, '%') 
+		</if>  
+		<if test="true_name != null and true_name != ''">  
+		    AND true_name = #{true_name}
+		</if> 
+		<if test="password != null and password != ''">  
+		    AND password = #{password}
+		</if> 
+		<if test="email != null and email != ''">  
+		    AND email = #{email}
+		</if> 
+		<if test="mobile != null and mobile != ''">  
+		    AND mobile = #{mobile}
+		</if> 
+		<if test="contact != null and contact != ''">  
+		    AND contact = #{contact}
+		</if>      
+	</sql>
+	
+	<insert id="insert">
+		insert into app_member (name,number,card,sex,birthday,true_name,avatar,password,pay_password,email,email_bind,mobile,mobile_bind,login_num,time,login_time,old_login_time,login_ip,old_login_ip,exppoints,level_id,points,contact) 
+			values 
+		(#{name},#{number},#{card},#{sex},#{birthday},#{true_name},#{avatar},#{password},#{pay_password},#{email},#{email_bind},#{mobile},#{mobile_bind},#{login_num},now(),#{login_time},#{old_login_time},#{login_ip},#{old_login_ip},#{exppoints},#{level_id},#{points},#{contact})
+	</insert>
+	
+	<update id="update">
+		update app_member <include refid="updateSql"></include> where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+		<if test="mobile != null and mobile != ''">
+			mobile = #{mobile}
+		</if>
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="name != null and name != ''">  
+		    	name = #{name},
+			</if>
+			<if test="card != null and card != ''">  
+		    	card = #{card},
+			</if> 
+			<if test="sex != null and sex != ''">  
+		    	sex = #{sex},
+			</if> 
+			<if test="email != null and email != ''">  
+		    	email = #{email},
+			</if>
+			<if test="password != null and password != ''">  
+		    	password = #{password},
+			</if> 
+			<if test="birthday != null and birthday != ''">  
+		    	birthday = #{birthday},
+			</if> 
+			<if test="true_name != null and true_name != ''">  
+		    	true_name = #{true_name},
+			</if>  
+			<if test="avatar != null and avatar != ''">  
+		    	avatar = #{avatar},
+			</if>  
+			<if test="pay_password != null and pay_password != ''">  
+		    	pay_password = #{pay_password},
+			</if>  
+			<if test="login_num != 0">  
+		    	login_num = #{login_num},
+			</if>  
+			<if test="login_time != null and login_time != ''">  
+		    	login_time = curdate(),
+			</if>  
+			<if test="old_login_time != null and old_login_time != ''">  
+		    	old_login_time = curdate(),
+			</if>  
+			<if test="login_ip != null and login_ip != ''">  
+		    	login_ip = #{login_ip},
+			</if>  
+			<if test="old_login_ip != null and old_login_ip != ''">  
+		    	old_login_ip = #{old_login_ip},
+			</if>  
+			<if test="exppoints != 0">  
+		    	exppoints = #{exppoints},
+			</if>  
+			<if test="points != 0">  
+		    	points = #{points},
+			</if> 
+			<if test="contact != null and contact != ''">  
+		    	contact = #{contact},
+			</if> 
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_member where 
+		<if test="id != 0">
+			id = #{id}
+		</if>
+	</delete>
+</mapper>

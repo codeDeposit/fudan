@@ -1,0 +1,31 @@
+package com.jy.repository.oa.admin;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.admin.FixedAssets;
+import com.jy.entity.oa.admin.FixedAssetsVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface FixedAssetsMapper {
+	
+	// 添加固定资产
+	int insert(FixedAssets fixedAssets);
+	
+	// 修改固定资产
+	int update(FixedAssets fixedAssets);
+	
+	// 删除固定资产
+	int delete(Long assetsId);
+	
+	// 获取详细信息
+	FixedAssetsVO selectInfoBy(Long assetsId);
+	
+	// 获取固定资产列表
+	List<FixedAssets> select(@Param("assetsName") String assetsName, @Param("beDep") String beDep, @Param("assetsTypeId") Long assetsTypeId);
+
+	List<FixedAssetsVO> selectPageList(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex,
+			@Param("assetsName") String assetsName, @Param("beDep") String beDep, @Param("assetsTypeId") Long assetsTypeId);
+}

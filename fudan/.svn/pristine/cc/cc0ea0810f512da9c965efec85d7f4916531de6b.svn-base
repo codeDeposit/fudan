@@ -1,0 +1,420 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<%@ include file="../../common/toast.jsp" %>
+		<link rel="stylesheet" href="${jypath}/pc/css/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/font/font-awesome.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/common/style.min.css">
+		<link rel="stylesheet" href="${jypath}/pc/css/date/bootstrap-datetimepicker.min.css" >
+		<script src="${jypath}/pc/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/pc/js/bootstrap/bootstrap.min.js"></script>
+		<style>
+			.SearchForm .forinBlo{display: inline-block;width: 66.66%;}
+			.labelPad{padding-top: 7px;}
+		    
+		    .havHead{background: #efefef;}
+	    	.navBox{width: 880px;margin:0 auto;padding-top: 20px;}
+			td{padding: 8px;}
+			.col-first{width: 70px;}
+			.col-aft{width: 130px;}
+			.td-put{width: 520px;height: 28px;border:1px solid #ccc;border-radius:5px;}
+			.td-content{height:150px;border-radius: 8px;border:1px solid #ccc;}
+			
+			a{text-decoration: none;}
+		    a:hover{text-decoration: none;}
+		    a:focus{text-decoration: none;}
+		    li{list-style: none;}
+		    ul{padding:0;margin:0;}
+		    .leftList{width: 160px;height:283px;background-color: #efefef;border-radius: 5px;overflow:auto;}
+		    .firstLevel li{cursor: pointer;}
+		    .secondLevel{display: none;}
+		    .thirdLevel{display: none;}
+		    .fIndent{padding-left: 8px;}
+		    .sIndent{padding-left: 24px;}
+		    .tIndent{padding-left: 40px;}
+		    .rightContent{width: 370px;height:283px;border-radius: 8px;background-color:;position: relative;overflow: hidden;}
+		
+		    .rightContent .table{margin-bottom: 5px;height: 234px;}
+		    .tBody{display: block;height:196px;overflow: auto;}
+		    .rightContent thead tr{display: block;}
+		    .wiD{width: 36px;}
+		    .seQuence{width: 45px;}
+		    .wiDl{width: 280px;}
+		
+		    .close{margin:5px;}
+		    .aHover{display: block;width: 100%;height: 28px;line-height: 28px;border-bottom: 1px solid #fff;border-radius: 5px;}
+		    .aHover:hover{background-color: #ccc;}
+		    .aHover.active{background-color:#999;color: #fff;}
+		    .pageNum{width: 100%;height: 40px;position: absolute;bottom: 0;left: 0;padding-top: 5px;background-color: #efefef;}
+		    #pageNum{width: 335px;margin:0 auto;}
+		    .modal-content{border-radius: 6px;overflow: hidden;}
+		    .pagination{margin:5px 0;}
+		    .headBg { background: #79BD7D;padding:5px 8px 0 8px;color:;}
+		</style>
+		<!-- 局部刷新 js -->
+		<script src="${jypath}/pc/js/oa/refresh.js"></script>
+		<script src="${jypath}/pc/js/oa/partrefresh.js"></script>
+		<script src="${jypath}/pc/js/oa/pageturning.js"></script>
+	</head>
+	<body>
+		<!-- padding盒子 start-->
+    	<div>
+    	
+    	<!-- 查询 start-->
+    	<form id="officegoodstypesearchform" class="SearchForm">
+		    <div class="form-group col-md-3 col-sm-3">
+		    	<label class="control-label col-sm-3 labelPad">档案编号:</label>
+		        <input type="text" class="form-control col-sm-9 forinBlo" name="profileNo">
+		    </div>
+		    <div class="form-group col-md-2 col-sm-2">
+		    	<label class="control-label col-sm-4 labelPad">姓名:</label>
+		        <input type="text" class="form-control col-sm-8 forinBlo" name="userName">
+		    </div>
+		    <div class="form-group col-md-2 col-sm-2">
+		    	<label class="control-label col-sm-4 labelPad">原职位:</label>
+		        <input type="text" class="form-control col-sm-8 forinBlo" name="orgJobName">
+		    </div>
+		    <div class="form-group col-md-2 col-sm-2">
+		    	<label class="control-label col-sm-4 labelPad">新职位:</label>
+		        <input type="text" class="form-control col-sm-8 forinBlo" name="newJobName">
+		    </div>
+		    <input type="hidden" name="operation" value="partrefresh">
+		    <button id="officegoodstypesearchbtn" class="btn btn-success btn-sm" type="button"><i class="glyphicon glyphicon-search"></i></button>
+		</form>
+		<!-- 查询 end-->
+    	
+        <!-- 添加 start-->
+        <button id="modaladdbtn" type="button" class="btn btn-success pull-right" onclick="linkChange();">
+            <i class="glyphicon glyphicon-plus"></i>&nbsp;调动登记
+        </button>
+        <!-- 添加 end -->
+        
+		<div id="officegoodstypetable">
+		<table class="table table-striped table-bordered table-hover dataTables-example">
+	        <thead>
+	           <tr>
+	               <th>序号</th>
+	               <th>档案编号</th>
+	               <th>姓名</th>
+	               <th>原职位名称</th>
+	               <th>新职位名称</th>
+	               <th>原部门名称</th>
+	               <th>新部门名称</th>
+	               <th>登记人</th>
+	               <th>登记时间</th>
+	               <th>状态</th>
+	               <th>操作</th>
+	           </tr>
+	       </thead>
+	       <tbody>
+	       		<c:choose>
+				<c:when test="${jobChanges != null and fn:length(jobChanges) != 0}">
+	       		<c:forEach var="jobChange" items="${jobChanges}" varStatus="index">
+	           	<tr class="gradX">
+	              	<td>${index.count}</td>
+	              	<td>${jobChange.profileNo}</td>
+	              	<td>${jobChange.userName}</td>
+	              	<td>${jobChange.orgJobName}</td>
+	              	<td>${jobChange.newJobName}</td>
+	              	<td>${jobChange.orgDepName}</td>
+	              	<td>${jobChange.newDepName}</td>
+	              	<td>${jobChange.regName}</td>
+	              	<td>${jobChange.regTime1}</td>
+	              	<c:if test="${jobChange.status == -1}">
+						<td><font color="navy">草稿</font></td>
+	              	</c:if>
+	              	<c:if test="${jobChange.status == 0}">
+						<td><font color="blue">未审核</font></td>
+	              	</c:if>
+	              	<c:if test="${jobChange.status == 1}">
+						<td><font color="green">审核通过</font></td>	              	
+	              	</c:if>
+	              	<c:if test="${jobChange.status == 2}">
+						<td><font color="red">审核未通过</font></td>	              	
+	              	</c:if>
+					<td class="center">
+						<c:if test="${jobChange.status == -1 }">
+						<button type="button" class="btn btn-warning btn-xs" onclick="openForm('${jobChange.changeId}', 'update')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;修改
+						</button>
+						</c:if>
+						<c:if test="${jobChange.status == 0 }">
+						<button type="button" class="btn btn-success btn-xs" onclick="review('${jobChange.changeId}')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;审核
+						</button>
+						</c:if>
+						<button type="button" class="btn btn-info btn-xs" onclick="operateinfo('${jobChange.changeId}')">
+							<i class="glyphicon glyphicon-pencil"></i>&nbsp;操作记录
+						</button>
+						<button class="btn btn-danger btn-xs" onclick="fuConfirm('${jobChange.changeId}')"><i class="glyphicon glyphicon-trash"></i> 删除</button>
+					</td>
+	           	</tr>
+	           	</c:forEach>
+	           	</c:when>
+	           	<c:otherwise>
+					<tr class="gradX"><td colspan="11">没有数据</td></tr>
+				</c:otherwise>
+	           	</c:choose>
+	       </tbody>
+       	   <tfoot></tfoot>
+		</table>
+        <!-- table end -->
+        
+        <!-- 分页 start -->
+		<div align="right">
+			<a href="#" onclick="pageturn(1)">首页</a>
+			<c:if test="${pageNos > 1}">
+				<a href="#" onclick="pageturn(${pageNos - 1})">上一页</a>
+			</c:if>
+			<c:if test="${pageNos < pageCount}">
+				<a href="#" onclick="pageturn(${pageNos + 1})">下一页</a>
+			</c:if>
+			<a href="#" onclick="pageturn(${pageCount})">末页</a>
+		</div>
+		<div align="right">
+			<form>
+				<h4>
+					<span> 共${pageCount}页 <input id="zhuandao" type="text" value="${pageNos}" name="pageNos" size="1">页 <input onclick="pageturn(0)" type="button" value="转到">
+					</span>
+				</h4>
+			</form>
+		</div>
+		<!-- 分页 end -->
+		</div>
+    </div>
+    <!-- padding盒子 end -->
+    
+    <!-- 审核模态框 -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">标准审核</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<table class="table table-striped table-bordered table-hover">
+	      		<tr>
+	      			<td>档案编号</td>
+	      			<td id="dabh"></td>
+	      			<td>姓名</td>
+	      			<td id="ename"></td>
+	      		</tr>
+	      		<tr>
+	      			<td>原部门</td>
+	      			<td id="olddep"></td>
+	      			<td>新部门</td>
+	      			<td id="newdep"></td>
+	      		</tr>
+	      		<tr>
+	      			<td>原薪酬标准</td>
+	      			<td id="oldstand"></td>
+	      			<td>新薪酬标准</td>
+	      			<td id="newstand"></td>
+	      		</tr>
+	      		<tr>
+	      			<td>原薪酬编号</td>
+	      			<td id="oldsno"></td>
+	      			<td>新薪酬编号</td>
+	      			<td id="newsno"></td>
+	      		</tr>
+	      		<tr>
+	      			<td>原薪酬总额</td>
+	      			<td id="oldsmoney"></td>
+	      			<td>新薪酬总额</td>
+	      			<td id="newsmoney"></td>
+	      		</tr>
+	      		<tr>
+	      			<td>更改原由</td>
+	      			<td colspan="3" id="ggyy"></td>
+	      		</tr>
+	      		<tr>
+	      			<form id="reviewform">
+	      			<td>审核意见</td>
+	      			<td colspan="3"><textarea class="form-control" name="checkOpinion" rows="3"></textarea></td>
+	      			<input type="hidden" id="recordId" name="changeId" value="">
+	      			</form>
+	      		</tr>
+	      	</table>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	        <button type="button" class="btn btn-danger" onclick="reviewPost(2);">不通过</button>
+	        <button type="button" class="btn btn-success" onclick="reviewPost(1);">通过</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- 操作记录模态框 -->
+	<div class="modal fade" id="operateinfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">标准审核</h4>
+	      </div>
+	      <div class="modal-body">
+		    <div class="form-group">
+		    	<table class="table table-striped table-bordered table-hover">
+		    		<tr>
+		    			<td>员工档案号</td>
+		    			<td colspan="3" id="empfileno"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>员工姓名</td>
+		    			<td colspan="3" id="empname"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>原职位</td>
+		    			<td colspan="3" id="yzw"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>新职位</td>
+		    			<td colspan="3" id="xzw"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>登记人</td>
+		    			<td colspan="3" id="djr"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>登记时间</td>
+		    			<td colspan="3" id="djsj"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>审核人</td>
+		    			<td colspan="3" id="shr"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>审核时间</td>
+		    			<td colspan="3" id="shsj"></td>
+		    		</tr>
+		    		<tr>
+		    			<td>审核意见</td>
+		    			<td colspan="3" id="shyj"></td>
+		    		</tr>
+		    	</table>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+    
+</body>
+<script type="text/javascript">
+	function linkChange() {
+		window.location.href= jypath+"/oa/jobchange/returnadd";
+	}
+   	// 查看详细信息或修改
+   	function openForm(id, operation) {
+   		window.location.href= jypath+"/oa/jobchange/getdetails?"+"changeId="+id+"&operation="+operation;
+   	}
+	// 查询
+	$("#officegoodstypesearchbtn").click(function() {
+		fuLoading();
+		var id = "officegoodstypetable";
+		var url = jypath + "/oa/jobchange/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize();
+		partRefresh(id, url, type, data);
+	});
+	// pageNos: 第几页
+	function pageturn(pageNos) {
+		fuLoading();
+		if(pageNos == 0) {
+			pageNos = $("#zhuandao").val();
+		}
+		var id = "officegoodstypetable";
+		var url= jypath+"/oa/jobchange/list";
+		var type = "get";
+		var data = $("#officegoodstypesearchform").serialize()+"&pageNos="+pageNos;
+		pageturning(id, url, type, data);
+	}
+	function review(standardId) {
+		var url = jypath+"/oa/jobchange/getinfo";
+		$.ajax({
+			type: "get",
+			url : url,
+			data: "changeId="+standardId,
+			success: function(data) {
+				var obj = eval("("+data+")");
+				setData(obj);
+				$("#myModal").modal("show");
+			}
+		});
+	}
+	function setData(jsonObject) {
+		$("#dabh").html(jsonObject.profileNo);
+		$("#ename").html(jsonObject.userName);
+		$("#olddep").html(jsonObject.orgDepName);
+		$("#newdep").html(jsonObject.newDepName);
+		$("#oldstand").html(jsonObject.orgStandardName);
+		$("#newstand").html(jsonObject.newStandardName);
+		$("#oldsno").html(jsonObject.orgStandardNo);
+		$("#newsno").html(jsonObject.newStandardNo);
+		$("#oldsmoney").html(jsonObject.orgTotalMoney);
+		$("#newsmoney").html(jsonObject.newTotalMoney);
+		$("#ggyy").html(jsonObject.changeReason);
+		$("#recordId").val(jsonObject.changeId);
+	}
+	function reviewPost(status) {
+		var url = jypath+"/oa/jobchange/review";
+		var data = $("#reviewform").serialize()+"&status="+status;
+		$.ajax({
+			type: "post",
+			url : url,
+			data: data,
+			success: function(data) {
+				refresh();
+			}
+		});
+	}
+	function operateinfo(sid) {
+		var url = jypath+"/oa/jobchange/getinfo";
+		$.ajax({
+			type: "get",
+			url : url,
+			data: "changeId="+sid,
+			success: function(data) {
+				var obj = eval("("+data+")");
+				setTableData(obj);
+				$("#operateinfoModal").modal("show");
+			}
+		});
+	}
+	function setTableData(jsonObject) {
+		$("#empfileno").html(jsonObject.profileNo);
+		$("#empname").html(jsonObject.userName);
+		$("#yzw").html(jsonObject.orgJobName);
+		$("#xzw").html(jsonObject.newJobName);
+		$("#djr").html(jsonObject.regName);
+		$("#djsj").html(jsonObject.regTime1);
+		$("#shr").html(jsonObject.checkName);
+		$("#shsj").html(jsonObject.checkTime1);
+		$("#shyj").html(jsonObject.checkOpinion);
+	}
+	function fDelete(id) {
+		$.ajax({
+			type: "get",
+			url : jypath+"/oa/jobchange/multidel",
+			data: "changeId="+id,
+			success:function(data) {
+				fuShowSuccess();
+				refresh();
+			}
+		});
+	}
+	function fuSure(param){
+		fuLoading();
+		fuClose();
+		setTimeout('fDelete(\''+param+'\')',200);
+	}
+</script>
+</html>

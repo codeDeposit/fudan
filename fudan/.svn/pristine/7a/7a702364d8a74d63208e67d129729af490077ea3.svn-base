@@ -1,0 +1,172 @@
+package com.jy.controller.oa.publics;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.jy.controller.base.BaseController;
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.entity.oa.publics.FileAttach;
+import com.jy.entity.oa.workflow.ProcessTemplate;
+import com.jy.service.oa.publics.FileAttachService;
+import com.jy.service.oa.publics.FileUploadService;
+import com.jy.service.oa.workflow.ProcessTemplateService;
+
+@Controller
+@RequestMapping("/oa/fileattach")
+public class FileAttachController extends BaseController<FileAttachController> {
+
+	private FileAttachService fileAttachService;
+	private FileUploadService fileUploadService;
+	private ProcessTemplateService processTemplateService;
+	private RepositoryService repositoryService;
+	
+	public RepositoryService getRepositoryService() {
+		return repositoryService;
+	}
+
+	@Autowired
+	public void setRepositoryService(RepositoryService repositoryService) {
+		this.repositoryService = repositoryService;
+	}
+
+	public ProcessTemplateService getProcessTemplateService() {
+		return processTemplateService;
+	}
+
+	@Resource(name="processTemplateService")
+	public void setProcessTemplateService(
+			ProcessTemplateService processTemplateService) {
+		this.processTemplateService = processTemplateService;
+	}
+
+	public FileUploadService getFileUploadService() {
+		return fileUploadService;
+	}
+
+	@Resource(name = "fileUploadService")
+	public void setFileUploadService(FileUploadService fileUploadService) {
+		this.fileUploadService = fileUploadService;
+	}
+
+	public FileAttachService getFileAttachService() {
+		return fileAttachService;
+	}
+
+	@Resource(name = "fileAttachService")
+	public void setFileAttachService(FileAttachService fileAttachService) {
+		this.fileAttachService = fileAttachService;
+	}
+
+	/**
+	 * 查询附件记录
+	 * @param filePath
+	 * @return
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public FileAttach list(@RequestParam(required = false) String filePath) {
+		FileAttach fileAttach = fileAttachService.getBy(filePath);
+		return fileAttach;
+	}
+	
+	/**
+	 * 添加附件记录
+	 * @param fileAttach
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public ArchTemplate[] add(HttpServletRequest request, @RequestParam(value="fileAttach", required = false) MultipartFile[] fileAttach) {
+		// 上传文件
+		String fileType = request.getParameter("fileAttachType");
+		// 根路径
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		List<FileAttach> fileAttach2 = fileUploadService.multiUpload(fileAttach, fileType, rootPath);
+		
+		ArchTemplate[] fileIdAndTemPath = new ArchTemplate[fileAttach2.size()];
+		// 添加附件记录
+		if(null != fileAttach2 && !fileAttach2.isEmpty()) {
+			for(int i=0; i<fileAttach2.size(); i++) {
+				// 附件路径
+				String temPath = fileAttach2.get(i).getFilePath()+fileAttach2.get(i).getFileName()+fileAttach2.get(i).getExt();
+				fileAttach2.get(i).setFilePath(temPath);
+				//添加附件记录
+				fileAttachService.save(fileAttach2.get(i));
+				//刚添加的附件记录Id
+				Long result = fileAttachService.getMax();
+				
+				ArchTemplate a = new ArchTemplate();
+				FileAttach f = new FileAttach();
+				f.setFileId(result);
+				a.setTempPath(temPath);
+				a.setFileAttach(f);
+				fileIdAndTemPath[i] = a;
+			}
+		}
+		return fileIdAndTemPath;
+	}
+	
+	/**
+	 * 添加附件记录，返回附件
+	 * @param fileAttach
+	 * @return
+	 */
+	@RequestMapping("/addfileattach")
+	@ResponseBody
+	public List<FileAttach> addFileAttach(HttpServletRequest request, @RequestParam(value="fileAttach", required = false) MultipartFile[] fileAttach) {
+		// 上传文件
+		String fileType = request.getParameter("fileAttachType");
+		String pId = request.getParameter("processdefinitionId");
+		// 根路径
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		List<FileAttach> fileAttach2 = fileUploadService.multiUpload(fileAttach, fileType, rootPath);
+		
+		// 添加附件记录
+		if(null != fileAttach2 && !fileAttach2.isEmpty()) {
+			for(int i=0; i<fileAttach2.size(); i++) {
+				// 附件路径
+				String temPath = fileAttach2.get(i).getFilePath()+fileAttach2.get(i).getFileName()+fileAttach2.get(i).getExt();
+				fileAttach2.get(i).setFilePath(temPath);
+				//添加附件记录
+				fileAttachService.save(fileAttach2.get(i));
+				//刚添加的附件记录Id
+				Long result = fileAttachService.getMax();
+				
+				//如果fileType为workflow，则与流程关联
+				if("workflow".equals(fileType)) {
+					ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery();
+					ProcessDefinition definition = query.processDefinitionId(pId).singleResult();
+					ProcessTemplate processTemplate = processTemplateService.getBy(definition.getKey());
+					if(processTemplate == null) {
+						processTemplate = new ProcessTemplate();
+						processTemplate.setId(get32UUID());
+						processTemplate.setName(fileAttach2.get(i).getFileName() + fileAttach2.get(i).getExt());
+						processTemplate.setProcessKey(definition.getKey());
+						processTemplate.setDocPath(fileAttach2.get(i).getFilePath());
+						processTemplateService.save(processTemplate);
+					}else {
+						processTemplate.setName(fileAttach2.get(i).getFileName() + fileAttach2.get(i).getExt());
+						processTemplate.setDocPath(fileAttach2.get(i).getFilePath());
+						processTemplateService.update(processTemplate);
+					}
+				}
+				fileAttach2.get(i).setFileId(result);
+			}
+		}
+		
+		return fileAttach2;
+	}
+
+}

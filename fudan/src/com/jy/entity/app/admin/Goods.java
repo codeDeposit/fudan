@@ -1,0 +1,436 @@
+package com.jy.entity.app.admin;
+
+public class Goods {
+	
+	private int goods_id;                                            
+	private String goods_name;                          
+	private String goods_number;                                    
+	private String gc_id;                                           
+	private String gc_id_1;                                         
+	private String gc_id_2;                                         
+	private String gc_id_3;                                         
+	private int goods_address;                                   
+	private int brand_id;                                            
+	private String goods_desc;                                      
+	private double goods_price;                                     
+	private double goods_promotion_price;                       
+	private String goods_promotion_begin;                   
+	private String goods_promotion_end;                     
+	private String goods_promotion_desc;                        
+	private int goods_jifen;                               
+	private String service_desc;                                    
+	private String goods_norms;                                     
+	private String goods_weight;                                    
+	private String goods_image;                                     
+	private int goods_salenum;                                   
+	private int goods_collect;                                   
+	private int goods_storage_alarm;                           
+	private int goods_state;             
+	private int goods_storage;                                   
+	private int goods_click;                                 
+	private String goods_image1;                                 
+	private String goods_image2;                                   
+	private String goods_image3;                                    
+	private String goods_image4;                                    
+	private String goods_image5;                                    
+	private String approve;                                         
+	private String goods_addtime;                               
+	private String goods_edittime;                              
+	private int transport_id;                                    
+	private int goods_freight;                               
+	private int goods_vat;                       
+	private int goods_commend;                         
+	private int evaluation_good_star;                            
+	private int evaluation_count;                                  
+	private int goods_maiprice;
+	private int goods_hour;
+	private int goods_promotion;
+	private String add_time;
+	private int unit;
+	private int pill;
+	private String bar_code;
+	private int storage_state;
+	private int storage_id;
+	private int supplier;
+	
+	//公共表
+	private GoodsCommon commons;
+	//商品品牌名称
+	private String brand_name;
+	//类别名称
+	private String gc_name;
+	private String gc_name2;
+	private String gc_name3;
+	//购物车商品列表
+	private String goods_id_list;
+	//商品厂家
+	private String goods_addressStr;
+	//单位
+	private String unitStr;
+	//库存金额
+	private double total_price;
+	//供应商
+	private String supplierStr;
+	
+	public int getGoods_id() {
+		return goods_id;
+	}
+	public void setGoods_id(int goods_id) {
+		this.goods_id = goods_id;
+	}
+	public String getGoods_name() {
+		return goods_name;
+	}
+	public void setGoods_name(String goods_name) {
+		this.goods_name = goods_name;
+	}
+	public String getGoods_number() {
+		return goods_number;
+	}
+	public void setGoods_number(String goods_number) {
+		this.goods_number = goods_number;
+	}
+	public String getGc_id() {
+		return gc_id;
+	}
+	public void setGc_id(String gc_id) {
+		this.gc_id = gc_id;
+	}
+	public String getGc_id_1() {
+		return gc_id_1;
+	}
+	public void setGc_id_1(String gc_id_1) {
+		this.gc_id_1 = gc_id_1;
+	}
+	public String getGc_id_2() {
+		return gc_id_2;
+	}
+	public void setGc_id_2(String gc_id_2) {
+		this.gc_id_2 = gc_id_2;
+	}
+	public String getGc_id_3() {
+		return gc_id_3;
+	}
+	public void setGc_id_3(String gc_id_3) {
+		this.gc_id_3 = gc_id_3;
+	}
+	public int getGoods_address() {
+		return goods_address;
+	}
+	public void setGoods_address(int goods_address) {
+		this.goods_address = goods_address;
+	}
+	public int getBrand_id() {
+		return brand_id;
+	}
+	public void setBrand_id(int brand_id) {
+		this.brand_id = brand_id;
+	}
+	public String getGoods_desc() {
+		return goods_desc;
+	}
+	public void setGoods_desc(String goods_desc) {
+		this.goods_desc = goods_desc;
+	}
+	public double getGoods_price() {
+		return goods_price;
+	}
+	public void setGoods_price(double goods_price) {
+		this.goods_price = goods_price;
+	}
+	public double getGoods_promotion_price() {
+		return goods_promotion_price;
+	}
+	public void setGoods_promotion_price(double goods_promotion_price) {
+		this.goods_promotion_price = goods_promotion_price;
+	}
+	public String getGoods_promotion_begin() {
+		return goods_promotion_begin;
+	}
+	public void setGoods_promotion_begin(String goods_promotion_begin) {
+		this.goods_promotion_begin = goods_promotion_begin;
+	}
+	public String getGoods_promotion_end() {
+		return goods_promotion_end;
+	}
+	public void setGoods_promotion_end(String goods_promotion_end) {
+		this.goods_promotion_end = goods_promotion_end;
+	}
+	public String getGoods_promotion_desc() {
+		return goods_promotion_desc;
+	}
+	public void setGoods_promotion_desc(String goods_promotion_desc) {
+		this.goods_promotion_desc = goods_promotion_desc;
+	}
+	public int getGoods_jifen() {
+		return goods_jifen;
+	}
+	public void setGoods_jifen(int goods_jifen) {
+		this.goods_jifen = goods_jifen;
+	}
+	public String getService_desc() {
+		return service_desc;
+	}
+	public void setService_desc(String service_desc) {
+		this.service_desc = service_desc;
+	}
+	public String getGoods_norms() {
+		return goods_norms;
+	}
+	public void setGoods_norms(String goods_norms) {
+		this.goods_norms = goods_norms;
+	}
+	public String getGoods_weight() {
+		return goods_weight;
+	}
+	public void setGoods_weight(String goods_weight) {
+		this.goods_weight = goods_weight;
+	}
+	public String getGoods_image() {
+		return goods_image;
+	}
+	public void setGoods_image(String goods_image) {
+		this.goods_image = goods_image;
+	}
+	public int getGoods_salenum() {
+		return goods_salenum;
+	}
+	public void setGoods_salenum(int goods_salenum) {
+		this.goods_salenum = goods_salenum;
+	}
+	public int getGoods_collect() {
+		return goods_collect;
+	}
+	public void setGoods_collect(int goods_collect) {
+		this.goods_collect = goods_collect;
+	}
+	public int getGoods_storage_alarm() {
+		return goods_storage_alarm;
+	}
+	public void setGoods_storage_alarm(int goods_storage_alarm) {
+		this.goods_storage_alarm = goods_storage_alarm;
+	}
+	public int getGoods_state() {
+		return goods_state;
+	}
+	public void setGoods_state(int goods_state) {
+		this.goods_state = goods_state;
+	}
+	public int getGoods_storage() {
+		return goods_storage;
+	}
+	public void setGoods_storage(int goods_storage) {
+		this.goods_storage = goods_storage;
+	}
+	public int getGoods_click() {
+		return goods_click;
+	}
+	public void setGoods_click(int goods_click) {
+		this.goods_click = goods_click;
+	}
+	public String getGoods_image1() {
+		return goods_image1;
+	}
+	public void setGoods_image1(String goods_image1) {
+		this.goods_image1 = goods_image1;
+	}
+	public String getGoods_image2() {
+		return goods_image2;
+	}
+	public void setGoods_image2(String goods_image2) {
+		this.goods_image2 = goods_image2;
+	}
+	public String getGoods_image3() {
+		return goods_image3;
+	}
+	public void setGoods_image3(String goods_image3) {
+		this.goods_image3 = goods_image3;
+	}
+	public String getGoods_image4() {
+		return goods_image4;
+	}
+	public void setGoods_image4(String goods_image4) {
+		this.goods_image4 = goods_image4;
+	}
+	public String getGoods_image5() {
+		return goods_image5;
+	}
+	public void setGoods_image5(String goods_image5) {
+		this.goods_image5 = goods_image5;
+	}
+	public String getApprove() {
+		return approve;
+	}
+	public void setApprove(String approve) {
+		this.approve = approve;
+	}
+	public String getGoods_addtime() {
+		return goods_addtime;
+	}
+	public void setGoods_addtime(String goods_addtime) {
+		this.goods_addtime = goods_addtime;
+	}
+	public String getGoods_edittime() {
+		return goods_edittime;
+	}
+	public void setGoods_edittime(String goods_edittime) {
+		this.goods_edittime = goods_edittime;
+	}
+	public int getTransport_id() {
+		return transport_id;
+	}
+	public void setTransport_id(int transport_id) {
+		this.transport_id = transport_id;
+	}
+	public int getGoods_freight() {
+		return goods_freight;
+	}
+	public void setGoods_freight(int goods_freight) {
+		this.goods_freight = goods_freight;
+	}
+	public int getGoods_vat() {
+		return goods_vat;
+	}
+	public void setGoods_vat(int goods_vat) {
+		this.goods_vat = goods_vat;
+	}
+	public int getGoods_commend() {
+		return goods_commend;
+	}
+	public void setGoods_commend(int goods_commend) {
+		this.goods_commend = goods_commend;
+	}
+	public int getEvaluation_good_star() {
+		return evaluation_good_star;
+	}
+	public void setEvaluation_good_star(int evaluation_good_star) {
+		this.evaluation_good_star = evaluation_good_star;
+	}
+	public int getEvaluation_count() {
+		return evaluation_count;
+	}
+	public void setEvaluation_count(int evaluation_count) {
+		this.evaluation_count = evaluation_count;
+	}
+	public int getGoods_maiprice() {
+		return goods_maiprice;
+	}
+	public void setGoods_maiprice(int goods_maiprice) {
+		this.goods_maiprice = goods_maiprice;
+	}
+	public int getGoods_hour() {
+		return goods_hour;
+	}
+	public void setGoods_hour(int goods_hour) {
+		this.goods_hour = goods_hour;
+	}
+	public GoodsCommon getCommons() {
+		return commons;
+	}
+	public void setCommons(GoodsCommon commons) {
+		this.commons = commons;
+	}
+	public String getBrand_name() {
+		return brand_name;
+	}
+	public void setBrand_name(String brand_name) {
+		this.brand_name = brand_name;
+	}
+	public int getGoods_promotion() {
+		return goods_promotion;
+	}
+	public void setGoods_promotion(int goods_promotion) {
+		this.goods_promotion = goods_promotion;
+	}
+	public String getGc_name() {
+		return gc_name;
+	}
+	public void setGc_name(String gc_name) {
+		this.gc_name = gc_name;
+	}
+	public String getGc_name2() {
+		return gc_name2;
+	}
+	public void setGc_name2(String gc_name2) {
+		this.gc_name2 = gc_name2;
+	}
+	public String getGc_name3() {
+		return gc_name3;
+	}
+	public void setGc_name3(String gc_name3) {
+		this.gc_name3 = gc_name3;
+	}
+	public String getGoods_id_list() {
+		return goods_id_list;
+	}
+	public void setGoods_id_list(String goods_id_list) {
+		this.goods_id_list = goods_id_list;
+	}
+	public String getAdd_time() {
+		return add_time;
+	}
+	public void setAdd_time(String add_time) {
+		this.add_time = add_time;
+	}
+	public int getUnit() {
+		return unit;
+	}
+	public void setUnit(int unit) {
+		this.unit = unit;
+	}
+	public int getPill() {
+		return pill;
+	}
+	public void setPill(int pill) {
+		this.pill = pill;
+	}
+	public String getBar_code() {
+		return bar_code;
+	}
+	public void setBar_code(String bar_code) {
+		this.bar_code = bar_code;
+	}
+	public int getStorage_state() {
+		return storage_state;
+	}
+	public void setStorage_state(int storage_state) {
+		this.storage_state = storage_state;
+	}
+	public int getStorage_id() {
+		return storage_id;
+	}
+	public void setStorage_id(int storage_id) {
+		this.storage_id = storage_id;
+	}
+	public int getSupplier() {
+		return supplier;
+	}
+	public void setSupplier(int supplier) {
+		this.supplier = supplier;
+	}
+	public String getGoods_addressStr() {
+		return goods_addressStr;
+	}
+	public void setGoods_addressStr(String goods_addressStr) {
+		this.goods_addressStr = goods_addressStr;
+	}
+	public String getUnitStr() {
+		return unitStr;
+	}
+	public void setUnitStr(String unitStr) {
+		this.unitStr = unitStr;
+	}
+	public double getTotal_price() {
+		return total_price;
+	}
+	public void setTotal_price(double total_price) {
+		this.total_price = total_price;
+	}
+	public String getSupplierStr() {
+		return supplierStr;
+	}
+	public void setSupplierStr(String supplierStr) {
+		this.supplierStr = supplierStr;
+	}                                  
+	
+}

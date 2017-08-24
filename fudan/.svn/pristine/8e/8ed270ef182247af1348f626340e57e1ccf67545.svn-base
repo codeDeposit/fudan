@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.ShortMessageMapper">
+
+	<!-- 添加消息 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.ShortMessage">
+		insert fudan_oa_short_message <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="content !=null and content !='' ">
+				content = #{content},
+			</if>
+			<if test="senderId !=null and senderId != '' ">
+				senderId = #{senderId},
+			</if>
+			<if test="sender !=null and sender != '' ">
+				sender = #{sender},
+			</if>
+			<if test="msgType !=null ">
+				msgType = #{msgType},
+			</if>
+			<if test="sendTime !=null ">
+				sendTime = #{sendTime},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加消息 end -->
+	
+	
+	<!-- 获取刚添加的消息Id号 start -->
+	<select id="selectMaxId" resultType="Long">
+		select max(messageId) from fudan_oa_short_message
+	</select>
+	<!-- 获取刚添加的消息Id号 end -->
+	
+	
+	<!-- 获取短消息内容 start -->
+	<select id="selectInfoBy" resultType="com.jy.entity.oa.communicate.ShortMessage">
+		select * from fudan_oa_short_message where messageId = #{messageId}
+	</select>
+	<!-- 获取短消息内容 end -->
+
+</mapper>

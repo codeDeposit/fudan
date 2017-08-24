@@ -1,0 +1,831 @@
+var toast;
+var dialog;
+var _tab;
+var _customerId;
+window.onload = function(){
+	toast = new auiToast();
+	dialog = new auiDialog();
+	fCutomerList();
+	fuLoading();
+}
+function fTab(){
+	if(_tab == 2){
+		window.location.href = '../contacts/pAdd?customerId='+_customerId; 
+	}else if(_tab == 3){
+		window.location.href = '../saleActivity/pAdd?customerId='+_customerId; 
+	}else if(_tab == 4){
+		window.location.href = '../saleProject/pAdd?customerId='+_customerId; 
+	}else if(_tab == 5){
+		window.location.href = '../contract/pAdd?customerId='+_customerId; 
+	}
+}
+function fList() {
+    $.ajax({
+        type: "post",
+        async: false,
+        url: basePath + "mobile/customer/list",
+        success: function(data) {
+        	var data = eval('('+ data +')');
+        	var obj = data.obj.data;
+        	var uList = document.getElementById('DCustomerList');
+        	uList.innerHTML = "";
+        	if (obj.length > 0) {
+        		for (var i = 0; i < obj.length; i++) {
+                    var iHtml = '<li class="aui-list-item aui-list-item-middle">'
+					                +'<div class="aui-media-list-item-inner">'
+					                	+'<a href="pBasic?id='+ obj[i]['id'] +'">'
+							                +'<div class="aui-list-item-media" style="width: 3.5rem;">'
+							                	+'<img src="'+ basePath +'mobile/image/customer/customer.png" class="aui-img-round aui-list-img-sm">'
+							                +'</div>'
+							                +'<div class="aui-list-item-inner">'
+							                	+'<div class="aui-list-item-text aui-margin-t-10">'
+							                	+'<div class="aui-list-item-title aui-font-size-14">'
+							                	+'<div class="aui-label">'
+							                		+'<span class="aui-iconfont aui-icon-punch"></span>企业名称 '
+							                		+'</div>&nbsp;'
+						                		+obj[i]['company']
+						                	+'</div>'
+						                	+'<div class="aui-list-item-right">2015-10-10</div>'
+						                	+'</div>'
+						                	+'<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">'
+						                		+'<div class="aui-label ">'
+						                			+'<span class="aui-iconfont aui-icon-myfill"></span>负责人'
+					                			+'</div> '
+					                			+ obj[i]['responsible']
+						                	+'</div>'
+						                +'</a>'
+						                +'<div class="aui-list-item-text aui-pull-left aui-margin-t-10">'
+						                		+'<div class="aui-text-pink">'
+							                	+'应付账款	<span class="aui-iconfont aui-icon-recharge"></span> '+ obj[i]['amount'] +'</div>'
+							                	+' </div>'
+								                +'<div class="aui-list-item-text aui-pull-right">'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-info">'
+									                	+'<a href="pDetail?id='+ obj[i]['id'] +'"><span class="aui-iconfont aui-icon-edit"></span>修改</a>'
+									                +'</div>'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure('+ obj[i]['id'] +',1)">'
+									                	+'<span class="aui-iconfont aui-icon-delete"></span>删除'
+									                +'</div>'
+								                +'</div>'
+							                +'</div>'
+							             +'</div>'
+					                +'</li>';
+                    uList.innerHTML += iHtml;
+                } 
+        	}else{
+                uList.innerHTML = '<p class = "aui-text-center aui-padded-t-15"> 没有相关数据 </p>';
+            }
+        	setTimeout('fuLoadingClose();',500);
+        }
+    });
+}
+function fAdd() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/customer/add",
+		data : $("#FCustomerAdd").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"提交成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = 'index';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fDelete(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/customer/delete",
+		data : {id:param},
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = 'index';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fDetail(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/customer/detail",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj.data;
+				document.getElementById('customerDetailId').value = obj['id'];
+	        	document.getElementById('customerDetailCompany').value = obj['company'];
+	        	document.getElementById('customerDetailResponsible').value = obj['responsible'];
+	        	document.getElementById('customerDetailAddress').value = obj['address'];
+	        	document.getElementById('customerDetailRemark').value = obj['remark'];
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	return false;
+}
+function fUpdate() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/customer/update",
+		data : $("#FCustomerUpdate").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"提交成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = 'index';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fBasic(param){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/customer/basic",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj;
+				document.getElementById('DList').innerHTML = '<div class="aui-content" style="margin-top:10px;">'
+					   +' <ul class="aui-list aui-form-list">'
+					   +' <li class="aui-list-item">'
+					   +'  <div class="aui-list-item-inner">'
+					   +'<div class="aui-list-item-label">'
+					   +'企业名称'
+					   +' </div>'
+					   +' <div class="aui-list-item-input">'
+					   +'   <input type="text" name="company" id="basicCompany" value="' + obj['company'] + '" maxlength="255" placeholder="企业名称" required>'
+					   +' </div>'
+					   +'</div>'
+					   +'  </li> '
+					   +' <li class="aui-list-item">'
+					   +'  <div class="aui-list-item-inner">'
+					   +'<div class="aui-list-item-label">'
+					   +'负 &nbsp;责&nbsp;人'
+					   +'</div>'
+					   +' <div class="aui-list-item-input">'
+					   +'<input type="text" name="responsible" id="basicResponsible" value="'+ obj['responsible'] +'" maxlength="255" placeholder="负责人" required>'
+					   +' </div>'
+					   +'  </div>'
+					   +'</li> '
+					   +'<li class="aui-list-item">'
+					   +'<div class="aui-list-item-inner">'
+					   +'<div class="aui-list-item-label">'
+					   +'企业地址'
+					   +'</div>'
+					   +'<div class="aui-list-item-input">'
+					   +'<input type="text" name="address" id="basicAddress" value="'+ obj['address'] +'" maxlength="255" placeholder="企业地址" required>'
+					   +' </div>'
+					   +'</div>'
+					   +'</li> '
+					   +'<li class="aui-list-item">'
+					   +'<div class="aui-list-item-inner">'
+					   +'<div class="aui-list-item-label">'
+					   +'备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注'
+					   +'</div>'
+					   +' <div class="aui-list-item-input">'
+					   +' <input type="text" name="remark" id="basicRemark" value="'+ obj['remark'] +'" maxlength="255" placeholder="备注" required>'
+					   +'</div>'
+					   +'</div>'
+					   +' </li> '
+					   +'</ul>'
+					   +'</div>';
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	
+}
+function fuSure(param,param2){
+	dialog.alert({
+	    title:"删除",
+	    msg:'确定执行此操作吗？',
+	    buttons:['取消','确定']
+	},function(ret){
+		if(ret.buttonIndex == 2){
+			if(param2 == 1){
+				fDelete(param);
+			}else if(param2 == 2){
+				fContactsDelete(param);
+			}else if(param2 == 3){
+				fSaleActivityDelete(param);
+			}else if(param2 == 4){
+				fSaleProjectDelete(param);	
+			}else if(param2 == 5){
+				fContractDelete(param);
+			}
+		}
+	})
+}
+function fContactsList(param) {
+    $.ajax({
+        type: "post",
+        async: false,
+        url: basePath + "mobile/contacts/list",
+        data:{customerId:param},
+        success: function(data) {
+        	var data = eval('('+ data +')');
+        	var obj = data.obj.data;
+        	var uList = document.getElementById('DList');
+        	uList.innerHTML = "";
+        	if (obj.length > 0) {
+        		for (var i = 0; i < obj.length; i++) {
+                    var iHtml = '<li class="aui-list-item aui-list-item-middle">'
+					                +'<div class="aui-media-list-item-inner">'
+							                +'<div class="aui-list-item-inner">'
+							                	+'<div class="aui-list-item-text aui-margin-t-10">'
+							                	+'<div class="aui-list-item-title aui-font-size-14">'
+							                	+'<div class="aui-label">'
+							                		+'<span class="aui-iconfont aui-icon-punch"></span>姓名 '
+							                		+'</div>&nbsp;'
+						                		+ obj[i]['name']
+						                	+'</div>'
+						                	+'<div class="aui-list-item-right">2015-10-10</div>'
+						                	+'</div>'
+						                	+'<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">'
+						                		+'<div class="aui-label ">'
+						                			+'<span class="aui-iconfont aui-icon-myfill"></span>性别'
+					                			+'</div> '
+					                			+ obj[i]['sex']
+						                	+'</div>'
+						                +'<div class="aui-list-item-text aui-pull-right">'
+								                +'<div class="aui-list-item-text aui-pull-right">'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-info">'
+									                	+'<a href="../contacts/pDetail?id='+ obj[i]['id'] +'"><span class="aui-iconfont aui-icon-edit"></span>修改</a>'
+									                +'</div>'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure('+ obj[i]['id'] +',2)">'
+									                	+'<span class="aui-iconfont aui-icon-delete"></span>删除'
+									                +'</div>'
+								                +'</div>'
+							                +'</div>'
+							             +'</div>'
+					                +'</li>';
+                    uList.innerHTML += iHtml;
+                } 
+        	}else{
+                uList.innerHTML = '<p class = "aui-text-center aui-padded-t-15"> 没有相关数据 </p>';
+            }
+        }
+    });
+}
+function fContactsAdd(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath+"mobile/contacts/add",
+		data : $("#Form_contacts_add").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"提交成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fContactsDelete(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contacts/delete",
+		data : {id:param},
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fContactsDetail(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contacts/detail",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj.data;
+				$('option[value="'+ obj['sex'] +'"]').attr('selected',true);
+				document.getElementById('contactsName').value = obj['name'];
+	        	document.getElementById('contactsPhone').value = obj['phone'];
+	        	document.getElementById('contactsBm').value = obj['bm'];
+	        	document.getElementById('contactsJob').value = obj['job'];
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	return false;
+}
+function fContactsUpdate() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contacts/update",
+		data : $("#Form_contacts_detail").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"提交成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleActivityList(param) {
+    $.ajax({
+        type: "post",
+        async: false,
+        url: basePath + "mobile/saleActivity/list",
+        data:{customerId:param},
+        success: function(data) {
+        	var data = eval('('+ data +')');
+        	var obj = data.obj.data;
+        	var uList = document.getElementById('DList');
+        	uList.innerHTML = "";
+        	if (obj.length > 0) {
+        		for (var i = 0; i < obj.length; i++) {
+                    var iHtml = '<li class="aui-list-item aui-list-item-middle">'
+					                +'<div class="aui-media-list-item-inner">'
+							                +'<div class="aui-list-item-inner">'
+							                	+'<div class="aui-list-item-text aui-margin-t-10">'
+							                	+'<div class="aui-list-item-title aui-font-size-14">'
+							                	+'<div class="aui-label">'
+							                		+'<span class="aui-iconfont aui-icon-punch"></span>行动方式 '
+							                		+'</div>&nbsp;'
+						                		+ obj[i]['byway']
+						                	+'</div>'
+						                	+'<div class="aui-list-item-right">'
+						                		+ obj[i]['beginDate']
+						                	+'</div>'
+						                	+'</div>'
+						                	+'<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">'
+						                		+'<div class="aui-label ">'
+						                			+'<span class="aui-iconfont aui-icon-myfill"></span>重要程度'
+					                			+'</div> '
+					                			+ obj[i]['level']
+						                	+'</div>'
+						                +'<div class="aui-list-item-text aui-pull-right">'
+								                +'<div class="aui-list-item-text aui-pull-right">'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-info">'
+									                	+'<a href="../saleActivity/pDetail?id='+ obj[i]['id'] +'"><span class="aui-iconfont aui-icon-edit"></span>修改</a>'
+									                +'</div>'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure('+ obj[i]['id'] +',3)">'
+									                	+'<span class="aui-iconfont aui-icon-delete"></span>删除'
+									                +'</div>'
+								                +'</div>'
+							                +'</div>'
+							             +'</div>'
+					                +'</li>';
+                    uList.innerHTML += iHtml;
+                } 
+        	}else{
+                uList.innerHTML = '<p class = "aui-text-center aui-padded-t-15"> 没有相关数据 </p>';
+            }
+        }
+    });
+}
+function fSaleActivityAdd(){
+	var ids = ['attachments'];
+	$.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url : basePath+"mobile/saleActivity/add?"+$("#Form_saleActivity_add").serialize(),
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",
+		success:function(data){
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleActivityDelete(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleActivity/delete",
+		data : {id:param},
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleActivityDetail(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleActivity/detail",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj.data;
+				$('option[value="'+ obj['byway'] +'"]').attr('selected',true);
+				$("input[name='level'][value='" + obj['level'] + "']").attr("checked",true); 
+				document.getElementById('saleActivityBeginDate').value = obj['beginDate'];
+	        	document.getElementById('saleActivityLocation').value = obj['location'];
+	        	document.getElementById('saleActivitySponsor').value = obj['sponsor'];
+	        	document.getElementById('saleActivityAttachments').value = obj['attachment'];
+	        	document.getElementById('saleActivityContent').value = obj['content'];
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	return false;
+}
+function fSaleActivityUpdate() {
+	var ids = ['attachment'];
+	$.ajaxFileUpload({
+		type:"post",
+		async:false,
+		url : basePath + "mobile/saleActivity/update?"+$("#Form_saleActivity_detail").serialize(),
+		ecureuri:false,
+    	fileElementId:ids,
+		dataType:"JSON",
+		success:function(data){
+			toast.success({
+			    title:"提交成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleProjectList(param) {
+    $.ajax({
+        type: "post",
+        async: false,
+        url: basePath + "mobile/saleProject/list",
+        data:{customerId:param},
+        success: function(data) {
+        	var data = eval('('+ data +')');
+        	var obj = data.obj.data;
+        	var uList = document.getElementById('DList');
+        	uList.innerHTML = "";
+        	if (obj.length > 0) {
+        		for (var i = 0; i < obj.length; i++) {
+                    var iHtml = '<li class="aui-list-item aui-list-item-middle">'
+					                +'<div class="aui-media-list-item-inner">'
+							                +'<div class="aui-list-item-inner">'
+							                	+'<div class="aui-list-item-text aui-margin-t-10">'
+							                	+'<div class="aui-list-item-title aui-font-size-14">'
+							                	+'<div class="aui-label">'
+							                		+'<span class="aui-iconfont aui-icon-punch"></span>项目名称 '
+							                		+'</div>&nbsp;'
+						                		+ obj[i]['name']
+						                	+'</div>'
+						                	+'<div class="aui-list-item-right">'
+						                		+ obj[i]['date']
+						                	+'</div>'
+						                	+'</div>'
+						                	+'<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">'
+						                		+'<div class="aui-label ">'
+						                			+'<span class="aui-iconfont aui-icon-myfill"></span>项目来源'
+					                			+'</div> '
+					                			+ obj[i]['quarry']
+						                	+'</div>'
+						                +'<div class="aui-list-item-text aui-pull-right">'
+								                +'<div class="aui-list-item-text aui-pull-right">'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-info">'
+									                	+'<a href="../saleProject/pDetail?id='+ obj[i]['id'] +'"><span class="aui-iconfont aui-icon-edit"></span>修改</a>'
+									                +'</div>'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure('+ obj[i]['id'] +',4)">'
+									                	+'<span class="aui-iconfont aui-icon-delete"></span>删除'
+									                +'</div>'
+								                +'</div>'
+							                +'</div>'
+							             +'</div>'
+					                +'</li>';
+                    uList.innerHTML += iHtml;
+                } 
+        	}else{
+                uList.innerHTML = '<p class = "aui-text-center aui-padded-t-15"> 没有相关数据 </p>';
+            }
+        }
+    });
+}
+function fSaleProjectAdd(){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleProject/add",
+		data : $("#Form_saleProject_add").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleProjectDelete(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleProject/delete",
+		data : {id:param},
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fSaleProjectDetail(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleProject/detail",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj.data;
+				document.getElementById('saleprojectResponsible').value = obj['responsible'];
+	        	document.getElementById('saleprojectName').value = obj['name'];
+	        	$('option[value="'+ obj['quarry'] +'"]').attr('selected',true);
+	        	$('option[value="'+ obj['stage'] +'"]').attr('selected',true);
+	        	document.getElementById('saleprojectDate').value = obj['date'];
+	        	document.getElementById('saleprojectAmount').value = obj['amount'];
+	        	document.getElementById('saleprojectDepict').value = obj['depict'];
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	return false;
+}
+function fSaleProjectUpdate() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/saleProject/update",
+		data : $("#Form_saleProject_update").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fContractList(param) {
+    $.ajax({
+        type: "post",
+        async: false,
+        url: basePath + "mobile/contract/list",
+        data:{customerId:param},
+        success: function(data) {
+        	var data = eval('('+ data +')');
+        	var obj = data.obj.data;
+        	var uList = document.getElementById('DList');
+        	uList.innerHTML = "";
+        	if (obj.length > 0) {
+        		for (var i = 0; i < obj.length; i++) {
+                    var iHtml = '<li class="aui-list-item aui-list-item-middle">'
+					                +'<div class="aui-media-list-item-inner">'
+							                +'<div class="aui-list-item-inner">'
+							                	+'<div class="aui-list-item-text aui-margin-t-10">'
+							                	+'<div class="aui-list-item-title aui-font-size-14">'
+							                	+'<div class="aui-label">'
+							                		+'<span class="aui-iconfont aui-icon-punch"></span>合同名称 '
+							                		+'</div>&nbsp;'
+						                		+ obj[i]['name']
+						                	+'</div>'
+						                	+'</div>'
+						                	+'<div class="aui-list-item-title aui-font-size-14 aui-margin-t-10">'
+						                		+'<div class="aui-label ">'
+						                			+'<span class="aui-iconfont aui-icon-myfill"></span>合同编号'
+					                			+'</div> '
+					                			+ obj[i]['number']
+						                	+'</div>'
+						                +'<div class="aui-list-item-text aui-pull-right">'
+								                +'<div class="aui-list-item-text aui-pull-right">'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-info">'
+									                	+'<a href="../contract/pDetail?id='+ obj[i]['id'] +'"><span class="aui-iconfont aui-icon-edit"></span>修改</a>'
+									                +'</div>'
+									                +'<div class="aui-btn aui-list-item-right aui-btn-danger" onclick="fuSure('+ obj[i]['id'] +',5)">'
+									                	+'<span class="aui-iconfont aui-icon-delete"></span>删除'
+									                +'</div>'
+								                +'</div>'
+							                +'</div>'
+							             +'</div>'
+					                +'</li>';
+                    uList.innerHTML += iHtml;
+                } 
+        	}else{
+                uList.innerHTML = '<p class = "aui-text-center aui-padded-t-15"> 没有相关数据 </p>';
+            }
+        }
+    });
+}
+function fContractAdd(){
+	var total1 = document.getElementById('contract_add_amount').value * 100;
+	var price1 = document.getElementById('price1').value;
+	var price2 = document.getElementById('price2').value;
+	var price3 = document.getElementById('price3').value;
+	var total2 = parseInt(price1) + parseInt(price2) + parseInt(price3);
+	var total3 = total2*100;
+	if(total1 != total3){
+		toast.fail({
+		    title:"付款金额与合同总额不相等",
+		    duration:2000
+		});
+	}else{
+		var salesJSON = [];
+		var nameLength = document.getElementsByName('salesPeople');
+		var priceLength = document.getElementsByName('salesPrice');
+		for(var i=0;i<nameLength.length;i++){
+			 var str = {'name':nameLength[i].value,'price':priceLength[i].value};
+			 salesJSON.push(str);
+		}
+		var jsonstr = JSON.stringify(salesJSON);
+		document.getElementById('contract_add_salesJson').value  = jsonstr;
+		var ids = ['attachment2'];
+		$.ajaxFileUpload({
+			type:"post",
+			async:false,
+			url : basePath + "mobile/contract/add?"+$("#Form_contract_add").serialize(),
+			ecureuri:false,
+	    	fileElementId:ids,
+			dataType:"JSON",
+			success:function(data){
+				toast.success({
+				    title:"操作成功",
+				    duration:2000
+				});
+				setTimeout(function() {
+					window.location.href = '../customer/pBasic';
+				}, 2000);
+			}
+		});
+	}
+	return false;
+}
+function fContractDelete(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contract/delete",
+		data : {id:param},
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}
+function fContractDetail(param) {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contract/detail",
+		data : {id:param},
+		success : function(data) {
+			var data = eval('('+ data +')');
+			if(data.res == 1){
+				var obj = data.obj.data;
+				var salesJson = data.obj.data;
+				for(var i=0;i<salesJson.length;i++){
+					document.getElementById('contract_sales_detail').innerHTML += '<li class="aui-list-item">'
+		            +'<div class="aui-list-item-inner">'
+		            +'<div class="aui-list-item-label aui-text-info">'
+		            +'销  售  '+ (i+1) +''
+	                  	 +'</div>'
+	                  	 +'<div class="aui-list-item-input">'
+	                  	 +'<input type="text" id="salesPeople"'+ (i+1) +' name="salesPeople_detail" value="'+ salesJson[i]['name'] +'"  maxlength="255" placeholder="企业名称" required>'
+	                  	 +'</div>'
+	                  	 +'</div>'
+	                  	 +'</li>'
+	                  	 +'<li class="aui-list-item">'
+	                  	 +'<div class="aui-list-item-inner">'
+	                  	 +'<div class="aui-list-item-label aui-text-danger">'
+	                  	 +'金额'
+	                  	 +'</div>'
+	                  	 +'<div class="aui-list-item-input">'
+	                  	 +' <input type="text" id="salesPrice"'+ (i+1) +' name="salesPrice_detail" value="'+ salesJson[i]['price'] +'" maxlength="255" placeholder="0.0" required>'
+	                  	 +'</div>'
+	                  	 +' </div>'
+	                  	 +' </li>';
+				}
+				document.getElementById('contractName').value = obj['name'];
+	        	document.getElementById('contracNumber').value = obj['number'];
+	        	document.getElementById('contractAmount').value = obj['amount'];
+	        	document.getElementById('contractAttachment2').value = obj['attachment'];
+	        	document.getElementById('contractPercentage').value = obj['percentage'];
+	        	document.getElementById('contractTime1').value = obj['time1'];
+	        	document.getElementById('contractPrice1').value = obj['price1'];
+	        	document.getElementById('contractTime2').value = obj['time2'];
+	        	document.getElementById('contractPrice2').value = obj['price2'];
+	        	document.getElementById('contractTime3').value = obj['time3'];
+	        	document.getElementById('contractPrice3').value = obj['price3'];
+			}else{
+				toast.fail({
+				    title:data.resMsg,
+				    duration:2000
+				});
+			}
+		}
+	});
+	return false;
+}
+function fContractUpdate() {
+	$.ajax({
+		type : "post",
+		async : false,
+		url : basePath + "mobile/contract/update",
+		data : $("#Form_contract_update").serialize(),
+		success : function(data) {
+			toast.success({
+			    title:"操作成功",
+			    duration:2000
+			});
+			setTimeout(function() {
+				window.location.href = '../customer/pBasic';
+			}, 2000);
+		}
+	});
+	return false;
+}

@@ -1,0 +1,135 @@
+package com.jy.service.wzcg;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.system.account.Account;
+import com.jy.entity.wzcg.WzcgCgjh;
+import com.jy.entity.wzcg.WzcgCgjhSet;
+import com.jy.entity.wzcg.WzcgItem;
+import com.jy.entity.wzcg.WzcgType;
+import com.jy.repository.wzcg.WzcgCgjhDao;
+import com.jy.service.base.BaseServiceImp;
+import com.jy.service.system.account.AccountService;
+import com.jy.service.system.org.RoleService;
+
+@Service(value = "wzcgCgjhService")
+public class WzcgCgjhService extends BaseServiceImp<WzcgCgjh> {
+	
+	@Resource
+	private WzcgCgjhDao wzcgCgjhDao;
+	@Resource(name="wzcgTypeService")
+	private WzcgTypeService wzcgTypeService;
+	@Resource(name="wzcgItemService")
+	private WzcgItemService wzcgItemService;
+	@Resource(name="wzcgCgjhService")
+	private WzcgCgjhService wzcgCgjhService;
+	@Resource(name="wzcgCgjhSetService")
+	private WzcgCgjhSetService wzcgCgjhSetService;
+	@Autowired
+	public RoleService roleService;
+	@Autowired
+	public AccountService accountService;
+	
+	/**
+	 * 得到对应数据
+	 * @param wzcgCgjh
+	 * @return
+	 */
+	public Map<List<WzcgCgjh>,Boolean> list(){
+		boolean mark = false;
+		WzcgCgjh wzcgCgjh = new WzcgCgjh();
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		String orgId = roleService.getAccountOrg(currentAccount.getAccountId()).getId();
+		WzcgCgjhSet wzcgCgjhSet = new WzcgCgjhSet(); 
+		Map<List<WzcgCgjh>,Boolean> map = new HashMap<List<WzcgCgjh>,Boolean>();
+		List<WzcgCgjh> wzcgCgjhList = new ArrayList<WzcgCgjh>();
+		List<WzcgCgjh> wzcgCgjhList2 = new ArrayList<WzcgCgjh>();
+		wzcgCgjhList = this.find(wzcgCgjh);
+		wzcgCgjhSet = wzcgCgjhSetService.find(wzcgCgjhSet).get(0);//得到采购计划设置
+		if(wzcgCgjhSet.getOrgId().equals(orgId)){//判断是否为计划下达者
+			mark = true;
+		}
+		if(mark != true){//非计划下达者，列出对应数据
+			//管理员列出所有数据
+			if(orgId.equals("9")){
+				wzcgCgjhList2 = wzcgCgjhList;
+			}else{
+				for(int i=0;i<wzcgCgjhList.size();i++){
+					if(wzcgCgjhList.get(i).getZxjg().equals(orgId)){//判断是否为执行者
+						wzcgCgjhList2.add(wzcgCgjhList.get(i));
+					}else{
+						WzcgItem wzcgItem = new WzcgItem();
+						wzcgCgjh.setCgjhId(wzcgCgjhList.get(i).getCgjhId());
+						List<WzcgItem> wzcgItemList = wzcgItemService.find(wzcgItem);//得到采购计划下的项目，是否为本用户所创建，则添加此采购计划到数据列表进行页面展现
+						for(int j=0;j<wzcgItemList.size();j++){
+							if(roleService.getAccountOrg(wzcgItemList.get(j).getCreator()).getId().equals(currentAccount.getAccountId())){//项目创建者用户id是否和当前用户id相同
+								wzcgCgjhList2.add(wzcgCgjhList.get(i));
+								break;//终止循环
+							}
+						}
+					}
+				}
+			}
+		}else{//计划下达者列出所有数据
+			wzcgCgjhList2 = wzcgCgjhList;
+		}
+		map.put(wzcgCgjhList2, mark);
+		return map;
+	}
+	
+	public List<WzcgCgjh> listFull(List<WzcgCgjh> wzcgCgjhList){
+		for(int i=0;i<wzcgCgjhList.size();i++){
+			//采购方式
+			WzcgType wzcgType = new WzcgType();
+			wzcgType.setId(Integer.parseInt(wzcgCgjhList.get(i).getBuyway()));
+			wzcgCgjhList.get(i).setBuyway(wzcgTypeService.find(wzcgType).get(0).getName());
+			//得到执行机构
+			wzcgCgjhList.get(i).setZxjg(roleService.getOrgObject(wzcgCgjhList.get(i).getZxjg()).getName());
+			//得到填报人员
+			Account o = new Account();
+			o.setAccountId(wzcgCgjhList.get(i).getCreator());
+			wzcgCgjhList.get(i).setCreator(accountService.find(o).get(0).getName());//得到填报人员
+		}
+		return wzcgCgjhList;
+	}
+	
+	public List<WzcgCgjh> find(WzcgCgjh wzcgCgjh) {
+		return wzcgCgjhDao.find(wzcgCgjh);
+	}
+	
+	public void insert(WzcgCgjh wzcgCgjh){
+		wzcgCgjhDao.insert(wzcgCgjh);
+	}
+	
+	public void delete(WzcgCgjh wzcgCgjh){
+		wzcgCgjhDao.delete(wzcgCgjh);
+		//item中cgjhId清除
+		WzcgItem wzcgItem = new WzcgItem();
+		List<WzcgItem> wzcgItemList = new ArrayList<WzcgItem>();
+		wzcgItem.setCgjhId(wzcgCgjh.getCgjhId());
+		wzcgItemList = wzcgItemService.find(wzcgItem);
+		for(int i=0;i<wzcgItemList.size();i++){
+			wzcgItem.setId(wzcgItemList.get(i).getId());
+			wzcgItem.setCgjhId("");
+			wzcgItemService.update(wzcgItem);
+		}
+	}
+	
+	public List<WzcgCgjh> search(WzcgCgjh wzcgCgjh) {
+		return wzcgCgjhDao.search(wzcgCgjh);
+	}
+	
+	public void update(WzcgCgjh wzcgCgjh){
+		wzcgCgjhDao.update(wzcgCgjh);
+	}
+	
+}

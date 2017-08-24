@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.wzcg.WzcgCgjhSetDao">
+	
+	<resultMap type="com.jy.entity.wzcg.WzcgCgjhSet" id="ResultMap">
+		<id column="id" property="id"/>
+		<result column="orgId" property="orgId"/>
+		<result column="userId" property="userId"/>
+		<result column="isValid" property="isValid"/>
+	</resultMap>
+	
+	<!-- 列表 -->
+	<select id="find" resultMap="ResultMap">
+		select * from wzcg_cgjh_set where 1 = 1 <include refid="search"></include>
+	</select>
+	<!-- 新增 -->
+	<insert id="insert">
+		insert into wzcg_cgjh_set
+		(orgId,userId,isValid) 
+		values 
+		(#{orgId},#{userId},#{isValid})
+	</insert>
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from wzcg_cgjh_set where 1 = 1 
+		<if test="isValid != 0">  
+			AND isValid = #{isValid}
+		</if>
+	</select>
+	<!-- 删除 -->
+	<delete id="delete">
+		delete from wzcg_cgjh_set where id = #{id}
+	</delete>
+	<!-- 更新 -->	
+	<update id="update">
+		update wzcg_cgjh_set <include refid="updateSQL"></include>
+		where 
+			id = #{id}
+	</update>
+	<sql id="search">
+		<if test="id != 0">  
+			AND id = #{id}
+		</if> 
+		<if test="orgId != null and orgId != ''">  
+			AND orgId = #{orgId}
+		</if>
+		<if test="userId != null and userId != ''">  
+			AND userId = #{userId}
+		</if>
+		<if test="isValid != 0">  
+			AND isValid = #{isValid}
+		</if>
+	</sql>
+	<sql id="updateSQL">
+		<set>
+			<if test="orgId != null and orgId != ''">  
+				orgId = #{orgId},
+			</if>
+			<if test="userId != null and userId != ''">  
+				userId = #{userId},
+			</if>
+			<if test="isValid != 0">  
+				isValid = #{isValid},
+			</if>
+		</set>
+	</sql>
+</mapper>

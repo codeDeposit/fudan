@@ -1,0 +1,27 @@
+package com.jy.service.app.admin;
+
+import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.jy.entity.app.admin.GoodsCommon;
+import com.jy.repository.app.admin.GoodsCommonDao;
+
+@Service(value = "goodsCommonService")
+public class GoodsCommonService{
+	
+	@Resource
+	private GoodsCommonDao goodsCommonDao;
+	
+	public int insert(GoodsCommon goodsCommonDao) {
+		return this.goodsCommonDao.insert(goodsCommonDao);
+	}
+	
+	public List<GoodsCommon> find() {
+		return this.goodsCommonDao.find();
+	}
+	
+	public int update(GoodsCommon goodsCommonDao) {
+		return this.goodsCommonDao.update(goodsCommonDao);
+	}
+	
+}

@@ -1,0 +1,64 @@
+package com.jy.entity.oa.personal;
+
+public class DutySystem {
+
+	// 缺省的班制
+	private final Short DEFAULT = 1;
+	// 非缺省的班制
+	private final Short NOT_DEFAULT = 0;
+
+	private Long systemId;
+	private String systemName;
+	private String systemSetting;
+	private String systemDesc;
+	private Short isDefault;
+
+	public Long getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(Long systemId) {
+		this.systemId = systemId;
+	}
+
+	public String getSystemName() {
+		return systemName;
+	}
+
+	public void setSystemName(String systemName) {
+		this.systemName = systemName;
+	}
+
+	public String getSystemSetting() {
+		return systemSetting;
+	}
+
+	public void setSystemSetting(String systemSetting) {
+		this.systemSetting = systemSetting;
+	}
+
+	public String getSystemDesc() {
+		return systemDesc;
+	}
+
+	public void setSystemDesc(String systemDesc) {
+		this.systemDesc = systemDesc;
+	}
+
+	public Short getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Short isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public Short getDEFAULT() {
+		return DEFAULT;
+	}
+
+	public Short getNOT_DEFAULT() {
+		return NOT_DEFAULT;
+	}
+
+}

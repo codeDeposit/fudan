@@ -1,0 +1,137 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<%@ include file="../../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="renderer" content="webkit">
+		<link href="${jypath}/app/css/plugins/summernote/summernote.css" rel="stylesheet">
+    	<link href="${jypath}/app/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+		<%@ include file="../../common/css.jsp" %>
+		<%@ include file="../../common/js.jsp" %>
+    	<!-- SUMMERNOTE -->
+	    <script src="${jypath}/app/js/plugins/summernote/summernote.min.js"></script>
+	    <script src="${jypath}/app/js/plugins/summernote/summernote-zh-CN.js"></script>
+	</head>
+	<%@ include file="../../common/toast.jsp"%>
+	<body>
+		<div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>服务协议</h2>
+                <ol class="breadcrumb" style="margin-left:0px !important;margin-top:0px;">
+                    <li>
+                        <a href="../appAdminLogin/statistics">主页</a>
+                    </li>
+                    <li>
+                       app设置
+                    </li>
+                    <li>
+                        <strong>服务协议</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="ibox-content" >
+	        <ul class="nav nav-tabs" id="dom_tab_box">
+	        	<li class="active" onclick="fType(1)">
+                	<a data-toggle="tab" href="tabs_panels.html#tab-1"  aria-expanded="false">用户服务协议</a>
+                </li>
+                <li class="" onclick="fType(2)">
+                	<a data-toggle="tab" href="tabs_panels.html#tab-2"  aria-expanded="true">医生服务协议</a>
+                </li>
+                <li class="" onclick="fType(3)">
+                	<a data-toggle="tab" href="tabs_panels.html#tab-3" aria-expanded="true">药师服务协议</a>
+                </li>
+                <li class="" onclick="fType(4)">
+                	<a data-toggle="tab" href="tabs_panels.html#tab-4" aria-expanded="true">商家服务协议</a>
+                </li>
+            </ul>
+	        
+			<div class="row">
+                 <div class="col-lg-12">
+                     <div class="ibox float-e-margins">
+                         <div class="ibox-title">
+                             <button id="edit" class="btn btn-primary btn-xs m-l-sm" onclick="edit()" type="button">编辑</button>
+                             <button id="save" class="btn btn-success  btn-xs" onclick="save()" type="button">保存</button>
+                         </div>
+                         <div class="ibox-content" id="eg">
+                             <div class="click2edit wrapper" id="dom_box">
+                                 <p>服务协议编辑</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+		</div>
+		<script>
+			var _id = 1;
+			 $(document).ready(function () {
+			 	parent.scrollTo(0,0);
+	            $('.summernote').summernote({
+	                lang: 'zh-CN'
+	            });
+	            fList(1);
+	            setInterval(windowHeight,100);
+		     });
+	         var edit = function () {
+	         	document.getElementById('dom_tab_box').style = 'pointer-events:none';
+	            $("#eg").addClass("no-padding");
+	            $('.click2edit').summernote({
+	                lang: 'zh-CN',
+	                focus: true
+	            });
+	         };
+	         var save = function () {
+	         	document.getElementById('dom_tab_box').style = '';
+	            $("#eg").removeClass("no-padding");
+	            var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+	            $.ajax({
+					type : "post",
+					async : false,
+					url : basePath + "appAdminItem/update",
+					data:{id:_id,content:aHTML},
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						var ret = obj.obj;
+						if (obj.res == 0) {
+							fuError();
+						} else {
+							fuSuccess();
+						}
+					}
+				});	 
+	            $('.click2edit').destroy();
+	         };
+	         function fType(param){
+	         	_id = param;
+	         	fList(_id);
+	         }
+	         function fList(param){
+		    	$.ajax({
+					type : "post",
+					async : false,
+					url : basePath + "appAdminItem/list",
+					data:{id:param},
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						var ret = obj.obj;
+						if (obj.res == 0) {
+							fuError();
+						} else {
+							document.getElementById("dom_box").innerHTML = ret['content']; 
+						}
+					}
+				});	 
+		    }
+		    function windowHeight() {
+		    	var h = document.getElementById("eg").offsetHeight;
+		    	var bodyHeight = document.body;
+		   		bodyHeight.style.height  = (h+320) + "px";
+		    }
+		</script>
+	</body>
+</html>

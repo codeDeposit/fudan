@@ -1,0 +1,212 @@
+package com.jy.controller.customer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.customer.Contract;
+import com.jy.entity.customer.Customer;
+import com.jy.entity.system.account.Account;
+import com.jy.service.customer.ContactsService;
+import com.jy.service.customer.ContractService;
+import com.jy.service.customer.CustomerServicer;
+import com.jy.service.customer.SaleActivityService;
+import com.jy.service.customer.SaleProjectService;
+import com.jy.service.system.org.RoleService;
+
+@Controller("mobileCustomController")
+@RequestMapping({"mobile/customer"})
+public class CustomerMobileController extends BaseController<Object>{
+
+	@Resource(name="customerService")
+	private CustomerServicer customerService;
+	@Resource(name = "contractService")
+	private ContractService contractService;
+	@Resource(name = "contactsService")
+	private ContactsService contactsService;
+	@Resource(name="saleActivityService")
+	private SaleActivityService saleActivityService;
+	@Resource(name="saleProjectService")
+	private SaleProjectService saleProjectService;
+	@Autowired
+	public RoleService roleService;
+	
+	@RequestMapping("/index")
+	public String index(HttpServletRequest request, Model model) throws Exception {
+		return "mobile/customer/mobile_customer_list";
+	}
+	
+	@RequestMapping("/pAdd")
+	public String pAdd(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		model.addAttribute("customer",customer);
+		return "mobile/customer/mobile_customer_add";
+	}
+	
+	@RequestMapping("/pDelete")
+	public String pDelete(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		model.addAttribute("customer",customer);
+		return "mobile/customer/mobile_customer_delete";
+	}
+	
+	@RequestMapping("/pDetail")
+	public String pDetail(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		model.addAttribute("customer",customer);
+		return "mobile/customer/mobile_customer_detail";
+	}
+	
+	@RequestMapping("/pBasic")
+	public String pBasic(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		model.addAttribute("customer",customer);
+		return "mobile/customer/mobile_customer_basic";
+	}
+	
+	@RequestMapping("/pSearch")
+	public String pSearch(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		model.addAttribute("customer",customer);
+		return "mobile/customer/mobile_customer_search";
+	}
+	
+	@RequestMapping(value="/list",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes list(HttpServletRequest request, Model model,Customer customer) throws Exception {
+		boolean mark = false;
+		List<Customer> customerList = this.customerService.find(customer);
+		for(int i=0;i<customerList.size();i++){
+			double total = 0;
+			Contract contract = new Contract();
+			contract.setCustomerId(customerList.get(i).getId());
+			List<Contract> contractList = contractService.find(contract);
+			for(int j=0;j<contractList.size();j++){
+				total += contractList.get(j).getAmount();
+			}
+			customerList.get(i).setAmount(total);
+		}
+		//权限判断
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		String orgId = roleService.getOrg(currentAccount.getRoleId()).getId();
+		if(orgId.equals("9")){
+			mark = true;
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mark", mark);
+		map.put("data",customerList);
+		map.put("count",customerList.size());
+		return resMsg(map);
+	}
+	
+	/**
+	 * 增加
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/add",method = RequestMethod.POST)  
+	@ResponseBody
+	public AjaxRes add(HttpServletRequest request,Customer customer)throws Exception{		
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		customer.setUserId(currentAccount.getAccountId());
+		int result = customerService.insert(customer);
+		return resMsg(result);
+		
+	}
+	
+	/**
+	 * 删除
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/delete",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,Customer customer)throws Exception{		
+		int result = customerService.delete(customer);
+		return resMsg(result);
+	}
+	
+	/**
+	 * 详细
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/detail",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes detail(HttpServletRequest request,Model model,Customer customer)throws Exception{		
+		String mark = request.getParameter("mark");//按钮判断
+		customer = customerService.find(customer).get(0);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mark", mark);
+		map.put("data", customer);
+		return resMsg(map);
+	}
+	
+	/**
+	 * 基本信息
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/basic",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes basic(HttpServletRequest request,Model model,Customer customer)throws Exception{		
+		customer = customerService.find(customer).get(0);
+		return resMsg(customer);
+	}
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/update",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,Customer customer)throws Exception{		
+		customerService.update(customer);
+		return resMsg(customer);
+	}
+	
+	/**
+	 * 搜索
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/search",method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxRes search(HttpServletRequest request,Model model,Customer customer)throws Exception{		
+		boolean mark = false;
+		List<Customer> customerList = new ArrayList<Customer>();
+		customerList = customerService.search(customer);
+		for(int i=0;i<customerList.size();i++){
+			double total = 0;
+			Contract contract = new Contract();
+			contract.setCustomerId(customerList.get(i).getId());
+			List<Contract> contractList = contractService.find(contract);
+			for(int j=0;j<contractList.size();j++){
+				total += contractList.get(j).getAmount();
+			}
+			customerList.get(i).setAmount(total);
+		}
+		//权限判断
+		Account currentAccount = AccountShiroUtil.getCurrentUser();
+		String orgId = roleService.getOrg(currentAccount.getRoleId()).getId();
+		if(orgId.equals("9")){
+			mark = true;
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mark", mark);
+		map.put("data", customerList);
+		map.put("count", customerList.size());
+		return resMsg(map);
+	}
+	
+}

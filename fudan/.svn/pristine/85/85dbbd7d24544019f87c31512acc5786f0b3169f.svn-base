@@ -1,0 +1,11 @@
+package com.jy.repository.app;
+
+import com.jy.entity.app.AppItem;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface AppItemDao{
+	
+	AppItem find(AppItem appItem);
+	
+}

@@ -1,0 +1,30 @@
+function subFun() {
+    var email = document.getElementById('email').value;
+    var data = 'email=' + email;
+
+    var xhr = null;
+    try {
+        xhr = new XMLHttpRequest();
+    } catch (e) {
+        xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    }
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var responseText = xhr.responseText;
+                var obj = JSON.parse(responseText);
+                if (obj.res == 1) {
+                    window.location.href = jypath + "/mobile/account/step2?email=" + email;
+                } else {
+                    document.getElementById('email').setAttribute('placeholder', obj.resMsg)
+                }
+            }
+        }
+    }
+
+    xhr.open('post', jypath + '/mobile/account/checkEmail', false);
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    xhr.send(data);
+    return false
+}

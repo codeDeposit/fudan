@@ -1,0 +1,59 @@
+package com.jy.entity.oa.communicate;
+
+import java.util.Date;
+
+/**
+ * 已发邮件的视图类
+ * 
+ */
+public class SendVO {
+
+	private Long messageId;
+
+	private String acceptName; // 收信人
+	private String content; // 内容
+	private Date sendTime; // 发送时间
+
+	private String sendTime1; // 发送时间转换
+
+	public String getSendTime1() {
+		return sendTime1;
+	}
+
+	public void setSendTime1(String sendTime1) {
+		this.sendTime1 = sendTime1;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public String getAcceptName() {
+		return acceptName;
+	}
+
+	public void setAcceptName(String acceptName) {
+		this.acceptName = acceptName;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public Long getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(Long messageId) {
+		this.messageId = messageId;
+	}
+	
+}

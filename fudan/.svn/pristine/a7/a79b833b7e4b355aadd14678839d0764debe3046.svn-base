@@ -1,0 +1,27 @@
+package com.jy.service.oa.communicate;
+
+import java.util.List;
+
+import com.jy.entity.oa.communicate.MailFolder;
+import com.jy.entity.oa.communicate.MailFolderVo;
+import com.jy.task.utils.JsonInfo;
+
+
+public interface MailFolderService {
+
+	// 获取邮箱目录列表
+	List<MailFolderVo> getAll(String userId);
+
+	// 添加邮箱目录
+	JsonInfo save(MailFolder mailFolder);
+
+	// 修改邮箱目录名称
+	JsonInfo update(MailFolder mailFolder);
+
+	// 删除邮箱目录
+	JsonInfo delete(Long folderId);
+
+	// 获取邮箱目录详细信息
+	MailFolder getBy(Long folderId);
+
+}

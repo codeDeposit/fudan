@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.hrm.ResumeMapper">
+
+	<!-- 添加简历 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.hrm.Resume">
+		insert fudan_oa_resume <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="fullname != null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="age != null ">
+				age = #{age},
+			</if>
+			<if test="birthday != null ">
+				birthday = #{birthday},
+			</if>
+			<if test="address != null and address !='' ">
+				address = #{address},
+			</if>
+			<if test="zip != null and zip !='' ">
+				zip = #{zip},
+			</if>
+			<if test="sex != null and sex !='' ">
+				sex = #{sex},
+			</if>
+			<if test="position != null and position !='' ">
+				position = #{position},
+			</if>
+			<if test="phone != null and phone !='' ">
+				phone = #{phone},
+			</if>
+			<if test="mobile != null and mobile !='' ">
+				mobile = #{mobile},
+			</if>
+			<if test="email != null and email !='' ">
+				email = #{email},
+			</if>
+			<if test="hobby != null and hobby !='' ">
+				hobby = #{hobby},
+			</if>
+			<if test="religion != null and religion !='' ">
+				religion = #{religion},
+			</if>
+			<if test="party != null and party !='' ">
+				party = #{party},
+			</if>
+			<if test="nationality != null and nationality !='' ">
+				nationality = #{nationality},
+			</if>
+			<if test="race != null and race !='' ">
+				race = #{race},
+			</if>
+			<if test="birthPlace != null and birthPlace !='' ">
+				birthPlace = #{birthPlace},
+			</if>
+			<if test="eduCollege != null and eduCollege !='' ">
+				eduCollege = #{eduCollege},
+			</if>
+			<if test="eduDegree != null and eduDegree !='' ">
+				eduDegree = #{eduDegree},
+			</if>
+			<if test="eduMajor != null and eduMajor !='' ">
+				eduMajor = #{eduMajor},
+			</if>
+			<if test="startWorkDate != null ">
+				startWorkDate = #{startWorkDate},
+			</if>
+			<if test="idNo != null and idNo !='' ">
+				idNo = #{idNo},
+			</if>
+			<if test="photo != null and photo !='' ">
+				photo = #{photo},
+			</if>
+			<if test="status != null and status !='' ">
+				status = #{status},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="registor != null and registor !='' ">
+				registor = #{registor},
+			</if>
+			<if test="regTime != null ">
+				regTime = #{regTime},
+			</if>
+			<if test="workCase != null and workCase !='' ">
+				workCase = #{workCase},
+			</if>
+			<if test="trainCase != null and trainCase !='' ">
+				trainCase = #{trainCase},
+			</if>
+			<if test="projectCase != null and projectCase !='' ">
+				projectCase = #{projectCase},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加简历 end -->
+	
+	
+	<!-- 获取刚插入的简历ID号 start -->
+	<select id="selectMaxId" resultType="Long">
+		select max(resumeId) from fudan_oa_resume 
+	</select>
+	<!-- 获取刚插入的简历ID号 end -->
+	
+	
+	<!-- 修改简历信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.hrm.Resume">
+		update fudan_oa_resume <include refid="updateSQL"></include>
+		where resumeId = #{resumeId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="fullname != null and fullname !='' ">
+				fullname = #{fullname},
+			</if>
+			<if test="age != null ">
+				age = #{age},
+			</if>
+			<if test="birthday != null ">
+				birthday = #{birthday},
+			</if>
+			<if test="address != null and address !='' ">
+				address = #{address},
+			</if>
+			<if test="zip != null and zip !='' ">
+				zip = #{zip},
+			</if>
+			<if test="sex != null and sex !='' ">
+				sex = #{sex},
+			</if>
+			<if test="position != null and position !='' ">
+				position = #{position},
+			</if>
+			<if test="phone != null and phone !='' ">
+				phone = #{phone},
+			</if>
+			<if test="mobile != null and mobile !='' ">
+				mobile = #{mobile},
+			</if>
+			<if test="email != null and email !='' ">
+				email = #{email},
+			</if>
+			<if test="hobby != null and hobby !='' ">
+				hobby = #{hobby},
+			</if>
+			<if test="religion != null and religion !='' ">
+				religion = #{religion},
+			</if>
+			<if test="party != null and party !='' ">
+				party = #{party},
+			</if>
+			<if test="nationality != null and nationality !='' ">
+				nationality = #{nationality},
+			</if>
+			<if test="race != null and race !='' ">
+				race = #{race},
+			</if>
+			<if test="birthPlace != null and birthPlace !='' ">
+				birthPlace = #{birthPlace},
+			</if>
+			<if test="eduCollege != null and eduCollege !='' ">
+				eduCollege = #{eduCollege},
+			</if>
+			<if test="eduDegree != null and eduDegree !='' ">
+				eduDegree = #{eduDegree},
+			</if>
+			<if test="eduMajor != null and eduMajor !='' ">
+				eduMajor = #{eduMajor},
+			</if>
+			<if test="startWorkDate != null ">
+				startWorkDate = #{startWorkDate},
+			</if>
+			<if test="idNo != null and idNo !='' ">
+				idNo = #{idNo},
+			</if>
+			<if test="photo != null and photo !='' ">
+				photo = #{photo},
+			</if>
+			<if test="status != null and status !='' ">
+				status = #{status},
+			</if>
+			<if test="memo != null and memo !='' ">
+				memo = #{memo},
+			</if>
+			<if test="registor != null and registor !='' ">
+				registor = #{registor},
+			</if>
+			<if test="regTime != null ">
+				regTime = #{regTime},
+			</if>
+			<if test="workCase != null and workCase !='' ">
+				workCase = #{workCase},
+			</if>
+			<if test="trainCase != null and trainCase !='' ">
+				trainCase = #{trainCase},
+			</if>
+			<if test="projectCase != null and projectCase !='' ">
+				projectCase = #{projectCase},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改简历信息 end -->
+	
+	
+	<!-- 获取简历详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultType="com.jy.entity.oa.hrm.Resume">
+		select * from fudan_oa_resume where resumeId = #{resumeId}
+	</select>
+	<!-- 获取简历详细信息 end -->
+	
+	
+	<!-- 删除简历信息 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_resume where resumeId = #{resumeId}
+	</delete>
+	<!-- 删除简历信息 end -->
+	
+	
+	<!-- 获取简历列表 start -->
+	<select id="select" resultType="com.jy.entity.oa.hrm.Resume">
+		select * from fudan_oa_resume
+		<where>
+			<if test="fullName != null and fullName !='' ">
+				fullName = #{fullName}
+			</if>
+			<if test="jobName != null and jobName !='' ">
+				jobName = #{jobName}
+			</if>
+			<if test="status != null and status !='' ">
+				status = #{status}
+			</if>
+		</where>
+	</select>
+	<!-- 获取简历列表 end -->
+	
+	
+	<!-- 简历分页列表 start -->
+	<select id="selectPageData" resultType="com.jy.entity.oa.hrm.Resume">
+		select * from fudan_oa_resume
+		<where>
+			<if test="fullName != null and fullName !='' ">
+				fullName = #{fullName}
+			</if>
+			<if test="jobName != null and jobName !='' ">
+				jobName = #{jobName}
+			</if>
+			<if test="status != null and status !='' ">
+				status = #{status}
+			</if>
+		</where>
+		order by resumeId desc limit #{firstIndex},#{toIndex}
+	</select>
+	<!-- 简历分页列表 end -->
+</mapper>

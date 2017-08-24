@@ -1,0 +1,50 @@
+package com.jy.repository.oa.document;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.document.DocFolder;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DocFolderMapper {
+
+	// 添加目录
+	int insert(DocFolder docFolder);
+
+	// 获取最大的FolderId
+	Long selectFolderId();
+
+	// 获取path
+	String selectPath(Long folderId);
+
+	// 更新path
+	int updatePath(DocFolder docFolder);
+
+	// 获取目录详细信息
+	DocFolder selecInfoBy(Long folderId);
+
+	// 更改目录名称
+	int update(DocFolder docFolder);
+
+	// 删除目录
+	int delete(Long folderId);
+
+	// 获取第一层目录
+	List<DocFolder> selectFirst(@Param("userId") String userId, @Param("folderName") String folderName, @Param("isShared") Short isShared);
+
+	// 获取第一层目录下的所有子目录
+	List<DocFolder> selectSubFolderBy(@Param("folderId") Long folderId, @Param("userId") String userId, @Param("folderName") String folderName, @Param("isShared") Short isShared);
+
+	// 获取公共目录的Id
+	List<Long> selectPublicFolder();
+
+	// 文件夹转移
+	int updateParentIdAndPath(@Param("parentId") Long fatherFolderId, @Param("path") String childPath,
+			@Param("folderId") Long childFolderId);
+
+	//获取所有文件夹列表
+	List<DocFolder> selectAll(@Param("userId") String userId);
+
+}

@@ -1,0 +1,23 @@
+package com.jy.repository.oa.personal;
+
+import java.util.List;
+import com.jy.entity.oa.personal.DutySystem;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DutySystemDao {
+	
+	List<DutySystem> find(DutySystem dutySystem);
+	
+	List<DutySystem> search(DutySystem dutySystem);
+	
+	int delete(DutySystem dutySystem);
+	
+	int insert(DutySystem dutySystem);
+
+	int update(DutySystem dutySystem);
+
+	// 缺省dutySystem
+	DutySystem selectDefault();
+
+}

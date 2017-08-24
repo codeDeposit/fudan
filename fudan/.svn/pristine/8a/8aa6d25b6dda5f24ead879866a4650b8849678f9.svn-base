@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.admin.GoodsApplyMapper">
+
+	<!-- baseMap start -->
+	<resultMap type="com.jy.entity.oa.admin.GoodsApply" id="baseMap">
+		<id property="applyId" column="applyId"/>
+		<result property="applyDate" column="applyDate"/>
+		<result property="applyNo" column="applyNo"/>
+		<result property="useCounts" column="useCounts"/>
+		<result property="proposer" column="proposer"/>
+		<result property="userId" column="userId"/>
+		<result property="notes" column="notes"/>
+		<result property="approvalStatus" column="approvalStatus"/>
+		<association property="officeGoods" column="goodsId" select="selectGoods"></association>
+	</resultMap>
+	
+	<select id="selectGoods" parameterType="Long" resultType="com.jy.entity.oa.admin.OfficeGoods">
+		select * from fudan_oa_office_goods where goodsId = #{goodsId}
+	</select>
+	<!-- baseMap end -->
+
+	<!-- 添加申请单 start添加申请单 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.admin.GoodsApply">
+		insert fudan_oa_goods_apply <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="goodsId != null">
+				goodsId = #{goodsId},
+			</if>
+			<if test="applyDate != null">
+				applyDate = #{applyDate},
+			</if>
+			<if test="applyNo != null and applyNo != '' ">
+				applyNo = #{applyNo},
+			</if>
+			<if test="useCounts != null ">
+				useCounts = #{useCounts},
+			</if>
+			<if test="proposer != null and proposer != '' ">
+				proposer = #{proposer},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+			<if test="notes != null and notes != '' ">
+				notes = #{notes},
+			</if>
+			<if test="approvalStatus != null ">
+				approvalStatus = #{approvalStatus},
+			</if>
+		</set>
+	</sql>
+	<!-- 添加申请单 start添加申请单 end -->
+	
+	
+	<!-- 获取详细信息 start -->
+	<select id="selectInfoBy" parameterType="Long" resultMap="baseMap">
+		select * from fudan_oa_goods_apply where applyId = #{applyId}
+	</select>
+	<!-- 获取详细信息 end -->
+	
+	
+	<!-- 修改信息 start -->
+	<update id="update" parameterType="com.jy.entity.oa.admin.GoodsApply">
+		update fudan_oa_goods_apply <include refid="updateSQL"></include>
+		where applyId = #{applyId}
+	</update>
+	
+	<sql id="updateSQL">
+		<set>
+			<if test="goodsId != null">
+				goodsId = #{goodsId},
+			</if>
+			<if test="applyDate != null">
+				applyDate = #{applyDate},
+			</if>
+			<if test="applyNo != null and applyNo != '' ">
+				applyNo = #{applyNo},
+			</if>
+			<if test="useCounts != null ">
+				useCounts = #{useCounts},
+			</if>
+			<if test="proposer != null and proposer != '' ">
+				proposer = #{proposer},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+			<if test="notes != null and notes != '' ">
+				notes = #{notes},
+			</if>
+			<if test="approvalStatus != null ">
+				approvalStatus = #{approvalStatus},
+			</if>
+		</set>
+	</sql>
+	<!-- 修改信息 end -->
+	
+	
+	<!-- 删除 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_goods_apply where applyId = #{applyId}
+	</delete>
+	<!-- 删除 end -->
+	
+	
+	<!-- 获取申请列表 start -->
+	<select id="selectBy" parameterType="com.jy.entity.oa.admin.GoodsApply" resultMap="baseMap">
+		select ga.* from fudan_oa_goods_apply ga, fudan_oa_office_goods og where ga.goodsId = og.goodsId
+		
+		<if test="applyNo != null and  applyNo != '' ">
+			and ga.applyNo like concat("%", #{applyNo} ,"%")
+		</if>
+		<if test="proposer != null and  proposer != '' ">
+			and ga.proposer like concat("%", #{proposer} ,"%")
+		</if>
+		<if test="goodsName != null and  goodsName != '' ">
+			and og.goodsName like concat("%", #{goodsName} ,"%")
+		</if>
+	</select>
+	<!-- 获取申请列表 end -->
+	
+	
+	<!-- 申请单分页列表 start -->
+	<select id="selectPageData" resultMap="baseMap">
+		select ga.* from fudan_oa_goods_apply ga, fudan_oa_office_goods og where ga.goodsId = og.goodsId
+		
+		<if test="goodsApply.applyNo != null and goodsApply.applyNo != '' ">
+			and ga.applyNo like concat("%", #{goodsApply.applyNo} ,"%")
+		</if>
+		<if test="goodsApply.proposer != null and goodsApply.proposer != '' ">
+			and ga.proposer like concat("%", #{goodsApply.proposer} ,"%")
+		</if>
+		<if test="goodsApply.goodsName != null and goodsApply.goodsName != '' ">
+			and og.goodsName like concat("%", #{goodsApply.goodsName} ,"%")
+		</if>
+		order by applyId desc limit #{firstIndex}, #{toIndex}
+	</select>
+	<!-- 申请单分页列表 end -->
+	
+</mapper>

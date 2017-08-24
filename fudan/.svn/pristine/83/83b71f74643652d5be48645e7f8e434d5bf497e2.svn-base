@@ -1,0 +1,110 @@
+package com.jy.service.oa.impl.workflow;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jy.common.utils.security.AccountShiroUtil;
+import com.jy.entity.oa.workflow.Apply;
+import com.jy.entity.system.account.Account;
+import com.jy.repository.oa.workflow.ApplyMapper;
+import com.jy.service.oa.workflow.ApplyService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Service("applyService")
+public class ApplyServiceImpl implements ApplyService {
+	
+	private ApplyMapper applyMapper;
+
+	public ApplyMapper getApplyMapper() {
+		return applyMapper;
+	}
+
+	@Autowired
+	public void setApplyMapper(ApplyMapper applyMapper) {
+		this.applyMapper = applyMapper;
+	}
+
+	/**
+	 * 添加流程申请
+	 */
+	@Override
+	public JsonInfo save(Apply apply) {
+		JsonInfo info = new JsonInfo();
+		int result = applyMapper.insert(apply);
+		if(result > 0) {
+			info.setSuccess(true);
+		}else {
+			info.setSuccess(false);
+		}
+		return info;
+	}
+
+	/**
+	 * 个人申请列表
+	 */
+	@Override
+	public List<Apply> get(String processName, Short status) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		List<Apply> applies = applyMapper.select(processName, status, userId);
+		return applies;
+	}
+
+	/**
+	 * 个人申请分页列表
+	 */
+	@Override
+	public List<Apply> getPageList(PageBean pb, String processName, Short status) {
+		String userId = AccountShiroUtil.getCurrentUser().getAccountId();
+		// 每页行数
+		int pageSize = pb.getPageSize();
+		// 当前页数
+		int currentPage = pb.getCurrentPage();
+		// 从哪个索引开始查
+		int firstIndex = (currentPage-1) * pageSize;
+		// 到哪个索引
+		int toIndex = currentPage * pageSize;
+		List<Apply> applies = applyMapper.selectPageData(firstIndex, toIndex, processName, status, userId);
+		
+		for(Apply apply : applies) {
+			apply.setApplyTime1(DateStringUtil.dateToString3(apply.getApplyTime()));
+		}
+		
+		return applies;
+	}
+
+	/**
+	 * 根据流程实例查询申请
+	 * 
+	 */
+	@Override
+	public Apply getBy(String processInstanceId) {
+		Apply apply = applyMapper.selectBy(processInstanceId);
+		return apply;
+	}
+
+	/**
+	 * 更新申请状态
+	 */
+	@Override
+	public void update(String applyId, Short status) {
+		applyMapper.update(applyId, status);
+	}
+
+	/**
+	 * 获取已完成申请列表
+	 */
+	@Override
+	public List<Apply> getCompleted() {
+		Account account = AccountShiroUtil.getCurrentUser();
+		List<Apply> applys = applyMapper.selectCompletedPageList(account.getAccountId());
+		for(Apply apply: applys) {
+			apply.setApplyTime1(DateStringUtil.dateToString3(apply.getApplyTime()));
+		}
+		return applys;
+	}
+
+}

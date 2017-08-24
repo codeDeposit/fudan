@@ -1,0 +1,127 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start -->
+<div class="btn-group pull-right">
+	<button id="modaladdbtn" type="button" class="btn btn-success"
+		data-toggle="modal" data-target="#newsAddModal">
+		<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+	</button>
+	<div class="btn-group">
+		<button type="button" class="btn btn-success dropdown-toggle"
+			data-toggle="dropdown">
+			下拉选择 <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="javascript:void(0);" onclick="getMineFP()">我的分配任务</a>
+			</li>
+			<li><a href="javascript:void(0)" onclick="getMineZX()">我的执行任务</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="newsAddModal" tabindex="-1" role="dialog"
+	aria-labelledby="newsAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="newsAddModalLabel">日程添加</h4>
+			</div>
+			<div class="modal-body">
+				<form id="calendarplanaddform" class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-sm-1">紧急程度</label>
+						<div class='col-sm-11'>
+							<div class="checkbox col-sm-3">
+								<label><input type="radio" name="urgent" value="0">一般</label>
+							</div>
+							<div class="checkbox col-sm-3">
+								<label><input type="radio" name="urgent" value="1">重要</label>
+							</div>
+							<div class="checkbox col-sm-3">
+								<label><input type="radio" name="urgent" value="2">紧急</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">分配给:</label>
+						<div class="col-sm-11">
+							<div class="col-sm-8">
+								<input type="text" id="recipientName" class="form-control"
+									name="fullname"> <input type="hidden" id="recipientID"
+									name="userId">
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-info btn-sm"
+									data-toggle="modal" data-target="#addMod">
+									<i class="glyphicon glyphicon-plus"></i>&nbsp;选择
+								</button>
+								<button type="button" class="btn btn-default btn-sm"
+									onclick="removeData('recipientName','recipientID');">
+									<i class="glyphicon glyphicon-trash"></i>&nbsp;清除
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">任务类型</label>
+						<div class="col-sm-11">
+							<div class="checkbox col-sm-6">
+								<label><input type="radio" name="taskType" value="1"
+									onclick="show('start','end')">限期任务</label>
+							</div>
+							<div class="checkbox col-sm-5">
+								<label><input type="radio" name="taskType" value="2"
+									onclick="hide('start','end')">非限期任务</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-sm-1">显示方式</label>
+						<div class="col-sm-11">
+							<div class="checkbox col-sm-6">
+								<label><input type="radio" name="showStyle" value="2">在日程管理与今日常务中显示</label>
+							</div>
+							<div class="checkbox col-sm-5">
+								<label><input type="radio" name="showStyle" value="1">仅在日程管理中显示</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" id="start">
+						<label class="control-label col-sm-1">开始时间</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control tRequir" name="startTime"
+								id="starT" readonly="readonly">
+						</div>
+					</div>
+					<div class="form-group" id="end">
+						<label class="control-label col-sm-1">结束时间</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control tRequir" name="endTime"
+								id="endT" readonly="readonly">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">内容</label>
+						<div class="col-sm-11">
+							<div><%@ include file="../common/editor.jsp"%></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button id="calendarplansaddbtn" type="button"
+							class="btn btn-success">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->
+<!-- 员工选择弹窗 start -->
+<%@ include file="../common/employee_modal.jsp" %>

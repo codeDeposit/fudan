@@ -1,0 +1,30 @@
+package com.jy.service.oa.task;
+
+import java.util.List;
+
+import com.jy.entity.oa.task.PlanType;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface PlanTypeService {
+
+	// 添加计划类型
+	JsonInfo save(PlanType planType);
+
+	// 获取计划类型的详细信息
+	PlanType getInfoBy(Long typeId);
+
+	// 修改计划类型信息
+	JsonInfo update(PlanType planType);
+
+	// 批量删除计划类型
+	JsonInfo del(Long[] typeId);
+
+	// 获取所有计划类型列表
+	List<PlanType> getAll();
+
+	// 分页列表
+	List<PlanType> getPageList(PageBean pb);
+
+}

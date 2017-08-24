@@ -1,0 +1,248 @@
+package com.jy.controller.oa.document;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.document.Document;
+import com.jy.service.oa.document.DocumentService;
+import com.jy.task.utils.DateStringUtil;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+@Controller
+@RequestMapping("/oa/document")
+public class DocumentController {
+
+	private DocumentService documentService;
+
+	public DocumentService getDocumentService() {
+		return documentService;
+	}
+
+	@Resource(name="documentService")
+	public void setDocumentService(DocumentService documentService) {
+		this.documentService = documentService;
+	}
+
+	/**
+	 * 添加文档
+	 * 
+	 * @param document
+	 * @return
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public JsonInfo add(Document document) {
+		JsonInfo info = documentService.save(document);
+		return info;
+	}
+
+	/**
+	 * 获取文档详细信息
+	 * 
+	 * @param docId
+	 * @return
+	 */
+	@RequestMapping("/getdetails")
+	public ModelAndView getDetails(Long docId, String operation) {
+		Document doc = documentService.getInfo(docId);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("document", doc);
+		mv.addObject("operation", operation);
+		mv.setViewName("system/oa/document/documentself_form");
+		return mv;
+	}
+
+	/**
+	 * 修改文档信息
+	 * 
+	 * @param document
+	 * @return
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(Document document) {
+		JsonInfo info = documentService.update(document);
+		return info;
+	}
+
+	/**
+	 * 文档共享
+	 * 
+	 * @param document
+	 * @return
+	 */
+	@RequestMapping("/share")
+	@ResponseBody
+	public JsonInfo share(Document document) {
+		JsonInfo info = documentService.share(document);
+		return info;
+	}
+
+	/**
+	 * 批量删除文档
+	 * 
+	 * @param docId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] docId) {
+		JsonInfo info = documentService.del(docId);
+		return info;
+	}
+
+	/**
+	 * 获取可以看到的文档列表：自己创建的文档，共享的文档，公共文档
+	 * @param docName
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public Set<Document> list(HttpServletRequest request, @RequestParam(required = false) String docName,
+			@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		Set<Document> documents = documentService.getInfo(docName, startDate, endDate);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(documents.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		Set<Document> pageNews = documentService.getPageList(pb, docName, startDate, endDate);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/info/news_table");
+		}else {
+			mv.setViewName("system/oa/info/news_list");
+		}
+		mv.addObject("news", pageNews);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		Set<Document> documents1 = documentService.getInfo(docName, startDate, endDate);
+		return documents1;
+	}
+	
+	/**
+	 * 获取共享文档列表
+	 * @param docName
+	 * @param sharedUserNames
+	 * @param startDateStr
+	 * @param endDateStr
+	 * @return
+	 */
+	@RequestMapping("/listshare")
+	public ModelAndView listShare(HttpServletRequest request, @RequestParam(required = false) String docName, @RequestParam(required = false) String sharedUserNames,
+			@RequestParam(required = false) String startDateStr, @RequestParam(required = false) String endDateStr) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		Date startDate = null;
+		Date endDate = null;
+		if(startDateStr != null && startDateStr.length() != 0) {
+			startDate = DateStringUtil.stringToDate3(startDateStr);
+		}
+		if(endDateStr != null && startDateStr.length() != 0) {
+			startDate = DateStringUtil.stringToDate3(endDateStr);
+		}
+		List<Document> documents = documentService.getShare(docName, sharedUserNames, startDate, endDate);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(documents.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<Document> pageDocuments = documentService.getSharePageList(pb, docName, sharedUserNames, startDate, endDate);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/document/documentshare_table");
+		}else {
+			mv.setViewName("system/oa/document/documentshare_list");
+		}
+		mv.addObject("documents", pageDocuments);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+	
+	/**
+	 * 获取公共文档列表
+	 * @param docName
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@RequestMapping("/listpublic")
+	@ResponseBody
+	public List<Document> listPublic(@RequestParam(required = false) String docName,
+			@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate) {
+		List<Document> documents = documentService.getPublic(docName, startDate, endDate);
+		return documents;
+	}
+	
+	/**
+	 * 获取个人文档（自己创建的文档）
+	 * @return
+	 */
+	@RequestMapping("/listself")
+	public ModelAndView listSelf(HttpServletRequest request, @RequestParam(required = false) Long folderId,
+			@RequestParam(required = false) String docName,@RequestParam(required = false) String startDateStr, 
+			@RequestParam(required = false) String endDateStr) {
+		String operation = request.getParameter("operation");
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		Date startDate = null;
+		Date endDate = null;
+		if(startDateStr != null && startDateStr.length() != 0) {
+			startDate = DateStringUtil.stringToDate3(startDateStr);
+		}
+		if(endDateStr != null && endDateStr.length() != 0) {
+			endDate = DateStringUtil.stringToDate3(endDateStr);
+		}
+		if(folderId != null && folderId == 0) {
+			folderId = null;
+		}
+		List<Document> documents = documentService.getSelf(docName, folderId, startDate, endDate);
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(documents.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		// 分页后的列表
+		List<Document> pageDocuments = documentService.getSelfPageList(pb, docName, folderId, startDate, endDate);
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/document/documentself_table");
+		}else {
+			mv.setViewName("system/oa/document/documentself_list");
+		}
+		mv.addObject("documents", pageDocuments);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		return mv;
+	}
+
+}

@@ -1,0 +1,49 @@
+package com.jy.entity.wzcg;
+
+public class WzcgExtract {
+	
+	private int id;
+	private String name;
+	private String mark;
+	private String result1;
+	private String result2;
+	private String createdate;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getMark() {
+		return mark;
+	}
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+	public String getResult1() {
+		return result1;
+	}
+	public void setResult1(String result1) {
+		this.result1 = result1;
+	}
+	public String getResult2() {
+		return result2;
+	}
+	public void setResult2(String result2) {
+		this.result2 = result2;
+	}
+	public String getCreatedate() {
+		return createdate;
+	}
+	public void setCreatedate(String createdate) {
+		this.createdate = createdate;
+	}
+	
+}

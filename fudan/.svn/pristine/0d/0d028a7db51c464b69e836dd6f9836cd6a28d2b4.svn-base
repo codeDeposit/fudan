@@ -1,0 +1,48 @@
+package com.jy.entity.oa;
+
+import java.util.List;
+
+/**
+ * 对应menu.xml文件中的Items元素
+ */
+public class Items {
+
+	private String id;
+	private String text;
+	private String iconCls;
+	
+	private List<Item> itemList;
+
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<Item> itemList) {
+		this.itemList = itemList;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+}

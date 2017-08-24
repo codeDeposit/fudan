@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.oa.communicate.MailFolderMapper">
+
+	<!-- 获取第一层邮箱目录列表 start -->
+	<select id="selectFirst" resultType="com.jy.entity.oa.communicate.MailFolder">
+		select * from fudan_oa_mail_folder where parentId = 0 and userId = #{userId}
+	</select>
+	<!-- 获取第一层邮箱目录列表 end -->
+	
+	
+	<!-- 获取公有的邮箱目录 start -->
+	<select id="selectPublic" resultType="com.jy.entity.oa.communicate.MailFolder">
+		select * from fudan_oa_mail_folder where parentId = 0 and isPublic = 1
+	</select>
+	<!-- 获取公有的邮箱目录 end -->
+	
+	
+	<!-- 获取第一层目录下的所有目录 start -->
+	<select id="selectSubFolderBy" resultType="com.jy.entity.oa.communicate.MailFolder">
+		select * from fudan_oa_mail_folder where parentId = #{folderId} and userId = #{userId}
+	</select>
+	<!-- 获取第一层目录下的所有目录 end -->
+	
+	
+	<!-- 添加邮箱目录 start -->
+	<insert id="insert" parameterType="com.jy.entity.oa.communicate.MailFolder">
+		insert fudan_oa_mail_folder <include refid="insertSQL"></include>
+	</insert>
+	
+	<sql id="insertSQL">
+		<set>
+			<if test="folderName != null and folderName != '' ">
+				folderName = #{folderName},
+			</if>
+			<if test="parentId != null ">
+				parentId = #{parentId},
+			</if>
+			<if test="depLevel != null ">
+				depLevel = #{depLevel},
+			</if>
+			<if test="path != null and path != '' ">
+				path = #{path},
+			</if>
+			<if test="isPublic != null ">
+				isPublic = #{isPublic},
+			</if>
+			<if test="folderType != null ">
+				folderType = #{folderType},
+			</if>
+			<if test="userId != null ">
+				userId = #{userId},
+			</if>
+		</set>
+	</sql>
+	
+	<update id="updatePath" parameterType="com.jy.entity.oa.communicate.MailFolder">
+		update fudan_oa_mail_folder set path = #{path} where folderId = #{folderId}
+	</update>
+	<!-- 添加邮箱目录 end -->
+	
+	
+	<!-- 获取parentId对应的depLevel、path start -->
+	<select id="selectDepLevelAndPathBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.MailFolder">
+		select depLevel,path from fudan_oa_mail_folder where folderId = #{folderId}
+	</select>
+	<!-- 获取parentId对应的depLevel、path end -->
+	
+	
+	<!-- 获取最大folderId值 start -->
+	<select id="selectMaxBy" parameterType="Long" resultType="Long">
+		select max(folderId) from fudan_oa_mail_folder
+	</select>
+	<!-- 获取最大folderId值 end -->
+	
+	
+	<!-- 修改邮箱目录名称 start -->
+	<update id="update" parameterType="com.jy.entity.oa.communicate.MailFolder">
+		update fudan_oa_mail_folder set folderName = #{folderName} where folderId = #{folderId}
+	</update>
+	<!-- 修改邮箱目录名称 end -->
+	
+	
+	<!-- 删除邮箱目录 start -->
+	<delete id="delete" parameterType="Long">
+		delete from fudan_oa_mail_folder where folderId = #{folderId}
+	</delete>
+	<!-- 删除邮箱目录 end -->
+	
+	
+	<!-- 获取邮箱目录详细信息 start -->
+	<select id="selectBy" parameterType="Long" resultType="com.jy.entity.oa.communicate.MailFolder">
+		select * from fudan_oa_mail_folder where folderId = #{folderId}
+	</select>
+	<!-- 获取邮箱目录详细信息 end -->
+	
+</mapper>

@@ -1,0 +1,23 @@
+package com.jy.repository.wzcg;
+
+import java.util.List;
+
+import com.jy.entity.wzcg.WzcgCgjhSet;
+import com.jy.repository.base.BaseDao;
+import com.jy.repository.base.JYBatis;
+
+
+@JYBatis
+public interface WzcgCgjhSetDao extends BaseDao<WzcgCgjhSet> {
+	
+	List<WzcgCgjhSet> find();
+	
+	List<WzcgCgjhSet> search(WzcgCgjhSet wzcgCgjhSet);
+	
+	void insert(WzcgCgjhSet wzcgCgjhSet);
+	
+	void delete(WzcgCgjhSet wzcgCgjhSet);
+	
+	void update(WzcgCgjhSet wzcgCgjhSet);
+
+}

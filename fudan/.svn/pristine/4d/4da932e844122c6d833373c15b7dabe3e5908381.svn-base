@@ -1,0 +1,76 @@
+package com.jy.controller.app;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.jy.common.ajax.AjaxRes;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.app.AppAddress;
+import com.jy.service.app.AppAddressService;
+
+@Controller("appAddressController")
+@RequestMapping(value="/appAddress")
+public class AppAddressController extends BaseController<Object> {
+	
+	@Resource(name="appAddressService")
+	private AppAddressService appAddressService;
+	
+	@RequestMapping("/insert")  
+	@ResponseBody
+	public AjaxRes insert(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		int res = appAddressService.insert(appAddress);
+		return resMsg(res);
+	}
+	
+	@RequestMapping("/delete")  
+	@ResponseBody
+	public AjaxRes delete(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		int res = appAddressService.delete(appAddress);
+		return resMsg(res);
+	}
+
+	@RequestMapping("/list")  
+	@ResponseBody
+	public AjaxRes list(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		List<AppAddress> list = appAddressService.find(appAddress);
+		ar.setSucceed(list, 1);
+		return ar;
+	}
+	
+	@RequestMapping("/detail")  
+	@ResponseBody
+	public AjaxRes detail(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		AppAddress appAddress2 = appAddressService.find(appAddress).get(0);
+		ar.setSucceed(appAddress2, 1);
+		return ar;
+	}
+	
+	/**
+	 * 默认地址设置
+	 * @param request
+	 * @param model
+	 * @param appAddress
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/addressDefault")  
+	@ResponseBody
+	public AjaxRes addressDefault(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		int res = appAddressService.addressDefault(appAddress);
+		return resMsg(res);
+	}
+	
+	@RequestMapping("/update")  
+	@ResponseBody
+	public AjaxRes update(HttpServletRequest request,Model model,AppAddress appAddress)throws Exception{	
+		int res = appAddressService.update(appAddress);
+		return resMsg(res);
+	}
+	
+}

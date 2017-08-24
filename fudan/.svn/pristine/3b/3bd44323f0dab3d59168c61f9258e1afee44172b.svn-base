@@ -1,0 +1,212 @@
+$(document).ready(function(){
+	fuLoading();
+	setTimeout("fList()",200);
+	$.ajax({//评审专业类别加载
+		type: "POST",
+		async: false,
+		url: jypath+'/backstage/wzcg/kind/list',
+		success: function(data){
+			$("#profession").html(data);
+		}
+	});
+});
+function fList(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractList",
+		success : function(data) {
+			 $('#extractList').html(data);
+			 fuCloseLayer();
+		}
+	});
+}
+function fDetail(param){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractDetail",
+		data : {
+			id:param,
+		},
+		success : function(data) {
+			fuCloseLayer();		
+			$("#extractDetail").html(data);
+		}
+	});
+}
+function fexpertDetail(param){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/detail",
+		data : {
+			userId:param,
+		},
+		success : function(data) {
+			fuCloseLayer();		
+			$("#expertDetail").html(data);
+		}
+	});
+}
+function fuSure(param,param2){
+	fuLoading();
+	if(param2 == "extract"){
+		setTimeout('fextractDelete2(\''+param+'\')',200);
+	}else{
+		setTimeout('fDelete2(\''+param+'\')',200);
+	}
+}
+function fDelete(param){
+	fuConfirm(param);
+}
+function fDelete2(param){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/delete",
+		data : {
+			userId: param
+		},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+				fuClose();
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fList();
+			}
+		}
+	});
+}
+function fSearch(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractSearch",
+		data :$("#expertSearchForm").serialize(),
+		success : function(data) {
+			$('#extractList').html(data);
+			fuCloseLayer();	
+		}
+	});
+	return false;
+}
+function fResultSearch(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractSearchList",
+		data :$("#extractSearchForm").serialize(),
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			var lData = obj.obj;
+			document.getElementById('resultExtractList').innerHTML = '';
+			if(lData.length == 0){
+				document.getElementById('resultExtractList').innerHTML += '<tr>'
+										+'<td colspan="100" align="center"><i class=" icon-comments"></i> 没有相关数据 </td>'
+									+'</tr>';
+			}else{
+				for(var i=0;i<lData.length;i++){
+					document.getElementById('resultExtractList').innerHTML += '<tr class="gradX" id="'+ lData[i]['id'] +'">'
+							+'<td>'+ (i+1) +'</td>'
+							+'<td><a href="javascript:void(0);" onclick="fDetail('+ lData[i]['id'] +')">'+ lData[i]['name'] +'</a></td>'
+							+'<td>'+ lData[i]['createdate'] +'</td>'
+							+'<td>'
+								+'<button type="button" class="btn btn-primary btn-xs" onclick="fDetail('+ lData[i]['id'] +')">'
+									+'<i class="glyphicon glyphicon-eye-open"></i>&nbsp;查看'
+								+'</button>&nbsp;'
+								+'<button type="button" class="btn btn-danger btn-xs" onclick="fextractDelete('+ lData[i]['id'] +',\'extract\')">'
+								+'<i class="glyphicon glyphicon-trash"></i>&nbsp;删除'
+								+'</button>'
+							+'</td>'
+							+'<td>'
+								+'<button type="button" class="btn btn-info btn-xs" onclick="fextractExcel('+ lData[i]['id'] +')">'
+									+'<i class="glyphicon glyphicon-download-alt"></i>&nbsp;导出'
+								+'</button>&nbsp;'
+							+'</td>'
+						+'</tr>'
+				}
+			}
+			fuCloseLayer();	
+		}
+	});
+	return false;
+}
+function fAdd(){
+	var result1 = "";
+	var result2 = "";
+	$("input[name='result_1']").each(
+		function(i){
+			result1 += $(this).val() + ",";
+		}
+	)
+	$("input[name='result_2']").each(
+		function(i){
+			result2 += $(this).val() + ",";
+		}
+	)
+	document.getElementById('result1').value = result1;
+	document.getElementById('result2').value = result2;
+	var count1 = $('#count1').text();
+	var count2 = $('#count2').text();
+	if(count1 == 0 && count2 == 0){
+		fuShowError("无数据");
+	}else{
+		$('#extractAddModal').modal('show');
+	}
+}
+function fAdd2(){
+	fuLoading();
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractAdd",
+		data :$("#extractForm").serialize(),
+		success : function(data) {
+			$('#extractForm')[0].reset();
+			$('#extractAddModal').modal('hide');
+			$('#extractList').html(data);
+			fuCloseLayer();	
+		}
+	});
+	return false;
+}
+function fextractDelete(param,param2){
+	fuConfirm(param,param2);
+}
+function fextractDelete2(param){
+	$.ajax({
+		type : "post",
+		async : false,
+		url : jypath+"/backstage/wzcg/expert/extractDelete",
+		data : {
+			id: param
+		},
+		success : function(data) {
+			var obj = eval('('+ data +')');
+			if(obj.res == 0){
+				fuShowError(obj.resMsg);
+				fuCloseLayer();
+				fuClose();
+			}else{
+				fuCloseLayer();
+				fuClose();
+				fResultSearch();
+			}
+		}
+	});
+}
+function fextractExcel(param1){
+	fuLoading();
+	window.location.href = jypath+"/backstage/wzcg/expert/extractExcel?id="+param1;
+	fuCloseLayer();
+}

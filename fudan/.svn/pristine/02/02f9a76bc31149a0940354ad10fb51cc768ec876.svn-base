@@ -1,0 +1,54 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>客户列表</title>
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/loading/loading.css" />
+		<script type="text/javascript" src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-scroll.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/loading/loading.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/customer/customer.js"></script>
+	</head>
+	<body onload="fList()">
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-btn aui-pull-left" tapmode href="../index"> <span class="aui-iconfont aui-icon-left">返回</span> </a>
+			<div class="aui-title">
+				客户列表
+			</div>
+			<a href="pAdd" class="aui-btn aui-pull-right"> <span class="aui-iconfont aui-icon-roundadd" style="font-size:28px;"></span></a>
+		</header>
+		<div class="aui-searchbar" id="search" style="margin-top:45px;">
+		    <div class="aui-searchbar-input aui-border-radius" tapmode onclick="doSearch()">
+		        <i class="aui-iconfont aui-icon-search"></i>
+		        <form action="javascript:search();">
+		            <input type="search" placeholder="请输入搜索内容" id="search-input">
+		        </form>
+		    </div>
+		    <div class="aui-searchbar-cancel" tapmod>取消</div>
+		</div>
+		<section class="aui-refresh-content" style="margin-top:-60px;">
+			<div class="aui-content">
+				<ul class="aui-list aui-media-list" id="DCustomerList">
+					<!-- 数据列表 -->
+				</ul>
+			</div>
+		</section>
+	</body>
+	<script>
+		var scroll = new auiScroll({
+			listen : true, //是否监听滚动高度，开启后将实时返回滚动高度
+			distance : 100 //判断到达底部的距离，isToBottom为true
+		}, function(ret) {
+			fCutomerList();
+		});
+	</script>
+</html>

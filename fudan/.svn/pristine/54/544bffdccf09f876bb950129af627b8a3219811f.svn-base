@@ -1,0 +1,36 @@
+package com.jy.controller.app.admin;
+
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.jy.controller.base.BaseController;
+
+@Controller("appAdminLoginController")
+@RequestMapping(value="/appAdminLogin")
+public class AppAdminLoginController extends BaseController<Object> {
+	
+//	@Resource(name="appMemberService")
+//	private AppMemberService appMemberService;
+	
+	@RequestMapping("/login")  
+	public String login(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/login";
+	}
+	
+	@RequestMapping("/index")  
+	public String index(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/index";
+	}
+	
+	@RequestMapping("/statistics")  
+	public String statistics(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/statistics";
+	}
+	
+	@RequestMapping("/loginOut")  
+	public String loginOut(HttpServletRequest request,Model model)throws Exception{	
+		return "app/admin/index";
+	}
+	
+}

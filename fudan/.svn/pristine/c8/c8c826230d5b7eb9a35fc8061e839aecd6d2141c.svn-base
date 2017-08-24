@@ -1,0 +1,37 @@
+package com.jy.repository.oa.personal;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.personal.Duty;
+import com.jy.entity.oa.personal.DutyVO;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface DutyMapper {
+
+	// 添加排班
+	int insert(Duty duty);
+
+	// 修改排班信息
+	int update(Duty duty);
+
+	// 删除排班信息
+	int delete(Long dId);
+
+	// 获取排班详细信息
+	Duty selectInfoBy(Long dutyId);
+
+	// 获取排班信息列表
+	List<Duty> select(@Param("fullname") String fullname,
+			@Param("systemName") String systemName,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+	// 分页显示排班列表
+	List<DutyVO> selectPageDate(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, 
+			@Param("fullname") String fullname, @Param("systemName") String systemName,
+			@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+}

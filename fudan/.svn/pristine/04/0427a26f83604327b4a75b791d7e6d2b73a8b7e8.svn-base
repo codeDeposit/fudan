@@ -1,0 +1,79 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<div class="row fu-margin-none fu-margin-bottom">
+	<div class="col-md-12 fu-border-bottom">
+  		<h1><small>数据搜索</small></h1>
+	</div>
+</div>
+<div class="row fu-margin-left fu-margin-right fu-margin-bottom fu-background fu-padding">
+	<form role="form" id="expertSearchForm" onsubmit="return fSearch()">
+		<div class="form-group col-md-2">
+			<label for="account">专业类别</label></span>
+			<select class="form-control input-sm" id="profession" name="profession">
+				<option value="">--请选择--</option>
+			</select>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">学历</label></span>
+			<select class="form-control input-sm" id="knowledge" name="knowledge">
+				<option value="">--请选择--</option>
+				<option value="1">本科</option>
+				<option value="2">硕士</option>
+				<option value="3">博士</option>
+			</select>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">技术职称</label></span>
+			<select class="form-control input-sm" id="job_name" name="job_name">
+				<option value="">--请选择--</option>
+				<option value="0">中级</option>
+				<option value="1">副高级</option>
+				<option value="2">高级</option>
+			</select>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">状态</label></span>
+			<select class="form-control input-sm" id="state" name="state">
+				<option value="">--请选择--</option>
+				<option value="1">已注册</option>
+				<option value="2">初审中</option>
+				<option value="3">初审通过</option>
+				<option value="4">初审未通过</option>
+				<option value="5">已冻结</option>
+				<option value="6">完成入库</option>
+			</select>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">抽取数量</label></span>
+			<div class="input-group">
+				<input type="text" class="form-control input-sm" id="extractCount1" name="extractCount1" maxlength="9" placeholder="抽取数量" required>
+			</div>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">备选数量</label></span>
+			<div class="input-group">
+				<input type="text" class="form-control input-sm" id="extractCount2" name="extractCount2" maxlength="9" placeholder="备选数量">
+			</div>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">从事年限（大于等于）</label></span>
+			<div class="input-group">
+				<input type="text" class="form-control input-sm" id="work_time_min" name="work_time_min" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxlength="9" placeholder="大于"  >
+				<span class="input-group-addon">元</span>
+			</div>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="account">从事年限（小于等于）</label></span>
+			<div class="input-group">
+				<input type="text" class="form-control input-sm" id="work_time_max" name="work_time_max" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxlength="9" placeholder="小于"  >
+				<span class="input-group-addon">元</span>
+			</div>
+		</div>
+		<div class="form-group col-md-12">
+			<button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i>抽取</button>
+			<button type="reset" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-erase"></i>清空</button>
+			<button type="button" class="btn btn-info btn-sm" onclick="fAdd()"><i class="glyphicon glyphicon-download-alt"></i>保存抽取结果</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.AppCartDao">
+	
+	<resultMap type="com.jy.entity.app.AppCart" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_cart where 1=1 <include refid="findSql"></include>
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_cart where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="cart_id != 0">  
+		    AND cart_id = #{cart_id}
+		</if>  
+		<if test="buyer_id != null and buyer_id != ''">  
+		    AND buyer_id = #{buyer_id}
+		</if>  
+		<if test="goods_id != 0">  
+		    AND goods_id = #{goods_id}
+		</if> 
+		<if test="goods_name != null and goods_name != ''">  
+		    AND goods_name = #{goods_name}
+		</if>
+		<if test="goods_price != 0">  
+		    AND goods_price = #{goods_price}
+		</if> 
+		<if test="goods_num != 0">  
+		    AND goods_num = #{goods_num}
+		</if> 
+		<if test="goods_image != null and goods_image != ''">  
+		    AND goods_image = #{goods_image}
+		</if> 
+		<if test="goods_fenxiao_price != 0">  
+		    AND goods_fenxiao_price = #{goods_fenxiao_price}
+		</if> 
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="cart_id != 0">  
+		    AND cart_id = #{cart_id}
+		</if>  
+		<if test="buyer_id != 0">  
+		    AND buyer_id = #{buyer_id}
+		</if>  
+		<if test="goods_id != 0">  
+		    AND goods_id = #{goods_id}
+		</if> 
+		<if test="goods_name != null and goods_name != ''">  
+		    AND goods_name = #{goods_name}
+		</if>
+		<if test="goods_price != 0">  
+		    AND goods_price = #{goods_price}
+		</if> 
+		<if test="goods_num != 0">  
+		    AND goods_num = #{goods_num}
+		</if> 
+		<if test="goods_image != null and goods_image != ''">  
+		    AND goods_image = #{goods_image}
+		</if> 
+		<if test="goods_fenxiao_price != 0">  
+		    AND goods_fenxiao_price = #{goods_fenxiao_price}
+		</if>   
+	</sql>
+	
+	<insert id="insert">
+		insert into app_cart (cart_id,buyer_id,goods_id,goods_name,goods_price,goods_num,goods_image) 
+			values 
+		(#{cart_id},#{buyer_id},#{goods_id},#{goods_name},#{goods_price},#{goods_num},#{goods_image})
+	</insert>
+	
+	<update id="update">
+		update app_cart <include refid="updateSql"></include> where cart_id = #{cart_id}
+	</update>
+	
+	<update id="update2">
+		update app_cart <include refid="updateSql"></include> where cart_id = #{cart_id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="buyer_id != null and goods_name != ''">  
+				buyer_id = #{buyer_id},
+			</if>
+			<if test="goods_id != 0">  
+				goods_id = #{goods_id},
+			</if>
+			<if test="goods_name != null and goods_name != ''">  
+				goods_name = #{goods_name},
+			</if>
+			<if test="goods_price != 0">  
+				goods_price = #{goods_price},
+			</if>
+			<if test="goods_num != 0">  
+				goods_num = #{goods_num},
+			</if>
+			<if test="goods_image != null and goods_image != ''">  
+				goods_image = #{goods_image},
+			</if>
+			<if test="goods_fenxiao_price != 0">  
+				goods_fenxiao_price = #{goods_fenxiao_price},
+			</if>
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_cart where 
+		<if test="cart_id != 0">
+			cart_id = #{cart_id}
+		</if>
+	</delete>
+</mapper>

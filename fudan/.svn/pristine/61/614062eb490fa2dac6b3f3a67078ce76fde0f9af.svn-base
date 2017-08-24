@@ -1,0 +1,82 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<title>客户列表</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui2/aui.css" />
+		<link rel="stylesheet" href="${jypath}/mobile/css/font/font-awesome.css">
+		<script src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script src="${jypath}/mobile/js/pull-refresh/pull-refresh.js"></script>
+		<script src="${jypath}/mobile/js/common/aui-popup.js"></script>
+		<script src="${jypath}/mobile/js/index/index.js"></script>
+	</head>
+	<body onload="fCutomerList()">
+		<header class="aui-bar aui-bar-nav aui-bar-dark">
+			<a class="aui-pull-left">
+				<img src="${jypath}/mobile/image/logo/fudan.ico" style="width:60%;border-radius:144px;margin-top:8px;">	
+			</a>
+			<div class="aui-title">
+				复单协同办公
+			</div>
+			<a class="aui-pull-right" aui-popup-for="top-right">
+				<span class="aui-iconfont aui-icon-my" style="font-size:28px;"></span>
+			</a>
+		</header>
+		
+		<section class="aui-grid aui-margin-b-15 aui-text-success" style="margin-top:40px;">
+			<div class="aui-row">
+				${menu }
+				<!-- <div class="aui-col-xs-6">
+					<i class="aui-iconfont aui-icon-footprint"></i>
+					<div class="aui-grid-label">
+						中央维修
+					</div>
+				</div> -->
+			</div>
+		</section>
+		<div class="aui-popup aui-popup-top-right" id="top-right">
+	        <div class="aui-popup-arrow"></div>
+	        <div class="aui-popup-content">
+	            <ul class="aui-list aui-list-noborder">
+	            	<a href="personalsetting">
+		                <li class="aui-list-item">
+			                    <div class="aui-list-item-label-icon">
+			                        <i class="aui-iconfont aui-iconfont aui-icon-settings aui-text-info"></i>
+			                    </div>
+			                    <div class="aui-list-item-inner">
+			                        	设置
+			                    </div>
+		                </li>
+                   	</a>
+                   	<a href="logout">
+		                <li class="aui-list-item">
+		                    <div class="aui-list-item-label-icon">
+		                        <i class="aui-iconfont aui-icon-backdelete aui-text-danger"></i>
+		                    </div>
+		                    <div class="aui-list-item-inner">
+		                        	退出
+		                    </div>
+		                </li>
+	                </a>
+	            </ul>
+	        </div>
+	    </div>
+		<footer class="aui-bar aui-font-size-12" id="footer" style="color:#888">
+	    	Copyright © 复单信息科技有限公司 2016 - 2017
+	    </footer>
+	</body>
+	<script>
+		window.onload = function(){
+			var popup = new auiPopup();
+		    function showPopup(){
+		        popup.show(document.getElementById("top-right"))
+		    }
+		}
+	</script>
+</html>

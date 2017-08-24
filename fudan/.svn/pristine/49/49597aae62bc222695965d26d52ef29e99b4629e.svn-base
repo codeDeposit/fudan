@@ -1,0 +1,35 @@
+package com.jy.entity.oa;
+
+import java.util.List;
+
+public class EmployeeInfoJsonVo {
+
+	private List<EmployeeInfoVo> employeeInfoList;
+	private boolean success;
+	private int totalCount;
+
+	public List<EmployeeInfoVo> getEmployeeInfoList() {
+		return employeeInfoList;
+	}
+
+	public void setEmployeeInfoList(List<EmployeeInfoVo> employeeInfoList) {
+		this.employeeInfoList = employeeInfoList;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+}

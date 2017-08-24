@@ -1,0 +1,83 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+    <%@ include file="../common/styleUrl.jsp" %>
+        <!DOCTYPE HTML>
+        <html>
+
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+            <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui.2.0.css" />
+            <link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/login/mobile_register.css" />
+            <script src="${jypath}/mobile/js/common/aui-dialog.js"></script>
+            <title>注册</title>
+        </head>
+
+        <body>
+            <header class="aui-bar aui-bar-nav">
+                <a class="aui-pull-left aui-btn" href="javascript:history.go(-1)">
+                    <span class="aui-iconfont aui-icon-left"></span>取消
+                </a>
+                <div class="aui-title"></div>
+            </header>
+            <div class="logo"></div>
+            <div class="aui-content aui-margin-t-15">
+                <form action="" onsubmit="return subFun()">
+                    <ul class="aui-list aui-form-list">
+                        <li class="aui-list-item liName borRad">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-my"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="text" name="username" id="username" placeholder="(3到20个字符)" maxlength="20" minlength="3" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item liName ">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-mail"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="email" name="email" id="email" placeholder="(邮箱地址)" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <input type="hidden" id="roleId" name="roleId" value="2">
+                            <input type="hidden" id="isValid" name="isValid" value="1">
+                        </li>
+                        <li class="aui-list-item liName">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-lock"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="password" name="password" id="password" placeholder="(6到20个字符)" maxlength="20" minlength="6" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item liPassword">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-lock"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="password" id="conPass" placeholder="(6到20个字符)" maxlength="20" minlength="6" required>
+                                </div>
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-correct"></i>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item subBtn" style="background-color:#2D9AD2; ">
+                            <button type="submit" class="aui-btn aui-btn-info aui-btn-block aui-btn-sm"> 注 册 </button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </body>
+        <script src="${jypath}/mobile/js/login/mobile_register.js"></script>
+
+        </html>

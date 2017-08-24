@@ -1,0 +1,510 @@
+package com.jy.entity.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class EmpProfile {
+
+	private final short CHECK_FLAG_NONE = (short) 0;
+	private final short CHECK_FLAG_PASS = (short) 1;
+	private final short CHECK_FLAG_NOT_PASS = (short) 2;
+
+	private final short DELETE_FLAG_NOT = (short) 0;
+	private final short DELETE_FLAG_HAD = (short) 1;
+
+	private Long profileId;
+	private String profileNo;			//档案编号
+	private String fullname;			//员工姓名
+	private String address;
+	private Date birthday;
+	private String homeZip;
+	private String sex;
+	private String marriage;
+	private String designation;			//职称
+	private Long jobId;
+	private String position;
+	private String phone;
+	private String mobile;
+	private String openBank;
+	private String bankNo;
+	private String qq;
+	private String email;
+	private String hobby;
+	private String religion;
+	private String party;
+	private String nationality;
+	private String race;
+	private String birthPlace;
+	private String eduDegree;
+	private String eduMajor;
+	private String eduCollege;
+	private Date startWorkDate;
+	private String eduCase;
+	private String awardPunishCase;
+	private String trainingCase;
+	private String workCase;
+	private String idCard;					//身份证号
+	private String photo;
+	private String standardMiNo;
+	private BigDecimal standardMoney;
+	private String standardName;
+	private Long standardId;
+	private String creator;					//创建档案的人
+	private Date createtime;				//建档时间
+	private String checkName;
+	private Date checktime;
+	private Short approvalStatus;			//审核状态
+	private String memo;
+	private String depName;					//部门名称
+	private Long depId;
+	private Short delFlag;
+	private String opprovalOpinion;
+	private Long userId;
+	
+	//用于展示
+	private String createTime1;
+	private String birthday1;
+	private String startWorkDate1;
+	private String checktime1;
+
+	public String getCreateTime1() {
+		return createTime1;
+	}
+
+	public void setCreateTime1(String createTime1) {
+		this.createTime1 = createTime1;
+	}
+
+	public String getBirthday1() {
+		return birthday1;
+	}
+
+	public void setBirthday1(String birthday1) {
+		this.birthday1 = birthday1;
+	}
+
+	public String getStartWorkDate1() {
+		return startWorkDate1;
+	}
+
+	public void setStartWorkDate1(String startWorkDate1) {
+		this.startWorkDate1 = startWorkDate1;
+	}
+
+	public String getChecktime1() {
+		return checktime1;
+	}
+
+	public void setChecktime1(String checktime1) {
+		this.checktime1 = checktime1;
+	}
+
+	public Long getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
+	}
+
+	public String getProfileNo() {
+		return profileNo;
+	}
+
+	public void setProfileNo(String profileNo) {
+		this.profileNo = profileNo;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getHomeZip() {
+		return homeZip;
+	}
+
+	public void setHomeZip(String homeZip) {
+		this.homeZip = homeZip;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getMarriage() {
+		return marriage;
+	}
+
+	public void setMarriage(String marriage) {
+		this.marriage = marriage;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public Long getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(Long jobId) {
+		this.jobId = jobId;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getOpenBank() {
+		return openBank;
+	}
+
+	public void setOpenBank(String openBank) {
+		this.openBank = openBank;
+	}
+
+	public String getBankNo() {
+		return bankNo;
+	}
+
+	public void setBankNo(String bankNo) {
+		this.bankNo = bankNo;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getHobby() {
+		return hobby;
+	}
+
+	public void setHobby(String hobby) {
+		this.hobby = hobby;
+	}
+
+	public String getReligion() {
+		return religion;
+	}
+
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getParty() {
+		return party;
+	}
+
+	public void setParty(String party) {
+		this.party = party;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	public String getRace() {
+		return race;
+	}
+
+	public void setRace(String race) {
+		this.race = race;
+	}
+
+	public String getBirthPlace() {
+		return birthPlace;
+	}
+
+	public void setBirthPlace(String birthPlace) {
+		this.birthPlace = birthPlace;
+	}
+
+	public String getEduDegree() {
+		return eduDegree;
+	}
+
+	public void setEduDegree(String eduDegree) {
+		this.eduDegree = eduDegree;
+	}
+
+	public String getEduMajor() {
+		return eduMajor;
+	}
+
+	public void setEduMajor(String eduMajor) {
+		this.eduMajor = eduMajor;
+	}
+
+	public String getEduCollege() {
+		return eduCollege;
+	}
+
+	public void setEduCollege(String eduCollege) {
+		this.eduCollege = eduCollege;
+	}
+
+	public Date getStartWorkDate() {
+		return startWorkDate;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	public void setStartWorkDate(Date startWorkDate) {
+		this.startWorkDate = startWorkDate;
+	}
+
+	public String getEduCase() {
+		return eduCase;
+	}
+
+	public void setEduCase(String eduCase) {
+		this.eduCase = eduCase;
+	}
+
+	public String getAwardPunishCase() {
+		return awardPunishCase;
+	}
+
+	public void setAwardPunishCase(String awardPunishCase) {
+		this.awardPunishCase = awardPunishCase;
+	}
+
+	public String getTrainingCase() {
+		return trainingCase;
+	}
+
+	public void setTrainingCase(String trainingCase) {
+		this.trainingCase = trainingCase;
+	}
+
+	public String getWorkCase() {
+		return workCase;
+	}
+
+	public void setWorkCase(String workCase) {
+		this.workCase = workCase;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getStandardMiNo() {
+		return standardMiNo;
+	}
+
+	public void setStandardMiNo(String standardMiNo) {
+		this.standardMiNo = standardMiNo;
+	}
+
+	public BigDecimal getStandardMoney() {
+		return standardMoney;
+	}
+
+	public void setStandardMoney(BigDecimal standardMoney) {
+		this.standardMoney = standardMoney;
+	}
+
+	public String getStandardName() {
+		return standardName;
+	}
+
+	public void setStandardName(String standardName) {
+		this.standardName = standardName;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getCheckName() {
+		return checkName;
+	}
+
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
+
+	public Date getChecktime() {
+		return checktime;
+	}
+
+	public void setChecktime(Date checktime) {
+		this.checktime = checktime;
+	}
+
+	public Short getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(Short approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public String getDepName() {
+		return depName;
+	}
+
+	public void setDepName(String depName) {
+		this.depName = depName;
+	}
+
+	public Long getDepId() {
+		return depId;
+	}
+
+	public void setDepId(Long depId) {
+		this.depId = depId;
+	}
+
+	public Short getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(Short delFlag) {
+		this.delFlag = delFlag;
+	}
+
+	public String getOpprovalOpinion() {
+		return opprovalOpinion;
+	}
+
+	public void setOpprovalOpinion(String opprovalOpinion) {
+		this.opprovalOpinion = opprovalOpinion;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public short getCHECK_FLAG_NONE() {
+		return CHECK_FLAG_NONE;
+	}
+
+	public short getCHECK_FLAG_PASS() {
+		return CHECK_FLAG_PASS;
+	}
+
+	public short getCHECK_FLAG_NOT_PASS() {
+		return CHECK_FLAG_NOT_PASS;
+	}
+
+	public short getDELETE_FLAG_NOT() {
+		return DELETE_FLAG_NOT;
+	}
+
+	public short getDELETE_FLAG_HAD() {
+		return DELETE_FLAG_HAD;
+	}
+
+	public Long getStandardId() {
+		return standardId;
+	}
+
+	public void setStandardId(Long standardId) {
+		this.standardId = standardId;
+	}
+
+}

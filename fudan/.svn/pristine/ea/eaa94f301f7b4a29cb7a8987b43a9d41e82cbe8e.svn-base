@@ -1,0 +1,294 @@
+ window.onload = function() {
+         //绑定input click事件
+         document.getElementById("picBox").addEventListener("click", function() {
+                 document.getElementById("userPho").click();
+
+             })
+             //input获得值提交
+         document.getElementById("userPho").addEventListener('change', function() {
+             //document.getElementById("phoForm").submit();
+             var that = this;
+             judgeTypeSize(that, img_upload);
+         })
+
+         function judgeTypeSize(fileObj, callback) {
+             var value = fileObj.value;
+             if (!value.match(/.jpg|.jpeg|.png$/i)) {
+                 document.getElementById('dotip').textContent = '支持jpg或jpeg或png格式图片';
+                 //deleVal(fileObj[0]);
+             } else {
+                 document.getElementById('dotip').textContent = '头像预览';
+                 if (callback) {
+                     callback(fileObj);
+                 }
+             }
+         }
+
+         function img_upload(fileObj) {
+             var url = getImgUrl(fileObj);
+             document.getElementById('picBox').getElementsByTagName('img')[0].setAttribute('src', url);
+             console.log(url)
+         }
+
+         function getImgUrl(fileObj) {
+             var url;
+             if (fileObj.files && fileObj.files[0]) {
+                 url = window.URL.createObjectURL(fileObj.files[0]);
+             } else { //FUCK IE
+                 fileObj.select();
+                 url = fileObj.selection.createRange().text;
+                 document.selection.empty();
+             }
+             return url;
+         }
+         //两次输入密码检验
+         document.getElementById('conPassW').addEventListener('input', function() {
+             var val = document.getElementById('newpassword').value;
+             var _this = this;
+             if (this.value == val) {
+                 document.getElementsByClassName('aui-icon-correct')[0].style.display = "block";
+             } else {
+                 document.getElementsByClassName('aui-icon-correct')[0].style.display = "none";
+             }
+             _this.addEventListener('blur', function() {
+                 checkVal(_this, val);
+             })
+
+         })
+
+         function checkVal(obj, val) {
+             if (obj.value != val) {
+                 obj.setAttribute("placeholder", "密码不一致");
+                 obj.value = "";
+             }
+         }
+
+     }
+ 
+ function changePho() {
+	 var imgFile = document.getElementById('userPho');
+     var reader = new FileReader();
+     reader.onload = function(evt) {
+    	 var fd = new FormData(document.forms.namedItem("fileinfo")); 
+    	 
+         var xhr = null;
+         try {
+             xhr = new XMLHttpRequest();
+         } catch (e) {
+             xhr = new ActiveXObject('Microsoft.XMLHTTP');
+         }
+
+         xhr.onreadystatechange = function() {
+             if (xhr.readyState == 4) {
+                 if (xhr.status == 200) {
+                     var responseText = xhr.responseText;
+                     var obj = JSON.parse(responseText);
+                     if (obj.res == 1) {
+                         showDefault('comston');
+                     } else {
+                         showDefault('fail');
+                     }
+                 }
+             }
+         }
+
+         xhr.open('post', jypath + '/mobile/account/accountModify', false);
+         xhr.send(fd);
+     }
+     
+     reader.readAsDataURL(imgFile.files[0]);
+     return false
+ }
+ 
+ /*function changePho() {
+     var imgFile = document.getElementById('userPho');
+     var idName = document.getElementById('idName').value;
+     var reader = new FileReader();
+     reader.onload = function(evt) {
+    	 var xhr = null;
+         var data = new FormData();
+         var blob = dataURItoBlob(evt.target.result);
+         data.append('picUrl', blob);
+         try {
+             xhr = new XMLHttpRequest();
+         } catch (e) {
+             xhr = new ActiveXObject('Microsoft.XMLHTTP');
+         }
+
+         xhr.onreadystatechange = function() {
+             if (xhr.readyState == 4) {
+                 if (xhr.status == 200) {
+                     var responseText = xhr.responseText;
+                     var obj = JSON.parse(responseText);
+                     if (obj.res == 1) {
+                         showDefault('comston');
+                     } else {
+                         showDefault('fail');
+                     }
+                 }
+             }
+         }
+
+         xhr.open('post', jypath + '/mobile/account/accountModify', false);
+         xhr.setRequestHeader("content-type","multipart/form-data;");
+         xhr.send(data);
+     }
+     reader.readAsDataURL(imgFile.files[0]);
+
+     return false
+ }*/
+
+ function dataURItoBlob(dataURI) {
+     var byteString = atob(dataURI.split(',')[1]);
+     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+     var ab = new ArrayBuffer(byteString.length);
+     var ia = new Uint8Array(ab);
+     for (var i = 0; i < byteString.length; i++) {
+         ia[i] = byteString.charCodeAt(i);
+     }
+     return new Blob([ab], {
+         type: mimeString
+     });
+ }
+
+
+ function changeMsg() {
+     var uname = document.getElementById('uname').value;
+     var umail = document.getElementById('umail').value;
+     var idName = document.getElementById('idName').value;
+     var data = 'accountId=' + idName + '&name=' + uname + '&email=' + umail;
+
+     var xhr = null;
+     try {
+         xhr = new XMLHttpRequest();
+     } catch (e) {
+         xhr = new ActiveXObject('Microsoft.XMLHTTP');
+     }
+
+     xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4) {
+             if (xhr.status == 200) {
+                 var responseText = xhr.responseText;
+                 var obj = JSON.parse(responseText);
+                 if (obj.res == 1) {
+                     showDefault('comston');
+                 } else {
+                     showDefault('fail');
+                 }
+             }
+         }
+     }
+
+     xhr.open('post', jypath + '/mobile/account/update', false);
+     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+     xhr.send(data);
+     return false
+ }
+
+ function changePassword() {
+     var idName = document.getElementById('idName').value;
+     var oldpassword = document.getElementById('password').value;
+     var newpassword = document.getElementById('newpassword').value;
+     var data = 'accountId=' + idName + '&lPwd0=' + oldpassword + '&lPwd1=' + newpassword;
+
+     var xhr = null;
+     try {
+         xhr = new XMLHttpRequest();
+     } catch (e) {
+         xhr = new ActiveXObject('Microsoft.XMLHTTP');
+     }
+
+     xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4) {
+             if (xhr.status == 200) {
+                 var responseText = xhr.responseText;
+                 var obj = JSON.parse(responseText);
+                 if (obj.res == 1) {
+                     showDefault('comston');
+                 } else {
+                     showDefault('fail');
+                 }
+             }
+         }
+     }
+
+     xhr.open('post', jypath + '/mobile/account/checkOldPwd', false);
+     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+     xhr.send(data);
+     return false
+ }
+ 
+ 
+ 
+ 
+ 
+     //提示框 传参调用 showDefault('success');//fail,comston,loading
+ var toast = new auiToast();
+
+ function showDefault(type) {
+     switch (type) {
+         case "success":
+             toast.success({
+                 title: "提交成功",
+                 duration: 3000
+             });
+             break;
+         case "fail":
+             toast.fail({
+                 title: "提交失败",
+                 duration: 2000
+             });
+             break;
+         case "comston":
+             toast.custom({
+                 title: "修改成功",
+                 html: '<i class="aui-iconfont aui-icon-laud"></i>',
+                 duration: 2000
+             });
+             break;
+         case "loading":
+             toast.loading({
+                 title: "加载中",
+                 duration: 2000
+             }, function(ret) {
+                 console.log(ret);
+                 setTimeout(function() {
+                     toast.hide();
+                 }, 3000)
+             });
+             break;
+         default:
+             break;
+     }
+ }
+ //tab切换
+ var tab = new auiTab({
+     element: document.getElementById("aTab")
+ }, function(ret) {
+     if (ret) {
+
+         for (var i = 1; i < 4; i++) {
+             var obj = document.getElementById("tBox" + i);
+             removeClass(obj, "active")
+             addClass(obj, "notActive");
+         }
+
+         document.getElementById("tBox" + ret.index).setAttribute("class", "active");
+     }
+ });
+
+ function hasClass(elements, cName) {
+     return !!elements.className.match(new RegExp("(\\s|^)" + cName + "(\\s|$)"));
+ };
+
+ function addClass(elements, cName) {
+     if (!hasClass(elements, cName)) {
+         elements.className += " " + cName;
+     };
+ };
+
+ function removeClass(elements, cName) {
+     if (hasClass(elements, cName)) {
+         elements.className = elements.className.replace(new RegExp("(\\s|^)" + cName + "(\\s|$)"), " ");
+     };
+ };

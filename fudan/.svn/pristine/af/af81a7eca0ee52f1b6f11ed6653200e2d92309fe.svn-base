@@ -1,0 +1,33 @@
+package com.jy.repository.oa.hrm;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.hrm.SalaryItem;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface SalaryItemMapper {
+
+	// 添加薪酬项目
+	int insert(SalaryItem salaryItem);
+
+	// 获取薪酬项目详细信息
+	SalaryItem selectInfoBy(Long salaryItemId);
+
+	// 修改薪酬项目信息
+	int update(SalaryItem salaryItem);
+
+	// 删除薪酬项目
+	int delete(Long salaryItemId);
+
+	// 获取薪酬项目列表
+	List<SalaryItem> select(@Param("itemName") String itemName, @Param("defaultVal") BigDecimal defaultVal, @Param("ids") Long[] ids);
+
+	// 薪酬项目分页列表
+	List<SalaryItem> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, 
+			@Param("itemName") String itemName, @Param("defaultVal") BigDecimal defaultVal, @Param("ids") Long[] ids);
+
+}

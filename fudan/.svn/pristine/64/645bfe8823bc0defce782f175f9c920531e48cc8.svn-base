@@ -1,0 +1,200 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button type="button" class="btn btn-success pull-right"
+	data-toggle="modal" data-target="#newsAddModal" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="newsAddModal" tabindex="-1" role="dialog"
+	aria-labelledby="newsAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title text-center" id="newsAddModalLabel">
+					通讯簿添加(带<font class="xinghao">&nbsp;*&nbsp;</font>的必填)
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addform" role="form" class="form-horizontal">
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>联系人分组</label>
+						<div class="col-md-8">
+							<select id="phoneGroupAddSelect" class="form-control" name="groupId" required>
+								<option selected value="">--请选择--</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>称谓</label>
+						<div class="col-md-8">
+							<select id="phoneGroupSelect" class="form-control col-sm-8 forinBlo" name="title" required>
+								<option selected value="">--请选择--</option>
+								<option value="先生">先生</option>
+								<option value="女士">女士</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">出生时间</label>
+						<div class="col-md-8">
+							<div class="input-group date form_date" data-date=""
+								data-date-format="yyyy-MM-dd" data-link-field="dtp_input"
+								data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" name="birthday" type="text"
+									value="" readonly> <span class="input-group-addon"><span
+									class="glyphicon glyphicon-remove"></span>
+								</span> <span class="input-group-addon"><span
+									class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-sm-4 text-center"><font class="xinghao">*&nbsp;</font>是否共享</label>
+						<div class="col-md-8">
+							<select id="phoneGroupSelect"
+								class="form-control" name="isShared" required>
+								<option selected value="">--请选择--</option>
+								<option value="0">否</option>
+								<option value="1">是</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>姓名</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="fullname">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">昵称</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="nickName">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>单位名称</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="companyName">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>职务</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="duty">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>单位地址</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="companyAddress">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">单位电话</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="companyPhone">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">单位传真</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="companyFax">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font class="xinghao">*&nbsp;</font>手机号码</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="mobile">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">固定电话</label> 
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="phone">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center"><font
+							class="xinghao">*&nbsp;</font>邮箱</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="email">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">QQ</label> 
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="qqNumber">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">MSN</label> 
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="msn">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">家庭住址</label> 
+						<div class="col-md-8">
+							<input type="text" class="form-control" name="homeAddress">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">家庭邮编</label>
+						<div class="col-md-8"> 
+							<input type="text" class="form-control" name="homeZip">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">配偶</label>
+						<div class="col-md-8"> 
+							<input type="text" class="form-control" name="spouse">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label col-md-4 text-center">子女</label>
+						<div class="col-md-8"> 
+							<input type="text" class="form-control" name="childs">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-2 text-center">备注</label>
+					<div class="col-md-10">
+						<textarea rows="3" class="form-control" cols="12" name="note"></textarea>
+					</div>
+				</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button id="addsubmitbtn" type="button" class="btn btn-success">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模拟态窗口 end -->

@@ -1,0 +1,31 @@
+package com.jy.repository.oa.archive;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.entity.oa.archive.ArchTemplate;
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ArchTemplateMapper {
+
+	// 添加一条数据
+	int insert(ArchTemplate archTemplate);
+
+	// 根据类型Id，tempName 模糊查询所有列表
+	List<ArchTemplate> selectSomeBy(@Param("typeId") Long typeId, @Param("tempName") String tempName);
+
+	// 根据 templateId 获取详细信息
+	ArchTemplate selectInfoBy(Long templateId);
+
+	//根据 templateId 删除
+	int delete(Long templateId);
+
+	// 分页显示列表 
+	List<ArchTemplate> selectPageData(@Param("firstIndex") int firstIndex, @Param("toIndex") int toIndex, @Param("typeId") Long typeId, @Param("tempName") String tempName);
+
+	// 修改模板数据
+	int update(ArchTemplate archTemplate);
+
+}

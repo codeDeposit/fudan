@@ -1,0 +1,21 @@
+package com.jy.repository.oa.hrm;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ResumeFileMapper {
+
+	// 添加简历与文件的关联
+	int insert(@Param("fileId") Long fId, @Param("resumeId") Long resumeId);
+
+	// 删除与简历关联的所有附件信息
+	int delete(Long resumeId);
+
+	// 获取简历对应的附件id号
+	List<Long> selectIdsBy(Long resumeId);
+
+}

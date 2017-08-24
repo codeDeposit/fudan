@@ -1,0 +1,96 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!-- 添加 start-->
+<button id="modaladdbtn" type="button"
+	class="btn btn-success pull-right" data-toggle="modal"
+	data-target="#noticeadd" style="margin:10px;">
+	<i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+</button>
+<!-- 添加 end -->
+
+<!-- 模拟态窗口 start-->
+<div class="modal fade" id="noticeadd" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<form id="noticeaddform" role="form" class="form-horizontal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">公告添加</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-sm-1">标题</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control" name="noticeTitle" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">发布者</label>
+						<div class="col-sm-11">
+							<input type="text" class="form-control" name="postName" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">生效日期</label>
+						<div class="col-sm-11">
+							<div class="input-group date form_date col-md-12" data-date=""
+								data-date-format="yyyy-MM-dd" data-link-field="dtp_input"
+								data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" name="effectiveDate1"
+									type="text" value="" readonly> <span
+									class="input-group-addon"><span
+									class="glyphicon glyphicon-remove"></span>
+								</span> <span class="input-group-addon"><span
+									class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">失效日期</label>
+						<div class="col-sm-11">
+							<div class="input-group date form_date col-md-12" data-date=""
+								data-date-format="yyyy-MM-dd" data-link-field="dtp_input"
+								data-link-format="yyyy-mm-dd">
+								<input class="form-control" size="16" name="expirationDate1"
+									type="text" value="" readonly> <span
+									class="input-group-addon"><span
+									class="glyphicon glyphicon-remove"></span>
+								</span> <span class="input-group-addon"><span
+									class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">状态</label>
+						<div class="col-sm-11">
+							<select class="form-control" name="state">
+								<option value="" selected>--请选择--</option>
+								<option value="0">草稿</option>
+								<option value="1">立即发布</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-1">内容</label>
+						<div class="col-sm-11">
+							<!-- 点击添加按钮，将UMeditor编辑器加入noticeContent中  -->
+							<div id="noticeContent">
+								<%@ include file="../common/editor.jsp" %>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="closebtn" type="button" class="btn btn-default"
+						data-dismiss="modal">关闭</button>
+					<button id="noticeaddbtn" type="button" class="btn btn-success">保存</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

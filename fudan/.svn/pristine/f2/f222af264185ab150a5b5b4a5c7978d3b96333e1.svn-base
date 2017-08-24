@@ -1,0 +1,8 @@
+package com.jy.repository.oa.archive;
+
+import com.jy.repository.base.JYBatis;
+
+@JYBatis
+public interface ArchivesMapper {
+
+}

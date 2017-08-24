@@ -1,0 +1,79 @@
+package com.jy.controller.wzcg;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.jy.common.ajax.AjaxRes;
+import com.jy.controller.base.BaseController;
+import com.jy.entity.system.org.Org;
+import com.jy.entity.system.org.Role;
+import com.jy.entity.wzcg.WzcgKind;
+import com.jy.service.system.org.OrgService;
+import com.jy.service.system.org.RoleService;
+
+@Controller("WzcgSettingController")
+@RequestMapping(value="/backstage/wzcg/setting")
+public class WzcgSettingController extends BaseController<WzcgKind> {
+	
+	@Autowired
+	public OrgService orgService;
+	
+	@Autowired
+	public RoleService roleService;
+	
+	/**
+	 * 显示列表
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/flowAddView")  
+	public String flowAddView(HttpServletRequest request,Model model)throws Exception{	
+		List<Role> listAll = new ArrayList<Role>();
+		List<Org> list = orgService.selectBaseBranch();
+		for(int i=0;i<list.size();i++){
+			List<Role> listRole = roleService.selectRoleAll(list.get(i).getId());
+			listAll.addAll(listRole);
+		}
+		model.addAttribute("list",listAll);
+		return "/system/wzcg/setting/flowAddView";
+	}
+	
+	/**
+	 * 获取所有部门,不包含基础部门
+	 * @param model
+	 * @returns
+	 */
+	@RequestMapping("/getBranch")  
+	@ResponseBody
+	public AjaxRes getBranch(HttpServletRequest request,Model model)throws Exception{	
+		AjaxRes ar = getAjaxRes();
+		List<Org> list = orgService.selectBranch();
+		ar.setSucceed(list);
+		return ar;
+	}
+	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+//	@RequestMapping("/flowAdd")  
+//	@ResponseBody
+//	public AjaxRes flowAdd(HttpServletRequest request,Model model)throws Exception{	
+//		AjaxRes ar = getAjaxRes();
+//		String roleList = request.getParameter("roleList");
+//		String progressList = request.getParameter("progressList");
+//		String branchList = request.getParameter("branchList");
+//		ar.setSucceedMsg("success");
+//		return ar;
+//	}
+	
+}

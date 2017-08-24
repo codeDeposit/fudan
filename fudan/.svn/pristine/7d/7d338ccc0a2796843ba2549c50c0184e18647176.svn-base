@@ -1,0 +1,47 @@
+a {
+    color: #ccc;
+    display: block;
+}
+
+.aui-list-item-input {
+    position: relative;
+}
+
+#myCanvas {
+    width: 70px;
+    height: 42px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.aui-list-item span {
+    padding-top: .5rem;
+}
+
+.aui-list .aui-list-item {
+    padding-right: .75rem;
+}
+
+.aui-list .subBtn {
+    margin: 1rem 0;
+    background-color: #F5F5F5;
+}
+
+.aui-list .aui-list-item:after {
+    height: 0;
+}
+
+.aui-list:after {
+    height: 0;
+}
+
+.aui-list .proStep {
+    margin-bottom: 1rem;
+}
+
+.aui-icon-correct {
+    font-weight: bold;
+    color: #009688;
+    display: none;
+}

@@ -1,0 +1,42 @@
+package com.jy.service.oa.task;
+
+import java.util.List;
+
+import com.jy.entity.oa.task.CalendarPlan;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+public interface CalendarPlanService {
+
+	// 添加日程
+	JsonInfo save(CalendarPlan calendarPlan);
+
+	// 获取日程详细信息
+	CalendarPlan getInfoBy(Long planId);
+
+	// 修改日程信息
+	JsonInfo update(CalendarPlan calendarPlan);
+
+	// 批量删除日程
+	JsonInfo del(Long[] planId);
+
+	// 完成任务
+	JsonInfo complete(Long planId, String feedback);
+
+	// 获取要执行的任务列表
+	List<CalendarPlan> get(CalendarPlan calendarPlan);
+
+	// 获取我分配的任务列表
+	List<CalendarPlan> getFP(CalendarPlan calendarPlan);
+
+	// 分页获取要执行的任务列表
+	List<CalendarPlan> getZXPageList(PageBean pb, CalendarPlan calendarPlan);
+
+	// 分页获取我分配的任务列表
+	List<CalendarPlan> getFPPageList(PageBean pb, CalendarPlan calendarPlan);
+
+	//所有限期任务
+	List<CalendarPlan> getAllXQ();
+
+}

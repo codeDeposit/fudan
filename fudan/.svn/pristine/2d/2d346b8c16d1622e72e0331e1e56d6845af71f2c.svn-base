@@ -1,0 +1,57 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<%@ include file="../common/styleUrl.jsp" %>
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/common/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/loading/loading.css" />
+		<link rel="stylesheet" type="text/css" href="${jypath}/mobile/css/login/login.css" />
+		<script src="${jypath}/mobile/js/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/loading/loading.js"></script>
+		<script type="text/javascript" src="${jypath}/mobile/js/toast/toast.js"></script>
+		<script src="${jypath}/mobile/js/login/login.js"></script>
+	</head>
+	<body>
+		<div class="aui-content content">
+			<div class="info">
+				<div class="logo" style="margin-top:5px;">
+					<img src="image/logo/logo.png" width="260px" alt="复单协同办公" />
+				</div>
+				<div class="box" style="top:24%;">
+					<form id="FMobileLogin" onsubmit="return fLogin()">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="aui-iconfont aui-icon-my"></i></span>
+							<input type="text" name="username" id="username" class="form-control" placeholder="用户名" minlength="1" maxlength="32" required/>
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="aui-iconfont aui-icon-lock"></i></span>
+							<input type="password" name="password" id="password" class="form-control" placeholder="密码" maxlength="32" required/>
+						</div>
+						<div class="btn-group">
+							<div class="aui-btn aui-btn-block aui-btn-success" style="background: #03a9f4 !important;border-color:#03a9f4" tapmode>
+								<button style="background-color:transparent;padding:0px 100px;border:0px;" type="submit">提交</button>	
+							</div>
+						</div>	
+					</form>	
+					<div class="aui-content" style="margin-top:10px;">
+						<span class="aui-text-left register " tapmode onclick="register()" style="margin-right:15%"> 忘记密码 </span>
+						<span class="aui-text-right register" tapmode onclick="register()" style="margin-left:15%"> 还没有账号？ </span>
+					</div>
+					<div class="aui-content" style="margin-top:55px;">
+						<p id="grad1x" style="width:80%;margin:0 auto;"></p>
+						<p class="aui-text-center register " tapmode onclick="register()" style="margin-right:5%;margin-bottom:10px;">
+							<span style="margin-right:10px;;">供应商注册</span><span>| |</span><span style="margin-left:10px;">专家注册 </span>
+						</p>
+						<p id="grad1x" style="width:80%;margin:0 auto;"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,131 @@
+package com.jy.controller.oa.info;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.jy.entity.oa.info.NewsComment;
+import com.jy.entity.oa.info.NewsCommentUtil;
+import com.jy.service.oa.info.NewsCommentService;
+import com.jy.task.utils.JsonInfo;
+import com.jy.task.utils.PageBean;
+
+
+@Controller
+@RequestMapping("/oa/newscomment")
+public class NewsCommentController {
+
+	private NewsCommentService newsCommentService;
+
+	public NewsCommentService getNewsCommentService() {
+		return newsCommentService;
+	}
+
+	@Autowired
+	public void setNewsCommentService(NewsCommentService newsCommentService) {
+		this.newsCommentService = newsCommentService;
+	}
+
+	/**
+	 * 根据 subject、startTime、endTime、fullname 模糊查询
+	 * 
+	 * @param subject
+	 * @param startTime
+	 * @param endTime
+	 * @param fullName
+	 * @return
+	 */
+	@RequestMapping("/list")
+	public ModelAndView list(HttpServletRequest request, NewsCommentUtil util) {
+		
+		String operation = request.getParameter("operation");
+		
+		// 接收当前页的参数，并转换
+		String pageNoStr = request.getParameter("pageNos");
+		int pageNos = 1;
+		if(pageNoStr != null) {
+			pageNos = Integer.valueOf(pageNoStr);
+		}
+		
+		Date startTime = null;
+		Date endTime = null;
+		String subject = null;
+		String fullname = null;
+		if(null != util) {
+			startTime = util.getStartTime();
+			endTime = util.getEndTime();
+			subject = util.getSubject();
+			fullname = util.getFullName();
+		}
+		
+		List<NewsComment> newsComments = newsCommentService.getBy(subject, startTime, endTime, fullname);
+		
+		// 设置参数：总行数，总页数，当前页
+		PageBean pb = new PageBean(newsComments.size());
+		pb.setCurrentPage(pageNos);
+		int pageCount = pb.getPageCount();
+		
+		// 分页后的列表
+		List<NewsComment> pageNewsComments = newsCommentService.getPageList(pb, subject, startTime, endTime, fullname);
+		
+		ModelAndView mv = new ModelAndView();
+		if("partrefresh".equals(operation)) {
+			mv.setViewName("system/oa/info/newscomment_table");
+		}else {
+			mv.setViewName("system/oa/info/newscomment_list");
+		}
+		
+		mv.addObject("newsComments", pageNewsComments);
+		mv.addObject("pageNos", pageNos);
+		mv.addObject("pageCount", pageCount);
+		
+		return mv;
+	}
+
+	/**
+	 * 根据 commentId 获取详细信息
+	 * 
+	 * @param commentId
+	 * @return
+	 */
+	/*@RequestMapping("/getDetails")
+	@ResponseBody
+	public NewsComment getBy(Long commentId) {
+		NewsComment newsComment = newsCommentService.getDetailsBy(commentId);
+		return newsComment;
+	}*/
+
+	/**
+	 * 修改 newsComment 信息
+	 * 
+	 * @param newsComment
+	 * @return
+	 */
+	/*@RequestMapping("/edit")
+	@ResponseBody
+	public JsonInfo edit(NewsComment newsComment) {
+		JsonInfo info = newsCommentService.update(newsComment);
+		return info;
+	}*/
+
+	/**
+	 * 批量删除
+	 * 
+	 * @param commentId
+	 * @return
+	 */
+	@RequestMapping("/multidel")
+	@ResponseBody
+	public JsonInfo multiDel(Long[] commentId) {
+		JsonInfo info = newsCommentService.del(commentId);
+		return info;
+	}
+
+}

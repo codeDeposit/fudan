@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.repository.app.admin.MallImgDao">
+	
+	<resultMap type="com.jy.entity.app.admin.MallImg" id="ResultMap"></resultMap>
+	
+	<select id="find" parameterType="String" resultMap="ResultMap">
+		select * from app_mall_img where 1=1 <include refid="findSql"></include> order by sort asc
+	</select>
+	
+	<select id="search" parameterType="String" resultMap="ResultMap">
+		select * from app_mall_img where 1=1 <include refid="searchSql"></include>
+	</select>
+	
+	<sql id="findSql">
+		<if test="mall_id !=  0">  
+		    AND mall_id = #{mall_id}
+		</if>  
+		<if test="sort != 0">  
+		    AND sort = #{sort}
+		</if> 
+	</sql>
+	
+	<sql id="searchSql">
+		<if test="mall_id !=  0">  
+		    AND mall_id = #{mall_id}
+		</if>  
+		<if test="sort != 0">  
+		    AND sort = #{sort}
+		</if> 
+	</sql>
+	
+	<insert id="insert">
+		insert into app_mall_img (id,mall_id,sort,img,state) 
+			values 
+		(#{id},#{mall_id},#{sort},#{img},#{state})
+	</insert>
+	
+	<update id="upOrDown">
+		update app_mall_img set sort = #{sortM} where sort = #{sort} and mall_id = #{mall_id}
+	</update>
+	
+	<update id="update">
+		update app_mall_img <include refid="updateSql"></include> where id = #{id}
+	</update>
+	
+	<sql id="updateSql">
+		<set>
+			<if test="sort != 0">  
+		    	sort = #{sort},
+			</if> 
+			<if test="img != '' and img != null">  
+		    	img = #{img},
+			</if>  
+			<if test="state != 0">  
+		    	state = #{state},
+			</if>    
+		</set>
+	</sql>
+	
+	<delete id="delete">
+		delete from app_mall_img where 
+		<if test="mall_id != 0">
+			mall_id = #{mall_id}
+		</if>
+	</delete>
+</mapper>
